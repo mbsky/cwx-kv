@@ -1,0 +1,66 @@
+#common conf
+[common]
+home=/usr/home/unistor/jpool/src/unistor/trunk/unistor/unistor
+thread_num=4
+store_type=bdb
+sock_buf_kbyte=8192
+max_chunk_kbyte=1024
+store_flush_num=50000
+host=172.121.222.122
+idc=yf
+group=1
+monitor=*:9666
+trans_conn_num=20
+sync_conn_num=20
+read_cache_mbyte=2048
+read_cache_max_key_num=10000000
+write_cache_mbyte = 128
+master_lost_binlog = 100000
+enable_expire=yes/no
+expire_default=3600
+expire_concurrent = 100
+[zk]
+server=172.121.222.122:2181,172.121.222.123:2181,172.121.222.124:2181
+auth=
+root=/unistor
+
+[inner_dispatch]
+user=unistor
+passwd=unistor
+listen=*:9667
+
+[outer_dispatch]
+user=unistor1
+passwd=unistor1
+listen=*:9668
+
+[recv]
+user=unistor2
+passwd=unistor2
+listen=*:9669
+
+[binlog]
+path=/data2/kv_data/data/binlog
+file_prefix=binlog
+file_max_mbyte=1024
+max_file_num=24
+del_out_file=yes
+cache=no
+flush_log_num=100000
+flush_log_second=100
+
+[bdb]
+env_home=/data3/bdb_home
+db_path=/data4/bdb_data
+compress=no
+cache_msize=8192
+page_ksize = 32
+[bdb_file]
+env_home=/data3/bdb_home
+db_path=/data4/bdb_data
+file_path=/data5/data
+bdb_cache_msize=8192
+bdb_page_ksize = 32
+file_msize = 64
+
+
