@@ -6,7 +6,7 @@ pkgconfigdir =
 BUILD_DATE=$(shell date +%F)
 
 
-bin_PROGRAMS =kv_add kv_set kv_update kv_inc kv_del kv_exist kv_get kv_list kv_import binlog kv_export
+bin_PROGRAMS =kv_add kv_set kv_update kv_inc kv_del kv_exist kv_get kv_list binlog kv_export
 kv_add_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
 kv_add_SOURCES = kv_add.cpp ../common/UnistorPoco.cpp XmlParse.cpp
 kv_add_LDADD= 
@@ -46,11 +46,6 @@ kv_list_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
 kv_list_SOURCES = kv_list.cpp ../common/UnistorPoco.cpp XmlParse.cpp
 kv_list_LDADD=
 kv_list_LDFLAGS = -L@cwinux_dir@/lib
-
-kv_import_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
-kv_import_SOURCES = kv_import.cpp ../common/UnistorPoco.cpp XmlParse.cpp
-kv_import_LDADD=
-kv_import_LDFLAGS = -L@cwinux_dir@/lib
 
 kv_export_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
 kv_export_SOURCES = kv_export.cpp ../common/UnistorPoco.cpp ../common/UnistorStore.cpp ../common/UnistorTss.cpp\
