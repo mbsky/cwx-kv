@@ -1,3 +1,0 @@
-./configure --prefix=install path  --with-cwinux=cwinux path --with-expat=expat path
-make
-make install
