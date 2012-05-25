@@ -1,13 +1,13 @@
 #common conf
 [common]
-home=/usr/home/wenbo/jpool/src/unistor/trunk/unistor/unistor
+home=/usr/home/unistor/bin/unistor
 thread_num=4
 store_type=bdb
 sock_buf_kbyte=8192
 max_chunk_kbyte=1024
 write_cache_flush_num=50000
 write_cache_flush_second=10
-host=172.16.42.62
+host=176.161.42.162
 idc=yf
 group=1
 monitor=*:9666
@@ -21,23 +21,23 @@ enable_expire=yes/no
 expire_default=3600
 expire_concurrent = 100
 [zk]
-server=172.16.42.63:2181
+server=176.161.42.163:2181
 auth=
 root=/unistor
 
 [inner_dispatch]
-user=dwb
-passwd=dwb
+user=usr
+passwd=usr
 listen=*:9667
 
 [outer_dispatch]
-user=dwb1
-passwd=dwb1
+user=usr1
+passwd=usr1
 listen=*:9668
 
 [recv]
-user=dwb2
-passwd=dwb2
+user=usr2
+passwd=usr2
 listen=*:9669
 
 [binlog]
