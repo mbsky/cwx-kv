@@ -214,6 +214,16 @@ int msg_notice_fn(void* , CwxMsgBlock* msg,  bool , char* ){
     return 0;
 }
 
+int get_sys_info_fn(void* , ///<app对象
+                  char const* , ///<要获取的key
+                  CWX_UINT16 , ///<key的长度
+                  char* , ///<若存在，则返回数据。内存有存储引擎分配
+                  CWX_UINT32&   ///<szData数据的字节数
+                  )
+{
+    return 0;
+}
+
 bool initOutFile(FILE*& fd){
     if (g_output.length()){
         fd = fopen(g_output.c_str(), "a+");
@@ -249,7 +259,7 @@ bool initEnv(){
     }
     ///初始化存储引擎
     string strEngine=g_config.getCommon().m_strWorkDir + "engine/";
-    if (0 != g_store.init(msg_notice_fn, NULL, &g_config, strEngine, g_tss.m_szBuf2K)){
+    if (0 != g_store.init(msg_notice_fn, get_sys_info_fn, NULL, &g_config, strEngine, g_tss.m_szBuf2K)){
         fprintf(g_fdout, "Failure to init engine, err=%s\n", g_tss.m_szBuf2K);
         return false;
     }

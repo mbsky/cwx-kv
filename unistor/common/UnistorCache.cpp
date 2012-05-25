@@ -392,7 +392,6 @@ int UnistorCache::init(UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN fnBeginWrite,
                        UNISTOR_WRITE_CACHE_WRITE_END_FN     fnEndWrite,
                        void*     context,
                        float     fBucketRate,
-                       CWX_UINT16 unAlign,
                        char*      szErr2K)
 {
     m_writeThreadId = ::pthread_self();
@@ -416,7 +415,7 @@ int UnistorCache::init(UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN fnBeginWrite,
             m_fnLess,
             m_fnHash,
             &m_writeCacheRwLock,
-            unAlign);
+            32);
         if (0 != m_writeCache->init(fnBeginWrite,
             fnWrite,
             fnEndWrite,
@@ -427,12 +426,11 @@ int UnistorCache::init(UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN fnBeginWrite,
         }
     }
     if (m_ullReadCacheByte){
-        m_readCache = new UnistorReadCacheEx(m_ullReadCacheByte,
+        m_readCache = new UnistorReadCacheEx2(m_ullReadCacheByte,
             m_uiReadCacheKeyNum,
             m_fnEqual,
             m_fnLess,
             m_fnHash,
-            unAlign,
             &m_readCacheRwLock,
             &m_readCacheMutex,
             fBucketRate);

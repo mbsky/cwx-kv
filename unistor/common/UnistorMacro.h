@@ -46,6 +46,51 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_KEY_V      "v"   ///<version key
 #define UNISTOR_KEY_X      "x"  ///<引擎扩展key
 
+
+#define UNISTOR_SYS_KEY_PID "pid"  ///<进程ID
+#define UNISTOR_SYS_KEY_PPID "ppid" ///<父进程ID
+#define UNISTOR_SYS_KEY_VERSION "version"  ///<版本号
+#define UNISTOR_SYS_KEY_MODIFY  "modify" ///<代码修改时间
+#define UNISTOR_SYS_KEY_COMPILE "compile" ///<代码编译时间
+#define UNISTOR_SYS_KEY_START   "start"   ///<服务启动时间
+#define UNISTOR_SYS_KEY_ENGINE  "engine"  ///<存储引擎名字
+#define UNISTOR_SYS_KEY_ENGINE_VERSION "engine_version" ///<存储引擎的版本
+#define UNISTOR_SYS_KEY_ENGINE_STATE   "engine_state" ///<存储引擎的状态
+#define UNISTOR_SYS_KEY_ENGINE_ERROR   "engine_error" ///<存储引擎的错误信息
+#define UNISTOR_SYS_KEY_BINLOG_STATE   "binlog_state" ///<binlog的状态
+#define UNISTOR_SYS_KEY_BINLOG_ERROR   "binlog_error" ///<binlog的错误信息
+#define UNISTOR_SYS_KEY_BINLOG_MIN_SID       "binlog_min_sid"   ///<binlog的最小的sid值
+#define UNISTOR_SYS_KEY_BINLOG_MIN_TIMESTAMP "binlog_min_timestamp" ///<binlog的最小时间戳
+#define UNISTOR_SYS_KEY_BINLOG_MIN_FILE     "binlog_min_file" ///<binlog的最小文件
+#define UNISTOR_SYS_KEY_BINLOG_MAX_SID  "binlog_max_sid" ///binlog的最大sid
+#define UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP "binlog_max_timestamp" ///<binlog的最大时间戳
+#define UNISTOR_SYS_KEY_BINLOG_MAX_FILE "binlog_max_file" ///<binlog的最大文件
+#define UNISTOR_SYS_KEY_READ_THREAD_NUM  "read_thread_num" ///<读线程的数量
+#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE "read_thread_queue_" ///<线程的队列前缀
+#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT "read_thread_connect_" ///<读线程的链接前缀
+#define UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE "write_thread_queue" ///<写线程的队列
+#define UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE "trans_thread_queue" ///<转发线程队列
+#define UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE "checkpoint_thread_queue" ///<checkpoint线程的队列
+#define UNISTOR_SYS_KEY_ZK_THREAD_QUEUE  "zk_thread_queue" ///<zookeeper线程的队列
+#define UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE "inner_sync_thread_queue" ///<内部同步的线程队列
+#define UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE "outer_sync_thread_queue" ///<外部同步的线程队列
+#define UNISTOR_SYS_KEY_ZK_STATE "zk_state"  ///<zookeeper的连接状态
+#define UNISTOR_SYS_KEY_ZK_ERROR "zk_error"  ///<zookeeper的错误信息
+#define UNISTOR_SYS_KEY_CACHE_STATE "cache_state" ///<cache的状态
+#define UNISTOR_SYS_KEY_CACHE_ERR   "cache_error" ///<cache的错误消息
+#define UNISTOR_SYS_KEY_WRITE_CACHE_KEY "write_cache_key" ///<写cache中key的数量
+#define UNISTOR_SYS_KEY_WRITE_CACHE_SPACE "write_cache_space" ///<写cache的数据大小
+#define UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE "read_cache_max_size" ///<读cache的最大大小
+#define UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY  "read_cache_max_key" ///<读cache的最大key的数量
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE    "read_cache_used_size" ///<读cache占用的空间大小
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY "read_cache_used_capacity" ///<读cache占用的数据的容量
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE "read_cache_used_size" ///<读cache的实际数据大小
+#define UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE      "read_cache_free_size" ///<读cache空闲的空间大小
+#define UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY  "read_cache_free_capacity" ///<读cache空闲的容量
+#define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cache的key的数量
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT   "read_cache_used_element" ///<读cache占用的单元数量
+#define UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT   "read_cache_free_element" ///<读cache空闲的单元数量
+
 ///驱动的对象创建symbol name
 #define UNISTOR_ENGINE_CREATE_SYMBOL_NAME  "unistor_create_engine"
 
@@ -116,7 +161,13 @@ CWINUX_USING_NAMESPACE
 
 
 
-
+///获取系统信息的函数。-1：失败；0：不存在；1：获取成功
+typedef int (*UNISTOR_GET_SYS_INFO_FN)(void* pApp, ///<app对象
+                                      char const* key, ///<要获取的key
+                                      CWX_UINT16 unKeyLen, ///<key的长度
+                                      char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+                                      CWX_UINT32& uiLen  ///<szData数据的字节数
+                                      );
 ///开始写的函数，返回值：0，成功；-1：失败
 typedef int (*UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN)(void* context, char* szErr2K);
 ///写数据，返回值：0，成功；-1：失败

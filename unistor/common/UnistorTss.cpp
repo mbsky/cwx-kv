@@ -16,6 +16,7 @@ UnistorTss::~UnistorTss(){
     if (m_szDataBuf1) delete [] m_szDataBuf1;
     if (m_szDataBuf2) delete [] m_szDataBuf2;
     if (m_szDataBuf3) delete [] m_szDataBuf3;
+    if (m_engineConf) delete m_engineConf;
     if (m_userObj) delete m_userObj;
 }
 
@@ -33,5 +34,6 @@ int UnistorTss::init(UnistorTssUserObj* pUserObj){
     m_szDataBuf = new char[UNISTOR_DEF_KV_SIZE];
     m_uiDataBufLen= UNISTOR_DEF_KV_SIZE;
     m_userObj = pUserObj;
+    m_engineConf = NULL;
     return 0;
 }

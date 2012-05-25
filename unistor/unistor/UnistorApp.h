@@ -298,6 +298,15 @@ private:
         char* szErr2K ///<出错时的错误消息
         ); 
 
+    //获取系统key。1：成功；0：不存在；-1：失败;
+    static int getSysKey(void* pApp, ///<app对象
+        char const* key, ///<要获取的key
+        CWX_UINT16 unKeyLen, ///<key的长度
+        char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+        CWX_UINT32& uiLen  ///<szData数据的字节数
+        );
+
+
     ///开启网络。0：成功；-1：失败
 	int startNetwork();
 private:

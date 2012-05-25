@@ -348,7 +348,7 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
             return UNISTOR_ERR_SUCCESS;
         }while(0);
     }else if (0 == ret){
-        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key[%s] doesn't exists.", key->m_szKey);
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key[%s] doesn't exists.", key->m_szData);
         ret = UNISTOR_ERR_NEXIST;
     }else{
         ret = UNISTOR_ERR_ERROR;
@@ -366,7 +366,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
     char const* szPasswd;
     bool        bMaster=false;
 	bool bKeyValue = false;
-    bool bKeyInfo = false;
+    CWX_UINT8 ucKeyInfo = 0;
     CWX_UINT32 uiVersion;
 	CWX_UINT32 uiBufLen = 0;
     CWX_UINT32 uiFieldNum = 0;
@@ -381,7 +381,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
         szUser,
         szPasswd,
         bMaster,
-        bKeyInfo,
+        ucKeyInfo,
         pTss->m_szBuf2K))
     {
         return UNISTOR_ERR_ERROR;
@@ -403,7 +403,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
                         NULL,
                         NULL,
                         false,
-                        bKeyInfo,
+                        ucKeyInfo,
                         pTss->m_szBuf2K))
                     {
                         return UNISTOR_ERR_ERROR;
@@ -431,7 +431,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
         bKeyValue,
         uiVersion,
         uiFieldNum,
-        bKeyInfo);
+        ucKeyInfo);
 	if (1 == ret){
 		do{
 			pTss->m_pWriter->beginPack();
@@ -446,7 +446,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
 			return UNISTOR_ERR_SUCCESS;
 		}while(0);
 	}else if (0 == ret){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key[%s] doesn't exists.", key->m_szKey);
+		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key[%s] doesn't exists.", key->m_szData);
 		ret = UNISTOR_ERR_NEXIST;
 	}else{
 		ret = UNISTOR_ERR_ERROR;
@@ -463,7 +463,7 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
     char const* szUser=NULL;
     char const* szPasswd=NULL;
     bool bMaster = false;
-    bool bKeyInfo = false;
+    CWX_UINT8 ucKeyInfo = 0;
     char const* buf = NULL;
 	CWX_UINT32 uiBufLen = 0;
     CWX_UINT32 uiKeyNum = 0;
@@ -478,7 +478,7 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
         szUser,
         szPasswd,
         bMaster,
-        bKeyInfo,
+        ucKeyInfo,
         pTss->m_szBuf2K))
     {
         return UNISTOR_ERR_ERROR;
@@ -496,6 +496,7 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
             CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key[%s] is too long[%u], max[%u]", iter->first, iter->second , UNISTOR_MAX_KEY_SIZE-1);
             return UNISTOR_ERR_ERROR;
         }
+        iter++;
     }
 
     if (bMaster){
@@ -511,7 +512,7 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
                         NULL,
                         NULL,
                         false,
-                        bKeyInfo,
+                        ucKeyInfo,
                         pTss->m_szBuf2K))
                     {
                         return UNISTOR_ERR_ERROR;
@@ -530,7 +531,7 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
             return UNISTOR_ERR_ERROR;
         }
     }
-    ret = m_pApp->getStore()->gets(pTss, keys, field, extra, buf, uiBufLen, bKeyInfo);
+    ret = m_pApp->getStore()->gets(pTss, keys, field, extra, buf, uiBufLen, ucKeyInfo);
     if (-1 == ret) return UNISTOR_ERR_ERROR;
     pTss->m_pWriter->beginPack();
     ret = UNISTOR_ERR_SUCCESS;

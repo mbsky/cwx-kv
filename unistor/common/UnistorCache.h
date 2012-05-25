@@ -9,7 +9,7 @@
 #include "CwxLockGuard.h"
 #include "CwxStl.h"
 #include "CwxStlFunc.h"
-#include "UnistorReadCacheEx.h"
+#include "UnistorReadCacheEx2.h"
 #include <pthread.h>
 ///write cache的key item对象，自己不分配内存，使用cache buf
 struct UnistorWriteCacheItem{
@@ -328,7 +328,6 @@ public:
         UNISTOR_WRITE_CACHE_WRITE_END_FN     fnEndWrite,///<dirty数据写入完毕的通知函数
         void*     context, ///<环境信息。此为存储引擎的指针
         float     fBucketRate=1.2, ///<read cache的hash bucket的比率
-        CWX_UINT16 unAlign=64, ///<cache空间的对齐字节数
         char*      szErr2K=NULL ///<错误信息 
         );
 
@@ -508,7 +507,7 @@ private:
     CWX_UINT64                      m_ullReadCacheByte; ///<read cache的空间大小
     CWX_UINT32                      m_uiReadCacheKeyNum; ///<read cache的key的数量
     UnistorWriteCache*              m_writeCache;  ///<写cache
-    UnistorReadCacheEx*             m_readCache; ///<读cache            
+    UnistorReadCacheEx2*            m_readCache; ///<读cache            
     CwxRwLock                       m_writeCacheRwLock; ///<写cache的读写锁
     CwxRwLock                       m_readCacheRwLock; ///<读cache的读写锁
     CwxMutexLock                    m_readCacheMutex; ///<读cache的排他锁

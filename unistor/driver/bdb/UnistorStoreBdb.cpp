@@ -87,13 +87,14 @@ int UnistorStoreBdb::parseConf(){
 
 //加载配置文件.-1:failure, 0:success
 int UnistorStoreBdb::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
-                          void* msgPipeApp,
+                          UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<获取系统信息的function
+                          void* pApp, ///<UnistorApp对象
                           UnistorConfig const* config)
 {
 	int ret = 0;
 	m_bValid = false;
 	strcpy(m_szErrMsg, "Not init");
-    if (0 != UnistorStoreBase::init(msgPipeFunc, msgPipeApp, config)) return -1;
+    if (0 != UnistorStoreBase::init(msgPipeFunc, getSysInfoFunc, pApp, config)) return -1;
     m_uiWriteCacheMSize = m_config->getCommon().m_uiWriteCacheMByte;
     if (m_uiWriteCacheMSize < BDB_MIN_WRITE_CACHE_MSIZE) m_uiWriteCacheMSize = BDB_MIN_WRITE_CACHE_MSIZE;
     if (m_uiWriteCacheMSize > BDB_MAX_WRITE_CACHE_MSIZE) m_uiWriteCacheMSize = BDB_MAX_WRITE_CACHE_MSIZE;
@@ -118,7 +119,6 @@ int UnistorStoreBdb::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
         UnistorStoreBdb::keyStoreCmpEqual,
         UnistorStoreBdb::keyStoreCmpLess,
         UnistorStoreBdb::keyStoreHash,
-        32,
         1.2,
         m_szErrMsg))
     {
@@ -1552,12 +1552,21 @@ int UnistorStoreBdb::get(UnistorTss* tss,
                          bool& bKeyValue,
                          CWX_UINT32& uiVersion,
                          CWX_UINT32& uiFieldNum,
-                         bool bKeyInfo)
+                         CWX_UINT8 ucKeyInfo)
 {
     uiLen = UNISTOR_MAX_KV_SIZE;
     int ret = 0;
     uiFieldNum = 0;
     szData = tss->getBuf(uiLen);
+
+    if (ucKeyInfo > 2) ucKeyInfo = 0;
+    if (2 == ucKeyInfo){
+        bKeyValue = false;
+        uiFieldNum = 0;
+        uiVersion = 0;
+        return _getSysKey(tss, key.m_szData, key.m_uiDataLen, (char*)szData, uiLen);
+    }
+
 	ret = _getKey(key.m_szData, key.m_uiDataLen, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
 	if (1 == ret){//key存在
         CWX_UINT32 ttOldExpire = 0;
@@ -1569,7 +1578,7 @@ int UnistorStoreBdb::get(UnistorTss* tss,
             uiFieldNum = CwxPackage::getKeyValueNum(szData, uiLen);
         }
         UnistorKeyField* fieldKey = NULL;
-        if (bKeyInfo){
+        if (ucKeyInfo){
             uiLen = sprintf((char*)szData,"%u,%u,%u,%u", ttOldExpire, uiVersion, uiLen, bKeyValue?1:0);
             bKeyValue = false;
         }else if (field){
@@ -1600,7 +1609,7 @@ int UnistorStoreBdb::gets(UnistorTss* tss,
                  CwxKeyValueItem const* ,
                  char const*& szData,
                  CWX_UINT32& uiLen,
-                 bool bKeyInfo)
+                 CWX_UINT8 ucKeyInfo)
 {
     int ret = 0;
     CWX_UINT32 uiVersion = 0;
@@ -1608,6 +1617,7 @@ int UnistorStoreBdb::gets(UnistorTss* tss,
     bool bKeyValue = false;
     UnistorKeyField* fieldKey = NULL;
     list<pair<char const*, CWX_UINT16> >::const_iterator iter = keys.begin();
+    if (ucKeyInfo > 2) ucKeyInfo = 0;
     szData = tss->getBuf(UNISTOR_MAX_KV_SIZE);
     if (field) UnistorStoreBase::parseMultiField(field->m_szData, fieldKey);
     tss->m_pEngineWriter->beginPack();
@@ -1619,28 +1629,38 @@ int UnistorStoreBdb::gets(UnistorTss* tss,
         }
         do{
             uiLen = UNISTOR_MAX_KV_SIZE;
-            ret = _getKey(iter->first, iter->second, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
-            if (1 == ret){//key存在
-                getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
-                if (m_config->getCommon().m_bEnableExpire && (ttOldExpire<=m_ttExpireClock)){///timeout
-                    break;
-                }else{
-                    bKeyValue = isKvData(szData, uiLen);
-                    if (uiLen) uiLen -= getKvDataSignLen();
-                }
-                if (bKeyInfo){
-                    uiLen = sprintf((char*)szData,"%u,%u,%u,%u", ttOldExpire, uiVersion, uiLen, bKeyValue?1:0);
+            if (2 == ucKeyInfo){
+                ret = _getSysKey(tss, iter->first, iter->second, (char*)szData, uiLen);
+                if (1 == ret){//key存在
                     tss->m_pEngineWriter->addKeyValue(iter->first,iter->second, szData, uiLen, false);
-                }else if (fieldKey){
-                    if (!bKeyValue ||
-                        (UNISTOR_ERR_SUCCESS != UnistorStoreBase::pickField(*tss->m_pEngineReader, *tss->m_pEngineItemWriter, fieldKey, szData, uiLen, tss->m_szBuf2K)))
-                    {
-                        tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, "", 0, true);
-                    }else{
-                        tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, tss->m_pEngineItemWriter->getMsg(), tss->m_pEngineItemWriter->getMsgSize(), true);
-                    }
                 }else{
-                    tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, szData, uiLen, bKeyValue);
+                    tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, "", 0, false);
+                }
+
+            }else{
+                ret = _getKey(iter->first, iter->second, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+                if (1 == ret){//key存在
+                    getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
+                    if (m_config->getCommon().m_bEnableExpire && (ttOldExpire<=m_ttExpireClock)){///timeout
+                        break;
+                    }else{
+                        bKeyValue = isKvData(szData, uiLen);
+                        if (uiLen) uiLen -= getKvDataSignLen();
+                    }
+                    if (ucKeyInfo){
+                        uiLen = sprintf((char*)szData,"%u,%u,%u,%u", ttOldExpire, uiVersion, uiLen, bKeyValue?1:0);
+                        tss->m_pEngineWriter->addKeyValue(iter->first,iter->second, szData, uiLen, false);
+                    }else if (fieldKey){
+                        if (!bKeyValue ||
+                            (UNISTOR_ERR_SUCCESS != UnistorStoreBase::pickField(*tss->m_pEngineReader, *tss->m_pEngineItemWriter, fieldKey, szData, uiLen, tss->m_szBuf2K)))
+                        {
+                            tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, "", 0, true);
+                        }else{
+                            tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, tss->m_pEngineItemWriter->getMsg(), tss->m_pEngineItemWriter->getMsgSize(), true);
+                        }
+                    }else{
+                        tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, szData, uiLen, bKeyValue);
+                    }
                 }
             }
         }while(0);
@@ -2226,7 +2246,7 @@ int UnistorStoreBdb::_commit(char* szErr2K){
     if (m_pMsgPipeFunc){
         CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
         msg->event().setEvent(EVENT_STORE_COMMIT);
-        if (0 != m_pMsgPipeFunc(m_pMsgPipeApp, msg, false, szErr2K)){
+        if (0 != m_pMsgPipeFunc(m_pApp, msg, false, szErr2K)){
             CwxMsgBlockAlloc::free(msg);
         }
     }
@@ -2249,6 +2269,31 @@ int UnistorStoreBdb::_updateSysInfo(DB_TXN* tid, CWX_UINT64 ullSid, char* szErr2
         return -1;
     }
 	return 0;
+}
+
+//获取系统key。1：成功；0：不存在；-1：失败;
+int UnistorStoreBdb::_getSysKey(UnistorTss* , ///<线程tss对象
+                                char const* key, ///<要获取的key
+                                CWX_UINT16 unKeyLen, ///<key的长度
+                                char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+                                CWX_UINT32& uiLen ///<szData数据的字节数
+                                )
+{
+    string strValue(key, unKeyLen);
+    if (1 == getSysKey(key, unKeyLen, szData, uiLen)) return 1;
+    if (strValue == UNISTOR_KEY_SID){
+        CwxCommon::toString(m_ullStoreSid, szData, 10);
+    }else if (strValue == UNISTOR_KEY_E){
+        if (m_bEnableExpire){
+            strcpy(szData, "true");
+        }else{
+            strcpy(szData, "false");
+        }
+    }else{
+        return 0;
+    }
+    uiLen = strlen(szData);
+    return 1;
 }
 
 //0:成功；-1：成功
@@ -2693,7 +2738,7 @@ int UnistorStoreBdb::_sendExpireData(UnistorTss* tss){
         msg->wr_ptr(m_exKey[m_unExKeyPos].first);
         msg->event().setEvent(EVENT_STORE_DEL_EXPIRE);
         msg->event().setTimestamp(m_exKey[m_unExKeyPos].second->m_ttExpire);
-        if (0 != m_pMsgPipeFunc(m_pMsgPipeApp, msg, true, tss->m_szBuf2K)){
+        if (0 != m_pMsgPipeFunc(m_pApp, msg, true, tss->m_szBuf2K)){
             m_bValid = false;
             CWX_ERROR(("Failure to send expired key to write thread. err=%s", tss->m_szBuf2K));
             strcpy(m_szErrMsg, tss->m_szBuf2K);
@@ -2726,7 +2771,7 @@ int UnistorStoreBdb::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
         }
     }
     msg->event().setEvent(EVENT_STORE_DEL_EXPIRE_REPLY);
-    if (0 != m_pMsgPipeFunc(m_pMsgPipeApp, msg, false, tss->m_szBuf2K)){
+    if (0 != m_pMsgPipeFunc(m_pApp, msg, false, tss->m_szBuf2K)){
         m_bValid = false;
         CWX_ERROR(("Failure to send expired key to write thread. err=%s", tss->m_szBuf2K));
         strcpy(m_szErrMsg, tss->m_szBuf2K);
