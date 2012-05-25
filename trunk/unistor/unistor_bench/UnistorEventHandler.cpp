@@ -92,7 +92,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
         key.m_bKeyValue = false;
 		memcpy(m_szBuf, szKey, 34);
 		data.m_szData = m_szBuf;
-		data.m_uiDataLen = (m_pApp->getConfig().m_uiDataSize + iRand);
+		data.m_uiDataLen = iRand;
 		data.m_bKeyValue = false;
 		if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvAdd(tss->m_pWriter,
 			pBlock,
@@ -121,7 +121,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
         key.m_bKeyValue = false;
 		memcpy(m_szBuf, szKey, 34);
 		data.m_szData = m_szBuf;
-		data.m_uiDataLen = m_pApp->getConfig().m_uiDataSize;
+		data.m_uiDataLen = iRand;
 		data.m_bKeyValue = false;
 		if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvSet(tss->m_pWriter,
 			pBlock,
@@ -151,7 +151,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
         key.m_bKeyValue = false;
 		memcpy(m_szBuf, szKey, 34);
 		data.m_szData = m_szBuf;
-		data.m_uiDataLen = m_pApp->getConfig().m_uiDataSize;
+		data.m_uiDataLen = iRand;
 		data.m_bKeyValue = false;
 		if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvUpdate(tss->m_pWriter,
 			pBlock,
@@ -179,7 +179,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
         key.m_bKeyValue = false;
         memcpy(m_szBuf, szKey, 34);
         data.m_szData = m_szBuf;
-        data.m_uiDataLen = m_pApp->getConfig().m_uiDataSize;
+        data.m_uiDataLen = iRand;
         data.m_bKeyValue = false;
         if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvImport(tss->m_pWriter,
             pBlock,
