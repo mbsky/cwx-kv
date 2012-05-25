@@ -16,11 +16,13 @@ UnistorStoreCursor::~UnistorStoreCursor(){
 }
 //加载配置文件.-1:failure, 0:success
 int UnistorStoreBase::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
-                           void* msgPipeApp,
+                           UNISTOR_GET_SYS_INFO_FN getSysInfoFunc,
+                           void* pApp,
                            UnistorConfig const* config)
 {
     m_pMsgPipeFunc =  msgPipeFunc;
-    m_pMsgPipeApp = msgPipeApp;
+    m_pGetSysInfoFunc = getSysInfoFunc;
+    m_pApp = pApp;
     if (0 != close()) return -1;
     m_config = config;
     m_uiDefExpire = m_config->getCommon().m_uiDefExpire;
@@ -57,7 +59,6 @@ int UnistorStoreBase::startCache(CWX_UINT32 uiWriteCacheMBtye, ///<write cache的
                UNISTOR_KEY_CMP_EQUAL_FN  fnEqual,
                UNISTOR_KEY_CMP_LESS_FN   fnLess,
                UNISTOR_KEY_HASH_FN       fnHash,
-               CWX_UINT16     unAlign,
                float     fBucketRate, ///<read cache's bucket rate
                char*     szErr2K
                )
@@ -65,13 +66,17 @@ int UnistorStoreBase::startCache(CWX_UINT32 uiWriteCacheMBtye, ///<write cache的
     if (m_cache) delete (m_cache);
     m_cache = NULL;
     //初始化cache
-    m_cache = new UnistorCache(uiWriteCacheMBtye, uiReadCacheMByte, uiReadMaxCacheKeyNum, fnEqual, fnLess, fnHash);
+    m_cache = new UnistorCache(uiWriteCacheMBtye,
+        uiReadCacheMByte,
+        uiReadMaxCacheKeyNum,
+        fnEqual,
+        fnLess,
+        fnHash);
     if (0 != m_cache->init(fnBeginWrite,
         fnWrite,
         fnEndWrite,
         context,
         fBucketRate,
-        unAlign, 
         szErr2K))
     {
         CWX_ERROR(("Failure to init UnistorCache. err=%s", szErr2K?szErr2K:""));
@@ -1388,4 +1393,13 @@ int UnistorStoreBase::pickField(CwxPackageReader& reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
+//获取系统key。1：成功；0：不存在；-1：失败;
+int UnistorStoreBase::getSysKey(char const* key, ///<要获取的key
+              CWX_UINT16 unKeyLen, ///<key的长度
+              char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+              CWX_UINT32& uiLen  ///<szData数据的字节数
+              )
+{
+    return m_pGetSysInfoFunc(m_pApp, key, unKeyLen, szData, uiLen);
+}
 

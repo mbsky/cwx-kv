@@ -80,6 +80,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
 	CwxMsgBlock* pBlock=NULL;
 	CwxKeyValueItem data;
     CwxKeyValueItem key;
+    int iRand = (rand()%m_pApp->getConfig().m_uiDataSize) + 16;
 
 	m_uiSendNum++;
 
@@ -91,7 +92,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
         key.m_bKeyValue = false;
 		memcpy(m_szBuf, szKey, 34);
 		data.m_szData = m_szBuf;
-		data.m_uiDataLen = m_pApp->getConfig().m_uiDataSize;
+		data.m_uiDataLen = (m_pApp->getConfig().m_uiDataSize + iRand);
 		data.m_bKeyValue = false;
 		if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvAdd(tss->m_pWriter,
 			pBlock,
@@ -236,7 +237,7 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
             m_pApp->getConfig().m_strUser.c_str(),
             m_pApp->getConfig().m_strPasswd.c_str(),
             m_pApp->getConfig().m_bGetMaster,
-            false,
+            0,
             tss->m_szBuf2K))
         {
             CWX_ERROR(("Failure to pack get msg, err=%s", tss->m_szBuf2K));

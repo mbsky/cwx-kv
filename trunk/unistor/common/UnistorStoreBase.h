@@ -101,7 +101,8 @@ public:
     ///构造函数
     UnistorStoreBase(){
         m_pMsgPipeFunc = NULL;
-        m_pMsgPipeApp = NULL;
+        m_pGetSysInfoFunc = NULL;
+        m_pApp = NULL;
 		m_binLogMgr = NULL; 
 		m_config = NULL; 
 		m_bValid = false; 
@@ -133,7 +134,8 @@ public:
 public:
     //加载配置文件.-1:failure, 0:success
     virtual int init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc, ///<存储引擎与上层的消息通道函数
-        void* msgPipeApp, ///<UnistorApp对象
+        UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<获取系统信息的function
+        void* pApp, ///<UnistorApp对象
         UnistorConfig const* config ///<配置文件
         );
 
@@ -307,7 +309,7 @@ public:
         bool& bKeyValue,  ///<返回的数据是否为key/value结构
         CWX_UINT32& uiVersion, ///<可以当前的版本号
         CWX_UINT32& uiFieldNum, ///<key字段的数量
-        bool bKeyInfo=false ///<是否获取key的information
+        CWX_UINT8 ucKeyInfo=0 ///<是否获取key的information。0：获取key的data。1：获取key信息；2：获取系统key
         )=0;
     
     ///获取多个key, 1：成功；-1：失败;
@@ -317,7 +319,7 @@ public:
         CwxKeyValueItem const* extra, ///<存储引擎的extra数据
         char const*& szData, ///<获取的数据，内存由存储引擎分配
         CWX_UINT32& uiLen, ///<返回数据的长度
-        bool bKeyInfo ///<是否仅仅获取key的infomation信息
+        CWX_UINT8 ucKeyInfo=0 ///<是否获取key的information。0：获取key的data。1：获取key信息；2：获取系统key
         )=0;
 
     ///建立游标。-1：内部错误失败；0：成功
@@ -435,7 +437,6 @@ public:
         UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<key的相等比较函数
         UNISTOR_KEY_CMP_LESS_FN   fnLess,  ///<key的less比较函数
         UNISTOR_KEY_HASH_FN       fnHash,   ///<key的hash值获取函数
-        CWX_UINT16     unAlign=64, ///<cache空间的对齐字节数
         float     fBucketRate=1.2, ///<read cache's bucket rate
         char*     szErr2K=NULL
         );
@@ -586,6 +587,14 @@ public:
 		if (0 != ret) return -1;
 		return 0;
 	}
+
+    //获取系统key。1：成功；0：不存在；-1：失败;
+    int getSysKey(char const* key, ///<要获取的key
+        CWX_UINT16 unKeyLen, ///<key的长度
+        char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+        CWX_UINT32& uiLen  ///<szData数据的字节数
+        );
+
 
     ///获取当前的sid值
 	inline CWX_UINT64 getCurSid() const{
@@ -842,7 +851,8 @@ public:
     }
 protected:
     UNISTOR_MSG_CHANNEL_FN     m_pMsgPipeFunc; ///<消息通道的function
-    void*                   m_pMsgPipeApp; ///<app对象
+    UNISTOR_GET_SYS_INFO_FN    m_pGetSysInfoFunc; ///<获取信息信息的function
+    void*                   m_pApp; ///<app对象
 	CwxBinLogMgr*			m_binLogMgr; ///<binlog
 	UnistorConfig const*    m_config; ///<系统配置
 	string				    m_strEngine; ///<engine的类型

@@ -9,7 +9,7 @@ libuni_bdb_la_SOURCES = UnistorStoreBdb.cpp\
                         ../../common/UnistorPoco.cpp\
 			../../common/UnistorTss.cpp\
                         ../../common/UnistorCache.cpp\
-			../../common/UnistorReadCacheEx.cpp\
+			../../common/UnistorReadCacheEx2.cpp\
 			../../common/UnistorSubscribe.cpp
 libuni_bdb_la_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)" -W -Wall
 libuni_bdb_la_LDFLAGS =-L@xml_expat_dir@/lib -L@cwinux_dir@/lib -L@bdb_dir@/lib

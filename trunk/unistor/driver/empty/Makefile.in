@@ -67,7 +67,7 @@ am_libuni_empty_la_OBJECTS = libuni_empty_la-UnistorStoreEmpty.lo \
 	libuni_empty_la-UnistorStoreBase.lo \
 	libuni_empty_la-CwxBinLogMgr.lo libuni_empty_la-UnistorPoco.lo \
 	libuni_empty_la-UnistorTss.lo libuni_empty_la-UnistorCache.lo \
-	libuni_empty_la-UnistorReadCacheEx.lo \
+	libuni_empty_la-UnistorReadCacheEx2.lo \
 	libuni_empty_la-UnistorSubscribe.lo
 libuni_empty_la_OBJECTS = $(am_libuni_empty_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
@@ -202,7 +202,7 @@ libuni_empty_la_SOURCES = UnistorStoreEmpty.cpp\
                         ../../common/UnistorPoco.cpp\
 			../../common/UnistorTss.cpp\
                         ../../common/UnistorCache.cpp\
-			../../common/UnistorReadCacheEx.cpp\
+			../../common/UnistorReadCacheEx2.cpp\
 			../../common/UnistorSubscribe.cpp
 
 libuni_empty_la_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)" -W -Wall
@@ -285,7 +285,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorCache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorConfig.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorPoco.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorStoreBase.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorStoreEmpty.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libuni_empty_la-UnistorSubscribe.Plo@am__quote@
@@ -361,12 +361,12 @@ libuni_empty_la-UnistorCache.lo: ../../common/UnistorCache.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libuni_empty_la-UnistorCache.lo `test -f '../../common/UnistorCache.cpp' || echo '$(srcdir)/'`../../common/UnistorCache.cpp
 
-libuni_empty_la-UnistorReadCacheEx.lo: ../../common/UnistorReadCacheEx.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libuni_empty_la-UnistorReadCacheEx.lo -MD -MP -MF "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx.Tpo" -c -o libuni_empty_la-UnistorReadCacheEx.lo `test -f '../../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../../common/UnistorReadCacheEx.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx.Tpo" "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx.Plo"; else rm -f "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../../common/UnistorReadCacheEx.cpp' object='libuni_empty_la-UnistorReadCacheEx.lo' libtool=yes @AMDEPBACKSLASH@
+libuni_empty_la-UnistorReadCacheEx2.lo: ../../common/UnistorReadCacheEx2.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libuni_empty_la-UnistorReadCacheEx2.lo -MD -MP -MF "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx2.Tpo" -c -o libuni_empty_la-UnistorReadCacheEx2.lo `test -f '../../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../../common/UnistorReadCacheEx2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx2.Tpo" "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx2.Plo"; else rm -f "$(DEPDIR)/libuni_empty_la-UnistorReadCacheEx2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../../common/UnistorReadCacheEx2.cpp' object='libuni_empty_la-UnistorReadCacheEx2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libuni_empty_la-UnistorReadCacheEx.lo `test -f '../../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../../common/UnistorReadCacheEx.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libuni_empty_la-UnistorReadCacheEx2.lo `test -f '../../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../../common/UnistorReadCacheEx2.cpp
 
 libuni_empty_la-UnistorSubscribe.lo: ../../common/UnistorSubscribe.cpp
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libuni_empty_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libuni_empty_la-UnistorSubscribe.lo -MD -MP -MF "$(DEPDIR)/libuni_empty_la-UnistorSubscribe.Tpo" -c -o libuni_empty_la-UnistorSubscribe.lo `test -f '../../common/UnistorSubscribe.cpp' || echo '$(srcdir)/'`../../common/UnistorSubscribe.cpp; \

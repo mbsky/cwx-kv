@@ -28,7 +28,7 @@ unistor_SOURCES = UnistorApp.cpp\
 		../common/UnistorConnector.cpp\
 		../common/UnistorStoreBase.cpp\
 		../common/UnistorSubscribe.cpp\
-		../common/UnistorReadCacheEx.cpp\
+		../common/UnistorReadCacheEx2.cpp\
 		../zk/ZkAdaptor.cpp\
 		../zk/ZkLocker.cpp
 unistor_LDADD=

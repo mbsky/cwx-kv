@@ -91,7 +91,7 @@ int UnistorApp::initRunEnv(){
     int ret = -1;
     do{
         m_store = new UnistorStore();
-        if (0 != m_store->init(UnistorApp::storeMsgPipe, this, &m_config, strEnginePath, szErr2K)){
+        if (0 != m_store->init(UnistorApp::storeMsgPipe, UnistorApp::getSysKey, this, &m_config, strEnginePath, szErr2K)){
             CWX_ERROR(("Failure to init store, err=%s", szErr2K));
             break;
         }
@@ -586,182 +586,178 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
     CWX_UINT32 i=0;
 	do{
 		//输出进程pid
-		CwxCommon::snprintf(szLine, 4096, "STAT pid %d\r\n", getpid());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %d\r\n", UNISTOR_SYS_KEY_PID, getpid());
 		UNISTOR_MONITOR_APPEND();
 		//输出父进程pid
-		CwxCommon::snprintf(szLine, 4096, "STAT ppid %d\r\n", getppid());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %d\r\n", UNISTOR_SYS_KEY_PPID, getppid());
 		UNISTOR_MONITOR_APPEND();
 		//版本号
-		CwxCommon::snprintf(szLine, 4096, "STAT version %s\r\n", this->getAppVersion().c_str());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_VERSION, this->getAppVersion().c_str());
 		UNISTOR_MONITOR_APPEND();
 		//修改时间
-		CwxCommon::snprintf(szLine, 4096, "STAT modify %s\r\n", this->getLastModifyDatetime().c_str());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_MODIFY, this->getLastModifyDatetime().c_str());
 		UNISTOR_MONITOR_APPEND();
 		//编译时间
-		CwxCommon::snprintf(szLine, 4096, "STAT compile %s\r\n", this->getLastCompileDatetime().c_str());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_COMPILE, this->getLastCompileDatetime().c_str());
 		UNISTOR_MONITOR_APPEND();
 		//启动时间
-		CwxCommon::snprintf(szLine, 4096, "STAT start %s\r\n", m_strStartTime.c_str());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_START, m_strStartTime.c_str());
 		UNISTOR_MONITOR_APPEND();
         //引擎类型
-		CwxCommon::snprintf(szLine, 4096, "STAT store_engine %s\r\n", getConfig().getCommon().m_strStoreType.c_str());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE, getConfig().getCommon().m_strStoreType.c_str());
 		UNISTOR_MONITOR_APPEND();
         //引擎版本
-		CwxCommon::snprintf(szLine, 4096, "STAT store_engine version %s\r\n", getStore()->getVersion());
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_VERSION, getStore()->getVersion());
 		UNISTOR_MONITOR_APPEND();
         //引擎状态
-		CwxCommon::snprintf(szLine, 4096, "STAT store_state %s\r\n",
-			m_store->isValid()?"valid":"invalid");
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_STATE, m_store->isValid()?"valid":"invalid");
 		UNISTOR_MONITOR_APPEND();
         if (!m_store->isValid()){
             //错误信息
-            CwxCommon::snprintf(szLine, 4096, "STAT store_error %s\r\n",
-                m_store->getErrMsg());
+            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_ERROR, m_store->getErrMsg());
             UNISTOR_MONITOR_APPEND();
         }
         //binlog的状态
-		CwxCommon::snprintf(szLine, 4096, "STAT binlog_state %s\r\n",
-			m_store->getBinLogMgr()->isInvalid()?"invalid":"valid");
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_STATE, m_store->getBinLogMgr()->isInvalid()?"invalid":"valid");
 		UNISTOR_MONITOR_APPEND();
         //binlog错误信息
         if (!m_store->getBinLogMgr()->isInvalid()){
-            CwxCommon::snprintf(szLine, 4096, "STAT binlog_error %s\r\n",
-                m_store->getBinLogMgr()->isInvalid()? m_store->getBinLogMgr()->getInvalidMsg():"");
+            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_ERROR, m_store->getBinLogMgr()->isInvalid()? m_store->getBinLogMgr()->getInvalidMsg():"");
             UNISTOR_MONITOR_APPEND();
         }
         //当前最小的sid
-		CwxCommon::snprintf(szLine, 4096, "STAT min_sid %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_SID,
 			CwxCommon::toString(m_store->getBinLogMgr()->getMinSid(), szTmp));
 		UNISTOR_MONITOR_APPEND();
         //当前最小sid的时间戳
 		CwxDate::getDateY4MDHMS2(m_store->getBinLogMgr()->getMinTimestamp(), strValue);
-		CwxCommon::snprintf(szLine, 4096, "STAT min_sid_time %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_TIMESTAMP,
 			strValue.c_str());
 		UNISTOR_MONITOR_APPEND();
         //最小的binlog文件
-		CwxCommon::snprintf(szLine, 4096, "STAT min_binlog_file %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_FILE,
 			m_store->getBinLogMgr()->getMinFile(strValue).c_str());
 		UNISTOR_MONITOR_APPEND();
         //最大的binlog的sid
-		CwxCommon::snprintf(szLine, 4096, "STAT max_sid %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MAX_SID,
 			CwxCommon::toString(m_store->getBinLogMgr()->getMaxSid(), szTmp));
 		UNISTOR_MONITOR_APPEND();
         //最大binlog sid的时间戳
 		CwxDate::getDateY4MDHMS2(m_store->getBinLogMgr()->getMaxTimestamp(), strValue);
-		CwxCommon::snprintf(szLine, 4096, "STAT max_sid_time %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n",UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP,
 			strValue.c_str());
 		UNISTOR_MONITOR_APPEND();
         //最大的binlog文件
-		CwxCommon::snprintf(szLine, 4096, "STAT max_binlog_file %s\r\n",
+		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MAX_FILE,
 			m_store->getBinLogMgr()->getMaxFile(strValue).c_str());
 		UNISTOR_MONITOR_APPEND();
         //读线程的数量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_thread_num %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_NUM,
             m_config.getCommon().m_uiThreadNum);
         UNISTOR_MONITOR_APPEND();
         UnistorTss * tss=NULL;
         for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){
             tss = (UnistorTss*)getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0);
             //读线程的消息队列滞留的消息
-            CwxCommon::snprintf(szLine, 4096, "STAT read_thread%d_queue %u\r\n",
+            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE,
                 i, m_recvThreadPool[i]->getQueuedMsgNum());
             UNISTOR_MONITOR_APPEND();
             //读线程的连接数
-            CwxCommon::snprintf(szLine, 4096, "STAT read_thread%d_connect %u\r\n",
+            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT,
                 i, ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum());
             UNISTOR_MONITOR_APPEND();
         }
         ///写线程的滞留消息数量
-        CwxCommon::snprintf(szLine, 4096, "STAT write_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE,
             m_writeThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //转发线程滞留的消息
-        CwxCommon::snprintf(szLine, 4096, "STAT trans_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE,
             m_transThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //checkpoint线程滞留的消息
-        CwxCommon::snprintf(szLine, 4096, "STAT checkpoint_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE,
             m_checkpointThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //zk线程滞留的消息
-        CwxCommon::snprintf(szLine, 4096, "STAT zk_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_ZK_THREAD_QUEUE,
             m_zkThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //内部转发线程滞留的消息
-        CwxCommon::snprintf(szLine, 4096, "STAT inner_sync_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE,
             m_innerSyncThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //外部转发线程滞留的消息
-        CwxCommon::snprintf(szLine, 4096, "STAT outer_sync_thread_queue %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE,
             m_outerSyncThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
         //zookeeper的连接状态
-        CwxCommon::snprintf(szLine, 4096, "STAT zk_state %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ZK_STATE,
             m_zkHandler->isValid()?"valid":"invalid");
         UNISTOR_MONITOR_APPEND();
         //zookeeper的错误
         if (!m_zkHandler->isValid()){
             m_zkHandler->getErrMsg(strValue);
-            CwxCommon::snprintf(szLine, 4096, "STAT zk_error %s\r\n", strValue.c_str());
+            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ZK_ERROR, strValue.c_str());
             UNISTOR_MONITOR_APPEND();
         }
         //cache的状态
-        CwxCommon::snprintf(szLine, 4096, "STAT cache_state %s\r\n",
-            m_store->getStoreEngine()->isValid()?"valid":"invalid");
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_STATE,
+            m_store->getStoreEngine()->getCache()->isValid()?"valid":"invalid");
         UNISTOR_MONITOR_APPEND();
         //cache的错误信息
-        if (!m_store->getStoreEngine()->isValid()){
-            CwxCommon::snprintf(szLine, 4096, "STAT zk_error %s\r\n", m_store->getStoreEngine()->getCache()->getErrMsg());
+        if (!m_store->getStoreEngine()->getCache()->isValid()){
+            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_ERR, m_store->getStoreEngine()->getCache()->getErrMsg());
             UNISTOR_MONITOR_APPEND();
         }
         //cache的write key的数量
-        CwxCommon::snprintf(szLine, 4096, "STAT write_cache_key %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_KEY,
             m_store->getStoreEngine()->getCache()->getWriteCacheKeyNum());
         UNISTOR_MONITOR_APPEND();
         //cache的write key的空间
-        CwxCommon::snprintf(szLine, 4096, "STAT write_cache_space %u\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_SPACE,
             m_store->getStoreEngine()->getCache()->getWriteCacheUsedSize());
         UNISTOR_MONITOR_APPEND();
 
 
         //read cache的空间
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_max_size %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->maxSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的最大数量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_max_key %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getMaxCacheKeyNum(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的使用空间
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_used_size %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的使用容量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_used_capacity %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的数据容量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_used_data_size %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedDataSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的free空间
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_free_size %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的free容量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_free_capacity %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的cache的key的数量
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_key_num %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_KEY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getCachedKeyCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的使用的item
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_used_element %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getCachedItemCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的空闲的item
-        CwxCommon::snprintf(szLine, 4096, "STAT read_cache_free_element %s\r\n",
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
 
@@ -770,6 +766,139 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
 	return strlen(m_szBuf);
 
 }
+
+//获取系统key。1：成功；0：不存在；-1：失败;
+int UnistorApp::getSysKey(void* pApp, ///<app对象
+                          char const* key, ///<要获取的key
+                          CWX_UINT16 unKeyLen, ///<key的长度
+                          char* szData, ///<若存在，则返回数据。内存有存储引擎分配
+                          CWX_UINT32& uiLen  ///<szData数据的字节数
+                          )
+{
+    UnistorApp* app=(UnistorApp*)pApp;
+    string strKey(key, unKeyLen);
+    string strValue;
+    char szTmp[64];
+    CWX_UINT32 i=0;
+    UnistorTss * tss=NULL;
+    if (strKey == UNISTOR_SYS_KEY_PID){
+        CwxCommon::snprintf(szData, uiLen, "%d", getpid());
+    }else if (strKey == UNISTOR_SYS_KEY_PPID){
+        CwxCommon::snprintf(szData, uiLen, "%d", getppid());
+    }else if (strKey == UNISTOR_SYS_KEY_VERSION){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->getAppVersion().c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_MODIFY){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->getLastModifyDatetime().c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_COMPILE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->getLastCompileDatetime().c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_START){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_strStartTime.c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_ENGINE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->getConfig().getCommon().m_strStoreType.c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_ENGINE_VERSION){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->getStore()->getVersion());
+    }else if (strKey == UNISTOR_SYS_KEY_ENGINE_STATE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->isValid()?"valid":"invalid");
+    }else if (strKey == UNISTOR_SYS_KEY_ENGINE_ERROR){
+        if (!app->m_store->isValid())
+            CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getErrMsg());
+        else
+            szData[0]=0x00;
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_STATE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getBinLogMgr()->isInvalid()?"invalid":"valid");
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_ERROR){
+        if (app->m_store->getBinLogMgr()->isInvalid()){
+            CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getBinLogMgr()->getInvalidMsg());
+        }else{
+            szData[0] = 0x00;
+        }
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MIN_SID){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString(app->m_store->getBinLogMgr()->getMinSid(), szTmp));
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MIN_SID){
+        CwxDate::getDate(app->m_store->getBinLogMgr()->getMinTimestamp(), strValue);
+        CwxCommon::snprintf(szData, uiLen, "%s", strValue.c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MIN_FILE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getBinLogMgr()->getMinFile(strValue).c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MAX_SID){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString(app->m_store->getBinLogMgr()->getMaxSid(), szTmp));
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP){
+        CwxDate::getDate(app->m_store->getBinLogMgr()->getMaxTimestamp(), strValue);
+        CwxCommon::snprintf(szData, uiLen, "%s", strValue.c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_BINLOG_MAX_FILE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getBinLogMgr()->getMaxFile(strValue).c_str());
+    }else if (strKey == UNISTOR_SYS_KEY_READ_THREAD_NUM){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_config.getCommon().m_uiThreadNum);
+    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE))==UNISTOR_SYS_KEY_READ_THREAD_QUEUE){
+        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE)).c_str(), NULL, 0);
+        if (i >= app->m_config.getCommon().m_uiThreadNum) return 0;
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_recvThreadPool[i]->getQueuedMsgNum());
+    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT))==UNISTOR_SYS_KEY_READ_THREAD_CONNECT){
+        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT)).c_str(), NULL, 0);
+        if (i >= app->m_config.getCommon().m_uiThreadNum) return 0;
+        tss = (UnistorTss*)(app->getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0));
+        CwxCommon::snprintf(szData, uiLen, "%u", ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum());
+    }else if (strKey == UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_writeThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_transThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_checkpointThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_ZK_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_zkThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_innerSyncThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_outerSyncThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_ZK_STATE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_zkHandler->isValid()?"valid":"invalid");
+    }else if (strKey == UNISTOR_SYS_KEY_ZK_ERROR){
+        if (app->m_zkHandler->isValid()){
+            szData[0] = 0X00;
+        }else{
+            app->m_zkHandler->getErrMsg(strValue);
+            CwxCommon::snprintf(szData, uiLen, "%s", strValue.c_str());
+        }
+    }else if (strKey == UNISTOR_SYS_KEY_CACHE_STATE){
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->getCache()->isValid()?"valid":"invalid");
+    }else if (strKey == UNISTOR_SYS_KEY_CACHE_STATE){
+        if (app->m_store->getStoreEngine()->getCache()->isValid()){
+            szData[0] = 0X00;
+        }else{
+            app->m_store->getStoreEngine()->getCache()->getErrMsg();
+            CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->getCache()->getErrMsg());
+        }
+    }else if (strKey == UNISTOR_SYS_KEY_WRITE_CACHE_KEY){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getCache()->getWriteCacheKeyNum());
+    }else if (strKey == UNISTOR_SYS_KEY_WRITE_CACHE_SPACE){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getCache()->getWriteCacheUsedSize());
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->maxSize(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getMaxCacheKeyNum(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedSize(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedCapacity(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedDataSize(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeSize(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeCapacity(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_KEY){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getCachedKeyCount(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getCachedItemCount(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT){
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
+    }else{
+        return 0;
+    }
+    uiLen = strlen(szData);
+    return 1;
+
+}
+
 
 ///分发channel的队列消息函数。返回值：0：正常；-1：队列停止
 int UnistorApp::dealRecvThreadQueue(UnistorTss* tss,

@@ -15,12 +15,12 @@ bool g_bVer=false;
 string g_user;
 string g_passwd;
 bool g_bMaster=false;
-bool g_bKeyInfo = false;
+CWX_UINT8 g_ucKeyInfo = 0;
 CWX_UINT64 g_sid = 0;
 ///-1£ºÊ§°Ü£»0£ºhelp£»1£º³É¹¦
 int parseArg(int argc, char**argv)
 {
-    CwxGetOpt cmd_option(argc, argv, "H:P:k:f:X:u:p:imvh");
+    CwxGetOpt cmd_option(argc, argv, "H:P:k:f:X:u:p:i:mvh");
     int option;
     while( (option = cmd_option.next()) != -1)
     {
@@ -38,7 +38,7 @@ int parseArg(int argc, char**argv)
             printf("-u: user name.\n");
             printf("-p: user password.\n");
             printf("-m: get from master.\n");
-            printf("-i: just fetch key's information.\n");
+            printf("-i: fetch key's type.0:key data; 1:key info; 2:sys key.\n");
             printf("-h: help\n");
             return 0;
         case 'H':
@@ -104,7 +104,7 @@ int parseArg(int argc, char**argv)
             g_bMaster = true;
             break;
         case 'i':
-            g_bKeyInfo = true;
+            g_ucKeyInfo = strtoul(cmd_option.opt_arg(), NULL, 10);
             break;
         case ':':
             printf("%c requires an argument.\n", cmd_option.opt_opt ());
@@ -201,7 +201,7 @@ int main(int argc ,char** argv)
                 g_user.c_str(),
                 g_passwd.c_str(),
                 g_bMaster,
-                g_bKeyInfo,
+                g_ucKeyInfo,
                 szErr2K))
             {
                 printf("failure to pack get key package, err=%s\n", szErr2K);
@@ -225,7 +225,7 @@ int main(int argc ,char** argv)
                 g_user.c_str(),
                 g_passwd.c_str(),
                 g_bMaster,
-                g_bKeyInfo,
+                g_ucKeyInfo,
                 szErr2K))
             {
                 printf("failure to pack gets key package, err=%s\n", szErr2K);

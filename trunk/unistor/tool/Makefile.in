@@ -38,8 +38,8 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = kv_add$(EXEEXT) kv_set$(EXEEXT) kv_update$(EXEEXT) \
 	kv_inc$(EXEEXT) kv_del$(EXEEXT) kv_exist$(EXEEXT) \
-	kv_get$(EXEEXT) kv_list$(EXEEXT) binlog$(EXEEXT) \
-	kv_export$(EXEEXT)
+	kv_get$(EXEEXT) kv_list$(EXEEXT) kv_import$(EXEEXT) \
+	binlog$(EXEEXT) kv_export$(EXEEXT)
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(top_srcdir)/configure AUTHORS COPYING \
 	ChangeLog INSTALL NEWS config.guess config.sub depcomp \
@@ -77,7 +77,7 @@ am_kv_export_OBJECTS = kv_export-kv_export.$(OBJEXT) \
 	kv_export-UnistorStore.$(OBJEXT) \
 	kv_export-UnistorTss.$(OBJEXT) \
 	kv_export-UnistorStoreBase.$(OBJEXT) \
-	kv_export-UnistorReadCacheEx.$(OBJEXT) \
+	kv_export-UnistorReadCacheEx2.$(OBJEXT) \
 	kv_export-UnistorCache.$(OBJEXT) \
 	kv_export-UnistorConfig.$(OBJEXT) \
 	kv_export-CwxBinLogMgr.$(OBJEXT) \
@@ -90,6 +90,10 @@ am_kv_get_OBJECTS = kv_get-kv_get.$(OBJEXT) \
 	kv_get-UnistorPoco.$(OBJEXT) kv_get-XmlParse.$(OBJEXT)
 kv_get_OBJECTS = $(am_kv_get_OBJECTS)
 kv_get_DEPENDENCIES =
+am_kv_import_OBJECTS = kv_import-kv_import.$(OBJEXT) \
+	kv_import-UnistorPoco.$(OBJEXT) kv_import-XmlParse.$(OBJEXT)
+kv_import_OBJECTS = $(am_kv_import_OBJECTS)
+kv_import_DEPENDENCIES =
 am_kv_inc_OBJECTS = kv_inc-kv_inc.$(OBJEXT) \
 	kv_inc-UnistorPoco.$(OBJEXT) kv_inc-XmlParse.$(OBJEXT)
 kv_inc_OBJECTS = $(am_kv_inc_OBJECTS)
@@ -119,12 +123,12 @@ CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(binlog_SOURCES) $(kv_add_SOURCES) $(kv_del_SOURCES) \
 	$(kv_exist_SOURCES) $(kv_export_SOURCES) $(kv_get_SOURCES) \
-	$(kv_inc_SOURCES) $(kv_list_SOURCES) $(kv_set_SOURCES) \
-	$(kv_update_SOURCES)
+	$(kv_import_SOURCES) $(kv_inc_SOURCES) $(kv_list_SOURCES) \
+	$(kv_set_SOURCES) $(kv_update_SOURCES)
 DIST_SOURCES = $(binlog_SOURCES) $(kv_add_SOURCES) $(kv_del_SOURCES) \
 	$(kv_exist_SOURCES) $(kv_export_SOURCES) $(kv_get_SOURCES) \
-	$(kv_inc_SOURCES) $(kv_list_SOURCES) $(kv_set_SOURCES) \
-	$(kv_update_SOURCES)
+	$(kv_import_SOURCES) $(kv_inc_SOURCES) $(kv_list_SOURCES) \
+	$(kv_set_SOURCES) $(kv_update_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -271,9 +275,13 @@ kv_list_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
 kv_list_SOURCES = kv_list.cpp ../common/UnistorPoco.cpp XmlParse.cpp
 kv_list_LDADD = 
 kv_list_LDFLAGS = -L@cwinux_dir@/lib
+kv_import_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
+kv_import_SOURCES = kv_import.cpp ../common/UnistorPoco.cpp XmlParse.cpp
+kv_import_LDADD = 
+kv_import_LDFLAGS = -L@cwinux_dir@/lib
 kv_export_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)"  -W -Wall -Wno-deprecated
 kv_export_SOURCES = kv_export.cpp ../common/UnistorPoco.cpp ../common/UnistorStore.cpp ../common/UnistorTss.cpp\
-		    ../common/UnistorStoreBase.cpp ../common/UnistorReadCacheEx.cpp ../common/UnistorCache.cpp \
+		    ../common/UnistorStoreBase.cpp ../common/UnistorReadCacheEx2.cpp ../common/UnistorCache.cpp \
 		    ../common/UnistorConfig.cpp ../common/CwxBinLogMgr.cpp ../common/UnistorDef.cpp\
 		    ../common/UnistorSubscribe.cpp XmlParse.cpp
 
@@ -367,6 +375,9 @@ kv_export$(EXEEXT): $(kv_export_OBJECTS) $(kv_export_DEPENDENCIES)
 kv_get$(EXEEXT): $(kv_get_OBJECTS) $(kv_get_DEPENDENCIES) 
 	@rm -f kv_get$(EXEEXT)
 	$(CXXLINK) $(kv_get_LDFLAGS) $(kv_get_OBJECTS) $(kv_get_LDADD) $(LIBS)
+kv_import$(EXEEXT): $(kv_import_OBJECTS) $(kv_import_DEPENDENCIES) 
+	@rm -f kv_import$(EXEEXT)
+	$(CXXLINK) $(kv_import_LDFLAGS) $(kv_import_OBJECTS) $(kv_import_LDADD) $(LIBS)
 kv_inc$(EXEEXT): $(kv_inc_OBJECTS) $(kv_inc_DEPENDENCIES) 
 	@rm -f kv_inc$(EXEEXT)
 	$(CXXLINK) $(kv_inc_LDFLAGS) $(kv_inc_OBJECTS) $(kv_inc_LDADD) $(LIBS)
@@ -403,7 +414,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorDef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorPoco.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorReadCacheEx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorReadCacheEx2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorStore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorStoreBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_export-UnistorSubscribe.Po@am__quote@
@@ -413,6 +424,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_get-UnistorPoco.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_get-XmlParse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_get-kv_get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_import-UnistorPoco.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_import-XmlParse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_import-kv_import.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_inc-UnistorPoco.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_inc-XmlParse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kv_inc-kv_inc.Po@am__quote@
@@ -685,19 +699,19 @@ kv_export-UnistorStoreBase.obj: ../common/UnistorStoreBase.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_export-UnistorStoreBase.obj `if test -f '../common/UnistorStoreBase.cpp'; then $(CYGPATH_W) '../common/UnistorStoreBase.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorStoreBase.cpp'; fi`
 
-kv_export-UnistorReadCacheEx.o: ../common/UnistorReadCacheEx.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_export-UnistorReadCacheEx.o -MD -MP -MF "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo" -c -o kv_export-UnistorReadCacheEx.o `test -f '../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo" "$(DEPDIR)/kv_export-UnistorReadCacheEx.Po"; else rm -f "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx.cpp' object='kv_export-UnistorReadCacheEx.o' libtool=no @AMDEPBACKSLASH@
+kv_export-UnistorReadCacheEx2.o: ../common/UnistorReadCacheEx2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_export-UnistorReadCacheEx2.o -MD -MP -MF "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo" -c -o kv_export-UnistorReadCacheEx2.o `test -f '../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo" "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Po"; else rm -f "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx2.cpp' object='kv_export-UnistorReadCacheEx2.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_export-UnistorReadCacheEx.o `test -f '../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_export-UnistorReadCacheEx2.o `test -f '../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx2.cpp
 
-kv_export-UnistorReadCacheEx.obj: ../common/UnistorReadCacheEx.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_export-UnistorReadCacheEx.obj -MD -MP -MF "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo" -c -o kv_export-UnistorReadCacheEx.obj `if test -f '../common/UnistorReadCacheEx.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo" "$(DEPDIR)/kv_export-UnistorReadCacheEx.Po"; else rm -f "$(DEPDIR)/kv_export-UnistorReadCacheEx.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx.cpp' object='kv_export-UnistorReadCacheEx.obj' libtool=no @AMDEPBACKSLASH@
+kv_export-UnistorReadCacheEx2.obj: ../common/UnistorReadCacheEx2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_export-UnistorReadCacheEx2.obj -MD -MP -MF "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo" -c -o kv_export-UnistorReadCacheEx2.obj `if test -f '../common/UnistorReadCacheEx2.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx2.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo" "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Po"; else rm -f "$(DEPDIR)/kv_export-UnistorReadCacheEx2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx2.cpp' object='kv_export-UnistorReadCacheEx2.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_export-UnistorReadCacheEx.obj `if test -f '../common/UnistorReadCacheEx.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_export-UnistorReadCacheEx2.obj `if test -f '../common/UnistorReadCacheEx2.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx2.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx2.cpp'; fi`
 
 kv_export-UnistorCache.o: ../common/UnistorCache.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_export_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_export-UnistorCache.o -MD -MP -MF "$(DEPDIR)/kv_export-UnistorCache.Tpo" -c -o kv_export-UnistorCache.o `test -f '../common/UnistorCache.cpp' || echo '$(srcdir)/'`../common/UnistorCache.cpp; \
@@ -824,6 +838,48 @@ kv_get-XmlParse.obj: XmlParse.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='XmlParse.cpp' object='kv_get-XmlParse.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_get_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_get-XmlParse.obj `if test -f 'XmlParse.cpp'; then $(CYGPATH_W) 'XmlParse.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlParse.cpp'; fi`
+
+kv_import-kv_import.o: kv_import.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-kv_import.o -MD -MP -MF "$(DEPDIR)/kv_import-kv_import.Tpo" -c -o kv_import-kv_import.o `test -f 'kv_import.cpp' || echo '$(srcdir)/'`kv_import.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-kv_import.Tpo" "$(DEPDIR)/kv_import-kv_import.Po"; else rm -f "$(DEPDIR)/kv_import-kv_import.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='kv_import.cpp' object='kv_import-kv_import.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-kv_import.o `test -f 'kv_import.cpp' || echo '$(srcdir)/'`kv_import.cpp
+
+kv_import-kv_import.obj: kv_import.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-kv_import.obj -MD -MP -MF "$(DEPDIR)/kv_import-kv_import.Tpo" -c -o kv_import-kv_import.obj `if test -f 'kv_import.cpp'; then $(CYGPATH_W) 'kv_import.cpp'; else $(CYGPATH_W) '$(srcdir)/kv_import.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-kv_import.Tpo" "$(DEPDIR)/kv_import-kv_import.Po"; else rm -f "$(DEPDIR)/kv_import-kv_import.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='kv_import.cpp' object='kv_import-kv_import.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-kv_import.obj `if test -f 'kv_import.cpp'; then $(CYGPATH_W) 'kv_import.cpp'; else $(CYGPATH_W) '$(srcdir)/kv_import.cpp'; fi`
+
+kv_import-UnistorPoco.o: ../common/UnistorPoco.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-UnistorPoco.o -MD -MP -MF "$(DEPDIR)/kv_import-UnistorPoco.Tpo" -c -o kv_import-UnistorPoco.o `test -f '../common/UnistorPoco.cpp' || echo '$(srcdir)/'`../common/UnistorPoco.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-UnistorPoco.Tpo" "$(DEPDIR)/kv_import-UnistorPoco.Po"; else rm -f "$(DEPDIR)/kv_import-UnistorPoco.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorPoco.cpp' object='kv_import-UnistorPoco.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-UnistorPoco.o `test -f '../common/UnistorPoco.cpp' || echo '$(srcdir)/'`../common/UnistorPoco.cpp
+
+kv_import-UnistorPoco.obj: ../common/UnistorPoco.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-UnistorPoco.obj -MD -MP -MF "$(DEPDIR)/kv_import-UnistorPoco.Tpo" -c -o kv_import-UnistorPoco.obj `if test -f '../common/UnistorPoco.cpp'; then $(CYGPATH_W) '../common/UnistorPoco.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorPoco.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-UnistorPoco.Tpo" "$(DEPDIR)/kv_import-UnistorPoco.Po"; else rm -f "$(DEPDIR)/kv_import-UnistorPoco.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorPoco.cpp' object='kv_import-UnistorPoco.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-UnistorPoco.obj `if test -f '../common/UnistorPoco.cpp'; then $(CYGPATH_W) '../common/UnistorPoco.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorPoco.cpp'; fi`
+
+kv_import-XmlParse.o: XmlParse.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-XmlParse.o -MD -MP -MF "$(DEPDIR)/kv_import-XmlParse.Tpo" -c -o kv_import-XmlParse.o `test -f 'XmlParse.cpp' || echo '$(srcdir)/'`XmlParse.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-XmlParse.Tpo" "$(DEPDIR)/kv_import-XmlParse.Po"; else rm -f "$(DEPDIR)/kv_import-XmlParse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='XmlParse.cpp' object='kv_import-XmlParse.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-XmlParse.o `test -f 'XmlParse.cpp' || echo '$(srcdir)/'`XmlParse.cpp
+
+kv_import-XmlParse.obj: XmlParse.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_import-XmlParse.obj -MD -MP -MF "$(DEPDIR)/kv_import-XmlParse.Tpo" -c -o kv_import-XmlParse.obj `if test -f 'XmlParse.cpp'; then $(CYGPATH_W) 'XmlParse.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlParse.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/kv_import-XmlParse.Tpo" "$(DEPDIR)/kv_import-XmlParse.Po"; else rm -f "$(DEPDIR)/kv_import-XmlParse.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='XmlParse.cpp' object='kv_import-XmlParse.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_import_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o kv_import-XmlParse.obj `if test -f 'XmlParse.cpp'; then $(CYGPATH_W) 'XmlParse.cpp'; else $(CYGPATH_W) '$(srcdir)/XmlParse.cpp'; fi`
 
 kv_inc-kv_inc.o: kv_inc.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(kv_inc_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT kv_inc-kv_inc.o -MD -MP -MF "$(DEPDIR)/kv_inc-kv_inc.Tpo" -c -o kv_inc-kv_inc.o `test -f 'kv_inc.cpp' || echo '$(srcdir)/'`kv_inc.cpp; \

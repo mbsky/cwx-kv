@@ -18,7 +18,8 @@ UnistorStore::~UnistorStore(){
 }
 
 int UnistorStore::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
-                       void* msgPipeApp,
+                       UNISTOR_GET_SYS_INFO_FN getSysInfoFunc,
+                       void* pApp,
                        UnistorConfig const* config,
                        string const& strEnginePath,
                        char* szErr2K)
@@ -62,7 +63,7 @@ int UnistorStore::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
 			strDllFile.c_str());
 		return -1;
 	}
-	if (0 != m_impl->init(msgPipeFunc, msgPipeApp, config)){
+	if (0 != m_impl->init(msgPipeFunc, getSysInfoFunc, pApp, config)){
 		strcpy(szErr2K, m_impl->getErrMsg());
 		delete m_impl;
 		m_impl = NULL;

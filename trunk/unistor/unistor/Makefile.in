@@ -65,7 +65,7 @@ am_unistor_OBJECTS = unistor-UnistorApp.$(OBJEXT) \
 	unistor-UnistorConnector.$(OBJEXT) \
 	unistor-UnistorStoreBase.$(OBJEXT) \
 	unistor-UnistorSubscribe.$(OBJEXT) \
-	unistor-UnistorReadCacheEx.$(OBJEXT) \
+	unistor-UnistorReadCacheEx2.$(OBJEXT) \
 	unistor-ZkAdaptor.$(OBJEXT) unistor-ZkLocker.$(OBJEXT)
 unistor_OBJECTS = $(am_unistor_OBJECTS)
 unistor_DEPENDENCIES =
@@ -208,7 +208,7 @@ unistor_SOURCES = UnistorApp.cpp\
 		../common/UnistorConnector.cpp\
 		../common/UnistorStoreBase.cpp\
 		../common/UnistorSubscribe.cpp\
-		../common/UnistorReadCacheEx.cpp\
+		../common/UnistorReadCacheEx2.cpp\
 		../zk/ZkAdaptor.cpp\
 		../zk/ZkLocker.cpp
 
@@ -300,7 +300,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorHandler4Trans.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorHandler4Zk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorPoco.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorReadCacheEx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorReadCacheEx2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorStore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorStoreBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistor-UnistorSubscribe.Po@am__quote@
@@ -611,19 +611,19 @@ unistor-UnistorSubscribe.obj: ../common/UnistorSubscribe.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unistor-UnistorSubscribe.obj `if test -f '../common/UnistorSubscribe.cpp'; then $(CYGPATH_W) '../common/UnistorSubscribe.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorSubscribe.cpp'; fi`
 
-unistor-UnistorReadCacheEx.o: ../common/UnistorReadCacheEx.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unistor-UnistorReadCacheEx.o -MD -MP -MF "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo" -c -o unistor-UnistorReadCacheEx.o `test -f '../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo" "$(DEPDIR)/unistor-UnistorReadCacheEx.Po"; else rm -f "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx.cpp' object='unistor-UnistorReadCacheEx.o' libtool=no @AMDEPBACKSLASH@
+unistor-UnistorReadCacheEx2.o: ../common/UnistorReadCacheEx2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unistor-UnistorReadCacheEx2.o -MD -MP -MF "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo" -c -o unistor-UnistorReadCacheEx2.o `test -f '../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo" "$(DEPDIR)/unistor-UnistorReadCacheEx2.Po"; else rm -f "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx2.cpp' object='unistor-UnistorReadCacheEx2.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unistor-UnistorReadCacheEx.o `test -f '../common/UnistorReadCacheEx.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unistor-UnistorReadCacheEx2.o `test -f '../common/UnistorReadCacheEx2.cpp' || echo '$(srcdir)/'`../common/UnistorReadCacheEx2.cpp
 
-unistor-UnistorReadCacheEx.obj: ../common/UnistorReadCacheEx.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unistor-UnistorReadCacheEx.obj -MD -MP -MF "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo" -c -o unistor-UnistorReadCacheEx.obj `if test -f '../common/UnistorReadCacheEx.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo" "$(DEPDIR)/unistor-UnistorReadCacheEx.Po"; else rm -f "$(DEPDIR)/unistor-UnistorReadCacheEx.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx.cpp' object='unistor-UnistorReadCacheEx.obj' libtool=no @AMDEPBACKSLASH@
+unistor-UnistorReadCacheEx2.obj: ../common/UnistorReadCacheEx2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unistor-UnistorReadCacheEx2.obj -MD -MP -MF "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo" -c -o unistor-UnistorReadCacheEx2.obj `if test -f '../common/UnistorReadCacheEx2.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx2.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo" "$(DEPDIR)/unistor-UnistorReadCacheEx2.Po"; else rm -f "$(DEPDIR)/unistor-UnistorReadCacheEx2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='../common/UnistorReadCacheEx2.cpp' object='unistor-UnistorReadCacheEx2.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unistor-UnistorReadCacheEx.obj `if test -f '../common/UnistorReadCacheEx.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unistor-UnistorReadCacheEx2.obj `if test -f '../common/UnistorReadCacheEx2.cpp'; then $(CYGPATH_W) '../common/UnistorReadCacheEx2.cpp'; else $(CYGPATH_W) '$(srcdir)/../common/UnistorReadCacheEx2.cpp'; fi`
 
 unistor-ZkAdaptor.o: ../zk/ZkAdaptor.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unistor_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unistor-ZkAdaptor.o -MD -MP -MF "$(DEPDIR)/unistor-ZkAdaptor.Tpo" -c -o unistor-ZkAdaptor.o `test -f '../zk/ZkAdaptor.cpp' || echo '$(srcdir)/'`../zk/ZkAdaptor.cpp; \

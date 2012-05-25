@@ -1276,7 +1276,7 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
                             char const* szUser,
                             char const* szPasswd,
                             bool bMaster,
-                            bool bKeyInfo,
+                            CWX_UINT8 ucKeyInfo,
                             char* szErr2K)
 {
     writer->beginPack();
@@ -1320,8 +1320,8 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
             return UNISTOR_ERR_ERROR;
         }
     }
-    if (bKeyInfo){
-        if (!writer->addKeyValue(UNISTOR_KEY_I, strlen(UNISTOR_KEY_I), (CWX_UINT32)1)){
+    if (ucKeyInfo){
+        if (!writer->addKeyValue(UNISTOR_KEY_I, strlen(UNISTOR_KEY_I), ucKeyInfo)){
             if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
             return UNISTOR_ERR_ERROR;
         }
@@ -1345,7 +1345,7 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
                       char const* szUser,
                       char const* szPasswd,
                       bool bMaster,
-                      bool bKeyInfo,
+                      CWX_UINT8 ucKeyInfo,
                       char* szErr2K)
 {
     int ret = 0;
@@ -1357,7 +1357,7 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
         szUser,
         szPasswd,
         bMaster,
-        bKeyInfo,
+        ucKeyInfo,
         szErr2K)))
     {
         return ret;
@@ -1380,7 +1380,7 @@ int UnistorPoco::parseGetKey(CwxPackageReader* reader,
                        char const*& szUser,
                        char const*& szPasswd,
                        bool&        bMaster,
-                       bool&        bKeyInfo,
+                       CWX_UINT8&   ucKeyInfo,
                        char*        szErr2K)
 {
     CwxKeyValueItem const* pItem = NULL;
@@ -1417,9 +1417,8 @@ int UnistorPoco::parseGetKey(CwxPackageReader* reader,
         bMaster = uiValue?true:false;
     }
     //get keyinfo
-    bKeyInfo = false;
-    if (reader->getKey(UNISTOR_KEY_I, uiValue)){
-        bKeyInfo = uiValue?true:false;
+    if (!reader->getKey(UNISTOR_KEY_I, ucKeyInfo)){
+        ucKeyInfo = 0; 
     }
     return UNISTOR_ERR_SUCCESS;
 }
@@ -1493,7 +1492,7 @@ int UnistorPoco::parseExistKey(CwxPackageReader* reader,
                          bool&        bMaster,
                          char*        szErr2K)
 {
-    bool bKeyInfo=false;
+    CWX_UINT8 ucKeyInfo=0;
     return parseGetKey(reader,
         msg,
         key,
@@ -1503,7 +1502,7 @@ int UnistorPoco::parseExistKey(CwxPackageReader* reader,
         szUser,
         szPasswd,
         bMaster,
-        bKeyInfo,
+        ucKeyInfo,
         szErr2K);
 }
 
@@ -1515,7 +1514,7 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
                              char const* szUser,
                              char const* szPasswd,
                              bool bMaster,
-                             bool bKeyInfo,
+                             CWX_UINT8 ucKeyInfo,
                              char* szErr2K)
 {
     writer->beginPack();
@@ -1579,8 +1578,8 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
             return UNISTOR_ERR_ERROR;
         }
     }
-    if (bKeyInfo){
-        if (!writer->addKeyValue(UNISTOR_KEY_I, strlen(UNISTOR_KEY_I), (CWX_UINT32)1)){
+    if (ucKeyInfo){
+        if (!writer->addKeyValue(UNISTOR_KEY_I, strlen(UNISTOR_KEY_I), ucKeyInfo)){
             if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
             return UNISTOR_ERR_ERROR;
         }
@@ -1604,7 +1603,7 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
                             char const* szUser,
                             char const* szPasswd,
                             bool bMaster,
-                            bool bKeyInfo,
+                            CWX_UINT8 ucKeyInfo,
                             char* szErr2K)
 {
     int ret = 0;
@@ -1616,7 +1615,7 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
         szUser,
         szPasswd,
         bMaster,
-        bKeyInfo,
+        ucKeyInfo,
         szErr2K)))
     {
         return ret;
@@ -1640,7 +1639,7 @@ int UnistorPoco::parseGetKeys(CwxPackageReader* reader,
                               char const*& szUser,
                               char const*& szPasswd,
                               bool&        bMaster,
-                              bool&        bKeyInfo,
+                              CWX_UINT8&   ucKeyInfo,
                               char*        szErr2K)
 {
     CwxKeyValueItem const* pItem = NULL;
@@ -1685,9 +1684,8 @@ int UnistorPoco::parseGetKeys(CwxPackageReader* reader,
     if (reader->getKey(UNISTOR_KEY_MT, uiValue)){
         bMaster = uiValue?true:false;
     }
-    bKeyInfo = false;
-    if (reader->getKey(UNISTOR_KEY_I, uiValue)){
-        bKeyInfo = uiValue?true:false;
+    if (!reader->getKey(UNISTOR_KEY_I, ucKeyInfo)){
+        ucKeyInfo = 0;
     }
     return UNISTOR_ERR_SUCCESS;
 }

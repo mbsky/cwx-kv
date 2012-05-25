@@ -390,7 +390,7 @@ public:
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
-        bool bKeyInfo=false, ///<是否获取key的infomation
+        CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -405,7 +405,7 @@ public:
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
-        bool bKeyInfo=false, ///<是否获取key的infomation
+        CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -419,7 +419,7 @@ public:
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
         bool&        bMaster,  ///<从master获取信息
-        bool&        bKeyInfo,  ///<返回key的info
+        CWX_UINT8& ucKeyInfo, ///<是否获取key的infomation
         char* szErr2K=NULL     ///<解包时的错误信息
         );
 
@@ -471,7 +471,7 @@ public:
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
-        bool bKeyInfo=false, ///<是否获取key的infomation
+        CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -486,7 +486,7 @@ public:
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
-        bool bKeyInfo=false, ///<是否获取key的infomation
+        CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -501,7 +501,7 @@ public:
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
         bool&        bMaster,  ///<从master获取信息
-        bool&        bKeyInfo,  ///<返回key的info
+        CWX_UINT8&   ucKeyInfo, ///<是否获取key的infomation
         char* szErr2K=NULL     ///<解包时的错误信息
         );
 

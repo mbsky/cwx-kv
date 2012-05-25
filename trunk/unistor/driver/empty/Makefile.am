@@ -9,7 +9,7 @@ libuni_empty_la_SOURCES = UnistorStoreEmpty.cpp\
                         ../../common/UnistorPoco.cpp\
 			../../common/UnistorTss.cpp\
                         ../../common/UnistorCache.cpp\
-			../../common/UnistorReadCacheEx.cpp\
+			../../common/UnistorReadCacheEx2.cpp\
 			../../common/UnistorSubscribe.cpp
 libuni_empty_la_CPPFLAGS = -D_BUILD_DATE="$(BUILD_DATE)" -W -Wall
 libuni_empty_la_LDFLAGS =-L@cwinux_dir@/lib 

@@ -30,8 +30,20 @@
 ///tss的用户线程数据对象
 class UnistorTssUserObj{
 public:
+    ///构造函数
     UnistorTssUserObj(){}
+    ///析构函数
     virtual ~UnistorTssUserObj(){}
+};
+
+///为存储engine预留的配置对象信息
+class UnistorTssEngineObj{
+public:
+    ///构造函数
+    UnistorTssEngineObj(){}
+    ///析构函数
+    virtual ~UnistorTssEngineObj(){}
+
 };
 
 //unistor的recv线程池的tss
@@ -49,6 +61,7 @@ public:
         m_pItemWriter = NULL;
         m_pEngineWriter = NULL;
         m_pEngineItemWriter = NULL;
+        m_engineConf = NULL;
         m_uiThreadIndex = 0;
         m_szDataBuf = NULL;
         m_uiDataBufLen = 0;
@@ -157,6 +170,7 @@ public:
     CwxPackageWriter*       m_pEngineItemWriter; ///<engine使用的writer，外部不能使用
     char			        m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<存储的key
     CWX_UINT32              m_uiThreadIndex; ///<线程的索引号
+    UnistorTssEngineObj*    m_engineConf;       ///<engine的conf信息，引擎可以使用
 private:
     UnistorTssUserObj*    m_userObj;  ///用户的数据
     char*                  m_szDataBuf; ///<数据buf
