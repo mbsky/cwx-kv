@@ -2,10 +2,10 @@
 #include "CwxZlib.h"
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvImport(CwxPackageWriter* writer,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* extra,
-                             CwxKeyValueItem const& data,
+int UnistorPoco::packRecvImport(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* extra,
+                             CwxKeyValueItemEx const& data,
                              CWX_UINT32 uiExpire,
                              CWX_UINT32 uiVersion,
                              bool       bCache,
@@ -61,12 +61,12 @@ int UnistorPoco::packRecvImport(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvImport(CwxPackageWriter* writer,
+int UnistorPoco::packRecvImport(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* extra,
-                             CwxKeyValueItem const& data,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* extra,
+                             CwxKeyValueItemEx const& data,
                              CWX_UINT32 uiExpire,
                              CWX_UINT32 uiVersion,
                              bool       bCache,
@@ -107,10 +107,10 @@ int UnistorPoco::packRecvImport(CwxPackageWriter* writer,
 }
 
 
-int UnistorPoco::parseRecvImport(CwxPackageReader* reader,
-                              CwxKeyValueItem const*& key,
-                              CwxKeyValueItem const*& extra,
-                              CwxKeyValueItem const*& data,
+int UnistorPoco::parseRecvImport(CwxPackageReaderEx* reader,
+                              CwxKeyValueItemEx const*& key,
+                              CwxKeyValueItemEx const*& extra,
+                              CwxKeyValueItemEx const*& data,
                               CWX_UINT32& uiExpire,
                               CWX_UINT32& uiVersion,
                               bool&       bCache,
@@ -133,7 +133,7 @@ int UnistorPoco::parseRecvImport(CwxPackageReader* reader,
         return UNISTOR_ERR_ERROR;
     }
     if (data->m_bKeyValue){
-        if (!CwxPackage::isValidPackage(data->m_szData, data->m_uiDataLen)){
+        if (!CwxPackageEx::isValidPackage(data->m_szData, data->m_uiDataLen)){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "key[%s] is key/value, but it's format is not valid..", UNISTOR_KEY_D);
             return UNISTOR_ERR_ERROR;
         }
@@ -153,7 +153,7 @@ int UnistorPoco::parseRecvImport(CwxPackageReader* reader,
     }else{
         bCache = uiValue?true:false;
     }
-    CwxKeyValueItem const* item;
+    CwxKeyValueItemEx const* item;
     //get user
     item = reader->getKey(UNISTOR_KEY_U);
     if (!item){
@@ -173,11 +173,11 @@ int UnistorPoco::parseRecvImport(CwxPackageReader* reader,
 
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvAdd(CwxPackageWriter* writer,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
-                             CwxKeyValueItem const& data,
+int UnistorPoco::packRecvAdd(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
+                             CwxKeyValueItemEx const& data,
                              CWX_UINT32 uiExpire,
                              CWX_UINT32 uiSign,
                              CWX_UINT32 uiVersion,
@@ -246,13 +246,13 @@ int UnistorPoco::packRecvAdd(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvAdd(CwxPackageWriter* writer,
+int UnistorPoco::packRecvAdd(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
-                           CwxKeyValueItem const& key,
-                           CwxKeyValueItem const* field,
-                           CwxKeyValueItem const* extra,
-                           CwxKeyValueItem const& data,
+                           CwxKeyValueItemEx const& key,
+                           CwxKeyValueItemEx const* field,
+                           CwxKeyValueItemEx const* extra,
+                           CwxKeyValueItemEx const& data,
                            CWX_UINT32 uiExpire,
                            CWX_UINT32 uiSign,
                            CWX_UINT32 uiVersion,
@@ -296,11 +296,11 @@ int UnistorPoco::packRecvAdd(CwxPackageWriter* writer,
 }
 
 
-int UnistorPoco::parseRecvAdd(CwxPackageReader* reader,
-                              CwxKeyValueItem const*& key,
-                              CwxKeyValueItem const*& field,
-                              CwxKeyValueItem const*& extra,
-                              CwxKeyValueItem const*& data,
+int UnistorPoco::parseRecvAdd(CwxPackageReaderEx* reader,
+                              CwxKeyValueItemEx const*& key,
+                              CwxKeyValueItemEx const*& field,
+                              CwxKeyValueItemEx const*& extra,
+                              CwxKeyValueItemEx const*& data,
                               CWX_UINT32& uiExpire,
                               CWX_UINT32& uiSign,
                               CWX_UINT32& uiVersion,
@@ -326,7 +326,7 @@ int UnistorPoco::parseRecvAdd(CwxPackageReader* reader,
 		return UNISTOR_ERR_ERROR;
 	}
 	if (data->m_bKeyValue){
-		if (!CwxPackage::isValidPackage(data->m_szData, data->m_uiDataLen)){
+		if (!CwxPackageEx::isValidPackage(data->m_szData, data->m_uiDataLen)){
 			if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "key[%s] is key/value, but it's format is not valid..", UNISTOR_KEY_D);
 			return UNISTOR_ERR_ERROR;
 		}
@@ -350,7 +350,7 @@ int UnistorPoco::parseRecvAdd(CwxPackageReader* reader,
     }else{
         bCache = uiValue?true:false;
     }
-    CwxKeyValueItem const* item;
+    CwxKeyValueItemEx const* item;
     //get user
     item = reader->getKey(UNISTOR_KEY_U);
     if (!item){
@@ -370,11 +370,11 @@ int UnistorPoco::parseRecvAdd(CwxPackageReader* reader,
 
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvSet(CwxPackageWriter* writer,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
-                             CwxKeyValueItem const& data,
+int UnistorPoco::packRecvSet(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
+                             CwxKeyValueItemEx const& data,
                              CWX_UINT32 uiSign,
                              CWX_UINT32 uiExpire,
                              CWX_UINT32 uiVersion,
@@ -442,13 +442,13 @@ int UnistorPoco::packRecvSet(CwxPackageWriter* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-int UnistorPoco::packRecvSet(CwxPackageWriter* writer,
+int UnistorPoco::packRecvSet(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
-                             CwxKeyValueItem const& data,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
+                             CwxKeyValueItemEx const& data,
                              CWX_UINT32 uiSign,
                              CWX_UINT32 uiExpire,
                              CWX_UINT32 uiVersion,
@@ -488,11 +488,11 @@ int UnistorPoco::packRecvSet(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvSet(CwxPackageReader* reader,
-                              CwxKeyValueItem const*& key,
-                              CwxKeyValueItem const*& field,
-                              CwxKeyValueItem const*& extra,
-                              CwxKeyValueItem const*& data,
+int UnistorPoco::parseRecvSet(CwxPackageReaderEx* reader,
+                              CwxKeyValueItemEx const*& key,
+                              CwxKeyValueItemEx const*& field,
+                              CwxKeyValueItemEx const*& extra,
+                              CwxKeyValueItemEx const*& data,
                               CWX_UINT32& uiSign,
                               CWX_UINT32& uiExpire,
                               CWX_UINT32& uiVersion,
@@ -518,7 +518,7 @@ int UnistorPoco::parseRecvSet(CwxPackageReader* reader,
 		return UNISTOR_ERR_ERROR;
 	}
 	if (data->m_bKeyValue){
-		if (!CwxPackage::isValidPackage(data->m_szData, data->m_uiDataLen)){
+		if (!CwxPackageEx::isValidPackage(data->m_szData, data->m_uiDataLen)){
 			if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "key[%s] is key/value, but it's format is not valid..", UNISTOR_KEY_D);
 			return UNISTOR_ERR_ERROR;
 		}
@@ -541,7 +541,7 @@ int UnistorPoco::parseRecvSet(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_V, uiVersion)){
         uiVersion = 0;
     }
-    CwxKeyValueItem const* item;
+    CwxKeyValueItemEx const* item;
     //get user
     item = reader->getKey(UNISTOR_KEY_U);
     if (!item){
@@ -560,11 +560,11 @@ int UnistorPoco::parseRecvSet(CwxPackageReader* reader,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvUpdate(CwxPackageWriter* writer,
-                                CwxKeyValueItem const& key,
-                                CwxKeyValueItem const* field,
-                                CwxKeyValueItem const* extra,
-                                CwxKeyValueItem const& data,
+int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
+                                CwxKeyValueItemEx const& key,
+                                CwxKeyValueItemEx const* field,
+                                CwxKeyValueItemEx const* extra,
+                                CwxKeyValueItemEx const& data,
                                 CWX_UINT32 uiSign,
                                 CWX_UINT32 uiExpire,
                                 CWX_UINT32 uiVersion,
@@ -627,13 +627,13 @@ int UnistorPoco::packRecvUpdate(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvUpdate(CwxPackageWriter* writer,
+int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
-                           CwxKeyValueItem const& key,
-                           CwxKeyValueItem const* field,
-                           CwxKeyValueItem const* extra,
-						   CwxKeyValueItem const& data,
+                           CwxKeyValueItemEx const& key,
+                           CwxKeyValueItemEx const* field,
+                           CwxKeyValueItemEx const* extra,
+						   CwxKeyValueItemEx const& data,
                            CWX_UINT32 uiSign,
                            CWX_UINT32 uiExpire,
                            CWX_UINT32 uiVersion,
@@ -671,11 +671,11 @@ int UnistorPoco::packRecvUpdate(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvUpdate(CwxPackageReader* reader,
-                                 CwxKeyValueItem const*& key,
-                                 CwxKeyValueItem const*& field,
-                                 CwxKeyValueItem const*& extra,
-                                 CwxKeyValueItem const*& data,
+int UnistorPoco::parseRecvUpdate(CwxPackageReaderEx* reader,
+                                 CwxKeyValueItemEx const*& key,
+                                 CwxKeyValueItemEx const*& field,
+                                 CwxKeyValueItemEx const*& extra,
+                                 CwxKeyValueItemEx const*& data,
                                  CWX_UINT32& uiSign,
                                  CWX_UINT32& uiExpire,
                                  CWX_UINT32& uiVersion,
@@ -700,7 +700,7 @@ int UnistorPoco::parseRecvUpdate(CwxPackageReader* reader,
         return UNISTOR_ERR_ERROR;
     }
     if (data->m_bKeyValue){
-        if (!CwxPackage::isValidPackage(data->m_szData, data->m_uiDataLen)){
+        if (!CwxPackageEx::isValidPackage(data->m_szData, data->m_uiDataLen)){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "key[%s] is key/value, but it's format is not valid..", UNISTOR_KEY_D);
             return UNISTOR_ERR_ERROR;
         }
@@ -717,7 +717,7 @@ int UnistorPoco::parseRecvUpdate(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_V, uiVersion)){
         uiVersion = 0;
     }
-    CwxKeyValueItem const* item;
+    CwxKeyValueItemEx const* item;
     //get user
     item = reader->getKey(UNISTOR_KEY_U);
     if (!item){
@@ -736,11 +736,12 @@ int UnistorPoco::parseRecvUpdate(CwxPackageReader* reader,
 }
 
 
-int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
+int UnistorPoco::packRecvInc(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
                              CWX_INT64   num,
+                             CWX_INT64   result,
                              CWX_INT64   max,
                              CWX_INT64   min,
                              CWX_UINT32  uiExpire,
@@ -769,6 +770,12 @@ int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
     if (!writer->addKeyValue(UNISTOR_KEY_N, strlen(UNISTOR_KEY_N), num)){
         if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
         return UNISTOR_ERR_ERROR;
+    }
+    if (result){
+        if (!writer->addKeyValue(UNISTOR_KEY_R, strlen(UNISTOR_KEY_R), result)){
+            if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
+            return UNISTOR_ERR_ERROR;
+        }
     }
     if (max){
         if (!writer->addKeyValue(UNISTOR_KEY_MAX, strlen(UNISTOR_KEY_MAX), max)){
@@ -816,13 +823,14 @@ int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
+int UnistorPoco::packRecvInc(CwxPackageWriterEx* writer,
 							  CwxMsgBlock*& msg,
 							  CWX_UINT32 uiTaskId,
-                              CwxKeyValueItem const& key,
-                              CwxKeyValueItem const* field,
-                              CwxKeyValueItem const* extra,
+                              CwxKeyValueItemEx const& key,
+                              CwxKeyValueItemEx const* field,
+                              CwxKeyValueItemEx const* extra,
                               CWX_INT64   num,
+                              CWX_INT64   result,
                               CWX_INT64   max,
                               CWX_INT64   min,
                               CWX_UINT32  uiExpire,
@@ -837,6 +845,7 @@ int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
         field,
         extra,
         num,
+        result,
         max,
         min,
         uiExpire,
@@ -863,11 +872,12 @@ int UnistorPoco::packRecvInc(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvInc(CwxPackageReader* reader,
-                              CwxKeyValueItem const*& key,
-                              CwxKeyValueItem const*& field,
-                              CwxKeyValueItem const*& extra,
+int UnistorPoco::parseRecvInc(CwxPackageReaderEx* reader,
+                              CwxKeyValueItemEx const*& key,
+                              CwxKeyValueItemEx const*& field,
+                              CwxKeyValueItemEx const*& extra,
                               CWX_INT64&   num,
+                              CWX_INT64&   result,
                               CWX_INT64&   max,
                               CWX_INT64&   min,
                               CWX_UINT32& uiExpire,
@@ -876,7 +886,7 @@ int UnistorPoco::parseRecvInc(CwxPackageReader* reader,
                               char const*& user,
                               char const*& passwd,
 							   char* szErr2K){
-	CwxKeyValueItem const* item;
+	CwxKeyValueItemEx const* item;
 	//get key
 	key = reader->getKey(UNISTOR_KEY_K);
 	if (!key){
@@ -892,8 +902,12 @@ int UnistorPoco::parseRecvInc(CwxPackageReader* reader,
 		if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_N);
 		return UNISTOR_ERR_ERROR;
 	}
+    //get result
+    result = 0;
+    reader->getKey(UNISTOR_KEY_R, result);
     //get max
     max = 0;
+    min = 0;
     if (num > 0){
         reader->getKey(UNISTOR_KEY_MAX, max);
     }else if (num < 0){
@@ -929,10 +943,10 @@ int UnistorPoco::parseRecvInc(CwxPackageReader* reader,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvDel(CwxPackageWriter* writer,
-                             CwxKeyValueItem const& key,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
+int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const& key,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
                              CWX_UINT32 uiVersion,
                              char const* user,
                              char const* passwd,
@@ -976,12 +990,12 @@ int UnistorPoco::packRecvDel(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvDel(CwxPackageWriter* writer,
+int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
-                           CwxKeyValueItem const& key,
-                           CwxKeyValueItem const* field,
-                           CwxKeyValueItem const* extra,
+                           CwxKeyValueItemEx const& key,
+                           CwxKeyValueItemEx const* field,
+                           CwxKeyValueItemEx const* extra,
                            CWX_UINT32  uiVersion,
                            char const* user,
                            char const* passwd,
@@ -1014,10 +1028,10 @@ int UnistorPoco::packRecvDel(CwxPackageWriter* writer,
 }
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvDel(CwxPackageReader* reader,
-                              CwxKeyValueItem const*& key,
-                              CwxKeyValueItem const*& field,
-                              CwxKeyValueItem const*& extra,
+int UnistorPoco::parseRecvDel(CwxPackageReaderEx* reader,
+                              CwxKeyValueItemEx const*& key,
+                              CwxKeyValueItemEx const*& field,
+                              CwxKeyValueItemEx const*& extra,
                               CWX_UINT32& uiVersion,
                               char const*& user,
                               char const*& passwd,
@@ -1037,7 +1051,7 @@ int UnistorPoco::parseRecvDel(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_V, uiVersion)){
         uiVersion = 0;
     }
-    CwxKeyValueItem const* item;
+    CwxKeyValueItemEx const* item;
     //get user
     item = reader->getKey(UNISTOR_KEY_U);
     if (!item){
@@ -1058,7 +1072,7 @@ int UnistorPoco::parseRecvDel(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvReply(CwxPackageWriter* writer,
+int UnistorPoco::packRecvReply(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
 							 CWX_UINT16 unMsgType,
@@ -1109,7 +1123,7 @@ int UnistorPoco::packRecvReply(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvReply(CwxPackageReader* reader,
+int UnistorPoco::parseRecvReply(CwxPackageReaderEx* reader,
                                   CwxMsgBlock const* msg,
                                   int& ret,
                                   CWX_UINT32& uiVersion,
@@ -1127,7 +1141,7 @@ int UnistorPoco::parseRecvReply(CwxPackageReader* reader,
     }
     //get err
     if (UNISTOR_ERR_SUCCESS != ret){
-        CwxKeyValueItem const* pItem = NULL;
+        CwxKeyValueItemEx const* pItem = NULL;
         if (!(pItem = reader->getKey(UNISTOR_KEY_ERR))){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_ERR);
             return UNISTOR_ERR_ERROR;
@@ -1146,7 +1160,7 @@ int UnistorPoco::parseRecvReply(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvIncReply(CwxPackageWriter* writer,
+int UnistorPoco::packRecvIncReply(CwxPackageWriterEx* writer,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
                             CWX_UINT16 unMsgType,
@@ -1193,7 +1207,7 @@ int UnistorPoco::packRecvIncReply(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvIncReply(CwxPackageReader* reader,
+int UnistorPoco::parseRecvIncReply(CwxPackageReaderEx* reader,
                              CwxMsgBlock const* msg,
                              int& ret,
                              CWX_UINT32& uiVersion,
@@ -1212,7 +1226,7 @@ int UnistorPoco::parseRecvIncReply(CwxPackageReader* reader,
     }
     //get err
     if (UNISTOR_ERR_SUCCESS != ret){
-        CwxKeyValueItem const* pItem = NULL;
+        CwxKeyValueItemEx const* pItem = NULL;
         if (!(pItem = reader->getKey(UNISTOR_KEY_ERR))){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_ERR);
             return UNISTOR_ERR_ERROR;
@@ -1232,7 +1246,7 @@ int UnistorPoco::parseRecvIncReply(CwxPackageReader* reader,
 }
 
 ///错误的回复包
-int UnistorPoco::packErrReply(CwxPackageWriter* writer,
+int UnistorPoco::packErrReply(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
                         CWX_UINT16 unMsgType,
@@ -1268,10 +1282,10 @@ int UnistorPoco::packErrReply(CwxPackageWriter* writer,
 }
 
 
-int UnistorPoco::packGetKey(CwxPackageWriter* writer,
-                            CwxKeyValueItem const& key,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
+int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
+                            CwxKeyValueItemEx const& key,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
                             bool bVersion,
                             char const* szUser,
                             char const* szPasswd,
@@ -1335,12 +1349,12 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packGetKey(CwxPackageWriter* writer,
+int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
                       CwxMsgBlock*& msg,
                       CWX_UINT32 uiTaskId,
-                      CwxKeyValueItem const& key,
-                      CwxKeyValueItem const* field,
-                      CwxKeyValueItem const* extra,
+                      CwxKeyValueItemEx const& key,
+                      CwxKeyValueItemEx const* field,
+                      CwxKeyValueItemEx const* extra,
                       bool bVersion,
                       char const* szUser,
                       char const* szPasswd,
@@ -1371,11 +1385,11 @@ int UnistorPoco::packGetKey(CwxPackageWriter* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-int UnistorPoco::parseGetKey(CwxPackageReader* reader,
+int UnistorPoco::parseGetKey(CwxPackageReaderEx* reader,
                        CwxMsgBlock const* msg,
-                       CwxKeyValueItem const*& key,
-                       CwxKeyValueItem const*& field,
-                       CwxKeyValueItem const*& extra,
+                       CwxKeyValueItemEx const*& key,
+                       CwxKeyValueItemEx const*& field,
+                       CwxKeyValueItemEx const*& extra,
                        bool&        bVersion,
                        char const*& szUser,
                        char const*& szPasswd,
@@ -1383,7 +1397,7 @@ int UnistorPoco::parseGetKey(CwxPackageReader* reader,
                        CWX_UINT8&   ucKeyInfo,
                        char*        szErr2K)
 {
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiValue=0;
     if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
         if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
@@ -1424,10 +1438,10 @@ int UnistorPoco::parseGetKey(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExistKey(CwxPackageWriter* writer,
-                              CwxKeyValueItem const& key,
-                              CwxKeyValueItem const* field,
-                              CwxKeyValueItem const* extra,
+int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
+                              CwxKeyValueItemEx const& key,
+                              CwxKeyValueItemEx const* field,
+                              CwxKeyValueItemEx const* extra,
                               bool bVersion,
                               char const* szUser,
                               char const* szPasswd,
@@ -1447,12 +1461,12 @@ int UnistorPoco::packExistKey(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExistKey(CwxPackageWriter* writer,
+int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
-                        CwxKeyValueItem const& key,
-                        CwxKeyValueItem const* field,
-                        CwxKeyValueItem const* extra,
+                        CwxKeyValueItemEx const& key,
+                        CwxKeyValueItemEx const* field,
+                        CwxKeyValueItemEx const* extra,
                         bool bVersion,
                         char const* szUser,
                         char const* szPasswd,
@@ -1481,11 +1495,11 @@ int UnistorPoco::packExistKey(CwxPackageWriter* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseExistKey(CwxPackageReader* reader,
+int UnistorPoco::parseExistKey(CwxPackageReaderEx* reader,
                          CwxMsgBlock const* msg,
-                         CwxKeyValueItem const*& key,
-                         CwxKeyValueItem const*& field,
-                         CwxKeyValueItem const*& extra,
+                         CwxKeyValueItemEx const*& key,
+                         CwxKeyValueItemEx const*& field,
+                         CwxKeyValueItemEx const*& extra,
                          bool&        bVersion,
                          char const*& szUser,
                          char const*& szPasswd,
@@ -1506,11 +1520,11 @@ int UnistorPoco::parseExistKey(CwxPackageReader* reader,
         szErr2K);
 }
 
-int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
-                             CwxPackageWriter* writer1,
+int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
+                             CwxPackageWriterEx* writer1,
                              list<pair<char const*, CWX_UINT16> > const& keys,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
                              char const* szUser,
                              char const* szPasswd,
                              bool bMaster,
@@ -1593,13 +1607,13 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
-                             CwxPackageWriter* writer1,
+int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
+                             CwxPackageWriterEx* writer1,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
                             list<pair<char const*, CWX_UINT16> > const& keys,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
                             char const* szUser,
                             char const* szPasswd,
                             bool bMaster,
@@ -1629,20 +1643,20 @@ int UnistorPoco::packGetKeys(CwxPackageWriter* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-int UnistorPoco::parseGetKeys(CwxPackageReader* reader,
-                              CwxPackageReader* reader1,
+int UnistorPoco::parseGetKeys(CwxPackageReaderEx* reader,
+                              CwxPackageReaderEx* reader1,
                               CwxMsgBlock const* msg,
                               list<pair<char const*, CWX_UINT16> >& keys,
                               CWX_UINT32& uiKeyNum,
-                              CwxKeyValueItem const*& field,
-                              CwxKeyValueItem const*& extra,
+                              CwxKeyValueItemEx const*& field,
+                              CwxKeyValueItemEx const*& extra,
                               char const*& szUser,
                               char const*& szPasswd,
                               bool&        bMaster,
                               CWX_UINT8&   ucKeyInfo,
                               char*        szErr2K)
 {
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiValue=0;
     if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
         if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
@@ -1691,12 +1705,12 @@ int UnistorPoco::parseGetKeys(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packGetList(CwxPackageWriter* writer,
-                             CwxKeyValueItem const* begin,
-                             CwxKeyValueItem const* end,
+int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
+                             CwxKeyValueItemEx const* begin,
+                             CwxKeyValueItemEx const* end,
                              CWX_UINT16  num,
-                             CwxKeyValueItem const* field,
-                             CwxKeyValueItem const* extra,
+                             CwxKeyValueItemEx const* field,
+                             CwxKeyValueItemEx const* extra,
                              bool        bAsc,
                              bool        bBegin,
                              bool        bKeyInfo,
@@ -1781,14 +1795,14 @@ int UnistorPoco::packGetList(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packGetList(CwxPackageWriter* writer,
+int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
                        CwxMsgBlock*& msg,
                        CWX_UINT32 uiTaskId,
-                       CwxKeyValueItem const* begin,
-                       CwxKeyValueItem const* end,
+                       CwxKeyValueItemEx const* begin,
+                       CwxKeyValueItemEx const* end,
                        CWX_UINT16  num,
-                       CwxKeyValueItem const* field,
-                       CwxKeyValueItem const* extra,
+                       CwxKeyValueItemEx const* field,
+                       CwxKeyValueItemEx const* extra,
                        bool        bAsc,
                        bool        bBegin,
                        bool        bKeyInfo,
@@ -1824,13 +1838,13 @@ int UnistorPoco::packGetList(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseGetList(CwxPackageReader* reader,
+int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
                         CwxMsgBlock const* msg,
-                        CwxKeyValueItem const*& begin,
-                        CwxKeyValueItem const*& end,
+                        CwxKeyValueItemEx const*& begin,
+                        CwxKeyValueItemEx const*& end,
                         CWX_UINT16&  num,
-                        CwxKeyValueItem const*& field,
-                        CwxKeyValueItem const*& extra,
+                        CwxKeyValueItemEx const*& field,
+                        CwxKeyValueItemEx const*& extra,
                         bool&        bAsc,
                         bool&        bBegin,
                         bool&        bKeyInfo,
@@ -1839,7 +1853,7 @@ int UnistorPoco::parseGetList(CwxPackageReader* reader,
                         bool& bMaster,
                         char*        szErr2K)
 {
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiValue=0;
     if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
         if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
@@ -1890,7 +1904,7 @@ int UnistorPoco::parseGetList(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvAuth(CwxPackageWriter* writer,
+int UnistorPoco::packRecvAuth(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
                         char const* szUser,
@@ -1924,13 +1938,13 @@ int UnistorPoco::packRecvAuth(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvAuth(CwxPackageReader* reader,
+int UnistorPoco::parseRecvAuth(CwxPackageReaderEx* reader,
                          CwxMsgBlock const* msg,
                          char const*& szUser,
                          char const*& szPasswd,
                          char*     szErr2K)
 {
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
         if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
         return UNISTOR_ERR_ERROR;
@@ -1947,7 +1961,7 @@ int UnistorPoco::parseRecvAuth(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packRecvAuthReply(CwxPackageWriter* writer,
+int UnistorPoco::packRecvAuthReply(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
                              CWX_UINT16 unMsgType,
@@ -1980,7 +1994,7 @@ int UnistorPoco::packRecvAuthReply(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseRecvAuthReply(CwxPackageReader* reader,
+int UnistorPoco::parseRecvAuthReply(CwxPackageReaderEx* reader,
                               CwxMsgBlock const* msg,
                               int& ret,
                               char const*& szErrMsg,
@@ -1997,7 +2011,7 @@ int UnistorPoco::parseRecvAuthReply(CwxPackageReader* reader,
     }
     //get err
     if (UNISTOR_ERR_SUCCESS != ret){
-        CwxKeyValueItem const* pItem = NULL;
+        CwxKeyValueItemEx const* pItem = NULL;
         if (!(pItem = reader->getKey(UNISTOR_KEY_ERR))){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_ERR);
             return UNISTOR_ERR_ERROR;
@@ -2012,7 +2026,7 @@ int UnistorPoco::parseRecvAuthReply(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExportReport(CwxPackageWriter* writer,
+int UnistorPoco::packExportReport(CwxPackageWriterEx* writer,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
                             CWX_UINT32  uiChunkSize,
@@ -2062,7 +2076,7 @@ int UnistorPoco::packExportReport(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseExportReport(CwxPackageReader* reader,
+int UnistorPoco::parseExportReport(CwxPackageReaderEx* reader,
                            CwxMsgBlock const* msg,
                            CWX_UINT32&  uiChunkSize,
                            char const*& subscribe,
@@ -2079,7 +2093,7 @@ int UnistorPoco::parseExportReport(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_CHUNK, uiChunkSize)){
         uiChunkSize = UNISTOR_DEF_CHUNK_SIZE_KB;
     }
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     //get subscribe
     if (!(pItem = reader->getKey(UNISTOR_KEY_SUBSCRIBE))){
         subscribe = "";
@@ -2114,7 +2128,7 @@ int UnistorPoco::parseExportReport(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExportReportReply(CwxPackageWriter* writer,
+int UnistorPoco::packExportReportReply(CwxPackageWriterEx* writer,
                                  CwxMsgBlock*& msg,
                                  CWX_UINT32 uiTaskId,
                                  CWX_UINT64 ullSession,
@@ -2144,7 +2158,7 @@ int UnistorPoco::packExportReportReply(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseExportReportReply(CwxPackageReader* reader,
+int UnistorPoco::parseExportReportReply(CwxPackageReaderEx* reader,
                                   CwxMsgBlock const* msg,
                                   CWX_UINT64& ullSession,
                                   CWX_UINT64& ullSid,
@@ -2169,10 +2183,10 @@ int UnistorPoco::parseExportReportReply(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExportDataItem(CwxPackageWriter* writer,
-                                    CwxKeyValueItem const& key,
-                                    CwxKeyValueItem const& data,
-                                    CwxKeyValueItem const* extra,
+int UnistorPoco::packExportDataItem(CwxPackageWriterEx* writer,
+                                    CwxKeyValueItemEx const& key,
+                                    CwxKeyValueItemEx const& data,
+                                    CwxKeyValueItemEx const* extra,
                                     CWX_UINT32 version,
                                     CWX_UINT32 expire,
                                     char* szErr2K)
@@ -2208,12 +2222,12 @@ int UnistorPoco::packExportDataItem(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseExportDataItem(CwxPackageReader* reader,
+int UnistorPoco::parseExportDataItem(CwxPackageReaderEx* reader,
                                      char const* szData,
                                      CWX_UINT32  uiDataLen,
-                                     CwxKeyValueItem const*& key,
-                                     CwxKeyValueItem const*& data,
-                                     CwxKeyValueItem const*& extra, ///<extra
+                                     CwxKeyValueItemEx const*& key,
+                                     CwxKeyValueItemEx const*& data,
+                                     CwxKeyValueItemEx const*& extra, ///<extra
                                      CWX_UINT32& version,
                                      CWX_UINT32& expire,
                                      char* szErr2K)
@@ -2267,7 +2281,7 @@ int UnistorPoco::packMultiExportData(
 
 }
 int UnistorPoco::parseMultiExportData(
-                                CwxPackageReader* reader,
+                                CwxPackageReaderEx* reader,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSeq,
                                 char* szErr2K)
@@ -2285,7 +2299,7 @@ int UnistorPoco::parseMultiExportData(
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packExportDataReply(CwxPackageWriter* ,
+int UnistorPoco::packExportDataReply(CwxPackageWriterEx* ,
                                CwxMsgBlock*& msg,
                                CWX_UINT32 uiTaskId,
                                CWX_UINT64 ullSeq,
@@ -2303,7 +2317,7 @@ int UnistorPoco::packExportDataReply(CwxPackageWriter* ,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseExportDataReply(CwxPackageReader* ,
+int UnistorPoco::parseExportDataReply(CwxPackageReaderEx* ,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSeq,
                                 char* szErr2K)
@@ -2316,7 +2330,7 @@ int UnistorPoco::parseExportDataReply(CwxPackageReader* ,
     return UNISTOR_ERR_SUCCESS;
 }
 
-int UnistorPoco::packExportEnd(CwxPackageWriter* writer,
+int UnistorPoco::packExportEnd(CwxPackageWriterEx* writer,
                          CwxMsgBlock*& msg,
                          CWX_UINT32 uiTaskId,
                          CWX_UINT64 ullSid,
@@ -2342,7 +2356,7 @@ int UnistorPoco::packExportEnd(CwxPackageWriter* writer,
 }
 
 
-int UnistorPoco::parseExportEnd(CwxPackageReader* reader,
+int UnistorPoco::parseExportEnd(CwxPackageReaderEx* reader,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSid,
                                 char* szErr2K)
@@ -2362,7 +2376,7 @@ int UnistorPoco::parseExportEnd(CwxPackageReader* reader,
 
 
 
-int UnistorPoco::packReportData(CwxPackageWriter* writer,
+int UnistorPoco::packReportData(CwxPackageWriterEx* writer,
                           CwxMsgBlock*& msg,
                           CWX_UINT32 uiTaskId,
                           CWX_UINT64 ullSid,
@@ -2427,7 +2441,7 @@ int UnistorPoco::packReportData(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseReportData(CwxPackageReader* reader,
+int UnistorPoco::parseReportData(CwxPackageReaderEx* reader,
                            CwxMsgBlock const* msg,
                            CWX_UINT64& ullSid,
                            bool& bNewly,
@@ -2452,7 +2466,7 @@ int UnistorPoco::parseReportData(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_CHUNK, uiChunkSize)){
         uiChunkSize = 0;
     }
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     //get subscribe
     if (!(pItem = reader->getKey(UNISTOR_KEY_SUBSCRIBE))){
         subscribe = "";
@@ -2492,7 +2506,7 @@ int UnistorPoco::parseReportData(CwxPackageReader* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packReportDataReply(CwxPackageWriter* writer,
+int UnistorPoco::packReportDataReply(CwxPackageWriterEx* writer,
                                CwxMsgBlock*& msg,
                                CWX_UINT32 uiTaskId,
                                CWX_UINT64 ullSession,
@@ -2518,7 +2532,7 @@ int UnistorPoco::packReportDataReply(CwxPackageWriter* writer,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseReportDataReply(CwxPackageReader* reader,
+int UnistorPoco::parseReportDataReply(CwxPackageReaderEx* reader,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSession,
                                 char* szErr2K)
@@ -2537,7 +2551,7 @@ int UnistorPoco::parseReportDataReply(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packReportNewConn(CwxPackageWriter* writer,
+int UnistorPoco::packReportNewConn(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
                              CWX_UINT64 ullSession,
@@ -2563,7 +2577,7 @@ int UnistorPoco::packReportNewConn(CwxPackageWriter* writer,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseReportNewConn(CwxPackageReader* reader,
+int UnistorPoco::parseReportNewConn(CwxPackageReaderEx* reader,
                               CwxMsgBlock const* msg,
                               CWX_UINT64& ullSession,
                               char* szErr2K)
@@ -2581,7 +2595,7 @@ int UnistorPoco::parseReportNewConn(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packSyncErr(CwxPackageWriter* writer,
+int UnistorPoco::packSyncErr(CwxPackageWriterEx* writer,
                                   CwxMsgBlock*& msg,
                                   CWX_UINT32 uiTaskId,
                                   int ret,
@@ -2611,7 +2625,7 @@ int UnistorPoco::packSyncErr(CwxPackageWriter* writer,
 
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseSyncErr(CwxPackageReader* reader,
+int UnistorPoco::parseSyncErr(CwxPackageReaderEx* reader,
                                    CwxMsgBlock const* msg,
                                    int& ret,
                                    char const*& szErrMsg,
@@ -2627,7 +2641,7 @@ int UnistorPoco::parseSyncErr(CwxPackageReader* reader,
         return UNISTOR_ERR_ERROR;
     }
     //get err
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     if (!(pItem = reader->getKey(UNISTOR_KEY_ERR))){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_ERR);
         return UNISTOR_ERR_ERROR;
@@ -2638,12 +2652,12 @@ int UnistorPoco::parseSyncErr(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packSyncData(CwxPackageWriter* writer,
+int UnistorPoco::packSyncData(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
                         CWX_UINT64 ullSid,
                         CWX_UINT32 uiTimeStamp,
-                        CwxKeyValueItem const& data,
+                        CwxKeyValueItemEx const& data,
                         CWX_UINT32 group,
                         CWX_UINT32 type,
                         CWX_UINT32 version,
@@ -2698,10 +2712,10 @@ int UnistorPoco::packSyncData(CwxPackageWriter* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-int UnistorPoco::packSyncDataItem(CwxPackageWriter* writer,
+int UnistorPoco::packSyncDataItem(CwxPackageWriterEx* writer,
                             CWX_UINT64 ullSid,
                             CWX_UINT32 uiTimeStamp,
-                            CwxKeyValueItem const& data,
+                            CwxKeyValueItemEx const& data,
                             CWX_UINT32 group,
                             CWX_UINT32 type,
                             CWX_UINT32 version,
@@ -2795,11 +2809,11 @@ int UnistorPoco::packMultiSyncData(CWX_UINT32 uiTaskId,
 }
 
 
-int UnistorPoco::parseSyncData(CwxPackageReader* reader,
+int UnistorPoco::parseSyncData(CwxPackageReaderEx* reader,
                          CwxMsgBlock const* msg,
                          CWX_UINT64& ullSid,
                          CWX_UINT32& uiTimeStamp,
-                         CwxKeyValueItem const*& data,
+                         CwxKeyValueItemEx const*& data,
                          CWX_UINT32& group,
                          CWX_UINT32& type,
                          CWX_UINT32& version,
@@ -2817,12 +2831,12 @@ int UnistorPoco::parseSyncData(CwxPackageReader* reader,
 }
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::parseSyncData(CwxPackageReader* reader,
+int UnistorPoco::parseSyncData(CwxPackageReaderEx* reader,
                          char const* szData,
                          CWX_UINT32 uiDataLen,
                          CWX_UINT64& ullSid,
                          CWX_UINT32& uiTimeStamp,
-                         CwxKeyValueItem const*& data,
+                         CwxKeyValueItemEx const*& data,
                          CWX_UINT32& group,
                          CWX_UINT32& type,
                          CWX_UINT32& version,
@@ -2858,12 +2872,12 @@ int UnistorPoco::parseSyncData(CwxPackageReader* reader,
     if (!reader->getKey(UNISTOR_KEY_V, version)){
         version = 0;
     }
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     //get crc32
     if ((pItem = reader->getKey(UNISTOR_KEY_CRC32))){
         CWX_UINT32 uiOrgCrc32 = 0;
         memcpy(&uiOrgCrc32, pItem->m_szData, sizeof(uiOrgCrc32));
-        CWX_UINT32 uiCrc32 = CwxCrc32::value(szData, pItem->m_szKey - szData - CwxPackage::getKeyOffset());
+        CWX_UINT32 uiCrc32 = CwxCrc32::value(szData, pItem->m_szKey - szData - CwxPackageEx::getKeyOffset(pItem->m_unKeyLen, pItem->m_uiDataLen));
         if (uiCrc32 != uiOrgCrc32){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "CRC32 signture error. recv signture:%x, local signture:%x", uiOrgCrc32, uiCrc32);
             return UNISTOR_ERR_ERROR;
@@ -2873,7 +2887,7 @@ int UnistorPoco::parseSyncData(CwxPackageReader* reader,
     if ((pItem = reader->getKey(UNISTOR_KEY_MD5))){
         unsigned char szMd5[16];
         CwxMd5 md5;
-        md5.update((unsigned char*)szData, pItem->m_szKey - szData - CwxPackage::getKeyOffset());
+        md5.update((unsigned char*)szData, pItem->m_szKey - szData - CwxPackageEx::getKeyOffset(pItem->m_unKeyLen, pItem->m_uiDataLen));
         md5.final(szMd5);
         if (memcmp(szMd5, pItem->m_szData, 16) != 0){
             if (szErr2K){
@@ -2894,7 +2908,7 @@ int UnistorPoco::parseSyncData(CwxPackageReader* reader,
 
 
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-int UnistorPoco::packSyncDataReply(CwxPackageWriter* ,
+int UnistorPoco::packSyncDataReply(CwxPackageWriterEx* ,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
                             CWX_UINT64 ullSeq,
@@ -2913,7 +2927,7 @@ int UnistorPoco::packSyncDataReply(CwxPackageWriter* ,
 }
 
 
-int UnistorPoco::parseSyncDataReply(CwxPackageReader* ,
+int UnistorPoco::parseSyncDataReply(CwxPackageReaderEx* ,
                              CwxMsgBlock const* msg,
                              CWX_UINT64& ullSeq,
                              char* szErr2K)

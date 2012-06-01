@@ -213,23 +213,23 @@ int main(int argc ,char** argv)
         printf("Failure to connect ip:port: %s:%u, errno=%d\n", g_strHost.c_str(), g_unPort, errno);
         return 1;
     }
-    CwxPackageWriter writer;
-    CwxPackageReader reader;
+    CwxPackageWriterEx writer;
+    CwxPackageReaderEx reader;
     CwxMsgHead head;
     CwxMsgBlock* block=NULL;
     char szErr2K[2048];
     char const* pErrMsg=NULL;
 	CWX_UINT32 uiVersion = 0;
     CWX_INT64 llValue = 0;
-    CwxKeyValueItem  key;
+    CwxKeyValueItemEx  key;
     key.m_szData = g_key.c_str();
     key.m_uiDataLen = g_key.length();
     key.m_bKeyValue = false;
-    CwxKeyValueItem  field;
+    CwxKeyValueItemEx  field;
     field.m_szData = g_field.c_str();
     field.m_uiDataLen = g_field.length();
     field.m_bKeyValue = false;
-    CwxKeyValueItem  extra;
+    CwxKeyValueItemEx  extra;
     extra.m_szData = g_extra.c_str();
     extra.m_uiDataLen = g_extra.length();
     extra.m_bKeyValue = false;
@@ -243,6 +243,7 @@ int main(int argc ,char** argv)
             g_field.length()?&field:NULL,
             g_extra.length()?&extra:NULL,
 			g_num,
+            0,
 			g_max,
 			g_min,
             g_sign,

@@ -225,7 +225,7 @@ CwxMsgBlock* UnistorHandler4Recv::packReplyMsg(UnistorTss* tss,
 ///get kv..UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 bool UnistorHandler4Recv::checkAuth(UnistorTss* pTss){
     if (!m_bAuth){
-        CwxKeyValueItem const* pItem = NULL;
+        CwxKeyValueItemEx const* pItem = NULL;
         char const* szUser=NULL;
         char const* szPasswd = NULL;
         szUser = "";
@@ -269,9 +269,9 @@ int UnistorHandler4Recv::reply(CwxMsgBlock* msg, bool bCloseConn){
 
 ///exist kv..UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4Recv::existKv(UnistorTss* pTss){
-    CwxKeyValueItem const* key;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+    CwxKeyValueItemEx const* key;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     bool bVersion = false;
     char const* szUser;
     char const* szPasswd;
@@ -329,13 +329,18 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
             return UNISTOR_ERR_ERROR;
         }
     }
+    bool bReadCache = false;
     ret = m_pApp->getStore()->isExist(pTss,
         *key,
         field,
         extra,
         uiVersion,
-        uiFieldNum);
+        uiFieldNum,
+        bReadCache);
+    pTss->m_ullStatsExistNum++;
+    if (bReadCache) pTss->m_ullStatsExistReadCacheNum++;
     if (1 == ret){
+        pTss->m_ullStatsExistExistNum++;
         do{
             pTss->m_pWriter->beginPack();
             pTss->m_pWriter->addKeyValue(UNISTOR_KEY_RET, UNISTOR_ERR_SUCCESS);
@@ -358,9 +363,9 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
 
 ///get kv..UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4Recv::getKv(UnistorTss* pTss){
-	CwxKeyValueItem const* key=NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+	CwxKeyValueItemEx const* key=NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     bool bVersion = false;
     char const* szUser;
     char const* szPasswd;
@@ -370,6 +375,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
     CWX_UINT32 uiVersion;
 	CWX_UINT32 uiBufLen = 0;
     CWX_UINT32 uiFieldNum = 0;
+    bool    bReadCache = false;
 	int ret = 0;
 	char const* buf = NULL;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseGetKey(pTss->m_pReader,
@@ -431,8 +437,12 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
         bKeyValue,
         uiVersion,
         uiFieldNum,
+        bReadCache,
         ucKeyInfo);
+    pTss->m_ullStatsGetNum++;
+    if (bReadCache) pTss->m_ullStatsGetReadCacheNum++;
 	if (1 == ret){
+        pTss->m_ullStatsGetExistNum++;
 		do{
 			pTss->m_pWriter->beginPack();
 			pTss->m_pWriter->addKeyValue(UNISTOR_KEY_RET, UNISTOR_ERR_SUCCESS);
@@ -457,8 +467,8 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
 
 ///get kv..UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     list<pair<char const*, CWX_UINT16> > keys;
     char const* szUser=NULL;
     char const* szPasswd=NULL;
@@ -467,6 +477,8 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
     char const* buf = NULL;
 	CWX_UINT32 uiBufLen = 0;
     CWX_UINT32 uiKeyNum = 0;
+    CWX_UINT32 uiCacheKeyNum=0;
+    CWX_UINT32 uiExistKeyNum=0;
 	int ret = 0;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseGetKeys(pTss->m_pReader,
         pTss->m_pItemReader,
@@ -531,8 +543,12 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
             return UNISTOR_ERR_ERROR;
         }
     }
-    ret = m_pApp->getStore()->gets(pTss, keys, field, extra, buf, uiBufLen, ucKeyInfo);
+    ret = m_pApp->getStore()->gets(pTss, keys, field, extra, buf, uiBufLen, uiCacheKeyNum, uiExistKeyNum, ucKeyInfo);
+    pTss->m_ullStatsGetsNum++;
+    pTss->m_ullStatsGetsKeyNum+=uiKeyNum;
     if (-1 == ret) return UNISTOR_ERR_ERROR;
+    pTss->m_ullStatsGetsKeyReadCacheNum += uiCacheKeyNum;
+    pTss->m_ullStatsGetsKeyExistNum += uiExistKeyNum;
     pTss->m_pWriter->beginPack();
     ret = UNISTOR_ERR_SUCCESS;
     pTss->m_pWriter->addKeyValue(UNISTOR_KEY_RET, ret);
@@ -545,12 +561,12 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
 }
 
 int UnistorHandler4Recv::getList(UnistorTss* pTss){
-	CwxKeyValueItem key;
+	CwxKeyValueItemEx key;
 	bool bKeyValue = false;
-	CwxKeyValueItem const* begin = NULL;
-	CwxKeyValueItem const* end = NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+	CwxKeyValueItemEx const* begin = NULL;
+	CwxKeyValueItemEx const* end = NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     CWX_UINT16  unNum = 0;
 	bool        bAsc= true;
     bool        bBegin=true;

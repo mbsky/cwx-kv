@@ -2,7 +2,7 @@
 
 UNISTOR_KEY_GROUP_FN UnistorStoreBase::m_fnKeyStoreGroup=NULL; 
 UNISTOR_KEY_GROUP_FN UnistorStoreBase::m_fnKeyAsciiGroup=NULL;
-UNISTOR_KEY_ASCII_LESS  UnistorStoreBase::m_fnKeyAsciiLess=NULL;
+UNISTOR_KEY_CMP_LESS_FN  UnistorStoreBase::m_fnKeyAsciiLess=NULL;
 
 UnistorStoreCursor::~UnistorStoreCursor(){
     if (m_cacheCursor){
@@ -179,8 +179,8 @@ int UnistorStoreBase::restore(CWX_UINT64 ullSid){
     char* pBuf = NULL;
     bool bSeek = false;
 
-    CwxKeyValueItem item;
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx item;
+    CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiType = 0;
     CWX_UINT32 uiVersion = 0;
     CWX_UINT32 uiRestoreNum = 0;
@@ -290,30 +290,33 @@ int UnistorStoreBase::restore(CWX_UINT64 ullSid){
 
 ///同步master的binlog.0：成功；-1：失败
 int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
-                                       CwxPackageReader* reader,
+                                       CwxPackageReaderEx* reader,
                                        CWX_UINT64 ullSid,
                                        CWX_UINT32 ttTimestamp,
                                        CWX_UINT32 uiGroup,
                                        CWX_UINT32 uiType,
-                                       CwxKeyValueItem const& value,
+                                       CwxKeyValueItemEx const& value,
                                        CWX_UINT32 uiVersion,
                                        bool bRestore)
 {
     int ret = 0;
-    CwxKeyValueItem const* key=NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+    CwxKeyValueItemEx const* key=NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     CWX_UINT32		 uiExpire = 0;
     CWX_INT64        llMax = 0;
     CWX_INT64        llMin = 0;
     CWX_INT64        llValue = 0;
-    CwxKeyValueItem const* data = NULL;
+    CWX_INT64        result = 0;
+    CwxKeyValueItemEx const* data = NULL;
     CWX_UINT32       uiSign=0;
     char const*      szUser=NULL;
     char const*      szPasswd=NULL;
     CWX_INT64		 num=0;
     CWX_UINT32       uiOldVersion=0;
     bool             bCache=true;
+    bool             bReadCached=false;
+    bool             bWriteCached=false;
     if (!m_bValid){
         strcpy(tss->m_szBuf2K, m_szErrMsg);
         return -1;
@@ -383,7 +386,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             bCache,
             uiExpire,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore);
+        tss->m_ullStatsAddNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsAddReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsAddWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else if(0 == ret){
@@ -420,7 +430,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             bCache,
             uiExpire,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore);
+        tss->m_ullStatsSetNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsSetReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsSetWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else if(0 == ret){
@@ -455,7 +472,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             uiVersion,
             uiExpire,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore); ///无条件更新
+        tss->m_ullStatsUpdateNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsUpdateReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsUpdateWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else if(0 == ret){
@@ -471,6 +495,7 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             field,
             extra,
             num,
+            result,
             llMax,
             llMin,
             uiExpire,
@@ -488,6 +513,7 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             field,
             extra,
             num,
+            result,
             0,
             0,
             uiSign,
@@ -495,7 +521,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             uiVersion,
             uiExpire,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore); ///无条件更新
+        tss->m_ullStatsIncNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsIncReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsIncWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else if(0 == ret){
@@ -524,7 +557,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             extra,
             uiVersion,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore); ///无条件删除
+        tss->m_ullStatsDelNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsDelReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsDelWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else if(0 == ret){
@@ -561,7 +601,14 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
             bCache,
             uiExpire,
             ullSid,
+            bReadCached,
+            bWriteCached,
             bRestore);
+        tss->m_ullStatsImportNum++;
+        if (-1 != ret){
+            if (bReadCached) tss->m_ullStatsImportReadCacheNum++;
+            if (bWriteCached) tss->m_ullStatsImportWriteCacheNum++;
+        }
         if (1 == ret){
             ret = 0;
         }else{
@@ -577,7 +624,7 @@ int UnistorStoreBase::syncMasterBinlog(UnistorTss* tss,
 }
 
 ///添加Add key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendTimeStampBinlog(CwxPackageWriter& writer,
+int UnistorStoreBase::appendTimeStampBinlog(CwxPackageWriterEx& writer,
                                       CWX_UINT32 ttNow,
                                       char* szErr2K)
 {
@@ -608,13 +655,13 @@ int UnistorStoreBase::appendTimeStampBinlog(CwxPackageWriter& writer,
 
 
 ///添加Add key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendAddBinlog(CwxPackageWriter& writer,
-                                      CwxPackageWriter& writer1,
+int UnistorStoreBase::appendAddBinlog(CwxPackageWriterEx& writer,
+                                      CwxPackageWriterEx& writer1,
                                       CWX_UINT32 uiGroup,
-                                      CwxKeyValueItem const& key,
-                                      CwxKeyValueItem const* field,
-                                      CwxKeyValueItem const* extra,
-                                      CwxKeyValueItem const& data,
+                                      CwxKeyValueItemEx const& key,
+                                      CwxKeyValueItemEx const* field,
+                                      CwxKeyValueItemEx const* extra,
+                                      CwxKeyValueItemEx const& data,
                                       CWX_UINT32    uiExpire,
                                       CWX_UINT32    uiSign,
                                       CWX_UINT32    uiVersion,
@@ -659,13 +706,13 @@ int UnistorStoreBase::appendAddBinlog(CwxPackageWriter& writer,
 }
 
 ///添加set key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendSetBinlog(CwxPackageWriter& writer,
-                                      CwxPackageWriter& writer1,
+int UnistorStoreBase::appendSetBinlog(CwxPackageWriterEx& writer,
+                                      CwxPackageWriterEx& writer1,
                                       CWX_UINT32 uiGroup,
-                                      CwxKeyValueItem const& key,
-                                      CwxKeyValueItem const* field,
-                                      CwxKeyValueItem const* extra,
-                                      CwxKeyValueItem const& data,
+                                      CwxKeyValueItemEx const& key,
+                                      CwxKeyValueItemEx const* field,
+                                      CwxKeyValueItemEx const* extra,
+                                      CwxKeyValueItemEx const& data,
                                       CWX_UINT32    uiExpire,
                                       CWX_UINT32    uiSign,
                                       CWX_UINT32    uiVersion,
@@ -710,13 +757,13 @@ int UnistorStoreBase::appendSetBinlog(CwxPackageWriter& writer,
 }
 
 ///添加update key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendUpdateBinlog(CwxPackageWriter& writer,
-                                         CwxPackageWriter& writer1,
+int UnistorStoreBase::appendUpdateBinlog(CwxPackageWriterEx& writer,
+                                         CwxPackageWriterEx& writer1,
                                          CWX_UINT32 uiGroup,
-                                         CwxKeyValueItem const& key,
-                                         CwxKeyValueItem const* field,
-                                         CwxKeyValueItem const* extra,
-                                         CwxKeyValueItem const& data,
+                                         CwxKeyValueItemEx const& key,
+                                         CwxKeyValueItemEx const* field,
+                                         CwxKeyValueItemEx const* extra,
+                                         CwxKeyValueItemEx const& data,
                                          CWX_UINT32       uiExpire,
                                          CWX_UINT32 uiSign,
                                          CWX_UINT32       uiVersion,
@@ -755,13 +802,14 @@ int UnistorStoreBase::appendUpdateBinlog(CwxPackageWriter& writer,
 }
 
 ///添加inc key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendIncBinlog(CwxPackageWriter& writer,
-                                      CwxPackageWriter& writer1,
+int UnistorStoreBase::appendIncBinlog(CwxPackageWriterEx& writer,
+                                      CwxPackageWriterEx& writer1,
                                       CWX_UINT32 uiGroup,
-                                      CwxKeyValueItem const& key,
-                                      CwxKeyValueItem const* field,
-                                      CwxKeyValueItem const* extra,
-                                      int	             num,
+                                      CwxKeyValueItemEx const& key,
+                                      CwxKeyValueItemEx const* field,
+                                      CwxKeyValueItemEx const* extra,
+                                      CWX_INT64	       num,
+                                      CWX_INT64        result,
                                       CWX_INT64        llMax,
                                       CWX_INT64        llMin,
                                       CWX_UINT32    uiExpire,
@@ -775,6 +823,7 @@ int UnistorStoreBase::appendIncBinlog(CwxPackageWriter& writer,
         field,
         extra,
         num,
+        result,
         llMax,
         llMin,
         uiExpire,
@@ -808,12 +857,12 @@ int UnistorStoreBase::appendIncBinlog(CwxPackageWriter& writer,
 }
 
 ///添加del key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendDelBinlog(CwxPackageWriter& writer,
-                                      CwxPackageWriter& writer1,
+int UnistorStoreBase::appendDelBinlog(CwxPackageWriterEx& writer,
+                                      CwxPackageWriterEx& writer1,
                                       CWX_UINT32        uiGroup,
-                                      CwxKeyValueItem const& key,
-                                      CwxKeyValueItem const* field,
-                                      CwxKeyValueItem const* extra,
+                                      CwxKeyValueItemEx const& key,
+                                      CwxKeyValueItemEx const* field,
+                                      CwxKeyValueItemEx const* extra,
                                       CWX_UINT32       uiVersion,
                                       char*			 szErr2K)
 {
@@ -847,12 +896,12 @@ int UnistorStoreBase::appendDelBinlog(CwxPackageWriter& writer,
 }
 
 ///添加import key binlog.0：成功；-1：失败
-int UnistorStoreBase::appendImportBinlog(CwxPackageWriter& writer,
-                                      CwxPackageWriter& writer1,
+int UnistorStoreBase::appendImportBinlog(CwxPackageWriterEx& writer,
+                                      CwxPackageWriterEx& writer1,
                                       CWX_UINT32 uiGroup,
-                                      CwxKeyValueItem const& key,
-                                      CwxKeyValueItem const* extra,
-                                      CwxKeyValueItem const& data,
+                                      CwxKeyValueItemEx const& key,
+                                      CwxKeyValueItemEx const* extra,
+                                      CwxKeyValueItemEx const& data,
                                       CWX_UINT32    uiExpire,
                                       CWX_UINT32    uiVersion,
                                       bool          bCache,
@@ -933,11 +982,11 @@ void UnistorStoreBase::freeField(UnistorKeyField*& field){
 }
 
 ///对add key的新、旧field进行归并。-1：失败；0：存在；1：成功
-int UnistorStoreBase::mergeAddKeyField(CwxPackageWriter* writer1,
-                                       CwxPackageReader* reader1,
-                                       CwxPackageReader* reader2,
+int UnistorStoreBase::mergeAddKeyField(CwxPackageWriterEx* writer1,
+                                       CwxPackageReaderEx* reader1,
+                                       CwxPackageReaderEx* reader2,
                                        char const* key,
-                                       CwxKeyValueItem const* field,
+                                       CwxKeyValueItemEx const* field,
                                        char const* szOldData,
                                        CWX_UINT32 uiOldDataLen,
                                        bool bOldKeyValue,
@@ -948,7 +997,7 @@ int UnistorStoreBase::mergeAddKeyField(CwxPackageWriter* writer1,
                                        char* szErr2K)
 {
     CWX_UINT32 i=0;
-    CwxKeyValueItem const* pItem=NULL;
+    CwxKeyValueItemEx const* pItem=NULL;
     ///旧值一定是kv结构
     CWX_ASSERT(bOldKeyValue);
     uiFieldNum = 0;
@@ -1006,11 +1055,11 @@ int UnistorStoreBase::mergeAddKeyField(CwxPackageWriter* writer1,
     return 1;
 }
 
-int UnistorStoreBase::mergeSetKeyField(CwxPackageWriter* writer1,
-                                       CwxPackageReader* reader1,
-                                       CwxPackageReader* reader2,
+int UnistorStoreBase::mergeSetKeyField(CwxPackageWriterEx* writer1,
+                                       CwxPackageReaderEx* reader1,
+                                       CwxPackageReaderEx* reader2,
                                        char const* ,
-                                       CwxKeyValueItem const* field,
+                                       CwxKeyValueItemEx const* field,
                                        char const* szOldData,
                                        CWX_UINT32 uiOldDataLen,
                                        bool ,
@@ -1021,7 +1070,7 @@ int UnistorStoreBase::mergeSetKeyField(CwxPackageWriter* writer1,
                                        char* szErr2K)
 {
     CWX_UINT32 i=0;
-    CwxKeyValueItem const* pItem=NULL;
+    CwxKeyValueItemEx const* pItem=NULL;
     if (!reader1->unpack(szOldData, uiOldDataLen, false, true)){
         strcpy(szErr2K, reader1->getErrMsg());
         return -1;
@@ -1086,11 +1135,11 @@ int UnistorStoreBase::mergeSetKeyField(CwxPackageWriter* writer1,
 }
 
 ///对update key的新、旧field进行归并。-1：失败；0：不存在；1：成功
-int UnistorStoreBase::mergeUpdateKeyField(CwxPackageWriter* writer1,
-                                          CwxPackageReader* reader1,
-                                          CwxPackageReader* reader2,
+int UnistorStoreBase::mergeUpdateKeyField(CwxPackageWriterEx* writer1,
+                                          CwxPackageReaderEx* reader1,
+                                          CwxPackageReaderEx* reader2,
                                           char const* key,
-                                          CwxKeyValueItem const* field,
+                                          CwxKeyValueItemEx const* field,
                                           char const* szOldData,
                                           CWX_UINT32 uiOldDataLen,
                                           bool bOldKeyValue,
@@ -1102,7 +1151,7 @@ int UnistorStoreBase::mergeUpdateKeyField(CwxPackageWriter* writer1,
                                           char* szErr2K)
 {
     CWX_UINT32 i=0;
-    CwxKeyValueItem const* pItem=NULL;
+    CwxKeyValueItemEx const* pItem=NULL;
     ///旧值一定是kv结构
     CWX_ASSERT(bOldKeyValue);
     if (!reader1->unpack(szOldData, uiOldDataLen, false, true)){
@@ -1181,14 +1230,15 @@ int UnistorStoreBase::mergeUpdateKeyField(CwxPackageWriter* writer1,
 }
 
 ///对int key的更新。-2：key超出边界；-1：失败；0：不存在；1：成功;
-int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
-                                       CwxPackageReader* reader1,
+int UnistorStoreBase::mergeIncKeyField(CwxPackageWriterEx* writer1,
+                                       CwxPackageReaderEx* reader1,
                                        char const* ,
-                                       CwxKeyValueItem const* field,
+                                       CwxKeyValueItemEx const* field,
                                        char const* szOldData,
                                        CWX_UINT32 uiOldDataLen,
                                        bool bOldKeyValue,
-                                       int  num,
+                                       CWX_INT64  num,
+                                       CWX_INT64* result,
                                        CWX_INT64  llMax,
                                        CWX_INT64  llMin,
                                        CWX_INT64& llValue,
@@ -1199,7 +1249,7 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
                                        char* szErr2K)
 {
     CWX_UINT32 i=0;
-    CwxKeyValueItem const* pItem=NULL;
+    CwxKeyValueItemEx const* pItem=NULL;
     char szValue[64];
     if (bOldKeyValue){//Key的旧值对象
         if (!field){//如果key不是对象，则key自身为计数器
@@ -1207,15 +1257,19 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
                 strcpy(szErr2K, "Key is not counter.");
                 return 0;
             }
-            llValue = num;
-            if ((num>0) && llMax && (llValue > llMax)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
-                return -2;
-            }else if ((num<0) && llMin && (llValue < llMin)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
-                return -2;
+            if (!result){
+                llValue = num;
+                if ((num>0) && llMax && (llValue > llMax)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
+                    return -2;
+                }else if ((num<0) && llMin && (llValue < llMin)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
+                    return -2;
+                }
+            }else{
+                llValue = *result;
             }
-            CwxCommon::toString((CWX_INT64)num, szBuf, 0);
+            CwxCommon::toString(llValue, szBuf, 0);
             uiBufLen = strlen(szBuf);
             bKeyValue = false;
             return 1;
@@ -1236,14 +1290,18 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
         for (i=0; i<reader1->getKeyNum(); i++){
             pItem = reader1->getKey(i);
             if ((pItem->m_unKeyLen == field->m_uiDataLen) && (memcmp(pItem->m_szKey, field->m_szData, pItem->m_unKeyLen)==0)){
-                llValue = strtoll(pItem->m_szData, NULL, 0);
-                llValue += num;
-                if ((num>0) && llMax && (llValue > llMax)){
-                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
-                    return -2;
-                }else if ((num<0) && llMin && (llValue < llMin)){
-                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
-                    return -2;
+                if (!result){
+                    llValue = strtoll(pItem->m_szData, NULL, 0);
+                    llValue += num;
+                    if ((num>0) && llMax && (llValue > llMax)){
+                        CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
+                        return -2;
+                    }else if ((num<0) && llMin && (llValue < llMin)){
+                        CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
+                        return -2;
+                    }
+                }else{
+                    llValue = *result;
                 }
                 CwxCommon::toString((CWX_INT64)llValue, szBuf, 0);
                 if (!writer1->addKeyValue(pItem->m_szKey, pItem->m_unKeyLen, szBuf, strlen(szBuf), false)){
@@ -1259,13 +1317,17 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
             }
         }
         if (!bFindField){
-            llValue = num;
-            if ((num>0) && llMax && (llValue > llMax)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
-                return -2;
-            }else if ((num<0) && llMin && (llValue < llMin)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
-                return -2;
+            if (!result){
+                llValue = num;
+                if ((num>0) && llMax && (llValue > llMax)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
+                    return -2;
+                }else if ((num<0) && llMin && (llValue < llMin)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
+                    return -2;
+                }
+            }else{
+                llValue = *result;
             }
             if (!writer1->addKeyValue(field->m_szData, field->m_uiDataLen,  num)){
                 strcpy(szErr2K, writer1->getErrMsg());
@@ -1279,19 +1341,23 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
         return 1;
     }else{//key的旧值不是对象
         if (!field){//新值也不是对象
-            if (uiOldDataLen > 63) uiOldDataLen=63;
-            memcpy(szValue, szOldData, uiOldDataLen);
-            szValue[uiOldDataLen] = 0x00;
-            llValue = strtoll(szValue, NULL, 0);
-            llValue += num;
-            if ((num>0) && llMax && (llValue > llMax)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
-                return -2;
-            }else if ((num<0) && llMin && (llValue < llMin)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
-                return -2;
+            if (!result){
+                if (uiOldDataLen > 63) uiOldDataLen=63;
+                memcpy(szValue, szOldData, uiOldDataLen);
+                szValue[uiOldDataLen] = 0x00;
+                llValue = strtoll(szValue, NULL, 0);
+                llValue += num;
+                if ((num>0) && llMax && (llValue > llMax)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
+                    return -2;
+                }else if ((num<0) && llMin && (llValue < llMin)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
+                    return -2;
+                }
+            }else{
+                llValue = *result;
             }
-            CwxCommon::toString((CWX_INT64)llValue, szBuf, 0);
+            CwxCommon::toString(llValue, szBuf, 0);
             uiBufLen = strlen(szBuf);
             bKeyValue = false;
             return 1;
@@ -1300,15 +1366,19 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
                 strcpy(szErr2K, "Field counter doesn't exist..");
                 return 0;
             }
-            llValue = num;
-            if ((num>0) && llMax && (llValue > llMax)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
-                return -2;
-            }else if ((num<0) && llMin && (llValue < llMin)){
-                CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
-                return -2;
+            if (!result){
+                llValue = num;
+                if ((num>0) && llMax && (llValue > llMax)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is more than the max[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMax, szBuf, 0));
+                    return -2;
+                }else if ((num<0) && llMin && (llValue < llMin)){
+                    CwxCommon::snprintf(szErr2K, 2047, "Couter[%s] is less than the min[%s]", CwxCommon::toString(llValue, szValue, 0), CwxCommon::toString(llMin, szBuf, 0));
+                    return -2;
+                }
+            }else{
+                llValue = *result;
             }
-            CwxCommon::toString((CWX_INT64)llValue, szBuf, 0);
+            CwxCommon::toString(llValue, szBuf, 0);
             writer1->beginPack();
             if (!writer1->addKeyValue(field->m_szData, field->m_uiDataLen, szBuf, strlen(szBuf), false)){
                 strcpy(szErr2K, writer1->getErrMsg());
@@ -1323,52 +1393,57 @@ int UnistorStoreBase::mergeIncKeyField(CwxPackageWriter* writer1,
     return 1;
 }
 
-///对delete  key的field。-1：失败；0：不存在；1：成功
-int UnistorStoreBase::mergeRemoveKeyField(CwxPackageWriter* writer1,
-                                          CwxPackageReader* reader1,
-                                          char const* key,
-                                          CwxKeyValueItem const* field,
+///对delete  key的field。-1：失败；1：成功
+int UnistorStoreBase::mergeRemoveKeyField(CwxPackageWriterEx* writer1,
+                                          CwxPackageReaderEx* reader1,
+                                          char const* ,
+                                          CwxKeyValueItemEx const* field,
                                           char const* szOldData,
                                           CWX_UINT32 uiOldDataLen,
                                           bool ,
-                                          bool bSync,
                                           CWX_UINT32& uiFieldNum,
                                           char* szErr2K)
 {
     CWX_UINT32 i=0;
-    CwxKeyValueItem const* pItem=NULL;
+    CwxKeyValueItemEx const* pItem=NULL;
+    UnistorKeyField* pField = NULL;
+    UnistorKeyField* pTmp = NULL;
+
+    parseMultiField(field->m_szData, pField);
+
     uiFieldNum = 0;
     if (!reader1->unpack(szOldData, uiOldDataLen, false, true)){
         strcpy(szErr2K, reader1->getErrMsg());
+        freeField(pField);
         return -1;
     }
     uiFieldNum = reader1->getKeyNum();
-    if (!reader1->getKey(field->m_szData)){
-        if (!bSync){
-            CwxCommon::snprintf(szErr2K, 2047, "Key[%s]'s field [%s] doesn't exist.", key, field->m_szData);
-            return 0;
-        }
-        return 1;
-    }
+
     writer1->beginPack();
     for (i=0; i<reader1->getKeyNum(); i++){
         pItem = reader1->getKey(i);
-        if ((pItem->m_unKeyLen != field->m_uiDataLen) || (memcmp(pItem->m_szKey, field->m_szData, pItem->m_unKeyLen)!=0)){
-            if (!writer1->addKeyValue(pItem->m_szKey, pItem->m_unKeyLen, pItem->m_szData, pItem->m_uiDataLen, pItem->m_bKeyValue)){
-                strcpy(szErr2K, writer1->getErrMsg());
-                return -1;
+        pTmp = pField;
+        while(pTmp){
+            if ((pItem->m_unKeyLen != pTmp->m_key.length()) || (memcmp(pItem->m_szKey, pTmp->m_key.c_str(), pTmp->m_key.length())!=0)){
+                if (!writer1->addKeyValue(pItem->m_szKey, pItem->m_unKeyLen, pItem->m_szData, pItem->m_uiDataLen, pItem->m_bKeyValue)){
+                    freeField(pField);
+                    strcpy(szErr2K, writer1->getErrMsg());
+                    return -1;
+                }
+            }else{
+                uiFieldNum--;
             }
-        }else{
-            uiFieldNum--;
+            pTmp = pTmp->m_next;
         }
     }
     writer1->pack();
+    freeField(pField);
     return 1;
 }
 
 ///提取指定的field, UNISTOR_ERR_SUCCESS：成功；其他：错误代码
-int UnistorStoreBase::pickField(CwxPackageReader& reader,
-                                CwxPackageWriter& write,
+int UnistorStoreBase::pickField(CwxPackageReaderEx& reader,
+                                CwxPackageWriterEx& write,
                                 UnistorKeyField const* field,
                                 char const* szData,
                                 CWX_UINT32 uiDataLen,
@@ -1378,7 +1453,7 @@ int UnistorStoreBase::pickField(CwxPackageReader& reader,
         if (szErr2K) strcpy(szErr2K, reader.getErrMsg());
         return UNISTOR_ERR_ERROR;
     }
-    CwxKeyValueItem const* pItem = NULL;
+    CwxKeyValueItemEx const* pItem = NULL;
     UnistorKeyField const* field_item = NULL;
     write.beginPack();
     field_item = field;

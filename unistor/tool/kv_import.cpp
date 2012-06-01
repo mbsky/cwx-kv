@@ -179,13 +179,13 @@ int main(int argc ,char** argv)
         printf("Failure to connect ip:port: %s:%u, errno=%d\n", g_strHost.c_str(), g_unPort, errno);
         return 1;
     }
-    CwxPackageWriter writer;
-    CwxPackageReader reader;
+    CwxPackageWriterEx writer;
+    CwxPackageReaderEx reader;
     CwxMsgHead head;
     CwxMsgBlock* block=NULL;
     char szErr2K[2048];
     char const* pErrMsg=NULL;
-	CwxKeyValueItem item;
+	CwxKeyValueItemEx item;
 	CWX_UINT32 uiBufLen = UNISTOR_MAX_DATA_SIZE ;
 	char* szBuf = (char*)malloc(uiBufLen);
 	CwxEncodeXml xmlEncode;
@@ -219,11 +219,11 @@ int main(int argc ,char** argv)
 		item.m_uiDataLen = g_data.length();
 		item.m_bKeyValue = false;
 	}
-    CwxKeyValueItem  key;
+    CwxKeyValueItemEx  key;
     key.m_szData = g_key.c_str();
     key.m_uiDataLen = g_key.length();
     key.m_bKeyValue = false;
-    CwxKeyValueItem  extra;
+    CwxKeyValueItemEx  extra;
     extra.m_szData = g_extra.c_str();
     extra.m_uiDataLen = g_extra.length();
     extra.m_bKeyValue = false;

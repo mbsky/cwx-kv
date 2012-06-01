@@ -769,12 +769,12 @@ int UnistorHandler4Dispatch::syncSeekToReportSid(UnistorTss* tss){
 
 
 ///-1：失败，1：成功
-int UnistorHandler4Dispatch::syncPackOneBinLog(CwxPackageWriter* writer,
+int UnistorHandler4Dispatch::syncPackOneBinLog(CwxPackageWriterEx* writer,
                                                CwxMsgBlock*& block,
                                                CWX_UINT64 ullSeq,
                                                CWX_UINT32 uiVersion,
                                                CWX_UINT32 uiType,
-                                               CwxKeyValueItem const* pData,
+                                               CwxKeyValueItemEx const* pData,
                                                char* szErr2K)
 {
     ///形成binlog发送的数据包
@@ -800,11 +800,11 @@ int UnistorHandler4Dispatch::syncPackOneBinLog(CwxPackageWriter* writer,
 }
 
 ///-1：失败，否则返回添加数据的尺寸
-int UnistorHandler4Dispatch::syncPackMultiBinLog(CwxPackageWriter* writer,
-                                                 CwxPackageWriter* writer_item,
+int UnistorHandler4Dispatch::syncPackMultiBinLog(CwxPackageWriterEx* writer,
+                                                 CwxPackageWriterEx* writer_item,
                                                  CWX_UINT32 uiVersion,
                                                  CWX_UINT32 uiType,
-                                                 CwxKeyValueItem const* pData,
+                                                 CwxKeyValueItemEx const* pData,
                                                  CWX_UINT32&  uiLen,
                                                  char* szErr2K)
 {
@@ -829,7 +829,7 @@ int UnistorHandler4Dispatch::syncPackMultiBinLog(CwxPackageWriter* writer,
         CWX_ERROR((szErr2K));
         return -1;
     }
-    uiLen = CwxPackage::getKvLen(strlen(UNISTOR_KEY_M),  writer_item->getMsgSize());
+    uiLen = CwxPackageEx::getKvLen(strlen(UNISTOR_KEY_M),  writer_item->getMsgSize());
     return 1;
 }
 
@@ -847,7 +847,7 @@ int UnistorHandler4Dispatch::syncSeekToBinlog(UnistorTss* tss, CWX_UINT32& uiSki
     }
     bool bFind = false;
     char const* szKey=NULL;
-    CwxKeyValueItem const* pKeyItem=NULL;
+    CwxKeyValueItemEx const* pKeyItem=NULL;
     CWX_UINT32 uiDataLen = m_syncSession->m_pCursor->getHeader().getLogLen();
     ///准备data读取的buf
     char* szData = tss->getBuf(uiDataLen);        
@@ -1191,9 +1191,9 @@ int UnistorHandler4Dispatch::exportSendData(UnistorTss* pTss){
     CWX_UINT16 unKeyLen = 0;
     CWX_UINT32 uiVersion = 0;
     CWX_UINT32 uiExpire=0;
-    CwxKeyValueItem key;
-    CwxKeyValueItem value;
-    CwxKeyValueItem extra;
+    CwxKeyValueItemEx key;
+    CwxKeyValueItemEx value;
+    CwxKeyValueItemEx extra;
 
     CWX_UINT32 uiTotalLen = 0;
     CWX_UINT64 ullSeq = m_exportSession->m_ullSeq;
@@ -1234,7 +1234,7 @@ int UnistorHandler4Dispatch::exportSendData(UnistorTss* pTss){
             iRet = -1;
             break;
         }
-        uiTotalLen += CwxPackage::getKvLen(strlen(UNISTOR_KEY_M),  pTss->m_pItemWriter->getMsgSize());
+        uiTotalLen += CwxPackageEx::getKvLen(strlen(UNISTOR_KEY_M),  pTss->m_pItemWriter->getMsgSize());
         if (uiTotalLen >= m_exportSession->m_uiChunk) break;
     }
     if (-1 == iRet) return -1;

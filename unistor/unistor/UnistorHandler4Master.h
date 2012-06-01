@@ -3,8 +3,8 @@
 
 #include "CwxCommander.h"
 #include "UnistorMacro.h"
-#include "CwxPackageReader.h"
-#include "CwxPackageWriter.h"
+#include "CwxPackageReaderEx.h"
+#include "CwxPackageWriterEx.h"
 #include "CwxMsgBlock.h"
 #include "UnistorTss.h"
 #include "UnistorConnector.h"
@@ -181,7 +181,7 @@ private:
 
 private:
     UnistorApp*             m_pApp;  ///<app对象
-    CwxPackageReader        m_reader; ///<解包的reader
+    CwxPackageReaderEx        m_reader; ///<解包的reader
     unsigned char*          m_unzipBuf; ///<解压的buffer
     CWX_UINT32              m_uiBufLen; ///<解压buffer的大小，其为trunk的20倍，最小为20M。
     UnistorSyncSession*     m_syncSession; ///<数据同步的session

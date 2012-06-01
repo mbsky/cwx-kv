@@ -32,8 +32,8 @@ UnistorStore g_store;  ///存储引擎
 UnistorTss   g_tss;  ///tss对象
 CwxSockStream  g_stream; ///连接的stream
 CwxSockConnector g_conn; ///连接
-CwxPackageReader  g_reader1; ///reader1
-CwxPackageReader  g_reader2; ///reader2
+CwxPackageReaderEx  g_reader1; ///reader1
+CwxPackageReaderEx  g_reader2; ///reader2
 
 
 ///-1：失败；0：help；1：成功
@@ -367,11 +367,14 @@ int  recvExportData(){
     int iRet = 0;
     char const* szErrMsg = NULL;
     CWX_UINT64 ullSeq=0;
-    CwxKeyValueItem const* key=NULL;
-    CwxKeyValueItem const* data=NULL;
-    CwxKeyValueItem const* extra =NULL;
+    CwxKeyValueItemEx const* key=NULL;
+    CwxKeyValueItemEx const* data=NULL;
+    CwxKeyValueItemEx const* extra =NULL;
     CWX_UINT32 uiVersion=0;
     CWX_UINT32 uiExpire=0;
+    bool bReadCached = false;
+    bool bWriteCached = false;
+
     static CWX_UINT32 uiNum = 0;
     ///读取export数据
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
@@ -416,6 +419,8 @@ int  recvExportData(){
                 false,
                 uiExpire,
                 g_startSid?g_startSid:1,
+                bReadCached,
+                bWriteCached,
                 true);
             if (-1 == iRet){
                 fprintf(g_fdout, "Failure to save export data, key=%s, err:%s\n", key->m_szData, g_tss.m_szBuf2K);
@@ -560,7 +565,7 @@ int recvBinlog(){
     CWX_UINT32 ttTimestamp;
     CWX_UINT32 uiGroup;
     CWX_UINT32 uiType;
-    CwxKeyValueItem const* data;
+    CwxKeyValueItemEx const* data;
     CWX_UINT32 uiNum = 0;
     ///读取export数据
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
@@ -596,7 +601,7 @@ int recvBinlog(){
                 CwxMsgBlockAlloc::free(block);
                 return -1;
             }
-            CwxKeyValueItem item = *data;
+            CwxKeyValueItemEx item = *data;
             if (0 != g_store.syncMasterBinlog(&g_tss,
                 g_tss.m_pReader,
                 g_bNewSid?0:ullSid,

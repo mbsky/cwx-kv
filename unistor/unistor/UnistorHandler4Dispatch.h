@@ -133,21 +133,21 @@ public:
     int syncSendBinLog(UnistorTss* pTss);
 
     ///pack一条binlog。返回值：-1：失败，1：成功
-    int syncPackOneBinLog(CwxPackageWriter* writer, ///<writer对象
+    int syncPackOneBinLog(CwxPackageWriterEx* writer, ///<writer对象
         CwxMsgBlock*& block, ///<pack后形成的数据包
         CWX_UINT64 ullSeq, ///<消息序列号
         CWX_UINT32 uiVersion, ///<binlog的版本号
         CWX_UINT32 uiType, ///<binlog的变更消息类型
-        CwxKeyValueItem const* pData, ///<变更的数据
+        CwxKeyValueItemEx const* pData, ///<变更的数据
         char* szErr2K ///<若失败返回错误消息
         );
 
     ///pack多条binlog。返回值：-1：失败，1：成功
-    int syncPackMultiBinLog(CwxPackageWriter* writer, ///<writer对象
-        CwxPackageWriter* writer_item, ///<writer对象
+    int syncPackMultiBinLog(CwxPackageWriterEx* writer, ///<writer对象
+        CwxPackageWriterEx* writer_item, ///<writer对象
         CWX_UINT32 uiVersion, ///<binlog的版本号
         CWX_UINT32 uiType, ///<binlog的变更消息类型
-        CwxKeyValueItem const* pData, ///<变更的数据
+        CwxKeyValueItemEx const* pData, ///<变更的数据
         CWX_UINT32&  uiLen, ///<返回pack完当前binlog后，整个数据包的大小
         char* szErr2K ///<若失败返回错误消息
         );
