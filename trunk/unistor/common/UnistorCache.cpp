@@ -45,17 +45,19 @@ int UnistorWriteCache::updateKey(char const* szKey,
                                  CWX_UINT16 unKeyLen,
                                  char const* szData,
                                  CWX_UINT32 uiDataLen,
-                                 CWX_UINT32 uiOldExpire)
+                                 CWX_UINT32 uiOldExpire,
+                                 bool& bInWriteCache)
 {
     CwxWriteLockGuard<CwxRwLock>  lock(m_rwLock);
     char key_buf[UnistorWriteCacheItem::calBufCapacity(unKeyLen, 0, 0) + sizeof(UnistorWriteCacheItem)];
     UnistorWriteCacheItem* key = (UnistorWriteCacheItem*)key_buf;
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
-
+    bInWriteCache = false;
     CWX_UINT32 const uiCapacity = UnistorWriteCacheItem::calBufCapacity(unKeyLen, uiDataLen, m_unAlign);
     set<UnistorWriteCacheItem*, CwxPointLess<UnistorWriteCacheItem> >::iterator key_iter = m_keyIndex->find(key);
     if (key_iter != m_keyIndex->end()){///如果key在write cache中存在
+        bInWriteCache = true;
         if (((*key_iter)->m_uiCapacity >= uiCapacity)  ///空间足够
             && _isInWriteCommitHalf((char*)(*key_iter))) ///而且所在半区不是commit区间
         {
@@ -96,18 +98,20 @@ int UnistorWriteCache::updateKey(char const* szKey,
 ///1：成功；0：cache满了，需要写入
 int UnistorWriteCache::delKey(char const* szKey,
                               CWX_UINT32 unKeyLen,
-                              CWX_UINT32 uiOldExpire)
+                              CWX_UINT32 uiOldExpire,
+                              bool& bInWriteCache)
 {
     CwxWriteLockGuard<CwxRwLock>  lock(m_rwLock);
     char key_buf[UnistorWriteCacheItem::calBufCapacity(unKeyLen, 0, 0) + sizeof(UnistorWriteCacheItem)];
     UnistorWriteCacheItem* key = (UnistorWriteCacheItem*)key_buf;
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
-
+    bInWriteCache = false;
     CWX_UINT32  const uiCapacity = UnistorWriteCacheItem::calBufCapacity(unKeyLen, 0, m_unAlign);
 
     set<UnistorWriteCacheItem*, CwxPointLess<UnistorWriteCacheItem> >::iterator key_iter = m_keyIndex->find(key);
     if (key_iter != m_keyIndex->end()){ ///如果key存在
+        bInWriteCache = true;
         if (_isInWriteCommitHalf((char*)(*key_iter))){///如果key位于非commit的半区，则直接标记key删除即可
             (*key_iter)->m_bDel = true;
             return 1;
@@ -459,12 +463,13 @@ int UnistorCache::updateKey(char const* szKey,
                             char const* szData,
                             CWX_UINT32 uiDataLen,
                             CWX_UINT32 uiOldExpire,
-                            bool  bCache)
+                            bool  bCache,
+                            bool& bInWriteCache)
 {
     if (m_writeCache){
         if (!m_bValid) return -1;
         ///首先更新写cache
-        int ret = m_writeCache->updateKey(szKey, unKeyLen, szData, uiDataLen, uiOldExpire);
+        int ret = m_writeCache->updateKey(szKey, unKeyLen, szData, uiDataLen, uiOldExpire, bInWriteCache);
         ///更新读cache
         if ((1 == ret) && m_readCache){
             if (bCache){
@@ -481,11 +486,12 @@ int UnistorCache::updateKey(char const* szKey,
 ///1：成功；0：cache满了，需要写入；-1：cache错误
 int UnistorCache::delKey(char const* szKey,
                          CWX_UINT32 unKeyLen,
-                         CWX_UINT32 uiOldExpire)
+                         CWX_UINT32 uiOldExpire,
+                         bool& bInWriteCache)
 {
     if (!m_bValid) return -1;
     if (m_writeCache){
-        if (0 == m_writeCache->delKey(szKey, unKeyLen, uiOldExpire)) return 0;
+        if (0 == m_writeCache->delKey(szKey, unKeyLen, uiOldExpire, bInWriteCache)) return 0;
     }
     if (m_readCache) m_readCache->remove(szKey, unKeyLen);
     return 1;
@@ -508,12 +514,17 @@ int UnistorCache::getKey(char const* szKey,
                          CWX_UINT16 unKeyLen,
                          char* szData,
                          CWX_UINT32& uiDataLen,
-                         bool& bDel)
+                         bool& bDel,
+                         bool& bReadCache)
 {
     int ret = 0;
-    if (m_writeCache) ret = m_writeCache->getKey(szKey, unKeyLen, szData, uiDataLen, bDel);
-    if ((0 == ret)  && m_readCache){
+    bReadCache = false;
+    if (m_writeCache){
+        ret = m_writeCache->getKey(szKey, unKeyLen, szData, uiDataLen, bDel);
+    }
+    if ((0 == ret) && m_readCache){
         ret = m_readCache->fetch(szKey, unKeyLen, szData, uiDataLen, true);
+        if (1 == ret) bReadCache = true;
         bDel = false;
     }
     return ret;

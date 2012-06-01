@@ -387,16 +387,16 @@ void CwxBinlogOp::doGroup(CWX_UINT32 uiGroup){
 
 void CwxBinlogOp::doKey(char const* szKey, char const* szValue){
     int iRet = 1;
-    CwxPackageReader reader(false);
+    CwxPackageReaderEx reader(false);
     char* pBuf = NULL;
-    CwxKeyValueItem const* pItem;
+    CwxKeyValueItemEx const* pItem;
     CWX_UINT32 uiLen = 0;
     printf("Finding binlog with [%s]=%s\n", szKey, szValue);
     while(1 == iRet){
         pBuf = getData(uiLen);
         if (!pBuf) return;
         pBuf[uiLen] = 0x00;
-        if (CwxPackage::isValidPackage(pBuf, uiLen)){
+        if (CwxPackageEx::isValidPackage(pBuf, uiLen)){
            reader.unpack(pBuf, uiLen, false, false);
            pItem = reader.getKey(szKey, true);
            if (pItem){
@@ -438,10 +438,10 @@ void CwxBinlogOp::doData(){
     pBuf = getData(uiLen);
     if (!pBuf) return;
     pBuf[uiLen] = 0x00;
-    if (CwxPackage::isValidPackage(pBuf, uiLen)){
+    if (CwxPackageEx::isValidPackage(pBuf, uiLen)){
         if (!prepareDumpBuf(uiLen + 64 * 1024)) return;
         uiDumpLen = m_uiDumpBufLen;
-        CwxPackage::dump(pBuf, uiLen, m_pDumpBuf, uiDumpLen);
+        CwxPackageEx::dump(pBuf, uiLen, m_pDumpBuf, uiDumpLen);
         m_pDumpBuf[uiDumpLen] = 0x00;
         printf("%s\n", m_pDumpBuf);
     }else{
@@ -459,10 +459,10 @@ void CwxBinlogOp::doSave(string const& strFileName){
     pBuf = getData(uiLen);
     if (!pBuf) return;
     pBuf[uiLen] = 0x00;
-    if (CwxPackage::isValidPackage(pBuf, uiLen)){
+    if (CwxPackageEx::isValidPackage(pBuf, uiLen)){
         if (!prepareDumpBuf(uiLen + 64 * 1024)) return;
         uiDumpLen = m_uiDumpBufLen;
-        CwxPackage::dump(pBuf, uiLen, m_pDumpBuf, uiDumpLen);
+        CwxPackageEx::dump(pBuf, uiLen, m_pDumpBuf, uiDumpLen);
         m_pDumpBuf[uiDumpLen] = 0x00;
         pBuf = m_pDumpBuf;
     }

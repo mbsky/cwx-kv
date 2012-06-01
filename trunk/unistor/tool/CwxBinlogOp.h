@@ -10,7 +10,7 @@
 @warning
 @bug
 */
-#include "CwxPackageReader.h"
+#include "CwxPackageReaderEx.h"
 #include "CwxBinLogMgr.h"
 
 CWINUX_USING_NAMESPACE

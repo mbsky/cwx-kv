@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "CwxEncodeXml.h"
-#include "CwxPackageReader.h"
+#include "CwxPackageReaderEx.h"
 CWINUX_USING_NAMESPACE
 
 /**
@@ -481,7 +481,7 @@ public:
     *@return false：失败；true：成功.
     */ 
     bool packageToXml(char const* szRootName,
-        CwxPackageReader& package,
+        CwxPackageReaderEx& package,
         char* szOut,
         CWX_UINT32& uiOutLen,
         char const* szXmlTitile=NULL);
@@ -508,7 +508,7 @@ public:
     *@return false：失败；true：成功.
     */ 
     bool packageToXmlNode(char const* szNodeName,
-        CwxPackageReader& package,
+        CwxPackageReaderEx& package,
         char* szOut,
         CWX_UINT32& uiOutLen);
     ///返回错误信息
@@ -517,7 +517,7 @@ private:
     ///xml转换为package
     bool xmlToPackage(XmlTreeNode const * treeNode, char* szOut, CWX_UINT32& uiOutLen);
     ///package转换为xml
-    bool packageToXml(CwxKeyValueItem const& item, char* szOut, CWX_UINT32& uiOutLen);
+    bool packageToXml(CwxKeyValueItemEx const& item, char* szOut, CWX_UINT32& uiOutLen);
     ///append <key>
     bool appendXmlKeyBegin(char const* szKey, CWX_UINT16 unKeyLen, char* szOut, CWX_UINT32& uiOutLen);
     ///append </key>

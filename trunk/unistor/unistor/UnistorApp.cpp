@@ -575,7 +575,24 @@ int UnistorApp::monitorStats(char const* buf,
 	uiLen = strlen(szLine);\
 	if (uiPos + uiLen > MAX_MONITOR_REPLY_SIZE - 20) break;\
 	memcpy(m_szBuf + uiPos, szLine, uiLen);\
-	uiPos += uiLen; \
+	uiPos += uiLen; 
+
+#define UNISTOR_STATS_READ_THREAD(name,attr)\
+    ullNum = 0;\
+    for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){\
+        tss = (UnistorTss*)getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0);\
+        ullNum += tss->attr;\
+    };\
+    CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", name,\
+        CwxCommon::toString(ullNum, szTmp, 10));\
+    UNISTOR_MONITOR_APPEND();
+
+#define UNISTOR_STATS_WRITE_THREAD(name,attr)\
+    tss = (UnistorTss*)getThreadPoolMgr()->getTss(THREAD_GROUP_WRITE, 0);\
+    ullNum = tss->attr;\
+    CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", name,\
+    CwxCommon::toString(ullNum, szTmp, 10));\
+    UNISTOR_MONITOR_APPEND();
 
 CWX_UINT32 UnistorApp::packMonitorInfo(){
 	string strValue;
@@ -656,17 +673,30 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
             m_config.getCommon().m_uiThreadNum);
         UNISTOR_MONITOR_APPEND();
         UnistorTss * tss=NULL;
+        CWX_UINT32 uiMsgNum = 0;
+        CWX_UINT32 uiConnNum = 0;
         for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){
             tss = (UnistorTss*)getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0);
             //读线程的消息队列滞留的消息
-            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE,
+            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX,
                 i, m_recvThreadPool[i]->getQueuedMsgNum());
             UNISTOR_MONITOR_APPEND();
+            uiMsgNum += m_recvThreadPool[i]->getQueuedMsgNum();
             //读线程的连接数
-            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT,
+            CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX,
                 i, ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum());
             UNISTOR_MONITOR_APPEND();
+            uiConnNum += ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum();
         }
+        //读线程的消息队列滞留的消息
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE,
+            uiMsgNum);
+        UNISTOR_MONITOR_APPEND();
+        //读线程的连接数
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT,
+            uiConnNum);
+        UNISTOR_MONITOR_APPEND();
+
         ///写线程的滞留消息数量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE,
             m_writeThreadPool->getQueuedMsgNum());
@@ -760,12 +790,85 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
+        CWX_UINT64 ullNum = 0;
+        //get的访问数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_NUM,m_ullStatsGetNum);
+        ///read cache的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_READ_CACHE_NUM,m_ullStatsGetReadCacheNum);
+        ///get查询存在结果的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_EXIST_NUM,m_ullStatsGetExistNum);
+        ///gets的访问数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_NUM,m_ullStatsGetsNum);
+        ///gets的key的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_NUM,m_ullStatsGetsKeyNum);
+        ///gets的key的cache数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM,m_ullStatsGetsKeyReadCacheNum);
+        ///gets的key的存在的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM,m_ullStatsGetsKeyExistNum);
+        ///list的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_LIST_NUM,m_ullStatsListNum);
+        ///exist的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_NUM,m_ullStatsExistNum);
+        ///exist的read cache的数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM,m_ullStatsExistReadCacheNum);
+        ///exist的存在数量
+        UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_EXIST_NUM,m_ullStatsExistExistNum);
+        ///add的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_NUM,m_ullStatsAddNum);
+        ///add的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM,m_ullStatsAddReadCacheNum);
+        ///add的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM,m_ullStatsAddWriteCacheNum);
+        ///set的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_NUM,m_ullStatsSetNum);
+        ///set的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_READ_CACHE_NUM,m_ullStatsSetReadCacheNum);
+        ///set的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM,m_ullStatsSetWriteCacheNum);
+        ///update的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_NUM,m_ullStatsUpdateNum);
+        ///update的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM,m_ullStatsUpdateReadCacheNum);
+        ///update的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM,m_ullStatsUpdateWriteCacheNum);
+        ///inc的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_NUM,m_ullStatsIncNum);
+        ///inc的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_READ_CACHE_NUM,m_ullStatsIncReadCacheNum);
+        ///inc的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM,m_ullStatsIncWriteCacheNum);
+        ///del的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_NUM,m_ullStatsDelNum);
+        ///del的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM,m_ullStatsDelReadCacheNum);
+        ///del的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM,m_ullStatsDelWriteCacheNum);
+        ///import的数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_NUM,m_ullStatsImportNum);
+        ///import的read cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM,m_ullStatsImportReadCacheNum);
+        ///import的write cache数量
+        UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM,m_ullStatsImportWriteCacheNum);
 
 	}while(0);
 	strcpy(m_szBuf + uiPos, "END\r\n");
 	return strlen(m_szBuf);
 
 }
+
+#define UNISTOR_STATS_READ_OUTPUT(attr)\
+    ullNum = 0;\
+    for (i=0; i<app->m_config.getCommon().m_uiThreadNum; i++){\
+    tss = (UnistorTss*)app->getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0);\
+    ullNum += tss->attr;\
+    };\
+    CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString(ullNum, szTmp, 10));\
+
+
+#define UNISTOR_STATS_WRITE_OUTPUT(attr)\
+    tss = (UnistorTss*)app->getThreadPoolMgr()->getTss(THREAD_GROUP_WRITE, 0);\
+    ullNum = tss->attr;\
+    CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString(ullNum, szTmp, 10));\
 
 //获取系统key。1：成功；0：不存在；-1：失败;
 int UnistorApp::getSysKey(void* pApp, ///<app对象
@@ -781,6 +884,7 @@ int UnistorApp::getSysKey(void* pApp, ///<app对象
     char szTmp[64];
     CWX_UINT32 i=0;
     UnistorTss * tss=NULL;
+    CWX_UINT64 ullNum = 0;
     if (strKey == UNISTOR_SYS_KEY_PID){
         CwxCommon::snprintf(szData, uiLen, "%d", getpid());
     }else if (strKey == UNISTOR_SYS_KEY_PPID){
@@ -828,12 +932,24 @@ int UnistorApp::getSysKey(void* pApp, ///<app对象
         CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getBinLogMgr()->getMaxFile(strValue).c_str());
     }else if (strKey == UNISTOR_SYS_KEY_READ_THREAD_NUM){
         CwxCommon::snprintf(szData, uiLen, "%u", app->m_config.getCommon().m_uiThreadNum);
-    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE))==UNISTOR_SYS_KEY_READ_THREAD_QUEUE){
-        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE)).c_str(), NULL, 0);
+    }else if (strKey == UNISTOR_SYS_KEY_READ_THREAD_QUEUE){
+        CWX_UINT32 uiNum = 0;
+        for (i =0; i<app->m_config.getCommon().m_uiThreadNum; i++)
+            uiNum += app->m_recvThreadPool[i]->getQueuedMsgNum();
+        CwxCommon::snprintf(szData, uiLen, "%u", uiNum);
+    }else if (strKey == UNISTOR_SYS_KEY_READ_THREAD_CONNECT){
+        CWX_UINT32 uiNum = 0;
+        for (i =0; i<app->m_config.getCommon().m_uiThreadNum; i++){
+            tss = (UnistorTss*)(app->getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0));
+            uiNum += ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum();
+        }
+        CwxCommon::snprintf(szData, uiLen, "%u", uiNum);
+    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX))==UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX){
+        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX)).c_str(), NULL, 0);
         if (i >= app->m_config.getCommon().m_uiThreadNum) return 0;
         CwxCommon::snprintf(szData, uiLen, "%u", app->m_recvThreadPool[i]->getQueuedMsgNum());
-    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT))==UNISTOR_SYS_KEY_READ_THREAD_CONNECT){
-        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT)).c_str(), NULL, 0);
+    }else if (strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX))==UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX){
+        i = strtoul(strKey.substr(0, strlen(UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX)).c_str(), NULL, 0);
         if (i >= app->m_config.getCommon().m_uiThreadNum) return 0;
         tss = (UnistorTss*)(app->getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0));
         CwxCommon::snprintf(szData, uiLen, "%u", ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum());
@@ -891,9 +1007,68 @@ int UnistorApp::getSysKey(void* pApp, ///<app对象
         CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getCachedItemCount(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT){
         CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
+    }else if (strKey == UNISTOR_SYS_KEY_GET_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GET_READ_CACHE_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GET_EXIST_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetExistNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GETS_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetsNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GETS_KEY_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetsKeyNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetsKeyReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetsKeyExistNum);
+    }else if (strKey == UNISTOR_SYS_KEY_LIST_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsListNum);
+    }else if (strKey == UNISTOR_SYS_KEY_EXIST_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsExistNum);
+    }else if (strKey == UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsExistReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_EXIST_EXIST_NUM){
+        UNISTOR_STATS_READ_OUTPUT(m_ullStatsExistExistNum);
+    }else if (strKey == UNISTOR_SYS_KEY_ADD_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsAddNum);
+    }else if (strKey == UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsAddReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsAddWriteCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_SET_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsSetNum);
+    }else if (strKey == UNISTOR_SYS_KEY_SET_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsSetReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsSetWriteCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_UPDATE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsUpdateNum);
+    }else if (strKey == UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsUpdateReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsUpdateWriteCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_INC_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsIncNum);
+    }else if (strKey == UNISTOR_SYS_KEY_INC_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsIncReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsIncWriteCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_DEL_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsDelNum);
+    }else if (strKey == UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsDelReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsDelWriteCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_IMPORT_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsImportNum);
+    }else if (strKey == UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsImportReadCacheNum);
+    }else if (strKey == UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM){
+        UNISTOR_STATS_WRITE_OUTPUT(m_ullStatsImportWriteCacheNum);
     }else{
         return 0;
     }
+
     uiLen = strlen(szData);
     return 1;
 

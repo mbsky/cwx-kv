@@ -141,131 +141,151 @@ public:
 
 	///检测是否存在key；1：存在；0：不存在；-1：失败
     virtual int isExist(UnistorTss* tss, ///tss对象
-        CwxKeyValueItem const& key, ///<检查的key
-        CwxKeyValueItem const* field, ///<检查的field，若为空表示检查key
-        CwxKeyValueItem const* extra, ///<存储引擎的extra data
+        CwxKeyValueItemEx const& key, ///<检查的key
+        CwxKeyValueItemEx const* field, ///<检查的field，若为空表示检查key
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra data
         CWX_UINT32& uiVersion, ///<返回key的版本号
-        CWX_UINT32& uiFieldNum ///<返回key的field的数量
+        CWX_UINT32& uiFieldNum, ///<返回key的field的数量
+        bool& bReadCached ///<数据是否在read cache中
         )=0;
 	
     ///添加key，1：成功；0：存在；-1：失败；
     virtual int addKey(UnistorTss* tss, ///<tss对象
-        CwxKeyValueItem const& key, ///<添加的key
-        CwxKeyValueItem const* field, ///<添加的field，若指定，则根据sign值决定是否添加field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<添加key或field的数据
+        CwxKeyValueItemEx const& key, ///<添加的key
+        CwxKeyValueItemEx const* field, ///<添加的field，若指定，则根据sign值决定是否添加field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<添加key或field的数据
         CWX_UINT32    uiSign, ///<添加的标志
         CWX_UINT32& uiVersion, ///<若大于0，则设置修改后的key为此版本，否则返回新版本
         CWX_UINT32& uiFieldNum, ///返回<key field的数量
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool bCache=true, ///<是否将key放到读cache
         CWX_UINT32 uiExpire=0 ///<若创建key，而且指定了uiExpire则设置key的超时时间
         )=0;
 	
     ///set key，1：成功；-1：错误；0：不存在，此是设置一个key的field时。
     virtual int setKey(UnistorTss* tss,///tss
-        CwxKeyValueItem const& key, ///<set的key
-        CwxKeyValueItem const* field, ///<若是set field，则指定要set的field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra 数据
-        CwxKeyValueItem const& data, ///<set的数据
+        CwxKeyValueItemEx const& key, ///<set的key
+        CwxKeyValueItemEx const* field, ///<若是set field，则指定要set的field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra 数据
+        CwxKeyValueItemEx const& data, ///<set的数据
         CWX_UINT32 uiSign, ///<设置的标记
         CWX_UINT32& uiVersion, ///<设置的version。若大于0，则设置为指定的版本，否则返回指定的版本
         CWX_UINT32& uiFieldNum, ///<key字段的数量
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool bCache=true, ///<是否对数据进行cache
         CWX_UINT32 uiExpire=0 ///<若创建key，而且指定了uiExpire则设置key的超时时间
         )=0;
     
     ///update key，1：成功；0：不存在；-1：失败；-2：版本错误
     virtual int updateKey(UnistorTss* tss, ///<tss对象
-        CwxKeyValueItem const& key, ///<update的key
-        CwxKeyValueItem const* field,///<若update field，则指定field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra 数据
-        CwxKeyValueItem const& data, ///<update的数据
+        CwxKeyValueItemEx const& key, ///<update的key
+        CwxKeyValueItemEx const* field,///<若update field，则指定field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra 数据
+        CwxKeyValueItemEx const& data, ///<update的数据
         CWX_UINT32 uiSign, ///<update的标记
         CWX_UINT32& uiVersion, ///<若指定，则key的版本必须与此值一致，否则更新失败
         CWX_UINT32& uiFieldNum, ///<返回key field的数量
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         CWX_UINT32 uiExpire=0 ///<若创建key，而且指定了uiExpire则设置key的超时时间
         )=0;
 	
     ///inc key，1：成功；0：不存在；-1：失败；-2:版本错误；-3：超出边界
     virtual int incKey(UnistorTss* tss, ///<线程tss对象
-        CwxKeyValueItem const& key,  ///<inc的key
-        CwxKeyValueItem const* field, ///<若要inc一个field计数器，则指定对应的field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& key,  ///<inc的key
+        CwxKeyValueItemEx const* field, ///<若要inc一个field计数器，则指定对应的field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
         CWX_INT32 num, ///<增加或减少的数量
         CWX_INT64  llMax, ///<若是增加而且此值不为0，则inc后的值不能超过此值
         CWX_INT64  llMin, ///<若是减少而起此值不为0，则dec后的值不能超过此值
         CWX_UINT32  uiSign, ///<inc的标记
         CWX_INT64& llValue, ///<inc或dec后的新值
         CWX_UINT32& uiVersion, ///<若指定，则key的版本号必须等于此值，否则失败。返回新版本号。
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         CWX_UINT32  uiExpire=0 ///<若创建key，而且指定了uiExpire则设置key的超时时间
         )=0;
 	
     ///del key，1：成功；0：不存在；-1：失败；-2:版本错误；
     virtual int delKey(UnistorTss* tss, ///<线程tss对象
-        CwxKeyValueItem const& key, ///<要删除的key
-        CwxKeyValueItem const* field, ///<若要删除field，则指定field的名字
-        CwxKeyValueItem const* extra,///<存储引擎的extra 数据
+        CwxKeyValueItemEx const& key, ///<要删除的key
+        CwxKeyValueItemEx const* field, ///<若要删除field，则指定field的名字
+        CwxKeyValueItemEx const* extra,///<存储引擎的extra 数据
         CWX_UINT32& uiVersion, ///<若指定版本号，则修改前的版本号必须与此值相等，否则失败。返回新版本号
-        CWX_UINT32& uiFieldNum  ///<key的字段数量
+        CWX_UINT32& uiFieldNum,  ///<key的字段数量
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached ///<数据是否在write cache中
         )=0;
 
     ///import key，1：成功；-1：失败；
     virtual int importKey(UnistorTss* tss, ///<tss对象
-        CwxKeyValueItem const& key, ///<添加的key
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<添加key或field的数据
+        CwxKeyValueItemEx const& key, ///<添加的key
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<添加key或field的数据
         CWX_UINT32& uiVersion, ///<若大于0，则设置修改后的key为此版本
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool bCache=true, ///<是否将key放到读cache
         CWX_UINT32 uiExpire=0 ///<若创建key，而且指定了uiExpire则设置key的超时时间
         )=0;
 
     ///sync 添加key，1：成功；0：存在；-1：失败；
     virtual int syncAddKey(UnistorTss* tss, ///<线程的tss对象
-        CwxKeyValueItem const& key, ///<key的名字
-        CwxKeyValueItem const* field, ///<字段的名字
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<add的数据
+        CwxKeyValueItemEx const& key, ///<key的名字
+        CwxKeyValueItemEx const* field, ///<字段的名字
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<add的数据
         CWX_UINT32 uiSign, ///<add的sign
         CWX_UINT32 uiVersion, ///<变更后的版本号
         bool bCache, ///<是否cache数据
         CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
         CWX_UINT64 ullSid, ///<变更日志的sid值
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否是从binlog恢复的数据
         )=0;
     
     ///sync set key，1：成功；-1：错误；0：不存在，此是设置一个key的field时。
     virtual int syncSetKey(UnistorTss* tss, ///<线程的tss数据
-        CwxKeyValueItem const& key, ///<set的key
-        CwxKeyValueItem const* field, ///<若是set field，则指定field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<set的数据
+        CwxKeyValueItemEx const& key, ///<set的key
+        CwxKeyValueItemEx const* field, ///<若是set field，则指定field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<set的数据
         CWX_UINT32 uiSign,  ///<set的sign
         CWX_UINT32 uiVersion, ///<set的key 版本号
         bool bCache, ///<是否cache数据
         CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
         CWX_UINT64 ullSid, ///<set binlog的sid值
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否是从binlog恢复的数据
         )=0;
     
     ///sync update key，1：成功；0：不存在；-1：失败
     virtual int syncUpdateKey(UnistorTss* tss, ///<线程的tss对象
-        CwxKeyValueItem const& key, ///<update的key
-        CwxKeyValueItem const* field, ///<若是update field，则指定field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<update的新数据
+        CwxKeyValueItemEx const& key, ///<update的key
+        CwxKeyValueItemEx const* field, ///<若是update field，则指定field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<update的新数据
         CWX_UINT32 uiSign, ///<update的标记
         CWX_UINT32 uiVersion, ///<update后的key的版本号
         CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
         CWX_UINT64 ullSid, ///<update变更binlog的sid
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否从binlog中恢复的数据
         )=0;
     
     ///sync inc key，1：成功；0：不存在；-1：失败；
     virtual int syncIncKey(UnistorTss* tss, ///<线程的tss数据
-        CwxKeyValueItem const& key,  ///<inc的key
-        CwxKeyValueItem const* field, ///<若是对field进行inc，则指定field的名字
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CWX_INT32 num,  ///<inc的数值，可以为负值
+        CwxKeyValueItemEx const& key,  ///<inc的key
+        CwxKeyValueItemEx const* field, ///<若是对field进行inc，则指定field的名字
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CWX_INT64 num,  ///<inc的数值，可以为负值
+        CWX_INT64 result,  ///<inc的数值，可以为负值
         CWX_INT64  llMax, ///<若是inc正值，而且指定llMax，则inc后的值不能超过此值
         CWX_INT64  llMin, ///<计数器的最小值
         CWX_UINT32 uiSign, ///<inc的标记
@@ -273,52 +293,61 @@ public:
         CWX_UINT32 uiVersion, ///<inc后的key的版本号
         CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
         CWX_UINT64 ullSid, ///<inc操作binlog的sid值
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否从binlog恢复的数据
         )=0;
     
     ///sync del key，1：成功；0：不存在；-1：失败；
     virtual int syncDelKey(UnistorTss* tss, ///<线程的tss对象
-        CwxKeyValueItem const& key, ///<要删除的key
-        CwxKeyValueItem const* field, ///<若是删除field，则指定field
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& key, ///<要删除的key
+        CwxKeyValueItemEx const* field, ///<若是删除field，则指定field
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
         CWX_UINT32 uiVersion, ///<key进行delete后的版本号
         CWX_UINT64 ullSid, ///<操作对应的binlog的sid
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否从binlog恢复的数据
         )=0;
 
     ///sync import key，1：成功；-1：错误。
     virtual int syncImportKey(UnistorTss* tss, ///<线程的tss数据
-        CwxKeyValueItem const& key, ///<set的key
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-        CwxKeyValueItem const& data, ///<set的数据
+        CwxKeyValueItemEx const& key, ///<set的key
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& data, ///<set的数据
         CWX_UINT32 uiVersion, ///<set的key 版本号
         bool bCache,    ///<是否将key放到读cache
         CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
         CWX_UINT64 ullSid, ///<delete操作对应的binlog的sid
+        bool& bReadCached, ///<数据是否在read cache中
+        bool& bWriteCached, ///<数据是否在write cache中
         bool  bRestore=false ///<是否从binlog恢复的数据
         )=0;
 
 
 	///获取key, 1：成功；0：不存在；-1：失败;
     virtual int get(UnistorTss* tss, ///<线程tss对象
-        CwxKeyValueItem const& key, ///<要获取的key
-        CwxKeyValueItem const* field, ///<若不为空，则获取指定的field，多个field以\n分割
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const& key, ///<要获取的key
+        CwxKeyValueItemEx const* field, ///<若不为空，则获取指定的field，多个field以\n分割
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
         char const*& szData, ///<若存在，则返回数据。内存有存储引擎分配
         CWX_UINT32& uiLen,  ///<szData数据的字节数
         bool& bKeyValue,  ///<返回的数据是否为key/value结构
         CWX_UINT32& uiVersion, ///<可以当前的版本号
         CWX_UINT32& uiFieldNum, ///<key字段的数量
+        bool& bReadCached, ///<数据是否在read cache中
         CWX_UINT8 ucKeyInfo=0 ///<是否获取key的information。0：获取key的data。1：获取key信息；2：获取系统key
         )=0;
     
     ///获取多个key, 1：成功；-1：失败;
     virtual int gets(UnistorTss* tss, ///<线程的tss对象
         list<pair<char const*, CWX_UINT16> > const& keys,  ///<要获取的key的列表。pair的first为key的名字，second为key的长度
-        CwxKeyValueItem const* field, ///<若指定，则限定获取的field范围
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const* field, ///<若指定，则限定获取的field范围
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
         char const*& szData, ///<获取的数据，内存由存储引擎分配
         CWX_UINT32& uiLen, ///<返回数据的长度
+        CWX_UINT32& uiReadCacheNum, ///<在read cache中的数量
+        CWX_UINT32& uiExistNum, ///<存在的key的数量
         CWX_UINT8 ucKeyInfo=0 ///<是否获取key的information。0：获取key的data。1：获取key信息；2：获取系统key
         )=0;
 
@@ -326,8 +355,8 @@ public:
     virtual int createCursor(UnistorStoreCursor& cursor, ///<游标对象
         char const* szBeginKey, ///<开始的key，若为NULL表示没有指定
         char const* szEndKey, ///<结束的key，若为NULL表示没有指定
-        CwxKeyValueItem const* field, ///<指定游标要返回的field。
-        CwxKeyValueItem const* extra, ///<存储引擎的extra数据
+        CwxKeyValueItemEx const* field, ///<指定游标要返回的field。
+        CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
         char* szErr2K ///<若出错，返回错误信息
         ) = 0;
 
@@ -378,12 +407,12 @@ public:
 	
     ///同步master的binlog.0：成功；-1：失败
     virtual int syncMasterBinlog(UnistorTss* tss, ///<线程tss
-        CwxPackageReader* reader,  ///<对data进行解包的外部CwxPackageReader对象
+        CwxPackageReaderEx* reader,  ///<对data进行解包的外部CwxPackageReaderEx对象
         CWX_UINT64 ullSid, ///<binlog的sid值，若为0，是从新编号sid
         CWX_UINT32 ttTimestamp, ///<binlog的时间戳
         CWX_UINT32 uiGroup, ///<binlog所属的分组
         CWX_UINT32 uiType,  ///<binlog的消息类型
-        CwxKeyValueItem const& data, ///<binlog的数据
+        CwxKeyValueItemEx const& data, ///<binlog的数据
         CWX_UINT32 uiVersion, ///<binlog对应的key的版本号
         bool  bRestore=false  ///<是否是从本地binlog恢复的数据
         );
@@ -479,19 +508,19 @@ public:
 	}
 
     ///添加Add key binlog.0：成功；-1：失败
-    int appendTimeStampBinlog(CwxPackageWriter& writer, ///<writer对象
+    int appendTimeStampBinlog(CwxPackageWriterEx& writer, ///<writer对象
         CWX_UINT32      ttNow, ///<当前的时间
         char* szErr2K=NULL ///<若出错则返回错误信息
         );
 
     ///添加Add key binlog.0：成功；-1：失败
-    int appendAddBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendAddBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* field, ///<binlog的field
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
-        CwxKeyValueItem const& data, ///<data数据
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* field, ///<binlog的field
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
+        CwxKeyValueItemEx const& data, ///<data数据
         CWX_UINT32    uiExpire, ///<失效时间
         CWX_UINT32    uiSign, ///<add key的标记
         CWX_UINT32    uiVersion, ///<key add后的版本号
@@ -500,13 +529,13 @@ public:
         );
 
     ///添加set key binlog.0：成功；-1：失败
-    int appendSetBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendSetBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* field, ///<binlog的field
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
-        CwxKeyValueItem const& data, ///<data数据
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* field, ///<binlog的field
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
+        CwxKeyValueItemEx const& data, ///<data数据
         CWX_UINT32    uiExpire, ///<失效时间
         CWX_UINT32    uiSign, ///<set key的标记
         CWX_UINT32    uiVersion, ///<key set后的版本号
@@ -515,13 +544,13 @@ public:
         );
 
     ///添加update key binlog.0：成功；-1：失败
-    int appendUpdateBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendUpdateBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* field, ///<binlog的field
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
-        CwxKeyValueItem const& data, ///<data数据
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* field, ///<binlog的field
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
+        CwxKeyValueItemEx const& data, ///<data数据
         CWX_UINT32    uiExpire, ///<失效时间
         CWX_UINT32    uiSign, ///<update key的标记
         CWX_UINT32    uiVersion, ///<key update后的版本号
@@ -529,13 +558,14 @@ public:
         );
 
     ///添加inc key binlog.0：成功；-1：失败
-    int appendIncBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendIncBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* field, ///<binlog的field
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
-        int	             num, ///<inc的数值
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* field, ///<binlog的field
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
+        CWX_INT64       num, ///<inc的数值
+        CWX_INT64       result, ///<结果的值
         CWX_INT64        llMax, ///<计数器的最大值
         CWX_INT64        llMin, ///<计数器的最小值
         CWX_UINT32        uiExpire, ///<失效时间
@@ -545,23 +575,23 @@ public:
         );
 
     ///添加del key binlog.0：成功；-1：失败
-    int appendDelBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendDelBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* field, ///<binlog的field
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* field, ///<binlog的field
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
         CWX_UINT32       uiVersion, ///<key删除后的版本号
         char*			 szErr2K ///<出错时的错误消息
         );
 
     ///添加import key binlog.0：成功；-1：失败
-    int appendImportBinlog(CwxPackageWriter& writer, ///<write对象
-        CwxPackageWriter& writer1, ///<write对象
+    int appendImportBinlog(CwxPackageWriterEx& writer, ///<write对象
+        CwxPackageWriterEx& writer1, ///<write对象
         CWX_UINT32 uiGroup, ///<所属的分组
-        CwxKeyValueItem const& key, ///<binlog的key
-        CwxKeyValueItem const* extra, ///<binlog的extra数据
-        CwxKeyValueItem const& data, ///<data数据
+        CwxKeyValueItemEx const& key, ///<binlog的key
+        CwxKeyValueItemEx const* extra, ///<binlog的extra数据
+        CwxKeyValueItemEx const& data, ///<data数据
         CWX_UINT32    uiExpire, ///<失效时间
         CWX_UINT32    uiVersion, ///<key set后的版本号
         bool          bCache, ///<是否cache数据
@@ -667,11 +697,11 @@ public:
 	static void freeField(UnistorKeyField*& key);
 	
     ///对add key的新、旧field进行归并。-1：失败；0：存在；1：成功
-    static int mergeAddKeyField(CwxPackageWriter* writer1, ///<writer对象
-        CwxPackageReader* reader1, ///<reader 对象
-        CwxPackageReader* reader2, ///<reader 对象
+    static int mergeAddKeyField(CwxPackageWriterEx* writer1, ///<writer对象
+        CwxPackageReaderEx* reader1, ///<reader 对象
+        CwxPackageReaderEx* reader2, ///<reader 对象
 		char const* key, ///<key的名字
-        CwxKeyValueItem const* field, ///<field的名字
+        CwxKeyValueItemEx const* field, ///<field的名字
 		char const* szOldData, ///<key的原数据
 		CWX_UINT32 uiOldDataLen, ///<key原数据的长度
 		bool bOldKeyValue, ///<key原数据是否为key/value
@@ -683,11 +713,11 @@ public:
         );
 	
     ///对set key的新、旧field进行归并。-1：失败；1：成功
-    static int mergeSetKeyField(CwxPackageWriter* writer1, ///<writer对象
-        CwxPackageReader* reader1, ///<reader 对象
-        CwxPackageReader* reader2, ///<reader 对象
+    static int mergeSetKeyField(CwxPackageWriterEx* writer1, ///<writer对象
+        CwxPackageReaderEx* reader1, ///<reader 对象
+        CwxPackageReaderEx* reader2, ///<reader 对象
         char const* key, ///<key的名字
-        CwxKeyValueItem const* field, ///<field的名字
+        CwxKeyValueItemEx const* field, ///<field的名字
         char const* szOldData, ///<key的原数据
         CWX_UINT32 uiOldDataLen, ///<key原数据的长度
         bool bOldKeyValue, ///<key原数据是否为key/value
@@ -699,11 +729,11 @@ public:
         );
 	
     ///对update key的新、旧field进行归并。-1：失败；0：不存在；1：成功
-    static int mergeUpdateKeyField(CwxPackageWriter* writer1, ///<writer对象
-        CwxPackageReader* reader1, ///<reader 对象
-        CwxPackageReader* reader2, ///<reader 对象
+    static int mergeUpdateKeyField(CwxPackageWriterEx* writer1, ///<writer对象
+        CwxPackageReaderEx* reader1, ///<reader 对象
+        CwxPackageReaderEx* reader2, ///<reader 对象
         char const* key, ///<key的名字
-        CwxKeyValueItem const* field, ///<field的名字
+        CwxKeyValueItemEx const* field, ///<field的名字
         char const* szOldData, ///<key的原数据
         CWX_UINT32 uiOldDataLen, ///<key原数据的长度
         bool bOldKeyValue, ///<key原数据是否为key/value
@@ -716,14 +746,15 @@ public:
         );
 
 	///对int key的更新。-2：key超出边界；-1：失败；0：不存在；1：成功;
-    static int mergeIncKeyField(CwxPackageWriter* writer1, ///<writer对象
-        CwxPackageReader* reader1, ///<reader 对象
+    static int mergeIncKeyField(CwxPackageWriterEx* writer1, ///<writer对象
+        CwxPackageReaderEx* reader1, ///<reader 对象
         char const* key, ///<key的名字
-        CwxKeyValueItem const* field, ///<field的名字
+        CwxKeyValueItemEx const* field, ///<field的名字
         char const* szOldData, ///<key的原数据
         CWX_UINT32 uiOldDataLen, ///<key原数据的长度
         bool bOldKeyValue, ///<key原数据是否为key/value
-		int  num,  ///<增加的值
+		CWX_INT64  num,  ///<增加的值
+        CWX_INT64* result, ///<若不为NULL，则设置为此值
 		CWX_INT64  llMax, ///<计数器的最大值
 		CWX_INT64  llMin, ///<计数器的最小值
 		CWX_INT64& llValue, ///<计数器的新值
@@ -734,22 +765,21 @@ public:
         char* szErr2K ///<merge失败的错误消息
         );
 	
-    ///对delete  key的field。-1：失败；0：不存在；1：成功
-    static int mergeRemoveKeyField(CwxPackageWriter* writer1, ///<writer对象
-        CwxPackageReader* reader1, ///<reader 对象
+    ///对delete  key的field。-1：失败；1：成功
+    static int mergeRemoveKeyField(CwxPackageWriterEx* writer1, ///<writer对象
+        CwxPackageReaderEx* reader1, ///<reader 对象
         char const* key, ///<key的名字
-        CwxKeyValueItem const* field, ///<field的名字
+        CwxKeyValueItemEx const* field, ///<field的名字
         char const* szOldData, ///<key的原数据
         CWX_UINT32 uiOldDataLen, ///<key原数据的长度
         bool bOldKeyValue, ///<key原数据是否为key/value
-        bool bSync, ///<是否是从binlog的同步数据
         CWX_UINT32& uiFieldNum, ///<返回字段的数量
         char* szErr2K ///<merge失败的错误消息
         );
     
     ///提取指定的field, UNISTOR_ERR_SUCCESS：成功；其他：错误代码
-    static int pickField(CwxPackageReader& reader, ///<reader对象
-        CwxPackageWriter& write, ///<writer对象
+    static int pickField(CwxPackageReaderEx& reader, ///<reader对象
+        CwxPackageWriterEx& write, ///<writer对象
         UnistorKeyField const* field, ///<要获取的field列表
         char const* szData, ///<key的field 数据
         CWX_UINT32 uiDataLen, ///<key的数据的长度
@@ -757,7 +787,7 @@ public:
         );
 
     //unpack的data的field；-1：失败；0：不是kv结构；1：成功
-    inline int unpackFields(CwxPackageReader& reader, ///<reader对象
+    inline int unpackFields(CwxPackageReaderEx& reader, ///<reader对象
         char const* szData, ///<fields的key/value数据
         CWX_UINT32 uiDataLen, ///<fields的key/value数据的长度
         CWX_UINT32& uiExpire, ///<数据的失效时间
@@ -846,9 +876,11 @@ public:
     }
     
     ///获取key的ascii的less比较
-    static inline UNISTOR_KEY_ASCII_LESS getKeyAsciiLess(){
+    static inline UNISTOR_KEY_CMP_LESS_FN getKeyAsciiLess(){
         return m_fnKeyAsciiLess;
     }
+    
+
 protected:
     UNISTOR_MSG_CHANNEL_FN     m_pMsgPipeFunc; ///<消息通道的function
     UNISTOR_GET_SYS_INFO_FN    m_pGetSysInfoFunc; ///<获取信息信息的function
@@ -872,7 +904,7 @@ protected:
     CWX_UINT32              m_uiReadCacheItemNum;   ///<读cache的最多cache的key的数量
     static UNISTOR_KEY_GROUP_FN    m_fnKeyStoreGroup;   ///<获取基于store key的group
     static UNISTOR_KEY_GROUP_FN    m_fnKeyAsciiGroup;    ///<key的ascii group分组获取函数
-    static UNISTOR_KEY_ASCII_LESS  m_fnKeyAsciiLess;///<key的ascii less比较函数
+    static UNISTOR_KEY_CMP_LESS_FN  m_fnKeyAsciiLess;///<key的ascii less比较函数
 };
 
 #endif

@@ -1,6 +1,6 @@
 [counter_bench]
-home=/usr/home/wenbo/jpool/src/unistor/trunk/unistor/unistor_bench
-listen=172.16.42.63:9669
+home=/usr/home/unistor/trunk/unistor/unistor_bench
+listen=172.162.142.163:2263
 conn_num=500
 conn_lasting=1
 key_type=int32/int64/int128/int256/char
@@ -13,5 +13,5 @@ data_master=yes
 data_group=1
 data_group_index=0
 cache=yes
-user=dwb2
-passwd=dwb2
+user=unistor
+passwd=unistor

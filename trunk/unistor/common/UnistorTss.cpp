@@ -16,24 +16,26 @@ UnistorTss::~UnistorTss(){
     if (m_szDataBuf1) delete [] m_szDataBuf1;
     if (m_szDataBuf2) delete [] m_szDataBuf2;
     if (m_szDataBuf3) delete [] m_szDataBuf3;
-    if (m_engineConf) delete m_engineConf;
+//    if (m_engineConf) delete m_engineConf;
     if (m_userObj) delete m_userObj;
 }
 
 int UnistorTss::init(UnistorTssUserObj* pUserObj){
     m_pZkConf = NULL;
     m_pZkLock = NULL;
-    m_pReader = new CwxPackageReader(false);
-    m_pItemReader = new CwxPackageReader(false);
-    m_pEngineReader = new CwxPackageReader(false);
-    m_pEngineItemReader = new CwxPackageReader(false);
-    m_pWriter = new CwxPackageWriter(UNISTOR_DEF_KV_SIZE);
-    m_pItemWriter = new CwxPackageWriter(UNISTOR_DEF_KV_SIZE);
-    m_pEngineWriter = new CwxPackageWriter(UNISTOR_DEF_KV_SIZE);
-    m_pEngineItemWriter = new CwxPackageWriter(UNISTOR_DEF_KV_SIZE);
+    m_pReader = new CwxPackageReaderEx(false);
+    m_pItemReader = new CwxPackageReaderEx(false);
+    m_pEngineReader = new CwxPackageReaderEx(false);
+    m_pEngineItemReader = new CwxPackageReaderEx(false);
+    m_pWriter = new CwxPackageWriterEx(UNISTOR_DEF_KV_SIZE);
+    m_pItemWriter = new CwxPackageWriterEx(UNISTOR_DEF_KV_SIZE);
+    m_pEngineWriter = new CwxPackageWriterEx(UNISTOR_DEF_KV_SIZE);
+    m_pEngineItemWriter = new CwxPackageWriterEx(UNISTOR_DEF_KV_SIZE);
     m_szDataBuf = new char[UNISTOR_DEF_KV_SIZE];
     m_uiDataBufLen= UNISTOR_DEF_KV_SIZE;
     m_userObj = pUserObj;
     m_engineConf = NULL;
+    ///统计初始化
+    resetStats();
     return 0;
 }

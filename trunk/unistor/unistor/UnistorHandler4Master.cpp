@@ -495,10 +495,10 @@ int UnistorHandler4Master::dealSyncChunkData(CwxMsgBlock*& msg, UnistorTss* pTss
     //检测签名
     bool bSign = false;
     if (m_syncSession->m_strSign.length()) {
-        CwxKeyValueItem const* pItem = m_reader.getKey(m_syncSession->m_strSign.c_str());
+        CwxKeyValueItemEx const* pItem = m_reader.getKey(m_syncSession->m_strSign.c_str());
         if (pItem){//存在签名key
             if (!checkSign(m_reader.getMsg() + sizeof(ullSeq),
-                pItem->m_szKey - CwxPackage::getKeyOffset() - m_reader.getMsg() - sizeof(ullSeq),
+                pItem->m_szKey - CwxPackageEx::getKeyOffset(pItem->m_unKeyLen, pItem->m_uiDataLen) - m_reader.getMsg() - sizeof(ullSeq),
                 pItem->m_szData,
                 m_syncSession->m_strSign.c_str()))
             {
@@ -580,7 +580,7 @@ int UnistorHandler4Master::saveBinlog(UnistorTss* pTss,
     CWX_UINT32 ttTimestamp;
     CWX_UINT32 uiGroup;
     CWX_UINT32 uiType;
-    CwxKeyValueItem const* data;
+    CwxKeyValueItemEx const* data;
     ///获取binlog的数据
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseSyncData(pTss->m_pReader, 
         szBinLog,
@@ -596,7 +596,7 @@ int UnistorHandler4Master::saveBinlog(UnistorTss* pTss,
         CWX_ERROR(("Failure to parse binlog from master, err=%s", pTss->m_szBuf2K));
         return -1;
     }
-	CwxKeyValueItem item = *data;
+	CwxKeyValueItemEx item = *data;
 	if (0 != m_pApp->getStore()->syncMasterBinlog(pTss,
         pTss->m_pItemReader,
         ullSid,

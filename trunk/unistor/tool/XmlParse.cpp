@@ -725,7 +725,7 @@ bool CwxXmlPackageConv::packageToXml(char const* szRootName,
                                      CWX_UINT32& uiOutLen,
                                      char const* szXmlTitile)
 {
-    CwxPackageReader package;
+    CwxPackageReaderEx package;
     if (!package.unpack(szSrc, uiSrcLen, false, true))
     {
         CwxCommon::snprintf(m_szErrMsg, 511, "Failure to unpack msg, err=%s", package.getErrMsg());
@@ -735,7 +735,7 @@ bool CwxXmlPackageConv::packageToXml(char const* szRootName,
 }
 
 bool CwxXmlPackageConv::packageToXml(char const* szRootName,
-                                     CwxPackageReader& package,
+                                     CwxPackageReaderEx& package,
                                      char* szOut,
                                      CWX_UINT32& uiOutLen,
                                      char const* szXmlTitile)
@@ -778,7 +778,7 @@ bool CwxXmlPackageConv::packageToXmlNode(char const* szNodeName,
                                          char* szOut,
                                          CWX_UINT32& uiOutLen)
 {
-    CwxPackageReader package;
+    CwxPackageReaderEx package;
     if (!package.unpack(szSrc, uiSrcLen, false, true))
     {
         CwxCommon::snprintf(m_szErrMsg, 511, "Failure to unpack msg, err=%s", package.getErrMsg());
@@ -788,11 +788,11 @@ bool CwxXmlPackageConv::packageToXmlNode(char const* szNodeName,
 }
 
 bool CwxXmlPackageConv::packageToXmlNode(char const* szNodeName,
-                                         CwxPackageReader& package,
+                                         CwxPackageReaderEx& package,
                                          char* szOut,
                                          CWX_UINT32& uiOutLen)
 {
-    CwxKeyValueItem const* pItem;
+    CwxKeyValueItemEx const* pItem;
     CWX_UINT32 pos = 0;
     CWX_UINT32 uiTmp = 0;
     memset(szOut, 0x00, uiOutLen);
@@ -824,11 +824,12 @@ bool CwxXmlPackageConv::packageToXmlNode(char const* szNodeName,
 ///xml转换为package
 bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, CWX_UINT32& uiOutLen)
 {
-    CWX_UINT32 pos = 4;
+    CWX_UINT32 pos = 0;
     CWX_UINT16 key_len=0;
     CWX_UINT32 data_len=0;
+    CWX_UINT32 total_data_len=0;
     CWX_UINT32 byte4;
-    CWX_UINT16 byte2;
+    char* pKeyValue=NULL;
     int       ret;
     list<char*>::const_iterator text_iter;
     list<pair<char*, char*> >::const_iterator attr_iter;
@@ -841,15 +842,16 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
     }
     //add key
     key_len = strlen(treeNode->m_szElement);
-    if (uiOutLen < pos + CwxPackage::getKvLen(key_len, 0))
+    if (uiOutLen < pos + CwxPackageEx::getKvLen(key_len, 0))
     {
         strcpy(this->m_szErrMsg, "Package's buf is too small.");
         return false;
     }
-    //add key len
-    byte2 = CWX_HTONS(key_len);
-    memcpy(szOut + pos, &byte2, sizeof(byte2));
-    pos +=2;
+    CwxPackageEx::encodeUint16(key_len, (unsigned char*)(szOut + pos), data_len);
+    pos += data_len;
+    //append the key/value sign
+    pKeyValue = szOut + pos;
+    pos++;
     //append key with null
     memcpy(szOut + pos, treeNode->m_szElement, key_len + 1);
     pos += key_len + 1;
@@ -870,6 +872,7 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
             }
             memcpy(szOut + pos, *text_iter, data_len);
             pos += data_len;
+            total_data_len += data_len;
             text_iter++;
         }
         szOut[pos++]=0x00;//append the \0
@@ -881,13 +884,14 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
         attr_iter = treeNode->m_lsAttrs.begin();
         while(attr_iter != treeNode->m_lsAttrs.end())
         {
-            ret = CwxPackage::appendKey(szOut + pos, uiOutLen-pos, attr_iter->first, strlen(attr_iter->first), attr_iter->second, strlen(attr_iter->second), false);
+            ret = CwxPackageEx::appendKey(szOut + pos, uiOutLen-pos, attr_iter->first, strlen(attr_iter->first), attr_iter->second, strlen(attr_iter->second), false);
             if (-1 == ret)
             {
                 strcpy(this->m_szErrMsg, "Buf is too small.");
                 return false;
             }
             pos += ret;
+            total_data_len += ret;
             attr_iter ++;
         }
         //add child
@@ -899,33 +903,31 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
                 data_len = uiOutLen - pos;
                 if (!xmlToPackage(child, szOut + pos, data_len)) return false;
                 pos += data_len;
+                total_data_len += data_len;
                 child = child->m_next;
             }
         }
         szOut[pos++] = 0x00;
     }
-    if (bKeyValue)
-    {
-        byte4 = CWX_HTONL(pos + 0x80000000);
-    }
-    else
-    {
-        byte4 = CWX_HTONL(pos);
-    }
-    memcpy(szOut, &byte4, 4);
-    uiOutLen = pos;
+    *pKeyValue=bKeyValue?1:0;
+    byte4 = CwxPackageEx::getKvLen(key_len, total_data_len);
+    unsigned char szBuf[10];
+    CwxPackageEx::encodeUint32(byte4, (unsigned char*)szBuf, data_len);
+    memmove(szOut+data_len, szOut, pos);
+    memcpy(szOut, szBuf, data_len);
+    uiOutLen = pos + data_len;
     return true;
 }
 
 ///package转换为xml
-bool CwxXmlPackageConv::packageToXml(CwxKeyValueItem const& item, char* szOut, CWX_UINT32& uiOutLen)
+bool CwxXmlPackageConv::packageToXml(CwxKeyValueItemEx const& item, char* szOut, CWX_UINT32& uiOutLen)
 {
     CWX_UINT32 pos = 0;
     CWX_UINT32 left = uiOutLen;
     CWX_UINT32 in_len = 0;
     CWX_UINT32 out_len = 0;
-    CwxKeyValueItem const* pItem;
-    CwxPackageReader package;
+    CwxKeyValueItemEx const* pItem;
+    CwxPackageReaderEx package;
     if (NULL == item.m_szData)
     {
         CwxCommon::snprintf(this->m_szErrMsg, 511, "key[%s]'s value is null.", item.m_szKey);

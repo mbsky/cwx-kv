@@ -33,6 +33,7 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_KEY_MIN    "min"    ///<最小值
 #define UNISTOR_KEY_N "n"           ///<number
 #define UNISTOR_KEY_P "p"            ///<password
+#define UNISTOR_KEY_R "r"            ///<inc的result值，此在inc的sync的时候存在
 #define UNISTOR_KEY_RET  "ret"       ///<返回值的ret
 #define UNISTOR_KEY_SEQ   "seq"      ///<数据同步的消息序列号
 #define UNISTOR_KEY_SESSION "session" ///<数据同步的session
@@ -66,8 +67,10 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP "binlog_max_timestamp" ///<binlog的最大时间戳
 #define UNISTOR_SYS_KEY_BINLOG_MAX_FILE "binlog_max_file" ///<binlog的最大文件
 #define UNISTOR_SYS_KEY_READ_THREAD_NUM  "read_thread_num" ///<读线程的数量
-#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE "read_thread_queue_" ///<线程的队列前缀
-#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT "read_thread_connect_" ///<读线程的链接前缀
+#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE "read_thread_queue" ///<线程的队列的消息数量
+#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT "read_thread_connect" ///<读线程的链接数量
+#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX "read_thread_queue_" ///<线程的队列前缀
+#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX "read_thread_connect_" ///<读线程的链接前缀
 #define UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE "write_thread_queue" ///<写线程的队列
 #define UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE "trans_thread_queue" ///<转发线程队列
 #define UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE "checkpoint_thread_queue" ///<checkpoint线程的队列
@@ -90,6 +93,37 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cache的key的数量
 #define UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT   "read_cache_used_element" ///<读cache占用的单元数量
 #define UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT   "read_cache_free_element" ///<读cache空闲的单元数量
+#define UNISTOR_SYS_KEY_GET_NUM                   "get_num" ///<get的访问数量
+#define UNISTOR_SYS_KEY_GET_READ_CACHE_NUM        "get_read_cache_num" ///<read cache的数量
+#define UNISTOR_SYS_KEY_GET_EXIST_NUM             "get_exist_num" ///<存在的数量
+#define UNISTOR_SYS_KEY_GETS_NUM                  "gets_num" ///<gets的访问数量
+#define UNISTOR_SYS_KEY_GETS_KEY_NUM              "gets_key_num" ///<gets的key的数量
+#define UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM   "gets_key_read_cache_num" ///<gets 的key使用cache的数量
+#define UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM        "gets_key_exist_num" ///<gets的key存在的数量
+#define UNISTOR_SYS_KEY_LIST_NUM                  "list_num" ///<list访问的数量
+#define UNISTOR_SYS_KEY_EXIST_NUM                 "exist_num" ///<exist的访问数量
+#define UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM      "exist_read_cache_num" ///<exist的read cache的数量
+#define UNISTOR_SYS_KEY_EXIST_EXIST_NUM           "exist_exist_num" ///<exist的存在数量
+#define UNISTOR_SYS_KEY_ADD_NUM                   "add_num" ///<add的数量
+#define UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM        "add_read_cache_num"//<add的read cache数量
+#define UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM       "add_write_cache_num" ///<add的write cache数量
+#define UNISTOR_SYS_KEY_SET_NUM                   "set_num" ///<set的数量
+#define UNISTOR_SYS_KEY_SET_READ_CACHE_NUM        "set_read_cache_num"//<set的read cache数量
+#define UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM       "set_write_cache_num" ///<set的write cache数量
+#define UNISTOR_SYS_KEY_UPDATE_NUM                "update_num" ///<update的数量
+#define UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM     "update_read_cache_num"//<update的read cache数量
+#define UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM    "update_write_cache_num" ///<update的write cache数量
+#define UNISTOR_SYS_KEY_INC_NUM                   "inc_num" ///<inc的数量
+#define UNISTOR_SYS_KEY_INC_READ_CACHE_NUM        "inc_read_cache_num"//<inc的read cache数量
+#define UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM       "inc_write_cache_num" ///<inc的write cache数量
+#define UNISTOR_SYS_KEY_DEL_NUM                   "del_num" ///<del的数量
+#define UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM        "del_read_cache_num"//<del的read cache数量
+#define UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM       "del_write_cache_num" ///<del的write cache数量
+#define UNISTOR_SYS_KEY_IMPORT_NUM                "import_num" ///<del的数量
+#define UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM     "import_read_cache_num"//<del的read cache数量
+#define UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM    "import_write_cache_num" ///<del的write cache数量
+#define UNISTOR_SYS_KEY_ENGINE_INFO               "engine_info"   ///<engine的说明信息
+#define UNISTOR_SYS_KEY_ENGINE_SYS_KEY            "engine_sys_key" ///<engine的系统key
 
 ///驱动的对象创建symbol name
 #define UNISTOR_ENGINE_CREATE_SYMBOL_NAME  "unistor_create_engine"
@@ -182,7 +216,5 @@ typedef int (*UNISTOR_KEY_CMP_LESS_FN)(char const* key1, CWX_UINT16 unKey1Len, c
 typedef size_t (*UNISTOR_KEY_HASH_FN)(char const* key1, CWX_UINT16 unKey1Len);
 ///key的group函数。
 typedef CWX_UINT32 (*UNISTOR_KEY_GROUP_FN)(char const* key1, CWX_UINT16 unKey1Len);
-///key的ascii级别less函数。0：相等；-1：小于；1：大于
-typedef int (*UNISTOR_KEY_ASCII_LESS)(char const* key1, CWX_UINT16 unKey1Len, char const* key2, CWX_UINT16 unKey2Len);
 
 #endif

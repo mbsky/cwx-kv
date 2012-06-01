@@ -2,8 +2,8 @@
 #define __UNISTOR_HANDLER_4_ZK_H__
 
 #include "UnistorMacro.h"
-#include "CwxPackageReader.h"
-#include "CwxPackageWriter.h"
+#include "CwxPackageReaderEx.h"
+#include "CwxPackageWriterEx.h"
 #include "CwxMsgBlock.h"
 #include "UnistorTss.h"
 #include "ZkLocker.h"

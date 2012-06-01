@@ -165,12 +165,14 @@ int UnistorHandler4RecvWrite::importKey(UnistorTss* pTss,
                                      CWX_UINT32& uiVersion,
                                      CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItem const*  key=NULL;
-    CwxKeyValueItem const*  extra=NULL;
-    CwxKeyValueItem const*  data = NULL;
+    CwxKeyValueItemEx const*  key=NULL;
+    CwxKeyValueItemEx const*  extra=NULL;
+    CwxKeyValueItemEx const*  data = NULL;
     CWX_UINT32 uiExpire=0;
     char const* szUser=NULL;
     char const* szPasswd=NULL;
+    bool bReadCache = false;
+    bool bWriteCache = false;
     bool    bCache=true;
     int ret = UNISTOR_ERR_SUCCESS;
     uiFieldNum = 0;
@@ -207,8 +209,15 @@ int UnistorHandler4RecvWrite::importKey(UnistorTss* pTss,
         extra,
         *data,
         uiVersion,
+        bReadCache,
+        bWriteCache,
         bCache,
         uiExpire);
+    pTss->m_ullStatsImportNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsImportReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsImportWriteCacheNum++;
+    }
     if (1 == ret) return UNISTOR_ERR_SUCCESS;
     return UNISTOR_ERR_ERROR;
 }
@@ -220,16 +229,18 @@ int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItem const*  key=NULL;
-    CwxKeyValueItem const*  field = NULL;
-    CwxKeyValueItem const*  extra=NULL;
-	CwxKeyValueItem const*  data = NULL;
+    CwxKeyValueItemEx const*  key=NULL;
+    CwxKeyValueItemEx const*  field = NULL;
+    CwxKeyValueItemEx const*  extra=NULL;
+	CwxKeyValueItemEx const*  data = NULL;
 	CWX_UINT32 uiExpire=0;
     CWX_UINT32 uiSign = 0;
     char const* szUser=NULL;
     char const* szPasswd=NULL;
     bool    bCache=true;
 	int ret = UNISTOR_ERR_SUCCESS;
+    bool bReadCache = false;
+    bool bWriteCache = false;
     ///解析数据包
     if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
         ret = UNISTOR_ERR_ERROR;
@@ -268,9 +279,16 @@ int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
         uiSign,
         uiVersion,
         uiFieldNum,
+        bReadCache,
+        bWriteCache,
         bCache,
         uiExpire);
-	if (1 == ret) return UNISTOR_ERR_SUCCESS;
+    pTss->m_ullStatsAddNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsAddReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsAddWriteCacheNum++;
+    }
+    if (1 == ret) return UNISTOR_ERR_SUCCESS;
     if (0 == ret) return UNISTOR_ERR_EXIST;
     return UNISTOR_ERR_ERROR;
 }
@@ -281,13 +299,15 @@ int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-	CwxKeyValueItem const* key=NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
-	CwxKeyValueItem const* data = NULL;
+	CwxKeyValueItemEx const* key=NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
+	CwxKeyValueItemEx const* data = NULL;
 	CWX_UINT32 uiSign=0;
 	CWX_UINT32 uiExpire = 0;
     bool bCache = true;
+    bool bReadCache = false;
+    bool bWriteCache = false;
     char const* user=NULL;
     char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
@@ -329,8 +349,15 @@ int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
         uiSign,
         uiVersion,
         uiFieldNum,
+        bReadCache,
+        bWriteCache,
         bCache,
         uiExpire);
+    pTss->m_ullStatsSetNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsSetReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsSetWriteCacheNum++;
+    }
 
 	if (1 == ret) return UNISTOR_ERR_SUCCESS;
     if (0 == ret) return UNISTOR_ERR_NEXIST;
@@ -344,12 +371,14 @@ int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
                                        CWX_UINT32& uiVersion,
                                        CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItem const* key = NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
-	CwxKeyValueItem const* data = NULL;
+    CwxKeyValueItemEx const* key = NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
+	CwxKeyValueItemEx const* data = NULL;
 	CWX_UINT32 uiExpire = 0;
     CWX_UINT32 uiSign=0;
+    bool bReadCache = false;
+    bool bWriteCache = false;
     char const* user=NULL;
     char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
@@ -389,7 +418,15 @@ int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
         uiSign,
         uiVersion,
         uiFieldNum,
+        bReadCache,
+        bWriteCache,
         uiExpire);
+    pTss->m_ullStatsUpdateNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsUpdateReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsUpdateWriteCacheNum++;
+    }
+
 	if (1 == ret){
 		return UNISTOR_ERR_SUCCESS;
 	}else if (0 == ret){
@@ -406,14 +443,17 @@ int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
                                     CWX_INT64& llValue,
                                     CWX_UINT32& uiVersion)
 {
-    CwxKeyValueItem const* key = NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+    CwxKeyValueItemEx const* key = NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
 	CWX_INT64 num=0;
+    CWX_INT64 result = 0;
 	CWX_INT64  llMax = 0;
 	CWX_INT64  llMin = 0;
     CWX_UINT32  uiExpire=0;
     CWX_UINT32 uiSign = 0;
+    bool bReadCache = false;
+    bool bWriteCache = false;
     char const* user=NULL;
     char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
@@ -428,6 +468,7 @@ int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
         field,
         extra,
 		num,
+        result,
 		llMax,
 		llMin,
         uiExpire,
@@ -453,7 +494,15 @@ int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
         uiSign,
         llValue,
         uiVersion,
+        bReadCache,
+        bWriteCache,
         uiExpire);
+    pTss->m_ullStatsIncNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsIncReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsIncWriteCacheNum++;
+    }
+
 	if (1 == ret){
 		return UNISTOR_ERR_SUCCESS;
 	}else if (0 == ret){
@@ -472,11 +521,14 @@ int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItem const* key=NULL;
-    CwxKeyValueItem const* field = NULL;
-    CwxKeyValueItem const* extra = NULL;
+    CwxKeyValueItemEx const* key=NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
     char const* user=NULL;
     char const* passwd=NULL;
+    bool bReadCache = false;
+    bool bWriteCache = false;
+
     int ret = UNISTOR_ERR_SUCCESS;
     ///解析数据包
     if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
@@ -499,7 +551,12 @@ int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
 		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
 		return UNISTOR_ERR_ERROR;
 	}
-	ret = m_pApp->getStore()->delKey(pTss, *key, field, extra, uiVersion, uiFieldNum);
+	ret = m_pApp->getStore()->delKey(pTss, *key, field, extra, uiVersion, uiFieldNum, bReadCache, bWriteCache);
+    pTss->m_ullStatsDelNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsDelReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsDelWriteCacheNum++;
+    }
 	if (1 == ret){
 		return UNISTOR_ERR_SUCCESS;
 	}else if (0 == ret){

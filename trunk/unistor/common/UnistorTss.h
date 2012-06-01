@@ -5,8 +5,8 @@
 #include "UnistorMacro.h"
 #include "CwxLogger.h"
 #include "CwxTss.h"
-#include "CwxPackageReader.h"
-#include "CwxPackageWriter.h"
+#include "CwxPackageReaderEx.h"
+#include "CwxPackageWriterEx.h"
 #include "UnistorDef.h"
 
 
@@ -75,6 +75,8 @@ public:
         m_uiBinLogVersion = 0;
         m_uiBinlogType = 0;
         m_pBinlogData = NULL;
+        ///统计初始化
+        resetStats();
     }
     ///析构函数
     ~UnistorTss();
@@ -152,25 +154,88 @@ public:
         }
         return "";
     }
+    inline void resetStats(){
+        ///统计初始化
+        m_ullStatsGetNum = 0; ///<get查询的数量
+        m_ullStatsGetReadCacheNum = 0; ///<get查询使用Cache数量
+        m_ullStatsGetExistNum = 0; ///<get查询存在结果的数量
+        m_ullStatsGetsNum = 0; ///<gets查询的数量
+        m_ullStatsGetsKeyNum = 0; ///<gets的key的数量
+        m_ullStatsGetsKeyReadCacheNum = 0; ///<gets的key的cache数量
+        m_ullStatsGetsKeyExistNum = 0; ///<gets的key的存在的数量
+        m_ullStatsListNum = 0; ///<list的数量
+        m_ullStatsExistNum = 0; ///<exist的数量
+        m_ullStatsExistReadCacheNum = 0; ///<exist的cache数量
+        m_ullStatsExistExistNum = 0; ///<exist的存在的数量
+        m_ullStatsAddNum = 0; ///<add的数量
+        m_ullStatsAddReadCacheNum = 0; ///<add的read cache数量
+        m_ullStatsAddWriteCacheNum = 0; ///<add的write cache数量
+        m_ullStatsSetNum = 0; ///<set的数量
+        m_ullStatsSetReadCacheNum = 0; ///<set的read cache数量
+        m_ullStatsSetWriteCacheNum = 0; ///<set的write cache数量
+        m_ullStatsUpdateNum = 0; ///<update的数量
+        m_ullStatsUpdateReadCacheNum = 0; ///<update的read cache数量
+        m_ullStatsUpdateWriteCacheNum = 0; ///<update的write cache数量
+        m_ullStatsIncNum = 0; ///<inc的数量
+        m_ullStatsIncReadCacheNum = 0; ///<inc的read cache数量
+        m_ullStatsIncWriteCacheNum = 0; ///<inc的write cache数量
+        m_ullStatsDelNum = 0; ///<del的数量
+        m_ullStatsDelReadCacheNum = 0; ///<del的read cache数量
+        m_ullStatsDelWriteCacheNum = 0; ///<del的write cache数量
+        m_ullStatsImportNum = 0; ///<del的数量
+        m_ullStatsImportReadCacheNum = 0; ///<del的read cache数量
+        m_ullStatsImportWriteCacheNum = 0; ///<del的write cache数量
+    }
 
 public:
     CWX_UINT32              m_uiBinLogVersion; ///<binlog的数据版本，用于binlog的分发
     CWX_UINT32              m_uiBinlogType;   ///<binlog的消息的类型，用于binlog的分发
-    CwxKeyValueItem const*  m_pBinlogData; ///<binlog的data，用于binglog的分发
+    CwxKeyValueItemEx const*  m_pBinlogData; ///<binlog的data，用于binglog的分发
 
     UnistorZkConf*          m_pZkConf;  ///<zk的配置对象
     UnistorZkLock*          m_pZkLock;  ///<zk的锁信息
-    CwxPackageReader*       m_pReader; ///<数据包的解包对象
-    CwxPackageReader*       m_pItemReader; ///<数据包的解包对象
-    CwxPackageReader*       m_pEngineReader; ///<engine使用的reader，外部不能使用
-    CwxPackageReader*       m_pEngineItemReader; ///<engine使用的reader，存储引擎不能使用
-    CwxPackageWriter*       m_pWriter; ///<数据包的pack对象
-    CwxPackageWriter*       m_pItemWriter; ///<一个消息的数据包的pack对象
-    CwxPackageWriter*       m_pEngineWriter; ///<engine使用的writer，外部不能使用
-    CwxPackageWriter*       m_pEngineItemWriter; ///<engine使用的writer，外部不能使用
+    CwxPackageReaderEx*       m_pReader; ///<数据包的解包对象
+    CwxPackageReaderEx*       m_pItemReader; ///<数据包的解包对象
+    CwxPackageReaderEx*       m_pEngineReader; ///<engine使用的reader，外部不能使用
+    CwxPackageReaderEx*       m_pEngineItemReader; ///<engine使用的reader，存储引擎不能使用
+    CwxPackageWriterEx*       m_pWriter; ///<数据包的pack对象
+    CwxPackageWriterEx*       m_pItemWriter; ///<一个消息的数据包的pack对象
+    CwxPackageWriterEx*       m_pEngineWriter; ///<engine使用的writer，外部不能使用
+    CwxPackageWriterEx*       m_pEngineItemWriter; ///<engine使用的writer，外部不能使用
     char			        m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<存储的key
     CWX_UINT32              m_uiThreadIndex; ///<线程的索引号
     UnistorTssEngineObj*    m_engineConf;       ///<engine的conf信息，引擎可以使用
+    ///下面是访问统计信息
+    volatile CWX_UINT64     m_ullStatsGetNum; ///<get查询的数量
+    volatile CWX_UINT64     m_ullStatsGetReadCacheNum; ///<get查询使用Cache数量
+    volatile CWX_UINT64     m_ullStatsGetExistNum; ///<get查询存在结果的数量
+    volatile CWX_UINT64     m_ullStatsGetsNum; ///<gets查询的数量
+    volatile CWX_UINT64     m_ullStatsGetsKeyNum; ///<gets的key的数量
+    volatile CWX_UINT64     m_ullStatsGetsKeyReadCacheNum; ///<gets的key的cache数量
+    volatile CWX_UINT64     m_ullStatsGetsKeyExistNum; ///<gets的key的存在的数量
+    volatile CWX_UINT64     m_ullStatsListNum; ///<list的数量
+    volatile CWX_UINT64     m_ullStatsExistNum; ///<exist的数量
+    volatile CWX_UINT64     m_ullStatsExistReadCacheNum; ///<exist的cache数量
+    volatile CWX_UINT64     m_ullStatsExistExistNum; ///<exist的存在的数量
+    volatile CWX_UINT64     m_ullStatsAddNum; ///<add的数量
+    volatile CWX_UINT64     m_ullStatsAddReadCacheNum; ///<add的read cache数量
+    volatile CWX_UINT64     m_ullStatsAddWriteCacheNum; ///<add的write cache数量
+    volatile CWX_UINT64     m_ullStatsSetNum; ///<set的数量
+    volatile CWX_UINT64     m_ullStatsSetReadCacheNum; ///<set的read cache数量
+    volatile CWX_UINT64     m_ullStatsSetWriteCacheNum; ///<set的write cache数量
+    volatile CWX_UINT64     m_ullStatsUpdateNum; ///<update的数量
+    volatile CWX_UINT64     m_ullStatsUpdateReadCacheNum; ///<update的read cache数量
+    volatile CWX_UINT64     m_ullStatsUpdateWriteCacheNum; ///<update的write cache数量
+    volatile CWX_UINT64     m_ullStatsIncNum; ///<inc的数量
+    volatile CWX_UINT64     m_ullStatsIncReadCacheNum; ///<inc的read cache数量
+    volatile CWX_UINT64     m_ullStatsIncWriteCacheNum; ///<inc的write cache数量
+    volatile CWX_UINT64     m_ullStatsDelNum; ///<del的数量
+    volatile CWX_UINT64     m_ullStatsDelReadCacheNum; ///<del的read cache数量
+    volatile CWX_UINT64     m_ullStatsDelWriteCacheNum; ///<del的write cache数量
+    volatile CWX_UINT64     m_ullStatsImportNum; ///<del的数量
+    volatile CWX_UINT64     m_ullStatsImportReadCacheNum; ///<del的read cache数量
+    volatile CWX_UINT64     m_ullStatsImportWriteCacheNum; ///<del的write cache数量
+
 private:
     UnistorTssUserObj*    m_userObj;  ///用户的数据
     char*                  m_szDataBuf; ///<数据buf

@@ -170,11 +170,12 @@ int UnistorStoreEmpty::cacheWriteEnd(void* context, CWX_UINT64 ullSid, void* , c
 
 ///检测是否存在key；1：存在；0：不存在；-1：失败
 int UnistorStoreEmpty::isExist(UnistorTss* tss,
-                               CwxKeyValueItem const& key,
-                               CwxKeyValueItem const* field,
-                               CwxKeyValueItem const* ,
+                               CwxKeyValueItemEx const& key,
+                               CwxKeyValueItemEx const* field,
+                               CwxKeyValueItemEx const* ,
                                CWX_UINT32& uiVersion,
-                               CWX_UINT32& uiFieldNum)
+                               CWX_UINT32& uiFieldNum,
+                               bool& bReadCached)
 {
     if (!m_bValid){
         strcpy(tss->m_szBuf2K, m_szErrMsg);
@@ -183,7 +184,8 @@ int UnistorStoreEmpty::isExist(UnistorTss* tss,
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+    bReadCached = false;
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
     uiFieldNum = 0;
     if (1 == ret){
         ret = unpackFields(*tss->m_pEngineReader, szBuf, uiBufLen, ttOldExpire, uiVersion);
@@ -208,13 +210,15 @@ int UnistorStoreEmpty::isExist(UnistorTss* tss,
 
 ///添加key，1：成功；0：存在；-1：失败；
 int UnistorStoreEmpty::addKey(UnistorTss* tss,
-                            CwxKeyValueItem const& key,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
-                            CwxKeyValueItem const& data,
+                            CwxKeyValueItemEx const& key,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
+                            CwxKeyValueItemEx const& data,
                             CWX_UINT32 uiSign,
                             CWX_UINT32& uiVersion,
                             CWX_UINT32& uiFieldNum,
+                            bool& bReadCached,
+                            bool& bWriteCached,
                             bool bCache,
                             CWX_UINT32 uiExpire)
 {
@@ -224,7 +228,7 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
         return -1;
     }
     if (data.m_bKeyValue){
-        if (-1 == (iDataFieldNum = CwxPackage::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
+        if (-1 == (iDataFieldNum = CwxPackageEx::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
             strcpy(tss->m_szBuf2K, "The data is not valid key/value structure.");
             return -1;
         }
@@ -239,12 +243,15 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
     ///修改sign
     if (uiSign > 2) uiSign = 0;
     int ret = 0;
+    bReadCached = false;
+    bWriteCached = false;
+
     if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///如果指定了版本的全替换，而且不超时
         ret = 0;
         ttNewExpire = 0;
         uiOldVersion = 0;
     }else{
-        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bCache, tss->m_szBuf2K);
+        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiOldVersion);
         ///计算超时时间
@@ -350,35 +357,39 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
     }
     m_ullStoreSid = getCurSid();
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bCache, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, bCache, tss->m_szBuf2K)) return -1;
     return 1;
 }
                             
 ///添加key，1：成功；0：存在；-1：失败；
 int UnistorStoreEmpty::syncAddKey(UnistorTss* tss,
-                                CwxKeyValueItem const& key,
-                                CwxKeyValueItem const* field,
-                                CwxKeyValueItem const* extra,
-                                CwxKeyValueItem const& data,
+                                CwxKeyValueItemEx const& key,
+                                CwxKeyValueItemEx const* field,
+                                CwxKeyValueItemEx const* extra,
+                                CwxKeyValueItemEx const& data,
                                 CWX_UINT32 uiSign,///<not use
                                 CWX_UINT32 uiVersion,
                                 bool bCache,
                                 CWX_UINT32 uiExpire,
                                 CWX_UINT64 ullSid,
+                                bool& bReadCached, ///<数据是否在read cache中
+                                bool& bWriteCached, ///<数据是否在write cache中
                                 bool  bRestore)
 {
-    return syncSetKey(tss, key, field, extra, data, uiSign, uiVersion, bCache, uiExpire, ullSid, bRestore);
+    return syncSetKey(tss, key, field, extra, data, uiSign, uiVersion, bCache, uiExpire, ullSid, bReadCached, bWriteCached, bRestore);
 }
 
 ///set key，1：成功；-1：错误；0：不存在，此是设置一个key的field时。
 int UnistorStoreEmpty::setKey(UnistorTss* tss,
-                            CwxKeyValueItem const& key,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
-                            CwxKeyValueItem const& data,
+                            CwxKeyValueItemEx const& key,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
+                            CwxKeyValueItemEx const& data,
                             CWX_UINT32 uiSign,
                             CWX_UINT32& uiVersion,
                             CWX_UINT32& uiFieldNum,
+                            bool& bReadCached,
+                            bool& bWriteCached,
                             bool bCache,
                             CWX_UINT32 uiExpire)
 {
@@ -388,7 +399,7 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
         return -1;
     }
     if (data.m_bKeyValue){
-        if (-1 == (iDataFieldNum = CwxPackage::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
+        if (-1 == (iDataFieldNum = CwxPackageEx::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
             strcpy(tss->m_szBuf2K, "The data is not valid key/value structure.");
             return -1;
         }
@@ -400,12 +411,15 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
 	CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
 	char* szBuf = tss->getBuf(uiBufLen);
     int ret = 0;
+    bReadCached = false;
+    bWriteCached = false;
+
     if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///如果指定了版本的全替换，而且不超时
         ret = 0;
         ttNewExpire = 0;
         uiOldVersion = 0;
     }else{
-        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bCache, tss->m_szBuf2K);
+        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiOldVersion);
         ///计算超时时间
@@ -509,16 +523,18 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
     }
     m_ullStoreSid = getCurSid();
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-	if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bCache, tss->m_szBuf2K)) return -1;
+	if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, bCache, tss->m_szBuf2K)) return -1;
 	return 1;
 }
 
 ///import key，1：成功；-1：失败；
 int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss对象
-                               CwxKeyValueItem const& key, ///<添加的key
-                               CwxKeyValueItem const* extra, ///<存储引擎的extra数据
-                               CwxKeyValueItem const& data, ///<添加key或field的数据
+                               CwxKeyValueItemEx const& key, ///<添加的key
+                               CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
+                               CwxKeyValueItemEx const& data, ///<添加key或field的数据
                                CWX_UINT32& uiVersion, ///<若大于0，则设置修改后的key为此版本
+                               bool& bReadCached, ///<数据是否在read cache中
+                               bool& bWriteCached, ///<数据是否在write cache中
                                bool bCache, ///<是否将key放到读cache
                                CWX_UINT32 uiExpire ///<若创建key，而且指定了uiExpire则设置key的超时时间
                                )
@@ -532,10 +548,13 @@ int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss对象
     CWX_UINT32 ttNewExpire = 0;
     CWX_UINT32 uiOldVersion = 0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
+    bReadCached = false;
+    bWriteCached = false;
+
     char* szBuf = tss->getBuf(uiBufLen);
     int ret = 0;
     if (m_config->getCommon().m_bEnableExpire){
-        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, false, tss->m_szBuf2K);
+        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, false, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiOldVersion);
         ttNewExpire = uiExpire;
@@ -568,20 +587,22 @@ int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss对象
     }
     m_ullStoreSid = getCurSid();
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bCache, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, bCache, tss->m_szBuf2K)) return -1;
     return 1;
 
 }
 
 ///sync import key，1：成功；-1：错误。
 int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<线程的tss数据
-                                     CwxKeyValueItem const& key, ///<set的key
-                                     CwxKeyValueItem const* , ///<存储引擎的extra数据
-                                     CwxKeyValueItem const& data, ///<set的数据
+                                     CwxKeyValueItemEx const& key, ///<set的key
+                                     CwxKeyValueItemEx const* , ///<存储引擎的extra数据
+                                     CwxKeyValueItemEx const& data, ///<set的数据
                                      CWX_UINT32 uiVersion, ///<set的key 版本号
                                      bool bCache,    ///<是否将key放到读cache
                                      CWX_UINT32 uiExpire, ///<若创建key，而且指定了uiExpire则设置key的超时时间
                                      CWX_UINT64 ullSid, ///<操作对应的binlog的sid
+                                     bool& bReadCached, ///<数据是否在read cache中
+                                     bool& bWriteCached, ///<数据是否在write cache中
                                      bool  bRestore ///<是否从binlog恢复的数据
                                    )
 {
@@ -593,10 +614,12 @@ int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<线程的tss数据
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 ttNewExpire = 0;
     CWX_UINT32 uiKeyVersion = 0;
+    bReadCached = false;
+    bWriteCached = false;
     char* szBuf = tss->getBuf(uiBufLen);
     int ret = 0;
     if (m_config->getCommon().m_bEnableExpire){
-        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, false, tss->m_szBuf2K);
+        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, false, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
         ttNewExpire = uiExpire;
@@ -619,22 +642,24 @@ int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<线程的tss数据
     uiBufLen = data.m_uiDataLen;
     memcpy(szBuf, data.m_szData, uiBufLen);
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, data.m_bKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bCache, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, bCache, tss->m_szBuf2K)) return -1;
     return 1;
 }
 
 
 ///set key，1：成功；-1：错误；0：不存在，此是设置一个key的field时。
 int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
-                                CwxKeyValueItem const& key,
-                                CwxKeyValueItem const* field,
-                                CwxKeyValueItem const* ,
-                                CwxKeyValueItem const& data,
+                                CwxKeyValueItemEx const& key,
+                                CwxKeyValueItemEx const* field,
+                                CwxKeyValueItemEx const* ,
+                                CwxKeyValueItemEx const& data,
                                 CWX_UINT32 uiSign,
                                 CWX_UINT32 uiVersion,
                                 bool bCache,
                                 CWX_UINT32 uiExpire,
                                 CWX_UINT64 ullSid,
+                                bool& bReadCached,
+                                bool& bWriteCached,
                                 bool  bRestore)
 {
     if (!m_bValid){
@@ -648,6 +673,8 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 ttNewExpire = 0;
     CWX_UINT32 uiKeyVersion;
+    bReadCached = false;
+    bWriteCached = false;
     char* szBuf = tss->getBuf(uiBufLen);
     int ret = 0;
     if ((0==uiSign) && !bRestore && !m_config->getCommon().m_bEnableExpire){///如果指定了版本的全替换，而且不超时
@@ -655,7 +682,7 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
         ttNewExpire = 0;
         uiKeyVersion = 0;
     }else{
-        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bCache, tss->m_szBuf2K);
+        ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
         ///计算超时时间
@@ -730,20 +757,22 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
     }
     if (ullSid > m_ullStoreSid)  m_ullStoreSid = ullSid;
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bCache, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, bCache, tss->m_szBuf2K)) return -1;
     return 1;
 
 }
 
 ///update key，1：成功；0：不存在；-1：失败；-2：版本错误
 int UnistorStoreEmpty::updateKey(UnistorTss* tss,
-                               CwxKeyValueItem const& key,
-                               CwxKeyValueItem const* field,
-                               CwxKeyValueItem const* extra,
-                               CwxKeyValueItem const& data,
+                               CwxKeyValueItemEx const& key,
+                               CwxKeyValueItemEx const* field,
+                               CwxKeyValueItemEx const* extra,
+                               CwxKeyValueItemEx const& data,
                                CWX_UINT32 uiSign,
                                CWX_UINT32& uiVersion,
                                CWX_UINT32& uiFieldNum,
+                               bool& bReadCached, ///<数据是否在read cache中
+                               bool& bWriteCached, ///<数据是否在write cache中
                                CWX_UINT32 uiExpire)
 {
     int iDataFieldNum=0;
@@ -752,7 +781,7 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
         return -1;
     }
     if (data.m_bKeyValue){
-        if (-1 == (iDataFieldNum = CwxPackage::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
+        if (-1 == (iDataFieldNum = CwxPackageEx::getKeyValueNum(data.m_szData, data.m_uiDataLen))){
             strcpy(tss->m_szBuf2K, "The data is not valid key/value structure.");
             return -1;
         }
@@ -763,10 +792,12 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
     CWX_UINT32 uiKeyVersion=0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+    bReadCached = false;
+    bWriteCached = false;
+
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
     if (-1 == ret) return -1;
     bool bOldKv = false;
-
     if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
     ///计算超时时间
     if (m_config->getCommon().m_bEnableExpire){
@@ -871,20 +902,22 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
     }
     m_ullStoreSid = getCurSid();
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, true, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, true, tss->m_szBuf2K)) return -1;
     return 1;
 }
 
 ///update key，1：成功；0：不存在；-1：失败
 int UnistorStoreEmpty::syncUpdateKey(UnistorTss* tss,
-                                   CwxKeyValueItem const& key,
-                                   CwxKeyValueItem const* field,
-                                   CwxKeyValueItem const* extra,
-                                   CwxKeyValueItem const& data,
+                                   CwxKeyValueItemEx const& key,
+                                   CwxKeyValueItemEx const* field,
+                                   CwxKeyValueItemEx const* extra,
+                                   CwxKeyValueItemEx const& data,
                                    CWX_UINT32 uiSign,
                                    CWX_UINT32 uiVersion,
                                    CWX_UINT32 uiExpire,
                                    CWX_UINT64 ullSid,
+                                   bool& bReadCached,
+                                   bool& bWriteCached,
                                    bool  bRestore)
 {
     return syncSetKey(tss,
@@ -897,21 +930,25 @@ int UnistorStoreEmpty::syncUpdateKey(UnistorTss* tss,
         true,
         uiExpire,
         ullSid,
+        bReadCached,
+        bWriteCached,
         bRestore);
 }
 
 
 ///inc key，1：成功；0：不存在；-1：失败；-2:版本错误；-3：超出边界
 int UnistorStoreEmpty::incKey(UnistorTss* tss,
-                            CwxKeyValueItem const& key,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
+                            CwxKeyValueItemEx const& key,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
                             CWX_INT32 num,
                             CWX_INT64  llMax,
                             CWX_INT64  llMin,
                             CWX_UINT32  uiSign,
                             CWX_INT64& llValue,
                             CWX_UINT32& uiVersion,
+                            bool& bReadCached,
+                            bool& bWriteCached,
                             CWX_UINT32  uiExpire)
 {
     if (!m_bValid){
@@ -924,7 +961,9 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
     CWX_UINT32 uiKeyVersion = 0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+    bReadCached = false;
+    bWriteCached = false;
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
     if (-1 == ret) return -1;
     bool bOldKv = false;
     CWX_UINT32 uiOutBufLen = UNISTOR_MAX_KV_SIZE;
@@ -989,6 +1028,7 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
             uiBufLen - getKvDataSignLen(),
             bOldKv,
             num,
+            NULL,
             llMax,
             llMin,
             llValue,
@@ -1016,6 +1056,7 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
         field,
         extra,
         num,
+        llValue,
         llMax,
         llMin,
         uiExpire,
@@ -1030,7 +1071,7 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
     m_ullStoreSid = getCurSid();
 
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, true, tss->m_szBuf2K))  return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, true, tss->m_szBuf2K))  return -1;
     return 1;
 }
 
@@ -1038,10 +1079,11 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
 
 ///inc key，1：成功；0：不存在；-1：失败；
 int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
-                                CwxKeyValueItem const& key,
-                                CwxKeyValueItem const* field,
-                                CwxKeyValueItem const* ,
-                                CWX_INT32 num,
+                                CwxKeyValueItemEx const& key,
+                                CwxKeyValueItemEx const* field,
+                                CwxKeyValueItemEx const* ,
+                                CWX_INT64 num,  ///<inc的数值，可以为负值
+                                CWX_INT64 result,  ///<inc的数值，可以为负值
                                 CWX_INT64  llMax,
                                 CWX_INT64  llMin,
                                 CWX_UINT32 ,
@@ -1049,6 +1091,8 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
                                 CWX_UINT32 uiVersion,
                                 CWX_UINT32 uiExpire,
                                 CWX_UINT64 ullSid,
+                                bool& bReadCached,
+                                bool& bWriteCached,
                                 bool  bRestore)
 {
     if (!m_bValid){
@@ -1060,8 +1104,10 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
     CWX_UINT32 ttNewExpire = 0;
     CWX_UINT32 uiKeyVersion = 0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
+    bReadCached = false;
+    bWriteCached = false;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
     if (-1 == ret) return -1;
     bool bOldKv = false;
     CWX_UINT32 uiOutBufLen = UNISTOR_MAX_KV_SIZE;
@@ -1108,6 +1154,7 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
             uiBufLen - getKvDataSignLen(),
             bOldKv,
             num,
+            &result,
             llMax,
             llMin,
             llValue,
@@ -1129,17 +1176,19 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
     }
     if (ullSid > m_ullStoreSid)  m_ullStoreSid = ullSid;
     setKvDataSign(szBuf, uiBufLen, ttNewExpire, uiVersion, bNewKeyValue);
-    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, true, tss->m_szBuf2K)) return -1;
+    if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, true, tss->m_szBuf2K)) return -1;
     return 1;
 }
 
 ///inc key，1：成功；0：不存在；-1：失败；-2:版本错误；
 int UnistorStoreEmpty::delKey(UnistorTss* tss,
-                            CwxKeyValueItem const& key,
-                            CwxKeyValueItem const* field,
-                            CwxKeyValueItem const* extra,
+                            CwxKeyValueItemEx const& key,
+                            CwxKeyValueItemEx const* field,
+                            CwxKeyValueItemEx const* extra,
                             CWX_UINT32& uiVersion,
-                            CWX_UINT32& uiFieldNum)
+                            CWX_UINT32& uiFieldNum,
+                            bool& bReadCached,
+                            bool& bWriteCached)
 {
     uiFieldNum = 0;
     if (!m_bValid){
@@ -1149,10 +1198,12 @@ int UnistorStoreEmpty::delKey(UnistorTss* tss,
     bool bNewKeyValue=false;
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 uiKeyVersion = 0;
+    bReadCached = false;
+    bWriteCached = false;
 
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true,  tss->m_szBuf2K);
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true,  tss->m_szBuf2K);
     if (-1 == ret) return -1;
     bool bOldKv = false;
     if (0 == ret){//not exist
@@ -1182,7 +1233,6 @@ int UnistorStoreEmpty::delKey(UnistorTss* tss,
                 szBuf,
                 uiBufLen-getKvDataSignLen(),
                 bOldKv,
-                false,
                 uiFieldNum,
                 tss->m_szBuf2K);
             if (1 != ret) return ret;
@@ -1211,20 +1261,22 @@ int UnistorStoreEmpty::delKey(UnistorTss* tss,
     m_ullStoreSid = getCurSid();
     if (!field){
         uiFieldNum = 0;
-        if (0 != _delKey(key.m_szData, key.m_uiDataLen, ttOldExpire, tss->m_szBuf2K)) return -1;
+        if (0 != _delKey(key.m_szData, key.m_uiDataLen, ttOldExpire, bWriteCached, tss->m_szBuf2K)) return -1;
     }else{
         setKvDataSign(szBuf, uiBufLen, ttOldExpire, uiVersion, bNewKeyValue);
-        if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, true, tss->m_szBuf2K)) return -1;
+        if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, true, tss->m_szBuf2K)) return -1;
     }
     return 1;
 }
 ///inc key，1：成功；0：不存在；-1：失败；
 int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
-                                CwxKeyValueItem const& key,
-                                CwxKeyValueItem const* field,
-                                CwxKeyValueItem const* ,
+                                CwxKeyValueItemEx const& key,
+                                CwxKeyValueItemEx const* field,
+                                CwxKeyValueItemEx const* ,
                                 CWX_UINT32 uiVersion,
                                 CWX_UINT64 ullSid,
+                                bool& bReadCached, ///<数据是否在read cache中
+                                bool& bWriteCached, ///<数据是否在write cache中
                                 bool  bRestore)
 {
     if (!m_bValid){
@@ -1235,10 +1287,12 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
     bool bNewKeyValue=false;
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 uiKeyVersion = 0;
+    bReadCached = false;
+    bWriteCached = false;
 
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true,  tss->m_szBuf2K);
+    int ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true,  tss->m_szBuf2K);
     if (-1 == ret) return -1;
     bool bOldKv = false;
     if (0 == ret){//not exist
@@ -1264,7 +1318,6 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
                 szBuf,
                 uiBufLen-getKvDataSignLen(),
                 bOldKv,
-                true,
                 uiFieldNum,
                 tss->m_szBuf2K);
             if (1 != ret) return ret;
@@ -1280,28 +1333,30 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
     }
     if (ullSid > m_ullStoreSid)  m_ullStoreSid = ullSid;
     if (!field){
-        if (0 != _delKey(key.m_szData, key.m_uiDataLen, ttOldExpire, tss->m_szBuf2K)) return -1;
+        if (0 != _delKey(key.m_szData, key.m_uiDataLen, ttOldExpire, bWriteCached, tss->m_szBuf2K)) return -1;
     }else{
         setKvDataSign(szBuf, uiBufLen, ttOldExpire, uiVersion, bNewKeyValue);
-        if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, true, tss->m_szBuf2K)) return -1;
+        if (0 != _setKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, ttOldExpire, bWriteCached, true, tss->m_szBuf2K)) return -1;
     }
     return 1;
 }
 
 ///获取key, 1：成功；0：不存在；-1：失败;
 int UnistorStoreEmpty::get(UnistorTss* tss,
-                         CwxKeyValueItem const& key,
-                         CwxKeyValueItem const* field,
-                         CwxKeyValueItem const* ,
+                         CwxKeyValueItemEx const& key,
+                         CwxKeyValueItemEx const* field,
+                         CwxKeyValueItemEx const* ,
                          char const*& szData,
                          CWX_UINT32& uiLen,
                          bool& bKeyValue,
                          CWX_UINT32& uiVersion,
                          CWX_UINT32& uiFieldNum,
+                         bool& bReadCached, ///<数据是否在read cache中
                          CWX_UINT8 ucKeyInfo)
 {
     uiLen = UNISTOR_MAX_KV_SIZE;
     int ret = 0;
+    bReadCached = false;
     uiFieldNum = 0;
     szData = tss->getBuf(uiLen);
 
@@ -1314,7 +1369,7 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
         return _getSysKey(tss, key.m_szData, key.m_uiDataLen, (char*)szData, uiLen);
     }
 
-	ret = _getKey(key.m_szData, key.m_uiDataLen, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+	ret = _getKey(key.m_szData, key.m_uiDataLen, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
 	if (1 == ret){//key存在
         CWX_UINT32 ttOldExpire = 0;
         getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
@@ -1322,7 +1377,7 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
 		bKeyValue = isKvData(szData, uiLen);
 		if (uiLen) uiLen -= getKvDataSignLen();
         if (bKeyValue){
-            uiFieldNum = CwxPackage::getKeyValueNum(szData, uiLen);
+            uiFieldNum = CwxPackageEx::getKeyValueNum(szData, uiLen);
         }
         UnistorKeyField* fieldKey = NULL;
         if (ucKeyInfo){
@@ -1352,20 +1407,25 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
 ///获取key, 1：成功；0：不存在；-1：失败;
 int UnistorStoreEmpty::gets(UnistorTss* tss,
                  list<pair<char const*, CWX_UINT16> > const& keys,
-                 CwxKeyValueItem const* field,
-                 CwxKeyValueItem const* ,
+                 CwxKeyValueItemEx const* field,
+                 CwxKeyValueItemEx const* ,
                  char const*& szData,
                  CWX_UINT32& uiLen,
+                 CWX_UINT32& uiReadCacheNum, ///<在read cache中的数量
+                 CWX_UINT32& uiExistNum, ///<存在的key的数量
                  CWX_UINT8 ucKeyInfo)
 {
     int ret = 0;
     CWX_UINT32 uiVersion = 0;
     CWX_UINT32 ttOldExpire = 0;
+    bool bReadCache = false;
     bool bKeyValue = false;
     UnistorKeyField* fieldKey = NULL;
     list<pair<char const*, CWX_UINT16> >::const_iterator iter = keys.begin();
     szData = tss->getBuf(UNISTOR_MAX_KV_SIZE);
     if (field) UnistorStoreBase::parseMultiField(field->m_szData, fieldKey);
+    uiReadCacheNum = 0;
+    uiExistNum = 0;
     tss->m_pEngineWriter->beginPack();
     if (ucKeyInfo > 2) ucKeyInfo = 0;
     while(iter != keys.end()){
@@ -1384,8 +1444,10 @@ int UnistorStoreEmpty::gets(UnistorTss* tss,
                     tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, "", 0, false);
                 }
             }else{
-                ret = _getKey(iter->first, iter->second, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, true, tss->m_szBuf2K);
+                ret = _getKey(iter->first, iter->second, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCache, true, tss->m_szBuf2K);
+                if (bReadCache) uiReadCacheNum++;
                 if (1 == ret){//key存在
+                    uiExistNum++;
                     getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
                     if (m_config->getCommon().m_bEnableExpire && (ttOldExpire<=m_ttExpireClock)){///timeout
                         break;
@@ -1425,8 +1487,8 @@ int UnistorStoreEmpty::gets(UnistorTss* tss,
 int UnistorStoreEmpty::createCursor(UnistorStoreCursor& cursor,
                                     char const* szBeginKey,
                                     char const* szEndKey,
-                                    CwxKeyValueItem const* field,
-                                    CwxKeyValueItem const*,
+                                    CwxKeyValueItemEx const* field,
+                                    CwxKeyValueItemEx const*,
                                     char* )
 {
     closeCursor(cursor);
@@ -1874,6 +1936,7 @@ int UnistorStoreEmpty::_setKey(char const* szKey,
                                char const* szData,
                                CWX_UINT32 uiLen,
                                CWX_UINT32 ttOldExpire,
+                               bool& bWriteCache,
                                bool bCache,
                                char* szErr2K)
 {
@@ -1881,10 +1944,10 @@ int UnistorStoreEmpty::_setKey(char const* szKey,
         if (szErr2K) strcpy(szErr2K, m_szErrMsg);
         return -1;
     }
-    int ret = getCache()->updateKey(szKey, unKeyLen, szData, uiLen, ttOldExpire, bCache);
+    int ret = getCache()->updateKey(szKey, unKeyLen, szData, uiLen, ttOldExpire, bCache, bWriteCache);
     if (0 == ret){
         if (-1 == _commit(szErr2K)) return -1;
-        ret = getCache()->updateKey(szKey, unKeyLen, szData, uiLen, ttOldExpire, bCache);
+        ret = getCache()->updateKey(szKey, unKeyLen, szData, uiLen, ttOldExpire, bCache, bWriteCache);
     };
     if (-1 == ret){
         m_bValid = false;
@@ -1916,6 +1979,7 @@ int UnistorStoreEmpty::_getKey(char const* szKey,
                                CWX_UINT32& uiLen,
                                char* szStoreKeyBuf,
                                CWX_UINT16 unKeyBufLen,
+                               bool& isCached,
                                bool bCache,
                                char* szErr2K)
 {
@@ -1925,13 +1989,15 @@ int UnistorStoreEmpty::_getKey(char const* szKey,
     }
     int ret = 0;
     bool bDel = false;
-    ret = getCache()->getKey(szKey, unKeyLen, szData, uiLen, bDel);
+    ret = getCache()->getKey(szKey, unKeyLen, szData, uiLen, bDel, isCached);
     if (-1 == ret){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "Data buf size[%u] is too small.", uiLen);
         return -1;
     }else if (1 == ret){
+        isCached = true;
         return bDel?0:1;
     }
+    isCached = false;
     ret =  _getEmptyKey(szKey, unKeyLen, szData, uiLen, szStoreKeyBuf, unKeyBufLen, szErr2K);
     //cache数据
     if ((1 == ret) && bCache){
@@ -1945,16 +2011,17 @@ int UnistorStoreEmpty::_getKey(char const* szKey,
 int UnistorStoreEmpty::_delKey(char const* szKey,
                              CWX_UINT16 unKeyLen,
                              CWX_UINT32 ttOldExpire,
+                             bool& bWriteCache,
                              char* szErr2K)
 {
     if (!m_bValid){
         if (szErr2K) strcpy(szErr2K, m_szErrMsg);
         return -1;
     }
-    int ret = getCache()->delKey(szKey, unKeyLen, ttOldExpire);
+    int ret = getCache()->delKey(szKey, unKeyLen, ttOldExpire, bWriteCache);
     if (0 == ret){
         if (-1 == _commit(szErr2K)) return -1;
-        ret = getCache()->delKey(szKey, unKeyLen, ttOldExpire);
+        ret = getCache()->delKey(szKey, unKeyLen, ttOldExpire, bWriteCache);
     };
     if (-1 == ret){
         m_bValid = false;
@@ -2089,8 +2156,9 @@ int UnistorStoreEmpty::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
     CWX_UINT32 uiVersion = 0;
     CWX_UINT32 ttOldExpire = 0;
     CWX_UINT32 uiBufLen = UNISTOR_MAX_KV_SIZE;
+    bool bReadCache = false;
     char* szBuf = tss->getBuf(uiBufLen);
-    int ret = _getKey(msg->rd_ptr(), msg->length(), szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, false, tss->m_szBuf2K);
+    int ret = _getKey(msg->rd_ptr(), msg->length(), szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCache, false, tss->m_szBuf2K);
     if (-1 == ret){
         m_bValid = false;
         strcpy(m_szErrMsg, tss->m_szBuf2K);
@@ -2100,7 +2168,7 @@ int UnistorStoreEmpty::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
     if (1 == ret){
         getKvVersion(szBuf, uiBufLen, ttOldExpire, uiVersion);
         if (ttOldExpire == msg->event().getTimestamp()){///同一个key
-            if (0 != _delKey(msg->rd_ptr(), msg->length(), ttOldExpire, tss->m_szBuf2K)) return -1;
+            if (0 != _delKey(msg->rd_ptr(), msg->length(), ttOldExpire, bReadCache, tss->m_szBuf2K)) return -1;
         }
     }
     msg->event().setEvent(EVENT_STORE_DEL_EXPIRE_REPLY);

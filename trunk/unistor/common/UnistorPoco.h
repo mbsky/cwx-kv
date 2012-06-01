@@ -3,8 +3,8 @@
 
 #include "UnistorMacro.h"
 #include "CwxMsgBlock.h"
-#include "CwxPackageReader.h"
-#include "CwxPackageWriter.h"
+#include "CwxPackageReaderEx.h"
+#include "CwxPackageWriterEx.h"
 #include "CwxCrc32.h"
 #include "CwxMd5.h"
 
@@ -62,10 +62,10 @@ public:
     };
 public:
     ///pack Add key的数据。 返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvImport(CwxPackageWriter* writer, ///<用于pack的writer，内容通过writer返回
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+    static int packRecvImport(CwxPackageWriterEx* writer, ///<用于pack的writer，内容通过writer返回
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiExpire=0,  ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
         bool       bCache=true, ///<是否cache，若为true则不添加
@@ -75,12 +75,12 @@ public:
         );
 
     ///pack Add key的消息包。 返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvImport(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packRecvImport(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiExpire=0,  ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
         bool       bCache=true, ///<是否cache，若为true则不添加
@@ -90,10 +90,10 @@ public:
         );
 
     ///解析Add key的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvImport(CwxPackageReader* reader, ///<reader
-        CwxKeyValueItem const*& key,   ///<返回key字段
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
-        CwxKeyValueItem const*& data,  ///<返回data字段
+    static int parseRecvImport(CwxPackageReaderEx* reader, ///<reader
+        CwxKeyValueItemEx const*& key,   ///<返回key字段
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& data,  ///<返回data字段
         CWX_UINT32& uiExpire,  ///<返回expire，若为0表示没有指定
         CWX_UINT32& uiVersion, ///<返回版本
         bool&       bCache,    ///<返回cache
@@ -105,11 +105,11 @@ public:
 
 
     ///pack Add key的数据。 返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvAdd(CwxPackageWriter* writer, ///<用于pack的writer，内容通过writer返回
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+    static int packRecvAdd(CwxPackageWriterEx* writer, ///<用于pack的writer，内容通过writer返回
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiExpire=0,  ///<超时时间，若为0则不添加
         CWX_UINT32 uiSign=0,    ///<标记，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
@@ -120,13 +120,13 @@ public:
         );
 
 	///pack Add key的消息包。 返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int packRecvAdd(CwxPackageWriter* writer, ///<用于pack的writer
+	static int packRecvAdd(CwxPackageWriterEx* writer, ///<用于pack的writer
 		CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
 		CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiExpire=0,  ///<超时时间，若为0则不添加
         CWX_UINT32 uiSign=0,    ///<标记，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
@@ -137,11 +137,11 @@ public:
 		);
 
 	///解析Add key的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int parseRecvAdd(CwxPackageReader* reader, ///<reader
-        CwxKeyValueItem const*& key,   ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
-		CwxKeyValueItem const*& data,  ///<返回data字段
+	static int parseRecvAdd(CwxPackageReaderEx* reader, ///<reader
+        CwxKeyValueItemEx const*& key,   ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
+		CwxKeyValueItemEx const*& data,  ///<返回data字段
 		CWX_UINT32& uiExpire,  ///<返回expire，若为0表示没有指定
         CWX_UINT32& uiSign,    ///<返回sign
         CWX_UINT32& uiVersion, ///<返回版本
@@ -152,11 +152,11 @@ public:
         );
 
     ///pack set的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvSet(CwxPackageWriter* writer,///<用于pack的writer，内容通过writer返回
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+    static int packRecvSet(CwxPackageWriterEx* writer,///<用于pack的writer，内容通过writer返回
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiSign=0, ///<标记，若为0则不添加
         CWX_UINT32 uiExpire=0, ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0,///<版本，若为0则不添加
@@ -167,13 +167,13 @@ public:
         );
 
     ///pack set的消息体。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvSet(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packRecvSet(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiSign=0, ///<标记，若为0则不添加
         CWX_UINT32 uiExpire=0, ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0,///<版本，若为0则不添加
@@ -184,11 +184,11 @@ public:
         );
 
     ///parse set的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvSet(CwxPackageReader* reader,  ///<reader
-        CwxKeyValueItem const*& key, ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
-        CwxKeyValueItem const*& data, ///<返回data字段
+    static int parseRecvSet(CwxPackageReaderEx* reader,  ///<reader
+        CwxKeyValueItemEx const*& key, ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& data, ///<返回data字段
         CWX_UINT32& uiSign, ///<返回sign
 		CWX_UINT32& uiExpire, ///<返回expire
         CWX_UINT32& uiVersion, ///<返回版本
@@ -199,11 +199,11 @@ public:
         );
 
     ///pack update的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvUpdate(CwxPackageWriter* writer, ///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+    static int packRecvUpdate(CwxPackageWriterEx* writer, ///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiSign=0, ///<标记，若为0则不添加
         CWX_UINT32 uiExpire=0, ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
@@ -213,13 +213,13 @@ public:
         );
 
 	///pack update的消息包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int packRecvUpdate(CwxPackageWriter* writer, ///<用于pack的writer
+	static int packRecvUpdate(CwxPackageWriterEx* writer, ///<用于pack的writer
 		CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
 		CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
-        CwxKeyValueItem const& data, ///<data
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& data, ///<data
         CWX_UINT32 uiSign=0, ///<标记，若为0则不添加
         CWX_UINT32 uiExpire=0, ///<超时时间，若为0则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
@@ -229,11 +229,11 @@ public:
 		);
 
 	///parse update的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int parseRecvUpdate(CwxPackageReader* reader, ///<reader
-        CwxKeyValueItem const*& key, ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
-        CwxKeyValueItem const*& data, ///<返回data字段
+	static int parseRecvUpdate(CwxPackageReaderEx* reader, ///<reader
+        CwxKeyValueItemEx const*& key, ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& data, ///<返回data字段
         CWX_UINT32& uiSign, ///<返回sign
         CWX_UINT32& uiExpire, ///<返回expire，若为0表示没有指定
         CWX_UINT32& uiVersion, ///<返回版本
@@ -243,11 +243,12 @@ public:
 		);
 
     ///pack inc的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvInc(CwxPackageWriter* writer, ///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+    static int packRecvInc(CwxPackageWriterEx* writer, ///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         CWX_INT64   num, ///<inc的数字，可正可负
+        CWX_INT64   result, ///<计算的结果，若为0则不添加,此记录最终的计算结果。
         CWX_INT64   max=0, ///<若inc为正值，则通过max限定最大值
         CWX_INT64   min=0, ///<若inc为负值，则通过min限定最小值
         CWX_UINT32  uiExpire=0, ///<超时时间，若为0则不添加
@@ -259,13 +260,14 @@ public:
         );
 
 	///pack inc的消息包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int packRecvInc(CwxPackageWriter* writer, ///<用于pack的writer
+	static int packRecvInc(CwxPackageWriterEx* writer, ///<用于pack的writer
 		CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
 		CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         CWX_INT64   num, ///<inc的数字，可正可负
+        CWX_INT64   result, ///<计算的结果，若为0则不添加,此记录最终的计算结果。
         CWX_INT64   max=0, ///<若inc为正值，则通过max限定最大值
         CWX_INT64   min=0, ///<若inc为负值，则通过min限定最小值
         CWX_UINT32  uiExpire=0, ///<超时时间，若为0则不添加
@@ -277,11 +279,12 @@ public:
 		);
 
 	///解析inc的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-	static int parseRecvInc(CwxPackageReader* reader,///<reader
-        CwxKeyValueItem const*& key, ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+	static int parseRecvInc(CwxPackageReaderEx* reader,///<reader
+        CwxKeyValueItemEx const*& key, ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         CWX_INT64&   num, ///<返回inc的num
+        CWX_INT64&   result, ///<运算结果的值
         CWX_INT64&   max, ///<返回max
         CWX_INT64&   min, ///<返回min
         CWX_UINT32& uiExpire, ///<返回expire，若为0表示没有指定
@@ -293,10 +296,10 @@ public:
         );
 
     ///pack delete的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvDel(CwxPackageWriter* writer,///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+    static int packRecvDel(CwxPackageWriterEx* writer,///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -304,12 +307,12 @@ public:
         );
 
     ///pack delete的消息包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvDel(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packRecvDel(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         CWX_UINT32 uiVersion=0, ///<版本，若为0则不添加
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -317,10 +320,10 @@ public:
         );
 
     ///parse delete的数据包。返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvDel(CwxPackageReader* reader, ///<reader
-        CwxKeyValueItem const*& key,   ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+    static int parseRecvDel(CwxPackageReaderEx* reader, ///<reader
+        CwxKeyValueItemEx const*& key,   ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         CWX_UINT32& uiVersion, ///<返回版本
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
@@ -328,7 +331,7 @@ public:
         );
 
     ///pack除inc外的数据更新返回消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvReply(CwxPackageWriter* writer,///<用于pack的writer
+    static int packRecvReply(CwxPackageWriterEx* writer,///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
 		CWX_UINT16 unMsgType, ///<回复消息包的消息类型
@@ -340,7 +343,7 @@ public:
         );
 
     ///parse除inc外的数据更新返回消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvReply(CwxPackageReader* reader, ///<reader
+    static int parseRecvReply(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<返回的数据包
         int& ret,  ///<返回的ret值
         CWX_UINT32& uiVersion, ///<返回的version
@@ -350,7 +353,7 @@ public:
         );
 
     ///pack inc的返回消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvIncReply(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packRecvIncReply(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT16 unMsgType, ///<消息类型
@@ -362,7 +365,7 @@ public:
         );
 
     ///parse inc返回的消息包。 返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvIncReply(CwxPackageReader* reader, ///<reader
+    static int parseRecvIncReply(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<返回的数据包
         int& ret,  ///<返回的ret值
         CWX_UINT32& uiVersion, ///<返回的版本
@@ -372,7 +375,7 @@ public:
         );
 
     ///错误的回复包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packErrReply(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packErrReply(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<消息包
         CWX_UINT32 uiTaskId, ///<消息的taskid
         CWX_UINT16 unMsgType, ///<消息类型
@@ -382,10 +385,10 @@ public:
         );
 
     ///pack get的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetKey(CwxPackageWriter* writer, ///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+    static int packGetKey(CwxPackageWriterEx* writer, ///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -395,12 +398,12 @@ public:
         );
 
     ///pack get的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetKey(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packGetKey(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -410,11 +413,11 @@ public:
         );
 
     ///parse get的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseGetKey(CwxPackageReader* reader, ///<reader
+    static int parseGetKey(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
-        CwxKeyValueItem const*& key,   ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& key,   ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         bool&        bVersion, ///<版本
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
@@ -424,10 +427,10 @@ public:
         );
 
     ///pack exist的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExistKey(CwxPackageWriter* writer, ///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+    static int packExistKey(CwxPackageWriterEx* writer, ///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -436,12 +439,12 @@ public:
         );
 
     ///pack exist的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExistKey(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packExistKey(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
@@ -450,11 +453,11 @@ public:
         );
 
     ///parse exist的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExistKey(CwxPackageReader* reader, ///<reader
+    static int parseExistKey(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
-        CwxKeyValueItem const*& key,   ///<返回key字段
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& key,   ///<返回key字段
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         bool&        bVersion, ///<版本
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
@@ -463,11 +466,11 @@ public:
         );
 
     ///pack multi-get数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetKeys(CwxPackageWriter* writer, ///<用于pack的writer
-        CwxPackageWriter* writer1, ///<用于pack的writer1
+    static int packGetKeys(CwxPackageWriterEx* writer, ///<用于pack的writer
+        CwxPackageWriterEx* writer1, ///<用于pack的writer1
         list<pair<char const*, CWX_UINT16> > const& keys, ///<key的列表
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
@@ -476,13 +479,13 @@ public:
         );
 
     ///pack multi-get消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetKeys(CwxPackageWriter* writer,///<用于pack的writer
-        CwxPackageWriter* writer1, ///<用于pack的writer1
+    static int packGetKeys(CwxPackageWriterEx* writer,///<用于pack的writer
+        CwxPackageWriterEx* writer1, ///<用于pack的writer1
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         list<pair<char const*, CWX_UINT16> > const& keys, ///<key的列表
-        CwxKeyValueItem const* field, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const* field, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
         bool bMaster = false, ///<是否从master获取
@@ -491,13 +494,13 @@ public:
         );
 
     ///parse multi-get的数据包。 返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseGetKeys(CwxPackageReader* reader,///<reader
-        CwxPackageReader* reader1,///<reader1
+    static int parseGetKeys(CwxPackageReaderEx* reader,///<reader
+        CwxPackageReaderEx* reader1,///<reader1
         CwxMsgBlock const* msg, ///<数据包
         list<pair<char const*, CWX_UINT16> >& keys,///<key的列表
         CWX_UINT32& uiKeyNum, ///<key的数量
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
         bool&        bMaster,  ///<从master获取信息
@@ -506,12 +509,12 @@ public:
         );
 
     ///pack 获取key列表的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetList(CwxPackageWriter* writer,///<用于pack的writer
-        CwxKeyValueItem const* begin=NULL, ///<开始的key
-        CwxKeyValueItem const* end=NULL,  ///<结束的key
+    static int packGetList(CwxPackageWriterEx* writer,///<用于pack的writer
+        CwxKeyValueItemEx const* begin=NULL, ///<开始的key
+        CwxKeyValueItemEx const* end=NULL,  ///<结束的key
         CWX_UINT16  num=0,  ///<返回的数量
-        CwxKeyValueItem const* field=NULL, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra=NULL, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const* field=NULL, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra=NULL, ///<extra信息，若为NULL则不添加
         bool        bAsc=true, ///<是否升序
         bool        bBegin=true, ///<是否获取begin的值
         bool        bKeyInfo=false, ///<是否返回key的info
@@ -522,14 +525,14 @@ public:
         );
 
     ///pack 获取key列表的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packGetList(CwxPackageWriter* writer,
+    static int packGetList(CwxPackageWriterEx* writer,
         CwxMsgBlock*& msg,
         CWX_UINT32 uiTaskId,
-        CwxKeyValueItem const* begin=NULL, ///<开始的key
-        CwxKeyValueItem const* end=NULL,  ///<结束的key
+        CwxKeyValueItemEx const* begin=NULL, ///<开始的key
+        CwxKeyValueItemEx const* end=NULL,  ///<结束的key
         CWX_UINT16  num=0,  ///<返回的数量
-        CwxKeyValueItem const* field=NULL, ///<field字段，若为NULL的不添加
-        CwxKeyValueItem const* extra=NULL, ///<extra信息，若为NULL则不添加
+        CwxKeyValueItemEx const* field=NULL, ///<field字段，若为NULL的不添加
+        CwxKeyValueItemEx const* extra=NULL, ///<extra信息，若为NULL则不添加
         bool        bAsc=true, ///<是否升序
         bool        bBegin=true, ///<是否获取begin的值
         bool        bKeyInfo=false, ///<是否返回key的info
@@ -540,13 +543,13 @@ public:
         );
 
     ///parse get list的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseGetList(CwxPackageReader* reader, ///<reader
+    static int parseGetList(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///数据包
-        CwxKeyValueItem const*& begin, ///<返回开始
-        CwxKeyValueItem const*& end, ///<返回技术
+        CwxKeyValueItemEx const*& begin, ///<返回开始
+        CwxKeyValueItemEx const*& end, ///<返回技术
         CWX_UINT16&  num, ///<获取的数量
-        CwxKeyValueItem const*& field, ///<field字段，若为NULL表示不存在
-        CwxKeyValueItem const*& extra, ///<extra信息，若为NULL表示不存在
+        CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
+        CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         bool&        bAsc, ///<升序
         bool&        bBegin, ///<是否获取开始值
         bool&        bKeyInfo, ///<是否返回key的info
@@ -557,7 +560,7 @@ public:
         );
 
     ///pack鉴权消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvAuth(CwxPackageWriter* writer,///<用于pack的writer
+    static int packRecvAuth(CwxPackageWriterEx* writer,///<用于pack的writer
         CwxMsgBlock*& msg,///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId,///<消息包的task id
         char const* szUser = NULL, ///<用户，若为NULL则不添加
@@ -566,7 +569,7 @@ public:
         );
 
     ///parse鉴权的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvAuth(CwxPackageReader* reader, ///<reader
+    static int parseRecvAuth(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg,///<数据包
         char const*& szUser,///<返回用户，NULL表示不存在
         char const*& szPasswd,///<返回口令，NULL表示不存在
@@ -574,7 +577,7 @@ public:
         );
 
     ///pack鉴权回复的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packRecvAuthReply(CwxPackageWriter* writer,///<用于pack的writer
+    static int packRecvAuthReply(CwxPackageWriterEx* writer,///<用于pack的writer
         CwxMsgBlock*& msg,///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId,///<消息包的task id
         CWX_UINT16 unMsgType, ///<消息类型
@@ -584,7 +587,7 @@ public:
         );
 
     ///parse鉴权回复的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseRecvAuthReply(CwxPackageReader* reader,///<reader
+    static int parseRecvAuthReply(CwxPackageReaderEx* reader,///<reader
         CwxMsgBlock const* msg,///<数据包
         int& ret,///<鉴权结果
         char const*& szErrMsg,///<错误消息
@@ -592,7 +595,7 @@ public:
         );
 
     ///pack export的report消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExportReport(CwxPackageWriter* writer,///<用于pack的writer
+    static int packExportReport(CwxPackageWriterEx* writer,///<用于pack的writer
         CwxMsgBlock*& msg,///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId,///<消息包的task id
         CWX_UINT32  uiChunkSize, ///<数据发送的chunk大小
@@ -605,7 +608,7 @@ public:
         );
 
     ///parse export的report数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExportReport(CwxPackageReader* reader,///<reader
+    static int parseExportReport(CwxPackageReaderEx* reader,///<reader
         CwxMsgBlock const* msg,///<数据包
         CWX_UINT32&  uiChunkSize,///<数据发送的chunk大小
         char const*& subscribe,///<数据订阅描述，空表示全部订阅
@@ -617,7 +620,7 @@ public:
         );
 
     ///pack export的report回复消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExportReportReply(CwxPackageWriter* writer,///<用于pack的writer
+    static int packExportReportReply(CwxPackageWriterEx* writer,///<用于pack的writer
         CwxMsgBlock*& msg,///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId,///<消息包的task id
         CWX_UINT64 ullSession, ///<session
@@ -626,7 +629,7 @@ public:
         );
 
     ///parse export的report回复消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExportReportReply(CwxPackageReader* reader,///<reader
+    static int parseExportReportReply(CwxPackageReaderEx* reader,///<reader
         CwxMsgBlock const* msg,///<数据包
         CWX_UINT64& ullSession,///<session
         CWX_UINT64& ullSid,///<数据开始发送时的sid
@@ -634,22 +637,22 @@ public:
         );
 
     ///pack一条export的key/value的数据。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExportDataItem(CwxPackageWriter* writer,///<用于pack的writer
-        CwxKeyValueItem const& key, ///<key
-        CwxKeyValueItem const& data, ///<data
-        CwxKeyValueItem const* extra, ///<extra
+    static int packExportDataItem(CwxPackageWriterEx* writer,///<用于pack的writer
+        CwxKeyValueItemEx const& key, ///<key
+        CwxKeyValueItemEx const& data, ///<data
+        CwxKeyValueItemEx const* extra, ///<extra
         CWX_UINT32 version, ///<版本号
         CWX_UINT32 expire, ///<超时时间
         char* szErr2K=NULL ///<pack出错时的错误信息
         );
 
     ///parse一条export的key/value的数据返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExportDataItem(CwxPackageReader* reader,///<reader
+    static int parseExportDataItem(CwxPackageReaderEx* reader,///<reader
         char const* szData, ///<key/value数据
         CWX_UINT32  uiDataLen, ///<key/value数据的长度
-        CwxKeyValueItem const*& key, ///<数据的key
-        CwxKeyValueItem const*& data, ///<数据的data
-        CwxKeyValueItem const*& extra, ///<extra
+        CwxKeyValueItemEx const*& key, ///<数据的key
+        CwxKeyValueItemEx const*& data, ///<数据的data
+        CwxKeyValueItemEx const*& extra, ///<extra
         CWX_UINT32& version, ///<数据的版本
         CWX_UINT32& expire, ///<数据的超时
         char* szErr2K=NULL///<解包时的错误信息
@@ -667,14 +670,14 @@ public:
 
     ///parse以chunk组织的多条export的key/value的数据。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int parseMultiExportData(
-        CwxPackageReader* reader, ///<reader
+        CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg,///<数据包
         CWX_UINT64& ullSeq, ///<序列号
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
     ///pack export数据的reply消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExportDataReply(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packExportDataReply(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSeq, ///<序列号
@@ -682,14 +685,14 @@ public:
         );
 
     ///parse export数据的reply消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExportDataReply(CwxPackageReader* reader, ///<reader
+    static int parseExportDataReply(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSeq, ///<序列号
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
     ///pack export完成的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packExportEnd(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packExportEnd(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSid, ///<完成时的sid
@@ -697,14 +700,14 @@ public:
         );
 
     ///parse export完成的消息包返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseExportEnd(CwxPackageReader* reader, ///<reader
+    static int parseExportEnd(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSid,///<完成时的sid
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
     ///pack binlog sync的report消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packReportData(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packReportData(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSid, ///<开始的sid
@@ -719,7 +722,7 @@ public:
         );
 
     ///parse binlog sync的report消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseReportData(CwxPackageReader* reader, ///<reader
+    static int parseReportData(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSid, ///<开始的sid
         bool&       bNewly, ///<是否从最新binlog开始同步
@@ -733,7 +736,7 @@ public:
         );
 
     ///pack report的回复消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packReportDataReply(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packReportDataReply(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSession, ///<session id
@@ -741,14 +744,14 @@ public:
         );
 
     ///parse report的回复数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseReportDataReply(CwxPackageReader* reader, ///<reader
+    static int parseReportDataReply(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSession, ///<session id
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
     ///pack sync的session连接报告消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packReportNewConn(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packReportNewConn(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSession, ///<连接所属的session
@@ -756,14 +759,14 @@ public:
         );
 
     ///parse sync的session连接报告数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseReportNewConn(CwxPackageReader* reader, ///<reader
+    static int parseReportNewConn(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSession, ///<连接所属的session
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
     ///pack report或sync的出错消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packSyncErr(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packSyncErr(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         int ret, ///<错误代码
@@ -772,7 +775,7 @@ public:
         );
 
     ///parse report或sync的出错数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseSyncErr(CwxPackageReader* reader, ///<reader
+    static int parseSyncErr(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         int& ret,  ///<错误代码
         char const*& szErrMsg,  ///<错误消息
@@ -781,12 +784,12 @@ public:
 
 
     ///pack sync的一条binlog的消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packSyncData(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packSyncData(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSid, ///<binlog的sid
         CWX_UINT32 uiTimeStamp, ///<binlog的时间戳
-        CwxKeyValueItem const& data, ///<binlog的data
+        CwxKeyValueItemEx const& data, ///<binlog的data
         CWX_UINT32 group,  ///<binlog所属的分组
         CWX_UINT32 type,   ///<binlog的类型，也就是消息类型
         CWX_UINT32 version,  ///<对应的key的版本
@@ -797,10 +800,10 @@ public:
         );
 
     ///pack 一条binlog的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packSyncDataItem(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packSyncDataItem(CwxPackageWriterEx* writer, ///<用于pack的writer
         CWX_UINT64 ullSid, ///<binlog的sid
         CWX_UINT32 uiTimeStamp, ///<binlog的时间戳
-        CwxKeyValueItem const& data, ///<binlog的data
+        CwxKeyValueItemEx const& data, ///<binlog的data
         CWX_UINT32 group,  ///<binlog所属的分组
         CWX_UINT32 type,   ///<binlog的类型，也就是消息类型
         CWX_UINT32 version,  ///<对应的key的版本
@@ -820,11 +823,11 @@ public:
         );
 
     ///parse一条binlog的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseSyncData(CwxPackageReader* reader, ///<reader
+    static int parseSyncData(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSid, ///<binlog的sid
         CWX_UINT32& uiTimeStamp, ///<binlog的时间戳
-        CwxKeyValueItem const*& data, ///<binlog的数据
+        CwxKeyValueItemEx const*& data, ///<binlog的数据
         CWX_UINT32& group, ///<binlog所属的group
         CWX_UINT32& type, ///<binlog对应的数据变更消息类型
         CWX_UINT32& version, ///<binlog对应的数据变更的key的版本
@@ -832,12 +835,12 @@ public:
         );
 
     ///parse一条binlog的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseSyncData(CwxPackageReader* reader,
+    static int parseSyncData(CwxPackageReaderEx* reader,
         char const* szData,
         CWX_UINT32 uiDataLen,
         CWX_UINT64& ullSid, ///<binlog的sid
         CWX_UINT32& uiTimeStamp, ///<binlog的时间戳
-        CwxKeyValueItem const*& data, ///<binlog的数据
+        CwxKeyValueItemEx const*& data, ///<binlog的数据
         CWX_UINT32& group, ///<binlog所属的group
         CWX_UINT32& type, ///<binlog对应的数据变更消息类型
         CWX_UINT32& version, ///<binlog对应的数据变更的key的版本
@@ -845,7 +848,7 @@ public:
         );
 
     ///pack sync binlog的回复消息包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packSyncDataReply(CwxPackageWriter* writer, ///<用于pack的writer
+    static int packSyncDataReply(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxMsgBlock*& msg, ///<返回的消息包，对象由内部分配
         CWX_UINT32 uiTaskId, ///<消息包的task id
         CWX_UINT64 ullSeq, ///<消息的序列号
@@ -854,7 +857,7 @@ public:
         );
 
     ///parse sync binlog的回复数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int parseSyncDataReply(CwxPackageReader* reader, ///<reader
+    static int parseSyncDataReply(CwxPackageReaderEx* reader, ///<reader
         CwxMsgBlock const* msg, ///<数据包
         CWX_UINT64& ullSeq, ///<消息的序列号
         char* szErr2K=NULL  ///<解包时的错误信息

@@ -176,8 +176,8 @@ int main(int argc ,char** argv)
         printf("Failure to connect ip:port: %s:%u, errno=%d\n", g_strHost.c_str(), g_unPort, errno);
         return 1;
     }
-    CwxPackageWriter writer;
-    CwxPackageReader reader;
+    CwxPackageWriterEx writer;
+    CwxPackageReaderEx reader;
     CwxMsgHead head;
     CwxMsgBlock* block=NULL;
 	CWX_UINT32  output_buf_len = UNISTOR_MAX_KVS_SIZE;
@@ -198,19 +198,19 @@ int main(int argc ,char** argv)
 			}
 			iter++;
 		}
-        CwxKeyValueItem  begin;
-        CwxKeyValueItem  end;
+        CwxKeyValueItemEx  begin;
+        CwxKeyValueItemEx  end;
         begin.m_szData = g_start.c_str();
         begin.m_uiDataLen = g_start.length();
         begin.m_bKeyValue = false;
         end.m_szData = g_end.c_str();
         end.m_uiDataLen = g_end.length();
         end.m_bKeyValue = false;
-        CwxKeyValueItem  field;
+        CwxKeyValueItemEx  field;
         field.m_szData = strField.c_str();
         field.m_uiDataLen = strField.length();
         field.m_bKeyValue = false;
-        CwxKeyValueItem  extra;
+        CwxKeyValueItemEx  extra;
         extra.m_szData = g_extra.c_str();
         extra.m_uiDataLen = g_extra.length();
         extra.m_bKeyValue = false;
@@ -262,7 +262,7 @@ int main(int argc ,char** argv)
         }
 		printf("query result:\n");
 		memset(output_buf, 0x00, output_buf_len);
-		CwxPackage::dump(block->rd_ptr(),
+		CwxPackageEx::dump(block->rd_ptr(),
 			block->length(),
 			output_buf,
 			output_buf_len,

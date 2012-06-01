@@ -186,13 +186,15 @@ public:
         CWX_UINT16 unKeyLen, ///<key的长度
         char const* szData, ///<data
         CWX_UINT32 uiDataLen, ///<data的长度
-        CWX_UINT32 uiOldExpire ///<更新前key的expire值，此为了维护expire的索引
+        CWX_UINT32 uiOldExpire, ///<更新前key的expire值，此为了维护expire的索引
+        bool& bInWriteCache ///<数据是否在write cache中存在
         );
 
     ///删除一个key。返回值：1：成功；0：cache满了，需要写入
     int delKey(char const* szKey, ///<key的名字
         CWX_UINT32 unKeyLen, ///<key的长度
-        CWX_UINT32 uiOldExpire ///<更新前key的expire值，此为了维护expire的索引
+        CWX_UINT32 uiOldExpire, ///<更新前key的expire值，此为了维护expire的索引
+        bool& bInWriteCache ///<数据是否在write cache中存在
         );
 
     ///获取一个key。返回值：1：获取一个；0：不存在；-1：buf空间太小
@@ -337,13 +339,15 @@ public:
         char const* szData, ///<data
         CWX_UINT32 uiDataLen, ///<data的床单
         CWX_UINT32 uiOldExpire, ///<key的先前expire值，用于控制expire索引
-        bool  bCache ///<是否将数据在read cache中cache。
+        bool  bCache, ///<是否将数据在read cache中cache。
+        bool& bInWriteCache ///<数据是否在write cache中存在
         );
 
     ///删除key。返回值：1：成功；0：cache满了，需要写入；-1：cache错误
     int delKey(char const* szKey,///<key的名字
         CWX_UINT32 unKeyLen, ///<key的长度
-        CWX_UINT32 uiOldExpire ///<key的先前expire值，用于控制expire索引
+        CWX_UINT32 uiOldExpire, ///<key的先前expire值，用于控制expire索引
+        bool& bInWriteCache ///<数据是否在write cache中存在
         );
 
     ///cache一个key。
@@ -359,7 +363,8 @@ public:
         CWX_UINT16 unKeyLen, ///<key的长度
         char* szData, ///<data的buf
         CWX_UINT32& uiDataLen, ///<传入data buf的大小，返回data的大小
-        bool& bDel ///<key是否已经删除
+        bool& bDel, ///<key是否已经删除
+        bool& bReadCache ///<是否在read cache中存在
         );
 
     ///从写cache获取一个key。返回值：1：获取一个；0：不存在；-1：buf空间太小
