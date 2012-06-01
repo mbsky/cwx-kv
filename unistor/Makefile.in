@@ -170,7 +170,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 zk_dir = @zk_dir@
-SUBDIRS = unistor unistor_bench
+SUBDIRS = unistor
 all: all-recursive
 
 .SUFFIXES:

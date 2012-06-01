@@ -88,5 +88,3 @@ AC_SUBST(openssl_dir)
 # Write config.status and the Makefile
 AC_OUTPUT(Makefile)
 AC_OUTPUT(unistor/Makefile)
-AC_OUTPUT(unistor_bench/Makefile)
-AC_OUTPUT(tool/Makefile)
