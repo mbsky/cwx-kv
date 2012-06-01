@@ -1,2 +1,2 @@
 
-SUBDIRS = unistor unistor_bench
+SUBDIRS = unistor
