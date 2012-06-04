@@ -1,3 +1,0 @@
-./configure --prefix=install path --with-cwinux=cwinux path --with-bdb=bdb path
-make
-make install
