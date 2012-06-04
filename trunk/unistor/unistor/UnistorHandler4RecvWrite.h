@@ -54,42 +54,42 @@ public:
 private:
 	///添加一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 	int addKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_UINT32& uiVersion, ///<返回key的新版本
         CWX_UINT32& uiFieldNum ///<返回key的field数量
         );
 
 	///set一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
     int setKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_UINT32& uiVersion, ///<返回key的新版本
         CWX_UINT32& uiFieldNum ///<返回key的field数量
         );
 
 	///update一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
     int updateKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_UINT32& uiVersion, ///<返回key的新版本
         CWX_UINT32& uiFieldNum ///<返回key的field数量
         );
 
 	///inc一个key的计数器。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
     int incKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_INT64& llValue, ///<返回计数器的新值
         CWX_UINT32& uiVersion ///<返回key的field数量
         );
 
 	///delete一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
     int delKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_UINT32& uiVersion, ///<返回key的新版本
         CWX_UINT32& uiFieldNum ///<返回key的field数量
         );
 
     ///import一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
     int importKey(UnistorTss* pTss, ///<线程tss
-        CwxMsgBlock* msg, ///<消息包
+        UnistorWriteMsgArg* pWriteArg, ///<add的参数
         CWX_UINT32& uiVersion, ///<返回key的新版本
         CWX_UINT32& uiFieldNum ///<返回key的field数量
         );

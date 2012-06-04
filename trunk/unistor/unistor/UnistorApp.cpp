@@ -721,6 +721,10 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE,
             m_outerSyncThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
+        //master转发消息的梳理
+        CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM,
+            getTaskBoard().getTaskNum());
+        UNISTOR_MONITOR_APPEND();
         //zookeeper的连接状态
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ZK_STATE,
             m_zkHandler->isValid()?"valid":"invalid");
@@ -965,6 +969,8 @@ int UnistorApp::getSysKey(void* pApp, ///<app对象
         CwxCommon::snprintf(szData, uiLen, "%u", app->m_innerSyncThreadPool->getQueuedMsgNum());
     }else if (strKey == UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE){
         CwxCommon::snprintf(szData, uiLen, "%u", app->m_outerSyncThreadPool->getQueuedMsgNum());
+    }else if (strKey == UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM){
+        CwxCommon::snprintf(szData, uiLen, "%u", app->getTaskBoard().getTaskNum());
     }else if (strKey == UNISTOR_SYS_KEY_ZK_STATE){
         CwxCommon::snprintf(szData, uiLen, "%s", app->m_zkHandler->isValid()?"valid":"invalid");
     }else if (strKey == UNISTOR_SYS_KEY_ZK_ERROR){

@@ -9,6 +9,12 @@ void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
 {
     if (EVENT_SEND_MSG == msg->event().getEvent()){ ///发送消息
         UnistorHandler4Recv* pHandler =((UnistorRecvThreadUserObj*)tss->getUserObj())->getConn(msg->event().getConnId());
+        UnistorWriteMsgArg* pWriteArg=(UnistorWriteMsgArg*)msg->event().getConnUserData();
+        if (pWriteArg){///<存在两种，一种是来自write thread的，一种是来自trans thread的。只有write thead需要释放
+            msg->event().setConnUserData(NULL);
+            CwxMsgBlockAlloc::free(pWriteArg->m_recvMsg);
+            tss->pushWriteMsgArg(pWriteArg);
+        }
         if (pHandler){
             pHandler->reply(msg, false);
             msg = NULL;
@@ -133,20 +139,24 @@ int UnistorHandler4Recv::onInput(){
 int UnistorHandler4Recv::recvMessage()
 {
 	int ret = 0;
+    bool bUnpack=false; ///<是否unpack了消息报
     do{
         if (!m_recvMsgData){///一个空包
             ret = UNISTOR_ERR_ERROR;
             strcpy(m_tss->m_szBuf2K, "msg is empty.");
             break;
         }
-        if (!m_tss->m_pReader->unpack(m_recvMsgData->rd_ptr(), m_recvMsgData->length(), false)){
-            ret = UNISTOR_ERR_ERROR;
-            strcpy(m_tss->m_szBuf2K, m_tss->m_pReader->getErrMsg());
-            break;
-        }
-        if (!m_bAuth && !checkAuth(m_tss)){
-            ret = UNISTOR_ERR_ERROR;
-            break;
+        if (!m_bAuth){
+            if (!m_tss->m_pReader->unpack(m_recvMsgData->rd_ptr(), m_recvMsgData->length(), false)){
+                ret = UNISTOR_ERR_ERROR;
+                strcpy(m_tss->m_szBuf2K, m_tss->m_pReader->getErrMsg());
+                break;
+            }
+            if (!checkAuth(m_tss)){
+                ret = UNISTOR_ERR_ERROR;
+                break;
+            }
+            bUnpack = true;
         }
         if ((m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_ADD)||
             (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_SET) ||
@@ -156,33 +166,81 @@ int UnistorHandler4Recv::recvMessage()
             (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_DEL))
         {///如果是写请求
             if (m_pApp->getRecvWriteHandler()->isCanWrite()){
-                relayWriteThread();
+                if (m_pApp->getWriteTheadPool()->getQueuedMsgNum() > m_pApp->getConfig().getCommon().m_uiMaxWriteQueueNum){
+                    ret = UNISTOR_ERR_TOO_MANY_WRITE;
+                    CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Too many message in write queue, max:%u", m_pApp->getConfig().getCommon().m_uiMaxWriteQueueNum);
+                    break;
+                }
+                if (!bUnpack){
+                    if (!m_tss->m_pReader->unpack(m_recvMsgData->rd_ptr(), m_recvMsgData->length(), false)){
+                        ret = UNISTOR_ERR_ERROR;
+                        strcpy(m_tss->m_szBuf2K, m_tss->m_pReader->getErrMsg());
+                        break;
+                    }
+                }
+                if (UNISTOR_ERR_SUCCESS != (ret = relayWriteThread())) break;
                 return 0;
             }else if (UnistorHandler4Trans::m_bCanTrans){///转发给master
-                relayTransThread(m_recvMsgData);
-                m_recvMsgData = NULL;
-                return 0;
+                if (m_pApp->getTaskBoard().getTaskNum() > m_pApp->getConfig().getCommon().m_uiMaxMasterTranMsgNum){
+                    ret = UNISTOR_ERR_TOO_MANY_TRANS;
+                    CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Too many message for trans to master, max:%u", m_pApp->getConfig().getCommon().m_uiMaxMasterTranMsgNum);
+                }else{
+                    relayTransThread(m_recvMsgData);
+                    m_recvMsgData = NULL;
+                    return 0;
+                }
+            }else{
+                ret = UNISTOR_ERR_NO_MASTER;
+                strcpy(m_tss->m_szBuf2K, "No master.");
+                break;
             }
-            ret = UNISTOR_ERR_ERROR;
-            strcpy(m_tss->m_szBuf2K, "No master.");
-        }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GET){
-            ret =  getKv(m_tss);
-            if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
-        }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GETS){
-            ret = getKvs(m_tss);
-            if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
-        }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_LIST){
-            ret = getList(m_tss);
-            if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
-        }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_EXIST){
-            ret = existKv(m_tss);
-            if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
-        }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_AUTH){
-            ret = UNISTOR_ERR_SUCCESS;
         }else{
-            ret = UNISTOR_ERR_ERROR;
-            CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Invalid msg type:%d", m_header.getMsgType());
-            return -1; ///无效消息类型，直接关闭连接
+            if (UnistorPoco::isFromMaster(m_header.getAttr())){
+                if (m_tss->isMasterIdc()){///是master idc
+                    if (!m_tss->isMaster()){///自己不是master
+                        if (UnistorHandler4Trans::m_bCanTrans){
+                            relayTransThread(m_recvMsgData);
+                            m_recvMsgData = NULL;
+                            return 0;
+                        }
+                        ret = UNISTOR_ERR_NO_MASTER;
+                        strcpy(m_tss->m_szBuf2K, "No master.");
+                        break;
+                    }
+                    ///若自己是master，则查询数据
+                }else{
+                    ret = UNISTOR_ERR_NO_MASTER;
+                    strcpy(m_tss->m_szBuf2K, "No master.");
+                    break;
+                }
+            }
+            if (!bUnpack){
+                if (!m_tss->m_pReader->unpack(m_recvMsgData->rd_ptr(), m_recvMsgData->length(), false)){
+                    ret = UNISTOR_ERR_ERROR;
+                    strcpy(m_tss->m_szBuf2K, m_tss->m_pReader->getErrMsg());
+                    break;
+                }
+            }
+
+            if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GET){
+                ret =  getKv(m_tss);
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
+            }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GETS){
+                ret = getKvs(m_tss);
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
+            }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_LIST){
+                ret = getList(m_tss);
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
+            }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_EXIST){
+                ret = existKv(m_tss);
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///已经回复
+            }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_AUTH){
+                ret = UNISTOR_ERR_SUCCESS;
+            }else{
+                ret = UNISTOR_ERR_ERROR;
+                CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Invalid msg type:%d", m_header.getMsgType());
+                return -1; ///无效消息类型，直接关闭连接
+            }
         }
     }while(0);
 
@@ -275,19 +333,16 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
     bool bVersion = false;
     char const* szUser;
     char const* szPasswd;
-    bool        bMaster=false;
     CWX_UINT32 uiVersion;
     CWX_UINT32 uiFieldNum = 0;
     int ret = 0;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseExistKey(pTss->m_pReader,
-        m_recvMsgData,
         key,
         field,
         extra,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         pTss->m_szBuf2K))
     {
         return UNISTOR_ERR_ERROR;
@@ -298,37 +353,6 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
         return UNISTOR_ERR_ERROR;
     }
 
-    if (bMaster){
-        if (pTss->isMasterIdc()){///是master idc
-            if (!pTss->isMaster()){///自己不是master
-                if (UnistorHandler4Trans::m_bCanTrans){
-                    CwxMsgBlock* msg = NULL;
-                    if (UNISTOR_ERR_SUCCESS != UnistorPoco::packExistKey(pTss->m_pWriter,
-                        *key,
-                        field,
-                        extra,
-                        bVersion,
-                        NULL,
-                        NULL,
-                        false,
-                        pTss->m_szBuf2K))
-                    {
-                        return UNISTOR_ERR_ERROR;
-                    }
-                    msg = CwxMsgBlockAlloc::malloc(pTss->m_pWriter->getMsgSize());
-                    memcpy(msg->wr_ptr(), pTss->m_pWriter->getMsg(), pTss->m_pWriter->getMsgSize());
-                    msg->wr_ptr(pTss->m_pWriter->getMsgSize());
-                    relayTransThread(msg);
-                    return UNISTOR_ERR_SUCCESS;
-                }
-                strcpy(pTss->m_szBuf2K, "No master.");
-                return UNISTOR_ERR_ERROR;
-            }
-        }else{
-            strcpy(pTss->m_szBuf2K, "No master.");
-            return UNISTOR_ERR_ERROR;
-        }
-    }
     bool bReadCache = false;
     ret = m_pApp->getStore()->isExist(pTss,
         *key,
@@ -369,7 +393,6 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
     bool bVersion = false;
     char const* szUser;
     char const* szPasswd;
-    bool        bMaster=false;
 	bool bKeyValue = false;
     CWX_UINT8 ucKeyInfo = 0;
     CWX_UINT32 uiVersion;
@@ -379,14 +402,12 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
 	int ret = 0;
 	char const* buf = NULL;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseGetKey(pTss->m_pReader,
-        m_recvMsgData,
         key,
         field,
         extra,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         ucKeyInfo,
         pTss->m_szBuf2K))
     {
@@ -395,38 +416,6 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
     if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
         CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
         return UNISTOR_ERR_ERROR;
-    }
-    if (bMaster){
-        if (pTss->isMasterIdc()){///是master idc
-            if (!pTss->isMaster()){///自己不是master
-                if (UnistorHandler4Trans::m_bCanTrans){
-                    CwxMsgBlock* msg = NULL;
-                    if (UNISTOR_ERR_SUCCESS != UnistorPoco::packGetKey(pTss->m_pWriter,
-                        *key,
-                        field,
-                        extra,
-                        bVersion,
-                        NULL,
-                        NULL,
-                        false,
-                        ucKeyInfo,
-                        pTss->m_szBuf2K))
-                    {
-                        return UNISTOR_ERR_ERROR;
-                    }
-                    msg = CwxMsgBlockAlloc::malloc(pTss->m_pWriter->getMsgSize());
-                    memcpy(msg->wr_ptr(), pTss->m_pWriter->getMsg(), pTss->m_pWriter->getMsgSize());
-                    msg->wr_ptr(pTss->m_pWriter->getMsgSize());
-                    relayTransThread(msg);
-                    return UNISTOR_ERR_SUCCESS;
-                }
-                strcpy(pTss->m_szBuf2K, "No master.");
-                return UNISTOR_ERR_ERROR;
-            }
-        }else{
-            strcpy(pTss->m_szBuf2K, "No master.");
-            return UNISTOR_ERR_ERROR;
-        }
     }
 	ret = m_pApp->getStore()->get(pTss,
         *key,
@@ -472,7 +461,6 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
     list<pair<char const*, CWX_UINT16> > keys;
     char const* szUser=NULL;
     char const* szPasswd=NULL;
-    bool bMaster = false;
     CWX_UINT8 ucKeyInfo = 0;
     char const* buf = NULL;
 	CWX_UINT32 uiBufLen = 0;
@@ -482,14 +470,12 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
 	int ret = 0;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseGetKeys(pTss->m_pReader,
         pTss->m_pItemReader,
-        m_recvMsgData,
         keys,
         uiKeyNum,
         field,
         extra,
         szUser,
         szPasswd,
-        bMaster,
         ucKeyInfo,
         pTss->m_szBuf2K))
     {
@@ -509,39 +495,6 @@ int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
             return UNISTOR_ERR_ERROR;
         }
         iter++;
-    }
-
-    if (bMaster){
-        if (pTss->isMasterIdc()){///是master idc
-            if (!pTss->isMaster()){///自己不是master
-                if (UnistorHandler4Trans::m_bCanTrans){
-                    CwxMsgBlock* msg = NULL;
-                    if (UNISTOR_ERR_SUCCESS != UnistorPoco::packGetKeys(pTss->m_pWriter,
-                        pTss->m_pItemWriter,
-                        keys,
-                        field,
-                        extra,
-                        NULL,
-                        NULL,
-                        false,
-                        ucKeyInfo,
-                        pTss->m_szBuf2K))
-                    {
-                        return UNISTOR_ERR_ERROR;
-                    }
-                    msg = CwxMsgBlockAlloc::malloc(pTss->m_pWriter->getMsgSize());
-                    memcpy(msg->wr_ptr(), pTss->m_pWriter->getMsg(), pTss->m_pWriter->getMsgSize());
-                    msg->wr_ptr(pTss->m_pWriter->getMsgSize());
-                    relayTransThread(msg);
-                    return UNISTOR_ERR_SUCCESS;
-                }
-                strcpy(pTss->m_szBuf2K, "No master.");
-                return UNISTOR_ERR_ERROR;
-            }
-        }else{
-            strcpy(pTss->m_szBuf2K, "No master.");
-            return UNISTOR_ERR_ERROR;
-        }
     }
     ret = m_pApp->getStore()->gets(pTss, keys, field, extra, buf, uiBufLen, uiCacheKeyNum, uiExistKeyNum, ucKeyInfo);
     pTss->m_ullStatsGetsNum++;
@@ -574,14 +527,12 @@ int UnistorHandler4Recv::getList(UnistorTss* pTss){
     char const* szUser= NULL;
     char const* szPasswd = NULL;
     CWX_UINT32 uiVersion = 0;
-    bool bMaster = false;
 	int ret = 0;
 	char const* szData = NULL;
     CWX_UINT32 uiDataLen = 0;
     CWX_UINT16 unKeyLen = 0;
     char const* szKey = NULL; 
     if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseGetList(pTss->m_pReader,
-        m_recvMsgData,
         begin,
         end,
         unNum,
@@ -592,7 +543,6 @@ int UnistorHandler4Recv::getList(UnistorTss* pTss){
         bKeyInfo,
         szUser,
         szPasswd,
-        bMaster,
         pTss->m_szBuf2K)))
     {
         return ret;
@@ -604,42 +554,6 @@ int UnistorHandler4Recv::getList(UnistorTss* pTss){
     if (end && end->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
         CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "End key is too long[%u], max[%u]", end->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
         return UNISTOR_ERR_ERROR;
-    }
-
-    if (bMaster){
-        if (pTss->isMasterIdc()){///是master idc
-            if (!pTss->isMaster()){///自己不是master
-                if (UnistorHandler4Trans::m_bCanTrans){
-                    CwxMsgBlock* msg = NULL;
-                    if (UNISTOR_ERR_SUCCESS != UnistorPoco::packGetList(pTss->m_pWriter,
-                        begin,
-                        end,
-                        unNum,
-                        field,
-                        extra,
-                        bAsc,
-                        bBegin,
-                        bKeyInfo,
-                        NULL,
-                        NULL,
-                        false,
-                        pTss->m_szBuf2K))
-                    {
-                        return UNISTOR_ERR_ERROR;
-                    }
-                    msg = CwxMsgBlockAlloc::malloc(pTss->m_pWriter->getMsgSize());
-                    memcpy(msg->wr_ptr(), pTss->m_pWriter->getMsg(), pTss->m_pWriter->getMsgSize());
-                    msg->wr_ptr(pTss->m_pWriter->getMsgSize());
-                    relayTransThread(msg);
-                    return UNISTOR_ERR_SUCCESS;
-                }
-                strcpy(pTss->m_szBuf2K, "No master.");
-                return UNISTOR_ERR_ERROR;
-            }
-        }else{
-            strcpy(pTss->m_szBuf2K, "No master.");
-            return UNISTOR_ERR_ERROR;
-        }
     }
     if (!unNum){
         unNum = UNISTOR_DEF_LIST_NUM;
@@ -708,14 +622,148 @@ int UnistorHandler4Recv::getList(UnistorTss* pTss){
 }
 
 ///将消息转发给write线程
-void UnistorHandler4Recv::relayWriteThread(){
+int UnistorHandler4Recv::relayWriteThread(){
+    int ret = UNISTOR_ERR_SUCCESS;
+    CwxKeyValueItemEx const* key = NULL;
+    CwxKeyValueItemEx const* field = NULL;
+    CwxKeyValueItemEx const* extra = NULL;
+    CwxKeyValueItemEx const* data = NULL;
+    char const* user=NULL;
+    char const* passwd=NULL;
+    CWX_INT64 llResult = 0;
+    UnistorWriteMsgArg* pArg = m_tss->popWriteMsgArg();
+    if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_ADD){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvAdd(m_tss->m_pReader,
+            key,
+            field,
+            extra,
+            data,
+            pArg->m_uiExpire,
+            pArg->m_uiSign,
+            pArg->m_uiVersion,
+            pArg->m_bCache,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        pArg->m_data =*data;
+        if (extra) pArg->m_extra = *extra;
+        if (field) pArg->m_field = *field;
+    }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_SET){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvSet(m_tss->m_pReader,
+            key,
+            field,
+            extra,
+            data,
+            pArg->m_uiSign,
+            pArg->m_uiExpire,
+            pArg->m_uiVersion,
+            pArg->m_bCache,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        pArg->m_data =*data;
+        if (extra) pArg->m_extra = *extra;
+        if (field) pArg->m_field = *field;
+    }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_UPDATE){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvUpdate(m_tss->m_pReader,
+            key,
+            field,
+            extra,
+            data,
+            pArg->m_uiSign,
+            pArg->m_uiExpire,
+            pArg->m_uiVersion,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        pArg->m_data =*data;
+        if (extra) pArg->m_extra = *extra;
+        if (field) pArg->m_field = *field;
+    }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_INC){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvInc(m_tss->m_pReader,
+            key,
+            field,
+            extra,
+            pArg->m_llNum,
+            llResult,
+            pArg->m_llMax,
+            pArg->m_llMin,
+            pArg->m_uiExpire,
+            pArg->m_uiSign,
+            pArg->m_uiVersion,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        if (extra) pArg->m_extra = *extra;
+        if (field) pArg->m_field = *field;
+    }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_IMPORT){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvImport(m_tss->m_pReader,
+            key,
+            extra,
+            data,
+            pArg->m_uiExpire,
+            pArg->m_uiVersion,
+            pArg->m_bCache,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        pArg->m_data =*data;
+        if (extra) pArg->m_extra = *extra;
+    }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_DEL){
+        if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvDel(m_tss->m_pReader,
+            key,
+            field,
+            extra,
+            pArg->m_uiVersion,
+            user,
+            passwd,
+            m_tss->m_szBuf2K)))
+        {
+            m_tss->pushWriteMsgArg(pArg);
+            return ret;
+        }
+        pArg->m_key = *key;
+        if (extra) pArg->m_extra = *extra;
+        if (field) pArg->m_field = *field;
+    }else{
+        CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Unknown msg type:%u", m_header.getMsgType());
+        return UNISTOR_ERR_ERROR;
+    }
+
     m_recvMsgData->event().setConnId(m_uiConnId);
     m_recvMsgData->event().setMsgHeader(m_header);
     m_recvMsgData->event().setHostId(m_uiThreadPosIndex);
     m_recvMsgData->event().setSvrId(UnistorApp::SVR_TYPE_RECV_WRITE);
     m_recvMsgData->event().setEvent(CwxEventInfo::RECV_MSG);
+    m_recvMsgData->event().setConnUserData(pArg);
     m_pApp->getWriteTheadPool()->append(m_recvMsgData);
     m_recvMsgData = NULL;
+    return UNISTOR_ERR_SUCCESS;
 }
 
 ///将消息转发给transfer线程
