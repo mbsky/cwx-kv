@@ -645,13 +645,13 @@ int UnistorStoreBdbc::_parseConf(){
     if (value == BDBC_ENGINE_KEY_TYPE_INT32){
         m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT32;
     }else if (value == BDBC_ENGINE_KEY_TYPE_INT64){
-        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT32;
+        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT64;
     }else if (value == BDBC_ENGINE_KEY_TYPE_INT128){
-        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT32;
+        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT128;
     }else if (value == BDBC_ENGINE_KEY_TYPE_INT256){
-        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT32;
+        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT256;
     }else if (value == BDBC_ENGINE_KEY_TYPE_CHAR){
-        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_INT32;
+        m_bdbcConf.m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_CHAR;
     }else{
         CwxCommon::snprintf(m_szErrMsg, 2047, "Invalid key type[%s], must be [%s] or [%s] or [%s] or [%s] or [%s].",
             value.c_str(), BDBC_ENGINE_KEY_TYPE_INT32, BDBC_ENGINE_KEY_TYPE_INT64, BDBC_ENGINE_KEY_TYPE_INT128,
@@ -725,7 +725,7 @@ int UnistorStoreBdbc::_parseConf(){
     CWX_INFO(("compress=%s", m_bdbcConf.m_bZip?"yes":"no"));
     CWX_INFO(("cache_msize=%u", m_bdbcConf.m_uiCacheMByte));
     CWX_INFO(("page_ksize=%u", m_bdbcConf.m_uiPageKSize));
-    CWX_INFO(("key_type=%u", m_bdbcConf.m_strKeyType.c_str()));
+    CWX_INFO(("key_type=%s", m_bdbcConf.m_strKeyType.c_str()));
     CWX_INFO(("int32_hex=%u", m_bdbcConf.m_bInt32Hex?"yes":"no"));
     CWX_INFO(("int64_hex=%u", m_bdbcConf.m_bInt64Hex?"yes":"no"));
     CWX_INFO(("hex_upper=%u", m_bdbcConf.m_bHexUpper?"yes":"no"));
@@ -2154,7 +2154,7 @@ int UnistorStoreBdbc::incKey(UnistorTss* tss,
                                CwxKeyValueItemEx const& key,
                                CwxKeyValueItemEx const* field,
                                CwxKeyValueItemEx const* extra,
-                               CWX_INT32 num,
+                               CWX_INT64 num,
                                CWX_INT64  llMax,
                                CWX_INT64  llMin,
                                CWX_UINT32  uiSign,
@@ -2742,15 +2742,16 @@ int UnistorStoreBdbc::get(UnistorTss* tss,
     int ret = 0;
     uiFieldNum = 0;
     bKeyValue = false;
+    uiLen = UNISTOR_MAX_KV_SIZE;
     ret = _getKey(&pCounterMap->m_bdbcKey, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, true, tss->m_szBuf2K);
     if (-1 == ret) return -1;
     if (!pCounterMap->m_bdbcOldData.decode((unsigned char*)szData, uiLen, tss->m_szBuf2K)) return -1;
     uiFieldNum = pCounterMap->getCount();
     uiVersion = pCounterMap->m_bdbcOldData.m_uiVersion;
-    uiLen = UNISTOR_MAX_KV_SIZE;
     if (ucKeyInfo){
         uiLen = sprintf((char*)szData,"%u,%u,%u,%u", 0, uiVersion, uiLen, 0);
     }else{
+        uiLen = UNISTOR_MAX_KV_SIZE;
         pPos = _outputUiCounter(pCounterMap->m_bdbcOldData,
             field?field->m_szData:NULL,
             (char*)szData,
@@ -2826,6 +2827,7 @@ int UnistorStoreBdbc::gets(UnistorTss* tss,
                     pCounterMap->m_bdbcKey.m_unKeyLen = iter_counter->length();
                 }
                 if (bSuccess){
+                    uiLen = UNISTOR_MAX_KV_SIZE;
                     ret = _getKey(&pCounterMap->m_bdbcKey, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCache, true, true, tss->m_szBuf2K);
                     if (bReadCache) uiReadCacheNum++;
                     if (1 == ret){//key´æÔÚ
@@ -2833,10 +2835,10 @@ int UnistorStoreBdbc::gets(UnistorTss* tss,
                         if (!pCounterMap->m_bdbcOldData.decode((unsigned char*)szData, uiLen, tss->m_szBuf2K)){
                             tss->m_pEngineWriter->addKeyValue(iter_counter->c_str(), iter_counter->length(), "", 0, false);
                         }else{
-                            uiLen = UNISTOR_MAX_KV_SIZE;
                             if (ucKeyInfo){
                                 uiLen = sprintf((char*)szData,"%u,%u,%u,%u", 0, pCounterMap->m_bdbcOldData.m_uiVersion, uiLen, 0);
                             }else{
+                                uiLen = UNISTOR_MAX_KV_SIZE;
                                 pPos = _outputUiCounter(pCounterMap->m_bdbcOldData,
                                     field?field->m_szData:NULL,
                                     (char*)szData,
