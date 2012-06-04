@@ -209,6 +209,8 @@ bool UnistorHandler4Trans::transMsg(UnistorTss* , CWX_UINT32 uiTaskId, CwxMsgBlo
     CwxMsgHead header(msg->event().getMsgHeader());
     header.setDataLen(msg->length());
     header.setTaskId(uiTaskId);
+    CWX_UINT8 ucAttr=header.getAttr();
+    header.setAttr(UnistorPoco::clearFromMaster(ucAttr));
     memcpy(block->wr_ptr(), header.toNet(), CwxMsgHead::MSG_HEAD_LEN);
     memcpy(block->wr_ptr() + CwxMsgHead::MSG_HEAD_LEN, msg->rd_ptr(), msg->length());
     block->wr_ptr( CwxMsgHead::MSG_HEAD_LEN + msg->length());

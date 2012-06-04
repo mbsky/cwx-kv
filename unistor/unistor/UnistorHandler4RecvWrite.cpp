@@ -11,19 +11,21 @@ int UnistorHandler4RecvWrite::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv)
     CWX_INT64 llValue=0;
     CWX_UINT32 uiVersion=0;
     CWX_UINT32 uiFieldNum=0;
+    UnistorWriteMsgArg* pWriteArg = (UnistorWriteMsgArg*)msg->event().getConnUserData();
+
     if (m_bCanWrite){
         if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_ADD){
-            ret = addKey(pTss, msg, uiVersion, uiFieldNum);
+            ret = addKey(pTss, pWriteArg, uiVersion, uiFieldNum);
         }else if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_IMPORT){
-            ret =  importKey(pTss, msg, uiVersion, uiFieldNum);
+            ret =  importKey(pTss, pWriteArg, uiVersion, uiFieldNum);
         }else if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_SET){
-            ret =  setKey(pTss, msg, uiVersion, uiFieldNum);
+            ret =  setKey(pTss, pWriteArg, uiVersion, uiFieldNum);
         }else if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_UPDATE){
-            ret =  updateKey(pTss, msg, uiVersion, uiFieldNum);
+            ret =  updateKey(pTss, pWriteArg, uiVersion, uiFieldNum);
         }else if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_INC){
-            ret =  incKey(pTss, msg, llValue, uiVersion);
+            ret =  incKey(pTss, pWriteArg, llValue, uiVersion);
         }else if (msg->event().getMsgHeader().getMsgType() == UnistorPoco::MSG_TYPE_RECV_DEL){
-            ret =  delKey(pTss, msg, uiVersion, uiFieldNum);
+            ret =  delKey(pTss, pWriteArg, uiVersion, uiFieldNum);
         }else{
             ret = UNISTOR_ERR_ERROR;
             CwxCommon::snprintf(pTss->m_szBuf2K, 2048, "Unknown write msg type=%u", msg->event().getMsgHeader().getMsgType());
@@ -62,6 +64,9 @@ int UnistorHandler4RecvWrite::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv)
         m_pApp->stop();
         return -1;
     }
+    pWriteArg->m_recvMsg = msg;
+    pWriteArg->m_replyMsg = block;
+    block->event().setConnUserData(pWriteArg);
     block->event().setConnId(msg->event().getConnId());
     block->event().setEvent(EVENT_SEND_MSG);
     block->event().setSvrId(UnistorApp::SVR_TYPE_RECV);
@@ -69,6 +74,7 @@ int UnistorHandler4RecvWrite::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv)
     if (m_pApp->getRecvThreadPools()[msg->event().getHostId()]->append(block)<=1){
         m_pApp->getRecvChannels()[msg->event().getHostId()]->notice();
     }
+    msg = NULL;
 	return 1;
 }
 
@@ -159,130 +165,38 @@ void UnistorHandler4RecvWrite::configChange(UnistorTss* pTss){
     m_pApp->getMasterHandler()->configChange(pTss);
 }
 
-///import一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
-int UnistorHandler4RecvWrite::importKey(UnistorTss* pTss,
-                                     CwxMsgBlock* msg,
-                                     CWX_UINT32& uiVersion,
-                                     CWX_UINT32& uiFieldNum)
-{
-    CwxKeyValueItemEx const*  key=NULL;
-    CwxKeyValueItemEx const*  extra=NULL;
-    CwxKeyValueItemEx const*  data = NULL;
-    CWX_UINT32 uiExpire=0;
-    char const* szUser=NULL;
-    char const* szPasswd=NULL;
-    bool bReadCache = false;
-    bool bWriteCache = false;
-    bool    bCache=true;
-    int ret = UNISTOR_ERR_SUCCESS;
-    uiFieldNum = 0;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
-    }
-    if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvImport(pTss->m_pReader,
-        key,
-        extra,
-        data,
-        uiExpire,
-        uiVersion,
-        bCache,
-        szUser,
-        szPasswd,
-        pTss->m_szBuf2K)))
-    {
-        return ret;
-    }
-    if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE)	{
-        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
-        return UNISTOR_ERR_ERROR;
-    }
-    if (data->m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
-        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", data->m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
-        return UNISTOR_ERR_ERROR;
-    }
-    uiVersion = 0;
-    ret = m_pApp->getStore()->importKey(pTss,
-        *key,
-        extra,
-        *data,
-        uiVersion,
-        bReadCache,
-        bWriteCache,
-        bCache,
-        uiExpire);
-    pTss->m_ullStatsImportNum++;
-    if (-1 != ret){
-        if (bReadCache) pTss->m_ullStatsImportReadCacheNum++;
-        if (bWriteCache) pTss->m_ullStatsImportWriteCacheNum++;
-    }
-    if (1 == ret) return UNISTOR_ERR_SUCCESS;
-    return UNISTOR_ERR_ERROR;
-}
 
 
 ///添加一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
-                                    CwxMsgBlock* msg,
+                                     UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItemEx const*  key=NULL;
-    CwxKeyValueItemEx const*  field = NULL;
-    CwxKeyValueItemEx const*  extra=NULL;
-	CwxKeyValueItemEx const*  data = NULL;
-	CWX_UINT32 uiExpire=0;
-    CWX_UINT32 uiSign = 0;
-    char const* szUser=NULL;
-    char const* szPasswd=NULL;
-    bool    bCache=true;
 	int ret = UNISTOR_ERR_SUCCESS;
     bool bReadCache = false;
     bool bWriteCache = false;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
-    }
-	if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvAdd(pTss->m_pReader,
-		key,
-        field,
-        extra,
-		data,
-		uiExpire,
-        uiSign,
-        uiVersion,
-        bCache,
-        szUser,
-        szPasswd,
-		pTss->m_szBuf2K)))
-    {
-		return ret;
-	}
-	if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE)	{
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+	if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE)	{
+		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
 		return UNISTOR_ERR_ERROR;
 	}
-	if (data->m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", data->m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
+	if (pWriteArg->m_data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
+		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", pWriteArg->m_data.m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
 		return UNISTOR_ERR_ERROR;
 	}
-    uiVersion = 0;
+    uiVersion = pWriteArg->m_uiVersion;
 	ret = m_pApp->getStore()->addKey(pTss,
-        *key,
-        field,
-        extra,
-        *data,
-        uiSign,
+        pWriteArg->m_key,
+        pWriteArg->m_field.m_uiDataLen?&pWriteArg->m_field:NULL,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
+        pWriteArg->m_data,
+        pWriteArg->m_uiSign,
         uiVersion,
         uiFieldNum,
         bReadCache,
         bWriteCache,
-        bCache,
-        uiExpire);
+        pWriteArg->m_bCache,
+        pWriteArg->m_uiExpire);
     pTss->m_ullStatsAddNum++;
     if (-1 != ret){
         if (bReadCache) pTss->m_ullStatsAddReadCacheNum++;
@@ -293,66 +207,37 @@ int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
     return UNISTOR_ERR_ERROR;
 }
 
+
 ///set一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
-                                    CwxMsgBlock* msg,
+                                     UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-	CwxKeyValueItemEx const* key=NULL;
-    CwxKeyValueItemEx const* field = NULL;
-    CwxKeyValueItemEx const* extra = NULL;
-	CwxKeyValueItemEx const* data = NULL;
-	CWX_UINT32 uiSign=0;
-	CWX_UINT32 uiExpire = 0;
-    bool bCache = true;
     bool bReadCache = false;
     bool bWriteCache = false;
-    char const* user=NULL;
-    char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
-    }
-	if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvSet(pTss->m_pReader,
-		key,
-        field,
-        extra,
-		data,
-        uiSign,
-		uiExpire,
-        uiVersion,
-        bCache,
-        user,
-        passwd,
-		pTss->m_szBuf2K)))
-    {
-		return ret;
-	}
-	if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+	if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
+		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
 		return UNISTOR_ERR_ERROR;
 	}
-	if (data->m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", data->m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
+	if (pWriteArg->m_data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
+		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", pWriteArg->m_data.m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
 		return UNISTOR_ERR_ERROR;
 	}
-    uiVersion = 0;
+    uiVersion = pWriteArg->m_uiVersion;
 	ret = m_pApp->getStore()->setKey(pTss,
-        *key,
-        field,
-        extra,
-        *data,
-        uiSign,
+        pWriteArg->m_key,
+        pWriteArg->m_field.m_uiDataLen?&pWriteArg->m_field:NULL,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
+        pWriteArg->m_data,
+        pWriteArg->m_uiSign,
         uiVersion,
         uiFieldNum,
         bReadCache,
         bWriteCache,
-        bCache,
-        uiExpire);
+        pWriteArg->m_bCache,
+        pWriteArg->m_uiExpire);
     pTss->m_ullStatsSetNum++;
     if (-1 != ret){
         if (bReadCache) pTss->m_ullStatsSetReadCacheNum++;
@@ -367,60 +252,33 @@ int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
 
 ///update一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
-                                       CwxMsgBlock* msg,
+                                        UnistorWriteMsgArg* pWriteArg,
                                        CWX_UINT32& uiVersion,
                                        CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItemEx const* key = NULL;
-    CwxKeyValueItemEx const* field = NULL;
-    CwxKeyValueItemEx const* extra = NULL;
-	CwxKeyValueItemEx const* data = NULL;
-	CWX_UINT32 uiExpire = 0;
-    CWX_UINT32 uiSign=0;
     bool bReadCache = false;
     bool bWriteCache = false;
-    char const* user=NULL;
-    char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
+    if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+        return UNISTOR_ERR_ERROR;
     }
-	if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvUpdate(pTss->m_pReader,
-		key,
-        field,
-        extra,
-		data,
-        uiSign,
-		uiExpire,
-        uiVersion,
-        user,
-        passwd,
-		pTss->m_szBuf2K)))
-    {
-		return ret;
-	}
-	if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
-		return UNISTOR_ERR_ERROR;
-	}
-	if (data->m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", data->m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
-		return UNISTOR_ERR_ERROR;
-	}
+    if (pWriteArg->m_data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", pWriteArg->m_data.m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
+        return UNISTOR_ERR_ERROR;
+    }
+    uiVersion = pWriteArg->m_uiVersion;
     ret = m_pApp->getStore()->updateKey(pTss,
-        *key,
-        field,
-        extra,
-        *data,
-        uiSign,
+        pWriteArg->m_key,
+        pWriteArg->m_field.m_uiDataLen?&pWriteArg->m_field:NULL,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
+        pWriteArg->m_data,
+        pWriteArg->m_uiSign,
         uiVersion,
         uiFieldNum,
         bReadCache,
         bWriteCache,
-        uiExpire);
+        pWriteArg->m_uiExpire);
     pTss->m_ullStatsUpdateNum++;
     if (-1 != ret){
         if (bReadCache) pTss->m_ullStatsUpdateReadCacheNum++;
@@ -439,64 +297,31 @@ int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
 
 ///inc一个key的计数器。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
-                                    CwxMsgBlock* msg,
+                                     UnistorWriteMsgArg* pWriteArg,
                                     CWX_INT64& llValue,
                                     CWX_UINT32& uiVersion)
 {
-    CwxKeyValueItemEx const* key = NULL;
-    CwxKeyValueItemEx const* field = NULL;
-    CwxKeyValueItemEx const* extra = NULL;
-	CWX_INT64 num=0;
-    CWX_INT64 result = 0;
-	CWX_INT64  llMax = 0;
-	CWX_INT64  llMin = 0;
-    CWX_UINT32  uiExpire=0;
-    CWX_UINT32 uiSign = 0;
     bool bReadCache = false;
     bool bWriteCache = false;
-    char const* user=NULL;
-    char const* passwd=NULL;
 	int ret = UNISTOR_ERR_SUCCESS;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
+    if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+        return UNISTOR_ERR_ERROR;
     }
-	if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvInc(pTss->m_pReader,
-		key,
-        field,
-        extra,
-		num,
-        result,
-		llMax,
-		llMin,
-        uiExpire,
-        uiSign,
-        uiVersion,
-        user,
-        passwd,
-		pTss->m_szBuf2K)))
-    {
-		return ret;
-	}
-	if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
-		return UNISTOR_ERR_ERROR;
-	}
+    uiVersion = pWriteArg->m_uiVersion;
 	ret = m_pApp->getStore()->incKey(pTss,
-        *key,
-        field,
-        extra,
-        num,
-        llMax,
-        llMin,
-        uiSign,
+        pWriteArg->m_key,
+        pWriteArg->m_field.m_uiDataLen?&pWriteArg->m_field:NULL,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
+        pWriteArg->m_llNum,
+        pWriteArg->m_llMax,
+        pWriteArg->m_llMin,
+        pWriteArg->m_uiSign,
         llValue,
         uiVersion,
         bReadCache,
         bWriteCache,
-        uiExpire);
+        pWriteArg->m_uiExpire);
     pTss->m_ullStatsIncNum++;
     if (-1 != ret){
         if (bReadCache) pTss->m_ullStatsIncReadCacheNum++;
@@ -517,41 +342,26 @@ int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
 
 ///delete一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
 int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
-                                    CwxMsgBlock* msg,
+                                     UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
                                     CWX_UINT32& uiFieldNum)
 {
-    CwxKeyValueItemEx const* key=NULL;
-    CwxKeyValueItemEx const* field = NULL;
-    CwxKeyValueItemEx const* extra = NULL;
-    char const* user=NULL;
-    char const* passwd=NULL;
     bool bReadCache = false;
     bool bWriteCache = false;
-
     int ret = UNISTOR_ERR_SUCCESS;
-    ///解析数据包
-    if (!pTss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false)){
-        ret = UNISTOR_ERR_ERROR;
-        strcpy(pTss->m_szBuf2K, pTss->m_pReader->getErrMsg());
-        return ret;
+    if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+        return UNISTOR_ERR_ERROR;
     }
-	if (UNISTOR_ERR_SUCCESS != (ret = UnistorPoco::parseRecvDel(pTss->m_pReader,
-		key,
-        field,
-        extra,
+    uiVersion = pWriteArg->m_uiVersion;
+	ret = m_pApp->getStore()->delKey(pTss,
+        pWriteArg->m_key,
+        pWriteArg->m_field.m_uiDataLen?&pWriteArg->m_field:NULL,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
         uiVersion,
-        user,
-        passwd,
-		pTss->m_szBuf2K)))
-    {
-		return ret;
-	}
-	if (key->m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
-		CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", key->m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
-		return UNISTOR_ERR_ERROR;
-	}
-	ret = m_pApp->getStore()->delKey(pTss, *key, field, extra, uiVersion, uiFieldNum, bReadCache, bWriteCache);
+        uiFieldNum,
+        bReadCache,
+        bWriteCache);
     pTss->m_ullStatsDelNum++;
     if (-1 != ret){
         if (bReadCache) pTss->m_ullStatsDelReadCacheNum++;
@@ -565,3 +375,39 @@ int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
 	return UNISTOR_ERR_ERROR;
 }
 
+///import一个key。返回值：UNISTOR_ERR_SUCCESS：成功；其他：错误代码
+int UnistorHandler4RecvWrite::importKey(UnistorTss* pTss,
+                                        UnistorWriteMsgArg* pWriteArg,
+                                        CWX_UINT32& uiVersion,
+                                        CWX_UINT32& uiFieldNum)
+{
+    bool bReadCache = false;
+    bool bWriteCache = false;
+    int ret = UNISTOR_ERR_SUCCESS;
+    if (pWriteArg->m_key.m_uiDataLen >= UNISTOR_MAX_KEY_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Key is too long[%u], max[%u]", pWriteArg->m_key.m_uiDataLen , UNISTOR_MAX_KEY_SIZE-1);
+        return UNISTOR_ERR_ERROR;
+    }
+    if (pWriteArg->m_data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE){
+        CwxCommon::snprintf(pTss->m_szBuf2K, 2047, "Data is too long[%u], max[%u]", pWriteArg->m_data.m_uiDataLen , UNISTOR_MAX_DATA_SIZE);
+        return UNISTOR_ERR_ERROR;
+    }
+    uiFieldNum = 0;
+    uiVersion = pWriteArg->m_uiVersion;
+    ret = m_pApp->getStore()->importKey(pTss,
+        pWriteArg->m_key,
+        pWriteArg->m_extra.m_uiDataLen?&pWriteArg->m_extra:NULL,
+        pWriteArg->m_data,
+        uiVersion,
+        bReadCache,
+        bWriteCache,
+        pWriteArg->m_bCache,
+        pWriteArg->m_uiExpire);
+    pTss->m_ullStatsImportNum++;
+    if (-1 != ret){
+        if (bReadCache) pTss->m_ullStatsImportReadCacheNum++;
+        if (bWriteCache) pTss->m_ullStatsImportWriteCacheNum++;
+    }
+    if (1 == ret) return UNISTOR_ERR_SUCCESS;
+    return UNISTOR_ERR_ERROR;
+}

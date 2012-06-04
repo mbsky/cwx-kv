@@ -19,8 +19,8 @@
 #include "UnistorHandler4Trans.h"
 
 ///应用信息定义
-#define UNISTOR_VERSION "1.0.0"
-#define UNISTOR_MODIFY_DATE "20120508142500"
+#define UNISTOR_VERSION "1.0.8"
+#define UNISTOR_MODIFY_DATE "20120604080000"
 
 ///unistor服务的app对象
 class UnistorApp : public CwxAppFramework{

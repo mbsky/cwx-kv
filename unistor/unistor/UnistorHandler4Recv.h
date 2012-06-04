@@ -128,8 +128,8 @@ private:
         bool bCloseConn=false ///<是否消息发送完毕后关闭连接
         );
 
-    ///将消息转发给write线程
-    void relayWriteThread();
+    ///将消息转发给write线程。返回值UNISTOR_ERR_SUCCESS表示成功，否则失败
+    int relayWriteThread();
 
     ///将消息转发给transfer线程
     void relayTransThread(CwxMsgBlock* msg);
