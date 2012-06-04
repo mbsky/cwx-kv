@@ -18,9 +18,19 @@ UnistorTss::~UnistorTss(){
     if (m_szDataBuf3) delete [] m_szDataBuf3;
 //    if (m_engineConf) delete m_engineConf;
     if (m_userObj) delete m_userObj;
+    if (m_writeMsgHead){
+        UnistorWriteMsgArg* pItem = NULL;
+        while(m_writeMsgHead){
+            pItem = m_writeMsgHead->m_next;
+            delete m_writeMsgHead;
+            m_writeMsgHead = pItem;
+        }
+        m_writeMsgHead = NULL;
+    }
 }
 
 int UnistorTss::init(UnistorTssUserObj* pUserObj){
+    m_writeMsgHead = NULL;
     m_pZkConf = NULL;
     m_pZkLock = NULL;
     m_pReader = new CwxPackageReaderEx(false);

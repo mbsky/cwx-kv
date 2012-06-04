@@ -150,6 +150,8 @@ public:
     bool        m_bKeepalive; ///<是否设置keepalive
 };
 
+
+
 ///解析ip:port格式的内容。返回值：true：成功；false：失败
 bool parseHostPort(string const& strHostPort,///<格式为ip/host:port的字符串
                    CwxHostInfo& host ///<返回host的对象

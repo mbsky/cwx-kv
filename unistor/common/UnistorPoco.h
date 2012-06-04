@@ -13,6 +13,10 @@
 class UnistorPoco
 {
 public:
+    enum{///<消息包头的属性位
+        MSG_HEAD_ATTR_MASTER = 0x01 ///<从master获取消息
+    };
+    
     enum ///<消息类型定义
     {
         ///RECV服务类型的消息类型定义
@@ -61,6 +65,19 @@ public:
         MAX_CONTINUE_SEEK_NUM = 8192
     };
 public:
+    ///设置从master获取的属性位
+    inline static CWX_UINT8 setFromMaster(CWX_UINT8& ucAttr){
+        CWX_SET_ATTR(ucAttr, MSG_HEAD_ATTR_MASTER);
+        return ucAttr;
+    }
+    ///check是否设置了从master获取的属性位
+    inline static bool isFromMaster(CWX_UINT8 ucAttr){
+        return CWX_CHECK_ATTR(ucAttr, MSG_HEAD_ATTR_MASTER);
+    }
+    ///清除从master获取的属性位
+    inline static CWX_UINT8 clearFromMaster(CWX_UINT8& ucAttr){
+        return CWX_CLR_ATTR(ucAttr, MSG_HEAD_ATTR_MASTER);
+    }
     ///pack Add key的数据。 返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int packRecvImport(CwxPackageWriterEx* writer, ///<用于pack的writer，内容通过writer返回
         CwxKeyValueItemEx const& key, ///<key
@@ -392,7 +409,6 @@ public:
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
-        bool bMaster = false, ///<是否从master获取
         CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
@@ -414,14 +430,12 @@ public:
 
     ///parse get的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int parseGetKey(CwxPackageReaderEx* reader, ///<reader
-        CwxMsgBlock const* msg, ///<数据包
         CwxKeyValueItemEx const*& key,   ///<返回key字段
         CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
         CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         bool&        bVersion, ///<版本
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
-        bool&        bMaster,  ///<从master获取信息
         CWX_UINT8& ucKeyInfo, ///<是否获取key的infomation
         char* szErr2K=NULL     ///<解包时的错误信息
         );
@@ -434,7 +448,6 @@ public:
         bool bVersion = false, ///<是否获取版本
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
-        bool bMaster = false, ///<是否从master获取
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -454,14 +467,12 @@ public:
 
     ///parse exist的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int parseExistKey(CwxPackageReaderEx* reader, ///<reader
-        CwxMsgBlock const* msg, ///<数据包
         CwxKeyValueItemEx const*& key,   ///<返回key字段
         CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
         CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         bool&        bVersion, ///<版本
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
-        bool&        bMaster,  ///<从master获取信息
         char* szErr2K=NULL     ///<解包时的错误信息
         );
 
@@ -473,7 +484,6 @@ public:
         CwxKeyValueItemEx const* extra, ///<extra信息，若为NULL则不添加
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
-        bool bMaster = false, ///<是否从master获取
         CWX_UINT8 ucKeyInfo=0, ///<是否获取key的infomation
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
@@ -496,14 +506,12 @@ public:
     ///parse multi-get的数据包。 返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int parseGetKeys(CwxPackageReaderEx* reader,///<reader
         CwxPackageReaderEx* reader1,///<reader1
-        CwxMsgBlock const* msg, ///<数据包
         list<pair<char const*, CWX_UINT16> >& keys,///<key的列表
         CWX_UINT32& uiKeyNum, ///<key的数量
         CwxKeyValueItemEx const*& field, ///<field字段，若为NULL表示不存在
         CwxKeyValueItemEx const*& extra, ///<extra信息，若为NULL表示不存在
         char const*& user,     ///<返回用户，NULL表示不存在
         char const*& passwd,   ///<返回口令，NULL表示不存在
-        bool&        bMaster,  ///<从master获取信息
         CWX_UINT8&   ucKeyInfo, ///<是否获取key的infomation
         char* szErr2K=NULL     ///<解包时的错误信息
         );
@@ -520,7 +528,6 @@ public:
         bool        bKeyInfo=false, ///<是否返回key的info
         char const* user=NULL,  ///<用户，若为NULL则不添加
         char const* passwd=NULL, ///<用户口令，若为NULL则不添加
-        bool bMaster = false, ///<是否从master获取
         char* szErr2K=NULL   ///<pack出错时的错误信息
         );
 
@@ -544,7 +551,6 @@ public:
 
     ///parse get list的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int parseGetList(CwxPackageReaderEx* reader, ///<reader
-        CwxMsgBlock const* msg, ///数据包
         CwxKeyValueItemEx const*& begin, ///<返回开始
         CwxKeyValueItemEx const*& end, ///<返回技术
         CWX_UINT16&  num, ///<获取的数量
@@ -555,7 +561,6 @@ public:
         bool&        bKeyInfo, ///<是否返回key的info
         char const*& szUser, ///<用户
         char const*& szPasswd, ///<口令
-        bool& bMaster, ///<是否从master获取
         char*        szErr2K=NULL ///<解包的错误信息
         );
 

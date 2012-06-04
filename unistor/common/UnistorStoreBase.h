@@ -198,7 +198,7 @@ public:
         CwxKeyValueItemEx const& key,  ///<inc的key
         CwxKeyValueItemEx const* field, ///<若要inc一个field计数器，则指定对应的field
         CwxKeyValueItemEx const* extra, ///<存储引擎的extra数据
-        CWX_INT32 num, ///<增加或减少的数量
+        CWX_INT64  num, ///<增加或减少的数量
         CWX_INT64  llMax, ///<若是增加而且此值不为0，则inc后的值不能超过此值
         CWX_INT64  llMin, ///<若是减少而起此值不为0，则dec后的值不能超过此值
         CWX_UINT32  uiSign, ///<inc的标记

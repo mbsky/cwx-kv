@@ -33,6 +33,8 @@ public:
         m_bEnableExpire = false;
         m_uiDefExpire = 0;
         m_uiExpireConcurrent = UNISTOR_DEF_EXPIRE_CONNCURRENT;
+        m_uiMaxWriteQueueNum = UNISTOR_DEF_MAX_WRITE_QUEUE_MSG_NUM;
+        m_uiMaxMasterTranMsgNum = UNISTOR_DEF_MAX_MASTER_TRAN_MSG_NUM;
     };
 public:
     string              m_strWorkDir;///<工作目录
@@ -55,6 +57,8 @@ public:
     bool                m_bEnableExpire; ///<是否支持expire
     CWX_UINT32          m_uiDefExpire; ///<若支持超时，则缺省的超时时间
     CWX_UINT32          m_uiExpireConcurrent; ///<超时处理的并发
+    CWX_UINT32          m_uiMaxWriteQueueNum; ///<写队列最大等待消息的梳理
+    CWX_UINT32          m_uiMaxMasterTranMsgNum; ///<转发给master的最大消息数量
 };
 
 ///zk的配置

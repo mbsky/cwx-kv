@@ -1289,7 +1289,6 @@ int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
                             bool bVersion,
                             char const* szUser,
                             char const* szPasswd,
-                            bool bMaster,
                             CWX_UINT8 ucKeyInfo,
                             char* szErr2K)
 {
@@ -1324,12 +1323,6 @@ int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
     }
     if (szPasswd && szPasswd[0]){
         if (!writer->addKeyValue(UNISTOR_KEY_P, strlen(UNISTOR_KEY_P), szPasswd, strlen(szPasswd))){
-            if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-            return UNISTOR_ERR_ERROR;
-        }
-    }
-    if (bMaster){
-        if (!writer->addKeyValue(UNISTOR_KEY_MT, strlen(UNISTOR_KEY_MT), (CWX_UINT32)1)){
             if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
             return UNISTOR_ERR_ERROR;
         }
@@ -1370,13 +1363,14 @@ int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         ucKeyInfo,
         szErr2K)))
     {
         return ret;
     }
-    CwxMsgHead head(0, 0, MSG_TYPE_RECV_GET, uiTaskId, writer->getMsgSize());
+    CWX_UINT8 ucAttr=0;
+    if (bMaster) setFromMaster(ucAttr);
+    CwxMsgHead head(0, ucAttr, MSG_TYPE_RECV_GET, uiTaskId, writer->getMsgSize());
     msg = CwxMsgBlockAlloc::pack(head, writer->getMsg(), writer->getMsgSize());
     if (!msg){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc msg, size:%u", writer->getMsgSize());
@@ -1386,23 +1380,17 @@ int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
 
 }
 int UnistorPoco::parseGetKey(CwxPackageReaderEx* reader,
-                       CwxMsgBlock const* msg,
                        CwxKeyValueItemEx const*& key,
                        CwxKeyValueItemEx const*& field,
                        CwxKeyValueItemEx const*& extra,
                        bool&        bVersion,
                        char const*& szUser,
                        char const*& szPasswd,
-                       bool&        bMaster,
                        CWX_UINT8&   ucKeyInfo,
                        char*        szErr2K)
 {
     CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiValue=0;
-    if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
-        if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
-        return UNISTOR_ERR_ERROR;
-    }
     //get key
     if (!(key=reader->getKey(UNISTOR_KEY_K))){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_K);
@@ -1425,11 +1413,6 @@ int UnistorPoco::parseGetKey(CwxPackageReaderEx* reader,
     szPasswd = NULL;
     pItem = reader->getKey(UNISTOR_KEY_P);
     if (pItem) szPasswd = pItem->m_szData;
-    //get master
-    bMaster = false;
-    if (reader->getKey(UNISTOR_KEY_MT, uiValue)){
-        bMaster = uiValue?true:false;
-    }
     //get keyinfo
     if (!reader->getKey(UNISTOR_KEY_I, ucKeyInfo)){
         ucKeyInfo = 0; 
@@ -1445,7 +1428,6 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
                               bool bVersion,
                               char const* szUser,
                               char const* szPasswd,
-                              bool bMaster,
                               char* szErr2K)
 {
     return packGetKey(writer,
@@ -1455,7 +1437,6 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         false,
         szErr2K);
 }
@@ -1481,12 +1462,13 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         szErr2K)))
     {
         return ret;
     }
-    CwxMsgHead head(0, 0, MSG_TYPE_RECV_EXIST, uiTaskId, writer->getMsgSize());
+    CWX_UINT8 ucAttr=0;
+    if (bMaster) setFromMaster(ucAttr);
+    CwxMsgHead head(0, ucAttr, MSG_TYPE_RECV_EXIST, uiTaskId, writer->getMsgSize());
     msg = CwxMsgBlockAlloc::pack(head, writer->getMsg(), writer->getMsgSize());
     if (!msg){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc msg, size:%u", writer->getMsgSize());
@@ -1496,26 +1478,22 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
 int UnistorPoco::parseExistKey(CwxPackageReaderEx* reader,
-                         CwxMsgBlock const* msg,
                          CwxKeyValueItemEx const*& key,
                          CwxKeyValueItemEx const*& field,
                          CwxKeyValueItemEx const*& extra,
                          bool&        bVersion,
                          char const*& szUser,
                          char const*& szPasswd,
-                         bool&        bMaster,
                          char*        szErr2K)
 {
     CWX_UINT8 ucKeyInfo=0;
     return parseGetKey(reader,
-        msg,
         key,
         field,
         extra,
         bVersion,
         szUser,
         szPasswd,
-        bMaster,
         ucKeyInfo,
         szErr2K);
 }
@@ -1527,7 +1505,6 @@ int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const* extra,
                              char const* szUser,
                              char const* szPasswd,
-                             bool bMaster,
                              CWX_UINT8 ucKeyInfo,
                              char* szErr2K)
 {
@@ -1586,12 +1563,6 @@ int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
             return UNISTOR_ERR_ERROR;
         }
     }
-    if (bMaster){
-        if (!writer->addKeyValue(UNISTOR_KEY_MT, strlen(UNISTOR_KEY_MT), (CWX_UINT32)1)){
-            if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-            return UNISTOR_ERR_ERROR;
-        }
-    }
     if (ucKeyInfo){
         if (!writer->addKeyValue(UNISTOR_KEY_I, strlen(UNISTOR_KEY_I), ucKeyInfo)){
             if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
@@ -1628,13 +1599,14 @@ int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
         extra,
         szUser,
         szPasswd,
-        bMaster,
         ucKeyInfo,
         szErr2K)))
     {
         return ret;
     }
-    CwxMsgHead head(0, 0, MSG_TYPE_RECV_GETS, uiTaskId, writer->getMsgSize());
+    CWX_UINT8 ucAttr=0;
+    if (bMaster) setFromMaster(ucAttr);
+    CwxMsgHead head(0, ucAttr, MSG_TYPE_RECV_GETS, uiTaskId, writer->getMsgSize());
     msg = CwxMsgBlockAlloc::pack(head, writer->getMsg(), writer->getMsgSize());
     if (!msg){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc msg, size:%u", writer->getMsgSize());
@@ -1645,23 +1617,16 @@ int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
 }
 int UnistorPoco::parseGetKeys(CwxPackageReaderEx* reader,
                               CwxPackageReaderEx* reader1,
-                              CwxMsgBlock const* msg,
                               list<pair<char const*, CWX_UINT16> >& keys,
                               CWX_UINT32& uiKeyNum,
                               CwxKeyValueItemEx const*& field,
                               CwxKeyValueItemEx const*& extra,
                               char const*& szUser,
                               char const*& szPasswd,
-                              bool&        bMaster,
                               CWX_UINT8&   ucKeyInfo,
                               char*        szErr2K)
 {
     CwxKeyValueItemEx const* pItem = NULL;
-    CWX_UINT32 uiValue=0;
-    if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
-        if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
-        return UNISTOR_ERR_ERROR;
-    }
     //get key
     if (!(pItem=reader->getKey(UNISTOR_KEY_K))){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No key[%s] in recv page.", UNISTOR_KEY_K);
@@ -1693,11 +1658,7 @@ int UnistorPoco::parseGetKeys(CwxPackageReaderEx* reader,
     szPasswd = NULL;
     pItem = reader->getKey(UNISTOR_KEY_P);
     if (pItem) szPasswd = pItem->m_szData;
-    //get master
-    bMaster = false;
-    if (reader->getKey(UNISTOR_KEY_MT, uiValue)){
-        bMaster = uiValue?true:false;
-    }
+    //get info
     if (!reader->getKey(UNISTOR_KEY_I, ucKeyInfo)){
         ucKeyInfo = 0;
     }
@@ -1716,7 +1677,6 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
                              bool        bKeyInfo,
                              char const* szUser,
                              char const* szPasswd,
-                             bool bMaster,
                              char* szErr2K)
 {
     writer->beginPack();
@@ -1780,12 +1740,6 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
             return UNISTOR_ERR_ERROR;
         }
     }
-    if (bMaster){
-        if (!writer->addKeyValue(UNISTOR_KEY_MT, strlen(UNISTOR_KEY_MT), (CWX_UINT32)1)){
-            if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-            return UNISTOR_ERR_ERROR;
-        }
-    }
     if (!writer->pack()){
         if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
         return UNISTOR_ERR_ERROR;
@@ -1823,12 +1777,13 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
         bKeyInfo,
         szUser,
         szPasswd,
-        bMaster,
         szErr2K)))
     {
         return ret;
     }
-    CwxMsgHead head(0, 0, MSG_TYPE_RECV_LIST, uiTaskId, writer->getMsgSize());
+    CWX_UINT8 ucAttr=0;
+    if (bMaster) setFromMaster(ucAttr);
+    CwxMsgHead head(0, ucAttr, MSG_TYPE_RECV_LIST, uiTaskId, writer->getMsgSize());
     msg = CwxMsgBlockAlloc::pack(head, writer->getMsg(), writer->getMsgSize());
     if (!msg){
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc msg, size:%u", writer->getMsgSize());
@@ -1839,7 +1794,6 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
 }
 ///返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
 int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
-                        CwxMsgBlock const* msg,
                         CwxKeyValueItemEx const*& begin,
                         CwxKeyValueItemEx const*& end,
                         CWX_UINT16&  num,
@@ -1850,15 +1804,10 @@ int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
                         bool&        bKeyInfo,
                         char const*& szUser,
                         char const*& szPasswd,
-                        bool& bMaster,
-                        char*        szErr2K)
+                        char*        )
 {
     CwxKeyValueItemEx const* pItem = NULL;
     CWX_UINT32 uiValue=0;
-    if (!reader->unpack(msg->rd_ptr(), msg->length(), false, true)){
-        if (szErr2K) strcpy(szErr2K, reader->getErrMsg());
-        return UNISTOR_ERR_ERROR;
-    }
     //get begin
     begin=reader->getKey(UNISTOR_KEY_BEGIN);
     //get end
@@ -1895,11 +1844,6 @@ int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
     szPasswd = NULL;
     pItem = reader->getKey(UNISTOR_KEY_P);
     if (pItem) szPasswd = pItem->m_szData;
-    //get master
-    bMaster = false;
-    if (reader->getKey(UNISTOR_KEY_MT, uiValue)){
-        bMaster = uiValue?true:false;
-    }
     return UNISTOR_ERR_SUCCESS;
 }
 

@@ -8,6 +8,7 @@
 #include "CwxPackageReaderEx.h"
 #include "CwxPackageWriterEx.h"
 #include "UnistorDef.h"
+#include "CwxMsgBlock.h"
 
 
 
@@ -46,11 +47,52 @@ public:
 
 };
 
+///定义Read线程向Write线程传递msg参数的对象
+class UnistorWriteMsgArg{
+public:
+    UnistorWriteMsgArg(){
+        reset();
+    }
+public:
+    void reset(){
+        m_recvMsg = NULL;
+        m_replyMsg = NULL;
+        m_next = NULL;
+        m_key.m_uiDataLen = 0;
+        m_field.m_uiDataLen = 0;
+        m_extra.m_uiDataLen = 0;
+        m_data.m_uiDataLen = 0;
+        m_llNum = 0;
+        m_llMax = 0;
+        m_llMin = 0;
+        m_uiSign = 0;
+        m_uiVersion = 0;
+        m_uiExpire = 0;
+        m_bCache = true;
+    }
+public:
+    CwxMsgBlock*              m_recvMsg; ///<Recv线程收到的写消息
+    CwxMsgBlock*              m_replyMsg; ///<Write回复的消息
+    UnistorWriteMsgArg*       m_next;  ///<空闲链表下一个
+    CwxKeyValueItemEx         m_key; ///<操作对应的key参数
+    CwxKeyValueItemEx         m_field; ///<操作的field参数
+    CwxKeyValueItemEx         m_extra; ///<操作的extra参数
+    CwxKeyValueItemEx         m_data; ///<操作的data参数
+    CWX_INT64                 m_llNum; ///<操作的num参数
+    CWX_INT64                 m_llMax; ///<操作的max参数
+    CWX_INT64                 m_llMin; ///<操作的min参数
+    CWX_UINT32                m_uiSign; ///<操作的sign参数
+    CWX_UINT32                m_uiVersion; ///<操作的version参数
+    CWX_UINT32                m_uiExpire; ///<操作的expire参数
+    bool                      m_bCache;  ///<操作的cache参数
+};
+
 //unistor的recv线程池的tss
 class UnistorTss:public CwxTss{
 public:
     ///构造函数
     UnistorTss():CwxTss(){
+        m_writeMsgHead = NULL;
         m_pZkConf = NULL;
         m_pZkLock = NULL;
         m_pReader = NULL;
@@ -85,6 +127,23 @@ public:
     int init(UnistorTssUserObj* pUserObj=NULL);
     ///获取用户的数据
     UnistorTssUserObj* getUserObj() { return m_userObj;}
+    ///获取一个write arg对象
+    inline UnistorWriteMsgArg* popWriteMsgArg(){
+        UnistorWriteMsgArg* arg = m_writeMsgHead;
+        if (arg){
+            m_writeMsgHead = m_writeMsgHead->m_next;
+            arg->reset();
+        }else{
+            arg = new UnistorWriteMsgArg();
+        }
+        return arg;
+    }
+    ///释放一个write arg对象
+    inline void pushWriteMsgArg(UnistorWriteMsgArg* arg){
+        arg->m_next = m_writeMsgHead;
+        m_writeMsgHead = arg;
+
+    }
     ///获取package的buf，返回NULL表示失败
     inline char* getBuf(CWX_UINT32 uiSize){
         if (m_uiDataBufLen < uiSize){
@@ -191,7 +250,6 @@ public:
     CWX_UINT32              m_uiBinLogVersion; ///<binlog的数据版本，用于binlog的分发
     CWX_UINT32              m_uiBinlogType;   ///<binlog的消息的类型，用于binlog的分发
     CwxKeyValueItemEx const*  m_pBinlogData; ///<binlog的data，用于binglog的分发
-
     UnistorZkConf*          m_pZkConf;  ///<zk的配置对象
     UnistorZkLock*          m_pZkLock;  ///<zk的锁信息
     CwxPackageReaderEx*       m_pReader; ///<数据包的解包对象
@@ -237,6 +295,7 @@ public:
     volatile CWX_UINT64     m_ullStatsImportWriteCacheNum; ///<del的write cache数量
 
 private:
+    UnistorWriteMsgArg*     m_writeMsgHead;  ///<缓存的Write消息参数的头
     UnistorTssUserObj*    m_userObj;  ///用户的数据
     char*                  m_szDataBuf; ///<数据buf
     CWX_UINT32             m_uiDataBufLen; ///<数据buf的空间大小

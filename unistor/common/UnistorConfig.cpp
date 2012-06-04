@@ -194,6 +194,25 @@ int UnistorConfig::init(string const& strCnfFile){
     }else{
         m_common.m_uiReadCacheMaxKeyNum = 0;
     }
+    //load common:max_write_queue_messge
+    if (m_cnf.getAttr("common", "max_write_queue_messge", value)){
+        m_common.m_uiMaxWriteQueueNum = strtoul(value.c_str(), NULL, 10);
+    }
+    if (m_common.m_uiMaxWriteQueueNum > UNISTOR_MAX_MAX_WRITE_QUEUE_MSG_NUM){
+        m_common.m_uiMaxWriteQueueNum = UNISTOR_MAX_MAX_WRITE_QUEUE_MSG_NUM;
+    }else if (m_common.m_uiMaxWriteQueueNum < UNISTOR_MIN_MAX_WRITE_QUEUE_MSG_NUM){
+        m_common.m_uiMaxWriteQueueNum = UNISTOR_MIN_MAX_WRITE_QUEUE_MSG_NUM;
+    }
+    //load common:max_trans_message
+    if (m_cnf.getAttr("common", "max_write_queue_messge", value)){
+        m_common.m_uiMaxMasterTranMsgNum = strtoul(value.c_str(), NULL, 10);
+    }
+    if (m_common.m_uiMaxMasterTranMsgNum > UNISTOR_MAX_MAX_MASTER_TRAN_MSG_NUM){
+        m_common.m_uiMaxMasterTranMsgNum = UNISTOR_MAX_MAX_MASTER_TRAN_MSG_NUM;
+    }else if (m_common.m_uiMaxMasterTranMsgNum < UNISTOR_MIN_MAX_MASTER_TRAN_MSG_NUM){
+        m_common.m_uiMaxMasterTranMsgNum = UNISTOR_MIN_MAX_MASTER_TRAN_MSG_NUM;
+    }
+
     //load common:enable_expire
     if (m_cnf.getAttr("common", "enable_expire", value) && value.length()){
         CwxCommon::trim(value);
@@ -378,6 +397,9 @@ void UnistorConfig::outputConfig() const
     CWX_INFO(("read_cache_mbyte=%u", m_common.m_uiReadCacheMByte));
     CWX_INFO(("read_cache_max_key_num=%u", m_common.m_uiReadCacheMaxKeyNum));
     CWX_INFO(("master_lost_binlog=%u", m_common.m_uiMasterLostBinlog));
+    CWX_INFO(("max_write_queue_messge=%u", m_common.m_uiMaxWriteQueueNum));
+    CWX_INFO(("max_trans_message=%u", m_common.m_uiMaxMasterTranMsgNum));
+
     CWX_INFO(("enable_expire=%s", m_common.m_bEnableExpire?"yes":"no"));
     CWX_INFO(("expire_default=%u", m_common.m_uiDefExpire));
     CWX_INFO(("expire_concurrent=%u", m_common.m_uiExpireConcurrent));
