@@ -27,7 +27,6 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_KEY_IB "ib"         ///<isbegin
 #define UNISTOR_KEY_K "k"           ///<数据的key的key
 #define UNISTOR_KEY_M      "m"      ///<message的key
-#define UNISTOR_KEY_MT "mt"         ///<master
 #define UNISTOR_KEY_MD5    "md5"    ///<md5签名的key
 #define UNISTOR_KEY_MAX    "max"    ///<最大值
 #define UNISTOR_KEY_MIN    "min"    ///<最小值
@@ -77,6 +76,7 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_SYS_KEY_ZK_THREAD_QUEUE  "zk_thread_queue" ///<zookeeper线程的队列
 #define UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE "inner_sync_thread_queue" ///<内部同步的线程队列
 #define UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE "outer_sync_thread_queue" ///<外部同步的线程队列
+#define UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM           "master_trans_msg_num" ///<当前转发消息的数量
 #define UNISTOR_SYS_KEY_ZK_STATE "zk_state"  ///<zookeeper的连接状态
 #define UNISTOR_SYS_KEY_ZK_ERROR "zk_error"  ///<zookeeper的错误信息
 #define UNISTOR_SYS_KEY_CACHE_STATE "cache_state" ///<cache的状态
@@ -87,7 +87,7 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY  "read_cache_max_key" ///<读cache的最大key的数量
 #define UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE    "read_cache_used_size" ///<读cache占用的空间大小
 #define UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY "read_cache_used_capacity" ///<读cache占用的数据的容量
-#define UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE "read_cache_used_size" ///<读cache的实际数据大小
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE "read_cache_used_data_size" ///<读cache的实际数据大小
 #define UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE      "read_cache_free_size" ///<读cache空闲的空间大小
 #define UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY  "read_cache_free_capacity" ///<读cache空闲的容量
 #define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cache的key的数量
@@ -134,13 +134,15 @@ CWINUX_USING_NAMESPACE
 #define UNISTOR_ERR_FAIL_AUTH        2 ///<鉴权失败
 #define UNISTOR_ERR_LOST_SYNC        3 ///<失去了同步状态
 #define UNISTOR_ERR_NO_MASTER        4 ///<没有master
-
+#define UNISTOR_ERR_TOO_MANY_WRITE   5 ///<太多的写
+#define UNISTOR_ERR_TOO_MANY_TRANS   6 ///<太多的转发消息
 //100以上是应用及的错误
 #define UNISTOR_ERR_NEXIST            101   ///<不存在
 #define UNISTOR_ERR_EXIST             102   ///<存在
 #define UNISTOR_ERR_VERSION           103   ///<版本错误
 #define UNISTOR_ERR_OUTRANGE          104   ///<inc超出范围
 #define UNISTOR_ERR_TIMEOUT           105   ///<超时
+
 
 #define UNISTOR_TRANS_TIMEOUT_SECOND   5  ///<数据转发超时
 #define UNISTOR_CONN_TIMEOUT_SECOND    3  ///<连接超时
@@ -186,6 +188,16 @@ CWINUX_USING_NAMESPACE
 #define  UNISTOR_CHECKOUT_INTERNAL   5      ///<存储引擎的checkpoint的间隔
 #define  UNISTOR_PER_FETCH_EXPIRE_KEY_NUM 1024  ///<超时检查的一次获取key的数量
 #define  UNISTOR_EXPORT_CONTINUE_SEEK_NUM  4096  ///<数据导出一次遍历的key的数量
+
+#define  UNISTOR_DEF_MAX_WRITE_QUEUE_MSG_NUM  50000 ///<写队列缺省最大消息的数量
+#define  UNISTOR_MIN_MAX_WRITE_QUEUE_MSG_NUM  5000  ///<写队列最小最大消息的数量
+#define  UNISTOR_MAX_MAX_WRITE_QUEUE_MSG_NUM  500000 ///<写队列最大缺省消息的数量
+
+#define  UNISTOR_DEF_MAX_MASTER_TRAN_MSG_NUM  25000 ///<写队列缺省最大消息的数量
+#define  UNISTOR_MIN_MAX_MASTER_TRAN_MSG_NUM  25000  ///<写队列最小最大消息的数量
+#define  UNISTOR_MAX_MAX_MASTER_TRAN_MSG_NUM  250000 ///<写队列最大缺省消息的数量
+
+
 
 
 #define  UNISTOR_REPORT_TIMEOUT  30  ///<report的超时时间
