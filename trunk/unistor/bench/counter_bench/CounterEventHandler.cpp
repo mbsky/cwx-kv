@@ -109,6 +109,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
     key.m_bKeyValue = false;
     if (m_pApp->getConfig().m_strOpr == "add"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -136,6 +139,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "set"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -163,6 +169,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "update"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -189,6 +198,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "import"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -214,6 +226,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "inc"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -243,6 +258,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "delete"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
@@ -263,6 +281,9 @@ void CounterEventHandler::sendNextMsg(UnistorTss* tss,
         }
     }else if (m_pApp->getConfig().m_strOpr == "get"){
         uiKey = m_uiSendNum * m_pApp->getConfig().m_uiKeyGroup + m_pApp->getConfig().m_uiKeyIndex + m_pApp->getConfig().m_uiDataBase;
+        if (m_pApp->getConfig().m_uiDataMod){
+            uiKey %= m_pApp->getConfig().m_uiDataMod;
+        }
         getKey(uiKey, szKey);
         key.m_uiDataLen = strlen(szKey);
 
