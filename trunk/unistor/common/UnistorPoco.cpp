@@ -1245,42 +1245,6 @@ int UnistorPoco::parseRecvIncReply(CwxPackageReaderEx* reader,
 
 }
 
-///´íÎóµÄ»Ø¸´°ü
-int UnistorPoco::packErrReply(CwxPackageWriterEx* writer,
-                        CwxMsgBlock*& msg,
-                        CWX_UINT32 uiTaskId,
-                        CWX_UINT16 unMsgType,
-                        int ret,
-                        char const* szErrMsg,
-                        char* szErr2K)
-{
-    CWX_ASSERT(UNISTOR_ERR_SUCCESS != ret);
-    writer->beginPack();
-    if (!writer->addKeyValue(UNISTOR_KEY_RET, strlen(UNISTOR_KEY_RET), ret)){
-        if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-        return UNISTOR_ERR_ERROR;
-    }
-    if (!writer->addKeyValue(UNISTOR_KEY_ERR,
-        strlen(UNISTOR_KEY_ERR),
-        szErrMsg?szErrMsg:"",
-        szErrMsg?strlen(szErrMsg):0)){
-            if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-            return UNISTOR_ERR_ERROR;
-    }
-    if (!writer->pack()){
-        if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
-        return UNISTOR_ERR_ERROR;
-    }
-    CwxMsgHead head(0, 0, unMsgType, uiTaskId, writer->getMsgSize());
-    msg = CwxMsgBlockAlloc::pack(head, writer->getMsg(), writer->getMsgSize());
-    if (!msg){
-        if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc msg, size:%u", writer->getMsgSize());
-        return UNISTOR_ERR_ERROR;
-    }
-    return UNISTOR_ERR_SUCCESS;
-
-}
-
 
 int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
                             CwxKeyValueItemEx const& key,

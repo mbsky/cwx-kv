@@ -737,62 +737,52 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
         }
         //cache的状态
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_STATE,
-            m_store->getStoreEngine()->getCache()->isValid()?"valid":"invalid");
+            m_store->getStoreEngine()->isCacheValid()?"valid":"invalid");
         UNISTOR_MONITOR_APPEND();
         //cache的错误信息
-        if (!m_store->getStoreEngine()->getCache()->isValid()){
-            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_ERR, m_store->getStoreEngine()->getCache()->getErrMsg());
+        if (!m_store->getStoreEngine()->isCacheValid()){
+            CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_ERR, m_store->getStoreEngine()->getCacheErrMsg());
             UNISTOR_MONITOR_APPEND();
         }
         //cache的write key的数量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_KEY,
-            m_store->getStoreEngine()->getCache()->getWriteCacheKeyNum());
+            m_store->getStoreEngine()->getWriteCacheKeyNum());
         UNISTOR_MONITOR_APPEND();
         //cache的write key的空间
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_SPACE,
-            m_store->getStoreEngine()->getCache()->getWriteCacheUsedSize());
+            m_store->getStoreEngine()->getWriteCacheUsedSize());
         UNISTOR_MONITOR_APPEND();
-
-
         //read cache的空间
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->maxSize(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheMaxSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的最大数量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getMaxCacheKeyNum(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheMaxKeyNum(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的使用空间
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedSize(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的使用容量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedCapacity(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的数据容量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getUsedDataSize(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedDataSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的free空间
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeSize(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheFreeSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的free容量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeCapacity(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheFreeCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         //read cache的cache的key的数量
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_KEY,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getCachedKeyCount(),szTmp, 10));
-        UNISTOR_MONITOR_APPEND();
-        //read cache的使用的item
-        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getCachedItemCount(),szTmp, 10));
-        UNISTOR_MONITOR_APPEND();
-        //read cache的空闲的item
-        CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT,
-            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
+            CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheKeyCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         CWX_UINT64 ullNum = 0;
         //get的访问数量
@@ -981,38 +971,33 @@ int UnistorApp::getSysKey(void* pApp, ///<app对象
             CwxCommon::snprintf(szData, uiLen, "%s", strValue.c_str());
         }
     }else if (strKey == UNISTOR_SYS_KEY_CACHE_STATE){
-        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->getCache()->isValid()?"valid":"invalid");
+        CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->isCacheValid()?"valid":"invalid");
     }else if (strKey == UNISTOR_SYS_KEY_CACHE_STATE){
-        if (app->m_store->getStoreEngine()->getCache()->isValid()){
+        if (app->m_store->getStoreEngine()->isCacheValid()){
             szData[0] = 0X00;
         }else{
-            app->m_store->getStoreEngine()->getCache()->getErrMsg();
-            CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->getCache()->getErrMsg());
+            CwxCommon::snprintf(szData, uiLen, "%s", app->m_store->getStoreEngine()->getCacheErrMsg());
         }
     }else if (strKey == UNISTOR_SYS_KEY_WRITE_CACHE_KEY){
-        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getCache()->getWriteCacheKeyNum());
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getWriteCacheKeyNum());
     }else if (strKey == UNISTOR_SYS_KEY_WRITE_CACHE_SPACE){
-        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getCache()->getWriteCacheUsedSize());
+        CwxCommon::snprintf(szData, uiLen, "%u", app->m_store->getStoreEngine()->getWriteCacheUsedSize());
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->maxSize(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheMaxSize(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getMaxCacheKeyNum(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheMaxKeyNum(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedSize(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheUsedSize(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedCapacity(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheUsedCapacity(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getUsedDataSize(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheUsedDataSize(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeSize(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheFreeSize(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeCapacity(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheFreeCapacity(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_KEY){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getCachedKeyCount(),szTmp, 10));
-    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getCachedItemCount(),szTmp, 10));
-    }else if (strKey == UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT){
-        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getCache()->getFreeItemCount(),szTmp, 10));
+        CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString((CWX_UINT64)app->m_store->getStoreEngine()->getReadCacheKeyCount(),szTmp, 10));
     }else if (strKey == UNISTOR_SYS_KEY_GET_NUM){
         UNISTOR_STATS_READ_OUTPUT(m_ullStatsGetNum);
     }else if (strKey == UNISTOR_SYS_KEY_GET_READ_CACHE_NUM){

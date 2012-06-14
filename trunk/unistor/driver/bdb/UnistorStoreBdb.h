@@ -452,9 +452,10 @@ private:
         CWX_UINT16 unKeyLen ///<key的长度
         )
     {
-        size_t h = 0;
-        for (CWX_UINT16 i=0; i<unKeyLen; i++){
-            h = 5*h + (unsigned char)key[i];
+        size_t h = 216613626UL;
+        for (CWX_UINT16 i = 0; i < unKeyLen; ++i) {
+            h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+            h ^= key[i];
         }
         return h;
     }
@@ -637,7 +638,71 @@ private:
         string& strEnd, ///<下一个key范围的结束位置
         UnistorSubscribeKey const& keys ///<key订阅规则
         );
+    //key的data为field结构；true：是；false：不是
+    inline bool isKvData(char const* szData, CWX_UINT32 uiDataLen){
+        if (!szData || (uiDataLen<9)) return false;
+        return szData[uiDataLen-1] == 0?false:true;
+    }
 
+    //获取data的version
+    inline void getKvVersion(char const* szData, ///<data数据
+        CWX_UINT32 uiDataLen, ///<data的长度
+        CWX_UINT32& uiExpire, ///<key的失效时间
+        CWX_UINT32& uiVersion ///<key的版本号
+        )
+    {
+        CWX_ASSERT(uiDataLen >= 9);
+        memcpy(&uiVersion, szData + (uiDataLen-5), 4);
+        memcpy(&uiExpire, szData + (uiDataLen - 9), 4);
+    }
+
+    ///设置data的extra数据
+    inline void setKvDataSign(char* szData, ///<key的data
+        CWX_UINT32& uiDataLen, ///<传入当前data的长度，返回新长度
+        CWX_UINT32 uiExpire, ///<失效时间
+        CWX_UINT32 uiVersion, ///<key的版本号
+        bool bKeyValue ///<data的key/value标记
+        )
+    {
+        memcpy(szData + uiDataLen, &uiExpire, sizeof(uiExpire));
+        uiDataLen += sizeof(uiExpire);
+        memcpy(szData + uiDataLen, &uiVersion, sizeof(uiVersion));
+        uiDataLen += sizeof(uiVersion);
+        szData[uiDataLen] = bKeyValue?1:0;
+        uiDataLen++;
+    }
+
+    ///获取data的extra数据长度
+    inline CWX_UINT32 getKvDataSignLen() const {
+        return sizeof(CWX_UINT32) + sizeof(CWX_UINT32) + 1;
+    }
+    //unpack的data的field；-1：失败；0：不是kv结构；1：成功
+    inline int unpackFields(CwxPackageReaderEx& reader, ///<reader对象
+        char const* szData, ///<fields的key/value数据
+        CWX_UINT32 uiDataLen, ///<fields的key/value数据的长度
+        CWX_UINT32& uiExpire, ///<数据的失效时间
+        CWX_UINT32& uiVersion ///<数据的版本号
+        )
+    {
+        if (!isKvData(szData, uiDataLen)) return 0;
+        getKvVersion(szData, uiDataLen, uiExpire, uiVersion);
+        if (!reader.unpack(szData, uiDataLen-5, false, true)){
+            return -1;
+        }
+        return 1;
+    }
+
+    ///获取超时时间
+    inline CWX_UINT32 getNewExpire(CWX_UINT32 uiExpire ///<超时时间
+        )
+    {
+        if (uiExpire > 3600 * 24 * 365){
+            return uiExpire;
+        }else if (uiExpire){
+            return uiExpire + m_ttExpireClock;
+        }
+        return m_ttExpireClock + m_config->getCommon().m_uiDefExpire;
+    }
 private:
 	UnistorConfigBdb			m_bdbConf; ///<bdb的配置文件
 	DB_ENV*					    m_bdbEnv;  ///<bdb的env

@@ -125,7 +125,9 @@ class UnistorReadCacheEx2{
 private:
     enum{
         UNISTOR_READ_CACHE_SLOT_SIZE = 1024 * 1024 * 256, ///<内存槽的大小
-        UNISTOR_READ_CACHE_MAX_ITEM_SIZE = UNISTOR_MAX_KV_SIZE ///<最大的一条数据大小
+        UNISTOR_READ_CACHE_MAX_ITEM_SIZE = UNISTOR_MAX_KV_SIZE, ///<最大的一条数据大小
+        UNISTOR_READ_CACHE_CHAIN_LOCK_NUM = 4096  ///<链表锁的数量
+
     };
     ///hash查找的返回对象
     class UnistorReadCacheExIter{
@@ -153,7 +155,6 @@ public:
         UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key less的比较函数
         UNISTOR_KEY_HASH_FN    fnHash, ///<key的hash函数
         CwxRwLock* rwLock=NULL, ///<读写锁
-        CwxMutexLock* mutex=NULL, ///<排他锁
         float  fBucketRate=1.2 ///<桶的比率
         );
     ///析构函数
@@ -274,7 +275,7 @@ public:
 private:
 
     ///不带锁的touch操作
-    void _touch(UnistorReadCacheItemEx2* data );
+    void _touch(UnistorReadCacheItemEx2* data, CWX_UINT32 uiIndex);
 
     ///将item添加到free list，不修改容量空间
     void _addFreeList(CWX_UINT32 uiIndex, UnistorReadCacheItemEx2* item);
@@ -321,10 +322,10 @@ private:
     volatile unsigned long int  m_freeItemCount; ///<空闲的item数量
 
     CwxRwLock*                  m_rwLock; ///<lru cache 读写锁
-    CwxMutexLock*               m_mutex; ///<lru cache 的排他锁
-    UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<key相等的比较函数
-    UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<key小于的比较函数
-    UNISTOR_KEY_HASH_FN          m_fnHash; ///<key的hash值的计算函数
+    CwxMutexLock*               m_chainMutexArr[UNISTOR_READ_CACHE_CHAIN_LOCK_NUM]; ///<lru cache 的排他锁
+    UNISTOR_KEY_CMP_EQUAL_FN    m_fnEqual; ///<key相等的比较函数
+    UNISTOR_KEY_CMP_LESS_FN     m_fnLess; ///<key小于的比较函数
+    UNISTOR_KEY_HASH_FN         m_fnHash; ///<key的hash值的计算函数
 
 
 };

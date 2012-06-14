@@ -570,6 +570,11 @@ public:
 		m_impl->checkpoint(tss);
 	}
 
+    ///失去同步通知，由引擎处理。返回值，0：没有变化；1：可以同步；-1：失败
+    inline int lostSync(){
+        return m_impl->lostSync();
+    }
+
     ///添加时钟同步的记录，此用于存储引擎expire的控制。返回值：0：成功；-1：失败
     inline int appendTimeStampBinlog(CwxPackageWriterEx& writer, ///<writer对象
         CWX_UINT32      ttNow, ///<当前的时间

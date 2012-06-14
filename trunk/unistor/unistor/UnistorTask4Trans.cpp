@@ -88,11 +88,14 @@ void UnistorTask4Trans::reply(UnistorApp* pApp,
 {
     CwxMsgBlock* block = NULL;
     if (!replyMsg){
-        UnistorPoco::packErrReply(tss->m_pWriter,
+        CWX_ASSERT(uiErrCode != UNISTOR_ERR_SUCCESS);
+        UnistorPoco::packRecvReply(tss->m_pWriter,
             block,
             recvHead.getTaskId(),
             recvHead.getMsgType() + 1,
             uiErrCode,
+            0,
+            0,
             szErrMsg,
             tss->m_szBuf2K);
     }else{

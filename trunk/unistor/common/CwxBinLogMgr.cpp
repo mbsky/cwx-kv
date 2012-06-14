@@ -1536,6 +1536,48 @@ void CwxBinLogMgr::clear()
     _clear();
 }
 
+///清空数据
+void CwxBinLogMgr::removeAllBinlog(){
+    ///写锁保护
+    CwxWriteLockGuard<CwxRwLock> lock(&m_rwLock);
+    m_bValid = true;
+    {
+        map<CWX_UINT32/*file no*/, CwxBinLogFile*>::iterator iter = m_binlogMap.begin(); ///<包含当前binlog文件的binlog文件的map
+        while(iter != m_binlogMap.end()){
+            CWX_INFO(("Remove binlog file, file:%s", iter->second->getDataFileName().c_str()));
+            CwxBinLogFile::remove(iter->second->getDataFileName().c_str());
+            delete iter->second;
+            iter++;
+        }
+        m_binlogMap.clear();
+    }
+    ///设置已有cursor的状态
+    {
+        set<CwxBinLogCursor*>::iterator iter = m_cursorSet.begin(); ///<建立的所有cursor的集合
+        while(iter != m_cursorSet.end()){
+            if (-1 != (*iter)->m_fd){
+                ::close((*iter)->m_fd);
+                (*iter)->m_fd = -1;
+            }
+            (*iter)->m_ucSeekState = CwxBinLogCursor::CURSOR_STATE_ERROR;
+            strcpy((*iter)->m_szErr2K, "Cursor is reset for deleting binlog.");
+            iter++;
+        }
+        m_cursorSet.clear();
+    }
+    
+    m_pCurBinlog = NULL;///<当前写的binlog文件
+    m_ullMinSid = 0; ///<binlog文件的最小sid
+    m_ullMaxSid = 0; ///<binlog文件的最大sid
+    m_ttMinTimestamp = 0; ///<binlog文件的log开始时间
+    m_ttMaxTimestamp = 0; ///<binlog文件的log结束时间
+    m_ullNextSid = 1; ///<一下一个sid的值
+    m_uiUnFlushBinlog = 0; ///<未flush的binlog数量。
+    m_ttLastFlushBinlogTime = time(NULL); ///<上一次flushbinlog的时间
+
+}
+
+
 ///将数据trim到指定的sid，0：成功；-1：失败
 /*int CwxBinLogMgr::trim(CWX_UINT64 ullSid, char* szErr2K){
 	CwxWriteLockGuard<CwxRwLock> lock(&m_rwLock);

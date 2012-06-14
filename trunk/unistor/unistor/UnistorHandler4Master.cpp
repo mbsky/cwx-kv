@@ -566,6 +566,10 @@ int UnistorHandler4Master::dealErrMsg(CwxMsgBlock*& msg, UnistorTss* pTss){
         m_syncSession->m_strHost.c_str(),
         ret,
         szErrMsg));
+    ///通知存储引擎失去了连接
+    if (UNISTOR_ERR_LOST_SYNC == ret){
+        m_pApp->getStore()->lostSync();
+    }
     return 0;
 }
 

@@ -424,6 +424,8 @@ public:
 	
     ///存储引擎的checkpoint
 	virtual void checkpoint(UnistorTss* tss)=0;
+    ///失去同步通知，由引擎处理。返回值，0：没有变化；1：可以同步；-1：失败
+    virtual int lostSync(){ return 0;}
 	
     ///获取engine的名字
 	virtual char const* getName() const = 0;
@@ -447,6 +449,54 @@ public:
     virtual bool isValidSubscribe(UnistorSubscribe const& subscribe,///<订阅对象
         char* szErr2K ///<不合法时的错误消息
         )=0;
+    ///获取cache是否正常
+    virtual bool isCacheValid() const{
+        return m_cache?m_cache->isValid():true;
+    }
+    ///获取cache的错误信息
+    virtual char const* getCacheErrMsg() const{
+        return m_cache?m_cache->getErrMsg():"";
+    }
+    ///获取写cache的key的数量
+    virtual CWX_UINT32 getWriteCacheKeyNum() const{
+        return m_cache?m_cache->getWriteCacheKeyNum():0;
+    }
+    ///获取write cache使用的尺寸
+    virtual  CWX_UINT32 getWriteCacheUsedSize() const{
+        return m_cache?m_cache->getWriteCacheUsedSize():0;
+    }
+    ///获取读cache的大小
+    virtual unsigned long int getReadCacheMaxSize( void ) const{
+        return m_cache?m_cache->maxSize():0;
+    }
+    ///获取cache key的最大数量
+    virtual CWX_UINT32 getReadCacheMaxKeyNum() const{
+        return m_cache?m_cache->getMaxCacheKeyNum():0;
+    }
+    ///获取read cache使用的内存
+    virtual unsigned long int getReadCacheUsedSize() const{
+        return m_cache?m_cache->getUsedSize():0;
+    }
+    ///获取read cache中数据的占用的容量
+    virtual unsigned long int getReadCacheUsedCapacity() const{
+        return m_cache?m_cache->getUsedCapacity():0;
+    }
+    ///获取read cache中cache的有效数据大小
+    virtual unsigned long int getReadCacheUsedDataSize() const{
+        return m_cache?m_cache->getUsedDataSize():0;
+    }
+    ///获取read cache中空闲大小
+    virtual unsigned long int getReadCacheFreeSize() const{
+        return m_cache?m_cache->getFreeSize():0;
+    }
+    ///获取read cache中空闲的容量
+    virtual unsigned long int getReadCacheFreeCapacity() const{
+        return m_cache?m_cache->getFreeCapacity():0;
+    }
+    ///获取cache的key的数量
+    virtual CWX_UINT32 getReadCacheKeyCount() const{
+        return m_cache?m_cache->getCachedKeyCount():0;
+    }
 
 public:
     
@@ -786,33 +836,7 @@ public:
         char* szErr2K ///<获取失败的错误消息
         );
 
-    //unpack的data的field；-1：失败；0：不是kv结构；1：成功
-    inline int unpackFields(CwxPackageReaderEx& reader, ///<reader对象
-        char const* szData, ///<fields的key/value数据
-        CWX_UINT32 uiDataLen, ///<fields的key/value数据的长度
-        CWX_UINT32& uiExpire, ///<数据的失效时间
-        CWX_UINT32& uiVersion ///<数据的版本号
-        )
-    {
-        if (!isKvData(szData, uiDataLen)) return 0;
-        getKvVersion(szData, uiDataLen, uiExpire, uiVersion);
-        if (!reader.unpack(szData, uiDataLen-5, false, true)){
-            return -1;
-        }
-        return 1;
-    }
 
-    ///获取超时时间
-    inline CWX_UINT32 getNewExpire(CWX_UINT32 uiExpire ///<超时时间
-        )
-    {
-        if (uiExpire > 3600 * 24 * 365){
-            return uiExpire;
-        }else if (uiExpire){
-            return uiExpire + m_ttExpireClock;
-        }
-        return m_ttExpireClock + m_config->getCommon().m_uiDefExpire;
-    }
     ///是否需要commit
     inline bool isNeedCommit() const{
         if (m_uiUncommitBinlogNum){
@@ -826,44 +850,7 @@ public:
         return false;
     }
     
-    //key的data为field结构；true：是；false：不是
-    inline bool isKvData(char const* szData, CWX_UINT32 uiDataLen){
-        if (!szData || (uiDataLen<9)) return false;
-        return szData[uiDataLen-1] == 0?false:true;
-    }
-    
-    //获取data的version
-    inline void getKvVersion(char const* szData, ///<data数据
-        CWX_UINT32 uiDataLen, ///<data的长度
-        CWX_UINT32& uiExpire, ///<key的失效时间
-        CWX_UINT32& uiVersion ///<key的版本号
-        )
-    {
-        CWX_ASSERT(uiDataLen >= 9);
-        memcpy(&uiVersion, szData + (uiDataLen-5), 4);
-        memcpy(&uiExpire, szData + (uiDataLen - 9), 4);
-    }
-    
-    ///设置data的extra数据
-    inline void setKvDataSign(char* szData, ///<key的data
-        CWX_UINT32& uiDataLen, ///<传入当前data的长度，返回新长度
-        CWX_UINT32 uiExpire, ///<失效时间
-        CWX_UINT32 uiVersion, ///<key的版本号
-        bool bKeyValue ///<data的key/value标记
-        )
-    {
-        memcpy(szData + uiDataLen, &uiExpire, sizeof(uiExpire));
-        uiDataLen += sizeof(uiExpire);
-        memcpy(szData + uiDataLen, &uiVersion, sizeof(uiVersion));
-        uiDataLen += sizeof(uiVersion);
-        szData[uiDataLen] = bKeyValue?1:0;
-        uiDataLen++;
-    }
-    
-    ///获取data的extra数据长度
-    inline CWX_UINT32 getKvDataSignLen() const {
-        return sizeof(CWX_UINT32) + sizeof(CWX_UINT32) + 1;
-    }
+
     
     ///获取store key的group函数
     static inline UNISTOR_KEY_GROUP_FN getKeyStoreGroupFn(){

@@ -10,7 +10,6 @@ UnistorReadCacheEx2::UnistorReadCacheEx2(unsigned long int size, ///<空间大小
                    UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key less的比较函数
                    UNISTOR_KEY_HASH_FN    fnHash, ///<key的hash函数
                    CwxRwLock* rwLock, ///<读写锁
-                   CwxMutexLock* mutex, ///<排他锁
                    float  fBucketRate ///<桶的比率
                    ):m_bucket_num((CWX_UINT32)((count *fBucketRate + 1)>count?(count *fBucketRate + 1):count)),m_max_cache_num(count)
 {
@@ -34,7 +33,9 @@ UnistorReadCacheEx2::UnistorReadCacheEx2(unsigned long int size, ///<空间大小
     m_cachedItemCount = 0;
     m_freeItemCount=0;
     m_rwLock = rwLock;
-    m_mutex = mutex;
+    for (CWX_UINT32 i=0; i<UNISTOR_READ_CACHE_CHAIN_LOCK_NUM; i++){
+        m_chainMutexArr[i] = NULL;
+    }
     UnistorReadCacheItemEx2::m_fnEqual = m_fnEqual = fnEqual;
     UnistorReadCacheItemEx2::m_fnLess = m_fnLess = fnLess;
     UnistorReadCacheItemEx2::m_fnHash = m_fnHash = fnHash;        
@@ -71,6 +72,10 @@ int UnistorReadCacheEx2::init(char* szErr2K){
         ///创建链表数组
         CWX_UINT32 uiMaxPinChainNum = UnistorReadCacheItemEx2::calMaxIndexNum(UNISTOR_READ_CACHE_MAX_ITEM_SIZE);
         m_chainArr = new UnistorReadCacheItemPinEx2[uiMaxPinChainNum];
+        ///创建链表的锁
+        for (i=0; i<UNISTOR_READ_CACHE_CHAIN_LOCK_NUM; i++){
+            m_chainMutexArr[i] = new CwxMutexLock();            
+        }
     }
     return 0;
 }
@@ -93,7 +98,7 @@ void UnistorReadCacheEx2::insert(char const* szKey,
     CWX_UINT32 uiKeySize = UnistorReadCacheItemEx2::calKeySize(unKeyLen , uiDataLen);
     ///若key的空间大小大于slot，则不cache
     if (uiKeySize > UNISTOR_READ_CACHE_MAX_ITEM_SIZE) return;
-
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxWriteLockGuard<CwxRwLock> lock(this->m_rwLock);
         ///如果key存在
@@ -107,7 +112,8 @@ void UnistorReadCacheEx2::insert(char const* szKey,
                 if (uiDataLen){
                     memcpy((char*)iter.m_pFind->getData(), szData, uiDataLen);  
                 }
-                _touch(iter.m_pFind);
+                CWX_UINT32 uiIndex = iter.m_pFind->index();
+                _touch(iter.m_pFind, uiIndex);
                 return;
             }
             ///属于不同的slot，首先溢出
@@ -136,6 +142,7 @@ void UnistorReadCacheEx2::insert(char const* szKey,
             m_cacheBufArrPos += uiKeySize;
         }else if (m_chainArr[uiIndex].m_usedTail){///释放已有空间
             key = m_chainArr[uiIndex].m_usedTail;
+            iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
             _findKey(key, iter);
             if (iter.m_pFind != key){
                 CWX_ASSERT(0);
@@ -172,10 +179,10 @@ void UnistorReadCacheEx2::remove( char const* szKey, CWX_UINT16 unKeyLen){
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
     UnistorReadCacheExIter iter;
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
-        CwxReadLockGuard<CwxRwLock> lock(this->m_rwLock);
+        CwxWriteLockGuard<CwxRwLock> lock(this->m_rwLock);
         if (_findKey(key, iter)){
-            CwxMutexGuard<CwxMutexLock> lock(this->m_mutex);
             _remove(iter);
         }
     }
@@ -192,6 +199,7 @@ int UnistorReadCacheEx2::fetch(char const* szKey,
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
     UnistorReadCacheExIter iter;
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxReadLockGuard<CwxRwLock> lock(this->m_rwLock);
         if (!_findKey(key, iter)) return 0;
@@ -199,8 +207,9 @@ int UnistorReadCacheEx2::fetch(char const* szKey,
         memcpy(szData, iter.m_pFind->getData(), iter.m_pFind->getDataLen());
         uiDataLen = iter.m_pFind->getDataLen();
         if(bTouch) {
-            CwxMutexGuard<CwxMutexLock> lock(this->m_mutex);
-            _touch(iter.m_pFind);
+            CWX_UINT32 uiIndex = iter.m_pFind->index();
+            CwxMutexGuard<CwxMutexLock> lock(m_chainMutexArr[uiIndex%UNISTOR_READ_CACHE_CHAIN_LOCK_NUM]);
+            _touch(iter.m_pFind, uiIndex);
         }
         return 1;
     }
@@ -215,12 +224,14 @@ UnistorReadCacheItemEx2* UnistorReadCacheEx2::fetch(char const* szKey,
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
     UnistorReadCacheExIter iter;
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxReadLockGuard<CwxRwLock> lock(this->m_rwLock);
         if (!_findKey(key, iter)) return NULL;
         if( bTouch) {
-            CwxMutexGuard<CwxMutexLock> lock(this->m_mutex);
-            _touch(iter.m_pFind);
+            CWX_UINT32 uiIndex = iter.m_pFind->index();
+            CwxMutexGuard<CwxMutexLock> lock(m_chainMutexArr[uiIndex%UNISTOR_READ_CACHE_CHAIN_LOCK_NUM]);
+            _touch(iter.m_pFind, uiIndex);
         }
         return iter.m_pFind;
     }
@@ -235,11 +246,13 @@ void UnistorReadCacheEx2::touch(char const* szKey, ///<key
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
     UnistorReadCacheExIter iter;
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxReadLockGuard<CwxRwLock> lock(this->m_rwLock);
         if (_findKey(key, iter)){
-            CwxMutexGuard<CwxMutexLock> lock(this->m_mutex);
-            _touch(iter.m_pFind);
+            CWX_UINT32 uiIndex = iter.m_pFind->index();
+            CwxMutexGuard<CwxMutexLock> lock(m_chainMutexArr[uiIndex%UNISTOR_READ_CACHE_CHAIN_LOCK_NUM]);
+            _touch(iter.m_pFind, uiIndex);
         }
     }
 }
@@ -253,6 +266,7 @@ bool UnistorReadCacheEx2::exist(char const* szKey, ///<key
     memcpy(key->m_szBuf, szKey, unKeyLen);
     key->m_unKeyLen = unKeyLen;
     UnistorReadCacheExIter iter;
+    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxReadLockGuard<CwxRwLock> lock(this->m_rwLock);
         return _findKey(key, iter);
@@ -277,6 +291,11 @@ void UnistorReadCacheEx2::clear( void ){
         delete [] m_chainArr;
         m_chainArr = NULL;
     }
+    for (CWX_UINT32 i=0; i<UNISTOR_READ_CACHE_CHAIN_LOCK_NUM; i++){
+        if (m_chainMutexArr[i]) delete m_chainMutexArr[i];
+        m_chainMutexArr[i] = NULL;
+    }
+
     m_cacheBufArrIndex = 0;
     m_cacheBufArrPos = 0;
     m_usedSize = 0;
@@ -329,8 +348,7 @@ void UnistorReadCacheEx2::_remove(UnistorReadCacheExIter const& iter){
 }
 
 ///不带锁的touch操作
-void UnistorReadCacheEx2::_touch(UnistorReadCacheItemEx2* data ){
-    CWX_UINT32 uiIndex = data->index();
+void UnistorReadCacheEx2::_touch(UnistorReadCacheItemEx2* data, CWX_UINT32 uiIndex){
     if (data->m_prev == NULL) //the head
         return;
     if (data->m_next == NULL){// the tail
@@ -385,7 +403,6 @@ void UnistorReadCacheEx2::_addKey(CWX_UINT32 uiIndex, CWX_UINT32 uiSize, Unistor
 
 ///获取key
 bool UnistorReadCacheEx2::_findKey(UnistorReadCacheItemEx2 const* item, UnistorReadCacheExIter& iter){
-    iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(item->getKey(), item->getKeyLen())%m_bucket_num;
     iter.m_pFind = m_hashArr[iter.m_uiHash];
     iter.m_pPrev = NULL;
     while(iter.m_pFind){
