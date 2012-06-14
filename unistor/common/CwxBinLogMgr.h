@@ -237,6 +237,7 @@ private:
 	//读取一页
 	bool preadPage(int fildes, CWX_UINT32 uiBlockNo, CWX_UINT32 uiOffset);
 private:
+    friend class CwxBinLogMgr;
     string             m_strFileName; ///<文件的名字
     int                m_fd;///<文件的handle
     CwxBinLogHeader     m_curLogHeader; ///<当前log的header
@@ -611,6 +612,8 @@ public:
     int commit(bool bAll= false, char* szErr2K=NULL);
     ///清空binlog管理器
     void clear();
+    ///清空数据
+    void removeAllBinlog();
 	///将数据trim到指定的sid，0：成功；-1：失败
 //	int trim(CWX_UINT64 ullSid, char* szErr2K=NULL);
 public:

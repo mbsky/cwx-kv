@@ -439,12 +439,12 @@ public:
     }
     
     ///获取写cache的key的数量
-    inline CWX_UINT32 getWriteCacheKeyNum(){
+    inline CWX_UINT32 getWriteCacheKeyNum() const{
         return m_writeCache?m_writeCache->m_keyIndex->size():0;
     }
     
     ///获取当前写cache占用的空间大小
-    inline CWX_UINT32 getWriteCacheUsedSize(){
+    inline CWX_UINT32 getWriteCacheUsedSize() const{
         if (m_writeCache){
             if (m_writeCache->m_bFirstHalf){
                 return m_writeCache->m_uiPos;
@@ -456,51 +456,51 @@ public:
     }
 
     ///获取cache数据使用的内存空间大小
-    inline unsigned long int getUsedSize(){
+    inline unsigned long int getUsedSize() const{
         return m_readCache?m_readCache->getUsedSize():0;
     }
 
     ///获取cache数据的数据空间大小
-    inline unsigned long int getUsedCapacity(){
+    inline unsigned long int getUsedCapacity() const{
         return m_readCache?m_readCache->getUsedCapacity():0;
     }
 
     ///获取cache数据的数据大小
-    inline unsigned long int getUsedDataSize(){
+    inline unsigned long int getUsedDataSize() const{
         return m_readCache?m_readCache->getUsedDataSize():0;
     }
 
     ///获取free的内存空间大小
-    inline unsigned long int getFreeSize(){
+    inline unsigned long int getFreeSize() const{
         return m_readCache?m_readCache->getFreeSize():0;
     }
 
     ///获取free的数据空间容量大小
-    inline unsigned long int getFreeCapacity(){
+    inline unsigned long int getFreeCapacity() const{
         return m_readCache?m_readCache->getFreeCapacity():0;
     }
 
     ///获取cache的key的数量
-    inline CWX_UINT32 getCachedKeyCount(){
+    inline CWX_UINT32 getCachedKeyCount() const{
         return m_readCache?m_readCache->getCachedKeyCount():0;
     }
 
     ///获取cache使用的内存块数量
-    inline unsigned long int getCachedItemCount(){
+    inline unsigned long int getCachedItemCount() const{
         return m_readCache?m_readCache->getCachedItemCount():0;
     }
 
     ///获取空闲的内存块数量
-    inline unsigned long int getFreeItemCount(){
+    inline unsigned long int getFreeItemCount() const{
         return m_readCache?m_readCache->getFreeItemCount():0;
     }
 
     ///获取最大可使用内存的数量
-    inline unsigned long int maxSize( void ){
+    inline unsigned long int maxSize( void ) const{
         return m_readCache?m_readCache->maxSize():0;
     }
     ///获取cache最大key的数量
-    inline CWX_UINT32 getMaxCacheKeyNum() {
+    inline CWX_UINT32 getMaxCacheKeyNum() const{
         return m_readCache?m_readCache->getMaxCacheKeyNum():0;
     }
 
@@ -515,7 +515,6 @@ private:
     UnistorReadCacheEx2*            m_readCache; ///<读cache            
     CwxRwLock                       m_writeCacheRwLock; ///<写cache的读写锁
     CwxRwLock                       m_readCacheRwLock; ///<读cache的读写锁
-    CwxMutexLock                    m_readCacheMutex; ///<读cache的排他锁
     volatile bool                   m_bExit; ///<是否推出
     pthread_t                       m_writeThreadId; ///<写线程的线程id
     pthread_t                       m_commitThreadId; ///<dirty数据的commit线程的线程id

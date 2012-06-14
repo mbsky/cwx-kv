@@ -391,16 +391,6 @@ public:
         char* szErr2K=NULL ///<解包时的错误信息
         );
 
-    ///错误的回复包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
-    static int packErrReply(CwxPackageWriterEx* writer, ///<用于pack的writer
-        CwxMsgBlock*& msg, ///<消息包
-        CWX_UINT32 uiTaskId, ///<消息的taskid
-        CWX_UINT16 unMsgType, ///<消息类型
-        int ret,  ///<返回代码
-        char const* szErrMsg, ///<错误消息
-        char* szErr2K=NULL ///<pack出错时的错误信息
-        );
-
     ///pack get的数据包。返回值：UNISTOR_ERR_SUCCESS：成功；其他都是失败
     static int packGetKey(CwxPackageWriterEx* writer, ///<用于pack的writer
         CwxKeyValueItemEx const& key, ///<key

@@ -222,13 +222,12 @@ static size_t store_hash_int256(char const* key, CWX_UINT16){
 }
 
 static size_t store_hash_char(char const* key, CWX_UINT16 unKeyLen){
-    CWX_UINT32 uiHash = 0;
-    CwxMd5 md5;
-    unsigned char szMd5[16];
-    md5.update((unsigned char const*)key, unKeyLen);
-    md5.final(szMd5);
-    memcpy(&uiHash, szMd5+12, 4);
-    return uiHash;
+    size_t h = 216613626UL;
+    for (CWX_UINT16 i = 0; i < unKeyLen; ++i) {
+        h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+        h ^= key[i];
+    }
+    return h;
 }
 /*******************************************************************************
 存储key的group函数。返回值hash值
@@ -250,7 +249,13 @@ static CWX_UINT32 store_group_int256(char const* key, CWX_UINT16 unKeyLen){
 }
 
 static CWX_UINT32 store_group_char(char const* key, CWX_UINT16 unKeyLen){
-    return store_hash_char(key, unKeyLen);
+    CWX_UINT32 uiGroup = 0;
+    CwxMd5 md5;
+    unsigned char szMd5[16];
+    md5.update((unsigned char const*)key, unKeyLen);
+    md5.final(szMd5);
+    memcpy(&uiGroup, szMd5+12, 4);
+    return uiGroup;
 }
 
 /*******************************************************************************

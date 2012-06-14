@@ -436,7 +436,6 @@ int UnistorCache::init(UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN fnBeginWrite,
             m_fnLess,
             m_fnHash,
             &m_readCacheRwLock,
-            &m_readCacheMutex,
             fBucketRate);
         if (0 != m_readCache->init(szErr2K)) return -1;
     }

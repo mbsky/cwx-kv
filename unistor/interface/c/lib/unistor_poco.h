@@ -142,8 +142,6 @@ extern "C" {
 #define UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE      "read_cache_free_size" ///<读cache空闲的空间大小
 #define UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY  "read_cache_free_capacity" ///<读cache空闲的容量
 #define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cache的key的数量
-#define UNISTOR_SYS_KEY_READ_CACHE_USED_ELEMENT   "read_cache_used_element" ///<读cache占用的单元数量
-#define UNISTOR_SYS_KEY_READ_CACHE_FREE_ELEMENT   "read_cache_free_element" ///<读cache空闲的单元数量
 #define UNISTOR_SYS_KEY_GET_NUM                   "get_num" ///<get的访问数量
 #define UNISTOR_SYS_KEY_GET_READ_CACHE_NUM        "get_read_cache_num" ///<read cache的数量
 #define UNISTOR_SYS_KEY_GET_EXIST_NUM             "get_exist_num" ///<存在的数量
