@@ -18679,7 +18679,7 @@ echo "$as_me: error: You need to specify the openssl directory using --with-open
     else
         # make sure that a well known include file exists
         if test -e $with_openssl/include/openssl/ssl.h; then
-            zk_dir=$with_openssl
+            openssl_dir=$with_openssl
             echo "$as_me:$LINENO: result: openssl found!" >&5
 echo "${ECHO_T}openssl found!" >&6
         else

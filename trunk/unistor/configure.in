@@ -61,7 +61,7 @@ AC_DEFUN([LIBEVENT_DIR],[
     else
         # make sure that a well known include file exists
         if test -e $with_openssl/include/openssl/ssl.h; then
-            zk_dir=$with_openssl
+            openssl_dir=$with_openssl
             AC_MSG_RESULT(openssl found!)
         else
             AC_MSG_ERROR( $with_openssl not found.  Check the value you specified with --with-openssl)
