@@ -44,7 +44,7 @@ available_tags=" CXX F77"
 
 # ### BEGIN LIBTOOL CONFIG
 
-# Libtool was configured on host ent.leju.com:
+# Libtool was configured on host puppetmaster.leju.com:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7218,7 +7218,7 @@ disable_libs=static
 # End:
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
-# Libtool was configured on host ent.leju.com:
+# Libtool was configured on host puppetmaster.leju.com:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7403,11 +7403,11 @@ striplib="strip --strip-unneeded"
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
-predep_objects=`echo "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/crtbeginS.o" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
+predep_objects=`echo "/usr/lib/../lib64/crti.o /usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.5.3/crtbeginS.o" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
 
 # Dependencies to place after the objects being linked to create a
 # shared library.
-postdep_objects=`echo "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/crtendS.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crtn.o" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
+postdep_objects=`echo "/usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.5.3/crtendS.o /usr/lib/../lib64/crtn.o" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
 
 # Dependencies to place before the objects being linked to create a
 # shared library.
@@ -7419,7 +7419,7 @@ postdeps="-lstdc++ -lm -lgcc_s -lc -lgcc_s"
 
 # The library search path used internally by the compiler when linking
 # a shared library.
-compiler_lib_search_path=`echo "-L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
+compiler_lib_search_path=`echo "-L/usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.5.3 -L/usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.5.3/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.5.3/../../.." | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
 
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
@@ -7526,7 +7526,7 @@ include_expsyms=""
 
 # ### BEGIN LIBTOOL TAG CONFIG: F77
 
-# Libtool was configured on host ent.leju.com:
+# Libtool was configured on host puppetmaster.leju.com:
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -7573,7 +7573,7 @@ LTCFLAGS="-g -O2"
 CC="f95"
 
 # Is the compiler the GNU C compiler?
-with_gcc=yes
+with_gcc=
 
 gcc_dir=`gcc -print-file-name=. | /bin/sed 's,/\.$,,'`
 gcc_ver=`gcc -dumpversion`
@@ -7628,14 +7628,14 @@ shrext_cmds='.so'
 exeext=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -fPIC"
+pic_flag=""
 pic_mode=default
 
 # What is the maximum length of a command?
 max_cmd_len=32768
 
 # Does compiler simultaneously support -c and -o options?
-compiler_c_o="yes"
+compiler_c_o="no"
 
 # Must we lock files when doing compilation?
 need_locks="no"
@@ -7656,7 +7656,7 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Compiler flag to prevent dynamic linking.
-link_static_flag="-static"
+link_static_flag=""
 
 # Compiler flag to turn off builtin functions.
 no_builtin_flag=""
@@ -7810,10 +7810,10 @@ variables_saved_for_relink="PATH LD_LIBRARY_PATH LD_RUN_PATH GCC_EXEC_PREFIX COM
 link_all_deplibs=unknown
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec=`echo "/lib64 /usr/lib64 /usr/local/lib64" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
+sys_lib_search_path_spec=`echo " /usr/lib/gcc/x86_64-redhat-linux/4.1.2/ /usr/lib/gcc/x86_64-redhat-linux/4.1.2/ /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../x86_64-redhat-linux/lib/x86_64-redhat-linux/4.1.2/ /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../x86_64-redhat-linux/lib/ /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../x86_64-redhat-linux/4.1.2/ /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../ /lib/x86_64-redhat-linux/4.1.2/ /lib/ /usr/lib/x86_64-redhat-linux/4.1.2/ /usr/lib/" | $SED -e "s@${gcc_dir}@\${gcc_dir}@g;s@${gcc_ver}@\${gcc_ver}@g"`
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /usr/lib/mysql /usr/lib64/mysql "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/mysql /usr/lib64/mysql "
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""

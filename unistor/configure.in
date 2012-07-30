@@ -3,6 +3,7 @@ AC_INIT
 
 # Automake initialization
 AM_INIT_AUTOMAKE(unistore, 1.0)
+m4_include([ax_cxx_compile_stdcxx_0x.m4])
 
 # Add a test for a compiler.
 AC_PROG_CC
