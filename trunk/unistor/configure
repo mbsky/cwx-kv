@@ -18601,6 +18601,11 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 
+AX_CXX_COMPILE_STDCXX_0X
+
+if test "x$ax_cv_cxx_compile_cxx0x_cxx" = "xyes" ; then
+    CXXFLAGS="$CXXFLAGS -std=c++0x"
+fi
 
 
 
