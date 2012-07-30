@@ -828,7 +828,7 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
     CWX_UINT16 key_len=0;
     CWX_UINT32 data_len=0;
     CWX_UINT32 total_data_len=0;
-    CWX_UINT32 byte4;
+//    CWX_UINT32 byte4;
     char* pKeyValue=NULL;
     int       ret;
     list<char*>::const_iterator text_iter;
