@@ -910,9 +910,8 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
         szOut[pos++] = 0x00;
     }
     *pKeyValue=bKeyValue?1:0;
-    byte4 = CwxPackageEx::getKvLen(key_len, total_data_len);
     unsigned char szBuf[10];
-    CwxPackageEx::encodeUint32(byte4, (unsigned char*)szBuf, data_len);
+    CwxPackageEx::encodeUint32(total_data_len, (unsigned char*)szBuf, data_len);
     memmove(szOut+data_len, szOut, pos);
     memcpy(szOut, szBuf, data_len);
     uiOutLen = pos + data_len;
