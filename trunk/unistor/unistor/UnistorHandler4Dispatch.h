@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_DISPATCH_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_DISPATCH_H__
 #define __UNISTOR_HANDLER_4_DISPATCH_H__
 
 
@@ -14,14 +14,14 @@
 #include "UnistorSubscribe.h"
 #include "UnistorStore.h"
 
-///Ç°ÖÃÉùÃ÷¶ÔÏó
+///å‰ç½®å£°æ˜å¯¹è±¡
 class UnistorApp;
 class UnistorHandler4Dispatch;
 
-///·Ö·¢Á¬½ÓµÄsync sessionĞÅÏ¢¶ÔÏó
+///åˆ†å‘è¿æ¥çš„sync sessionä¿¡æ¯å¯¹è±¡
 class UnistorDispatchSyncSession{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorDispatchSyncSession(){
         m_ullSeq = 0;
         m_ullSessionId = 0;
@@ -37,7 +37,7 @@ public:
     }
 public:
     void addConn(UnistorHandler4Dispatch* conn);
-    ///ÖØĞÂĞÎ³Ésession id£¬·µ»Øsession id
+    ///é‡æ–°å½¢æˆsession idï¼Œè¿”å›session id
     CWX_UINT64 reformSessionId(){
         CwxTimeValue timer;
         timer.now();
@@ -47,21 +47,21 @@ public:
 
 public:
     CWX_UINT64        m_ullSessionId; ///<session id
-    CWX_UINT64        m_ullSeq; ///<µ±Ç°µÄĞòÁĞºÅ£¬´Ó0¿ªÊ¼¡£
-    bool                     m_bClosed; ///<ÊÇ·ñĞèÒª¹Ø±Õ
-    map<CWX_UINT32, UnistorHandler4Dispatch*> m_conns; ///<½¨Á¢µÄÁ¬½Ó
-    CwxBinLogCursor*         m_pCursor; ///<binlogµÄ¶ÁÈ¡cursor
-    CWX_UINT32               m_uiChunk; ///<chunk´óĞ¡
-    CWX_UINT64               m_ullStartSid; ///<reportµÄsid
-    CWX_UINT64               m_ullSid; ///<µ±Ç°·¢ËÍµ½µÄsid
-    bool                     m_bNext; ///<ÊÇ·ñ·¢ËÍÏÂÒ»¸öÏûÏ¢
-    UnistorSubscribe         m_subscribe; ///<ÏûÏ¢¶©ÔÄ¶ÔÏó
-    string                   m_strSign; ///<Ç©ÃûÀàĞÍ
-    bool                     m_bZip; ///<ÊÇ·ñÑ¹Ëõ
-    string                   m_strHost; ///<sessionµÄÀ´Ô´Ö÷»ú
+    CWX_UINT64        m_ullSeq; ///<å½“å‰çš„åºåˆ—å·ï¼Œä»0å¼€å§‹ã€‚
+    bool                     m_bClosed; ///<æ˜¯å¦éœ€è¦å…³é—­
+    map<CWX_UINT32, UnistorHandler4Dispatch*> m_conns; ///<å»ºç«‹çš„è¿æ¥
+    CwxBinLogCursor*         m_pCursor; ///<binlogçš„è¯»å–cursor
+    CWX_UINT32               m_uiChunk; ///<chunkå¤§å°
+    CWX_UINT64               m_ullStartSid; ///<reportçš„sid
+    CWX_UINT64               m_ullSid; ///<å½“å‰å‘é€åˆ°çš„sid
+    bool                     m_bNext; ///<æ˜¯å¦å‘é€ä¸‹ä¸€ä¸ªæ¶ˆæ¯
+    UnistorSubscribe         m_subscribe; ///<æ¶ˆæ¯è®¢é˜…å¯¹è±¡
+    string                   m_strSign; ///<ç­¾åç±»å‹
+    bool                     m_bZip; ///<æ˜¯å¦å‹ç¼©
+    string                   m_strHost; ///<sessionçš„æ¥æºä¸»æœº
 };
 
-///exportµÄsesion¶ÔÏó
+///exportçš„sesionå¯¹è±¡
 class UnistorDispatchExportSession{
 public:
 
@@ -74,150 +74,150 @@ public:
     ~UnistorDispatchExportSession(){
     }
 public:
-    CWX_UINT64                  m_ullSeq; ///<µ±Ç°µÄĞòÁĞºÅ£¬´Ó0¿ªÊ¼¡£
-    UnistorStoreCursor*         m_pCursor; ///<Êı¾İÍ¬²½µÄcursor¶ÔÏó
-    CWX_UINT32                  m_uiChunk; ///<chunk´óĞ¡
-    UnistorSubscribe            m_subscribe; ///<ÏûÏ¢¶©ÔÄ¶ÔÏó
-    string                      m_strHost; ///<sessionµÄÀ´Ô´Ö÷»ú
+    CWX_UINT64                  m_ullSeq; ///<å½“å‰çš„åºåˆ—å·ï¼Œä»0å¼€å§‹ã€‚
+    UnistorStoreCursor*         m_pCursor; ///<æ•°æ®åŒæ­¥çš„cursorå¯¹è±¡
+    CWX_UINT32                  m_uiChunk; ///<chunkå¤§å°
+    UnistorSubscribe            m_subscribe; ///<æ¶ˆæ¯è®¢é˜…å¯¹è±¡
+    string                      m_strHost; ///<sessionçš„æ¥æºä¸»æœº
 };
 
-///tssµÄuser object¶ÔÏó
+///tssçš„user objectå¯¹è±¡
 class UnistorDispatchThreadUserObj:public UnistorTssUserObj{
 public:
     UnistorDispatchThreadUserObj(){}
     ~UnistorDispatchThreadUserObj(){}
 public:
-    ///ÊÍ·Å×ÊÔ´
+    ///é‡Šæ”¾èµ„æº
     void free(UnistorApp* pApp);
 public:
-    map<CWX_UINT64, UnistorDispatchSyncSession* > m_sessionMap;  ///<sessionµÄmap£¬keyÎªsession id
-    list<UnistorDispatchSyncSession*>             m_freeSession; ///<ĞèÒª¹Ø±ÕµÄsession
+    map<CWX_UINT64, UnistorDispatchSyncSession* > m_sessionMap;  ///<sessionçš„mapï¼Œkeyä¸ºsession id
+    list<UnistorDispatchSyncSession*>             m_freeSession; ///<éœ€è¦å…³é—­çš„session
 };
 
 
-///Òì²½binlog·Ö·¢µÄÏûÏ¢´¦Àíhandler
+///å¼‚æ­¥binlogåˆ†å‘çš„æ¶ˆæ¯å¤„ç†handler
 class UnistorHandler4Dispatch : public CwxAppHandler4Channel{
 public:
     enum{
-        DISPATCH_TYPE_INIT = 0, ///<³õÊ¼»¯×´Ì¬
-        DISPATCH_TYPE_SYNC = 1, ///<Êı¾İÍ¬²½Á¬½Ó
-        DISPATCH_TYPE_EXPORT = 2 ///<exportµÄÁ¬½Ó
+        DISPATCH_TYPE_INIT = 0, ///<åˆå§‹åŒ–çŠ¶æ€
+        DISPATCH_TYPE_SYNC = 1, ///<æ•°æ®åŒæ­¥è¿æ¥
+        DISPATCH_TYPE_EXPORT = 2 ///<exportçš„è¿æ¥
     };
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorHandler4Dispatch(UnistorApp* pApp,
         CwxAppChannel* channel,
         CWX_UINT32 uiConnId,
         bool bInner=false);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorHandler4Dispatch();
 public:
     /**
-    @brief Á¬½Ó¿É¶ÁÊÂ¼ş£¬·µ»Ø-1£¬close()»á±»µ÷ÓÃ
-    @return -1£º´¦ÀíÊ§°Ü£¬»áµ÷ÓÃclose()£» 0£º´¦Àí³É¹¦
+    @brief è¿æ¥å¯è¯»äº‹ä»¶ï¼Œè¿”å›-1ï¼Œclose()ä¼šè¢«è°ƒç”¨
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œä¼šè°ƒç”¨close()ï¼› 0ï¼šå¤„ç†æˆåŠŸ
     */
     virtual int onInput();
     /**
-    @brief Í¨ÖªÁ¬½Ó¹Ø±Õ¡£
-    @return 1£º²»´ÓengineÖĞÒÆ³ı×¢²á£»0£º´ÓengineÖĞÒÆ³ı×¢²áµ«²»É¾³ıhandler£»-1£º´ÓengineÖĞ½«handleÒÆ³ı²¢É¾³ı¡£
+    @brief é€šçŸ¥è¿æ¥å…³é—­ã€‚
+    @return 1ï¼šä¸ä»engineä¸­ç§»é™¤æ³¨å†Œï¼›0ï¼šä»engineä¸­ç§»é™¤æ³¨å†Œä½†ä¸åˆ é™¤handlerï¼›-1ï¼šä»engineä¸­å°†handleç§»é™¤å¹¶åˆ é™¤ã€‚
     */
     virtual int onConnClosed();
     /**
-    @brief HandlerµÄredoÊÂ¼ş£¬ÔÚÃ¿´ÎdispatchÊ±Ö´ĞĞ¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬»áµ÷ÓÃclose()£» 0£º´¦Àí³É¹¦
+    @brief Handlerçš„redoäº‹ä»¶ï¼Œåœ¨æ¯æ¬¡dispatchæ—¶æ‰§è¡Œã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œä¼šè°ƒç”¨close()ï¼› 0ï¼šå¤„ç†æˆåŠŸ
     */
     virtual int onRedo();
 
 public:
-    ///·¢ËÍbinlog¡£·µ»ØÖµ£º0£ºÎ´·¢ËÍÒ»Ìõbinlog£»1£º·¢ËÍÁËÒ»Ìõbinlog£»-1£ºÊ§°Ü£»
+    ///å‘é€binlogã€‚è¿”å›å€¼ï¼š0ï¼šæœªå‘é€ä¸€æ¡binlogï¼›1ï¼šå‘é€äº†ä¸€æ¡binlogï¼›-1ï¼šå¤±è´¥ï¼›
     int syncSendBinLog(UnistorTss* pTss);
 
-    ///packÒ»Ìõbinlog¡£·µ»ØÖµ£º-1£ºÊ§°Ü£¬1£º³É¹¦
-    int syncPackOneBinLog(CwxPackageWriterEx* writer, ///<writer¶ÔÏó
-        CwxMsgBlock*& block, ///<packºóĞÎ³ÉµÄÊı¾İ°ü
-        CWX_UINT64 ullSeq, ///<ÏûÏ¢ĞòÁĞºÅ
-        CWX_UINT32 uiVersion, ///<binlogµÄ°æ±¾ºÅ
-        CWX_UINT32 uiType, ///<binlogµÄ±ä¸üÏûÏ¢ÀàĞÍ
-        CwxKeyValueItemEx const* pData, ///<±ä¸üµÄÊı¾İ
-        char* szErr2K ///<ÈôÊ§°Ü·µ»Ø´íÎóÏûÏ¢
+    ///packä¸€æ¡binlogã€‚è¿”å›å€¼ï¼š-1ï¼šå¤±è´¥ï¼Œ1ï¼šæˆåŠŸ
+    int syncPackOneBinLog(CwxPackageWriterEx* writer, ///<writerå¯¹è±¡
+        CwxMsgBlock*& block, ///<packåå½¢æˆçš„æ•°æ®åŒ…
+        CWX_UINT64 ullSeq, ///<æ¶ˆæ¯åºåˆ—å·
+        CWX_UINT32 uiVersion, ///<binlogçš„ç‰ˆæœ¬å·
+        CWX_UINT32 uiType, ///<binlogçš„å˜æ›´æ¶ˆæ¯ç±»å‹
+        CwxKeyValueItemEx const* pData, ///<å˜æ›´çš„æ•°æ®
+        char* szErr2K ///<è‹¥å¤±è´¥è¿”å›é”™è¯¯æ¶ˆæ¯
         );
 
-    ///pack¶àÌõbinlog¡£·µ»ØÖµ£º-1£ºÊ§°Ü£¬1£º³É¹¦
-    int syncPackMultiBinLog(CwxPackageWriterEx* writer, ///<writer¶ÔÏó
-        CwxPackageWriterEx* writer_item, ///<writer¶ÔÏó
-        CWX_UINT32 uiVersion, ///<binlogµÄ°æ±¾ºÅ
-        CWX_UINT32 uiType, ///<binlogµÄ±ä¸üÏûÏ¢ÀàĞÍ
-        CwxKeyValueItemEx const* pData, ///<±ä¸üµÄÊı¾İ
-        CWX_UINT32&  uiLen, ///<·µ»ØpackÍêµ±Ç°binlogºó£¬Õû¸öÊı¾İ°üµÄ´óĞ¡
-        char* szErr2K ///<ÈôÊ§°Ü·µ»Ø´íÎóÏûÏ¢
+    ///packå¤šæ¡binlogã€‚è¿”å›å€¼ï¼š-1ï¼šå¤±è´¥ï¼Œ1ï¼šæˆåŠŸ
+    int syncPackMultiBinLog(CwxPackageWriterEx* writer, ///<writerå¯¹è±¡
+        CwxPackageWriterEx* writer_item, ///<writerå¯¹è±¡
+        CWX_UINT32 uiVersion, ///<binlogçš„ç‰ˆæœ¬å·
+        CWX_UINT32 uiType, ///<binlogçš„å˜æ›´æ¶ˆæ¯ç±»å‹
+        CwxKeyValueItemEx const* pData, ///<å˜æ›´çš„æ•°æ®
+        CWX_UINT32&  uiLen, ///<è¿”å›packå®Œå½“å‰binlogåï¼Œæ•´ä¸ªæ•°æ®åŒ…çš„å¤§å°
+        char* szErr2K ///<è‹¥å¤±è´¥è¿”å›é”™è¯¯æ¶ˆæ¯
         );
 
-    ///¶¨Î»µ½ĞèÒªµÄbinlog´¦¡£·µ»ØÖµ£º1£º·¢ÏÖ¼ÇÂ¼£»0£ºÃ»ÓĞ·¢ÏÖ£»-1£º´íÎó
-    int syncSeekToBinlog(UnistorTss* tss, ///<Ïß³Ìtss
-        CWX_UINT32& uiSkipNum ///<×î¶à¿ÉÒÔ±éÀúµÄbinlogÊıÁ¿£¬·µ»ØÊ£ÓàÖµ
+    ///å®šä½åˆ°éœ€è¦çš„binlogå¤„ã€‚è¿”å›å€¼ï¼š1ï¼šå‘ç°è®°å½•ï¼›0ï¼šæ²¡æœ‰å‘ç°ï¼›-1ï¼šé”™è¯¯
+    int syncSeekToBinlog(UnistorTss* tss, ///<çº¿ç¨‹tss
+        CWX_UINT32& uiSkipNum ///<æœ€å¤šå¯ä»¥éå†çš„binlogæ•°é‡ï¼Œè¿”å›å‰©ä½™å€¼
         );
 
-    ///½«binlog¶¨Î»µ½reportµÄsid¡£·µ»ØÖµ£º1£º³É¹¦£»0£ºÌ«´ó£»-1£º´íÎó
+    ///å°†binlogå®šä½åˆ°reportçš„sidã€‚è¿”å›å€¼ï¼š1ï¼šæˆåŠŸï¼›0ï¼šå¤ªå¤§ï¼›-1ï¼šé”™è¯¯
     int syncSeekToReportSid(UnistorTss* tss);
 
-    ///·¢ËÍexportµÄÊı¾İ¡£·µ»ØÖµ£º0£ºÎ´·¢ËÍÒ»ÌõÊı¾İ£»1£º·¢ËÍÁËÒ»ÌõÊı¾İ£»-1£ºÊ§°Ü£»
+    ///å‘é€exportçš„æ•°æ®ã€‚è¿”å›å€¼ï¼š0ï¼šæœªå‘é€ä¸€æ¡æ•°æ®ï¼›1ï¼šå‘é€äº†ä¸€æ¡æ•°æ®ï¼›-1ï¼šå¤±è´¥ï¼›
     int exportSendData(UnistorTss* pTss);
     
-    ///»ñÈ¡Á¬½Óid
+    ///è·å–è¿æ¥id
     inline CWX_UINT32 getConnId() const{
         return m_uiConnId;
     }
 
 public:
-    ///·Ö·¢Ïß³ÌµÄÊÂ¼şµ÷¶È´¦Àíº¯Êı
-    static void doEvent(UnistorApp* app, ///<app¶ÔÏó
-        UnistorTss* tss, ///<Ïß³Ìtss
-        CwxMsgBlock*& msg ///<ÊÂ¼şÏûÏ¢
+    ///åˆ†å‘çº¿ç¨‹çš„äº‹ä»¶è°ƒåº¦å¤„ç†å‡½æ•°
+    static void doEvent(UnistorApp* app, ///<appå¯¹è±¡
+        UnistorTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgBlock*& msg ///<äº‹ä»¶æ¶ˆæ¯
         );
 
-    ///´¦Àí¹Ø±ÕµÄsession
-    static void dealClosedSession(UnistorApp* app, ///<app¶ÔÏó
-        UnistorTss* tss  ///<Ïß³Ìtss
+    ///å¤„ç†å…³é—­çš„session
+    static void dealClosedSession(UnistorApp* app, ///<appå¯¹è±¡
+        UnistorTss* tss  ///<çº¿ç¨‹tss
         );
 private:
-    ///ÊÕµ½Ò»¸öÏûÏ¢²¢´¦Àí¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯å¹¶å¤„ç†ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvMessage();
 
-    ///ÊÕµ½sync reportµÄÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°sync reportçš„æ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvSyncReport(UnistorTss* pTss);
     
-    ///ÊÕµ½sync new connµÄreportÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°sync new connçš„reportæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvSyncNewConnection(UnistorTss* pTss);
     
-    ///ÊÕµ½binlog syncµÄreplyÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°binlog syncçš„replyæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvSyncReply(UnistorTss* pTss);
 
-    ///ÊÕµ½chunkÄ£Ê½ÏÂµÄbinlog sync replyÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°chunkæ¨¡å¼ä¸‹çš„binlog sync replyæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvSyncChunkReply(UnistorTss* pTss);
 
-    ///ÊÕµ½exportµÄreportÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°exportçš„reportæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvExportReport(UnistorTss* pTss);
 
-    ///ÊÕµ½exportÊı¾İµÄreplyÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ”¶åˆ°exportæ•°æ®çš„replyæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int recvExportReply(UnistorTss* pTss);
 private:
-    bool                     m_bInner; ///<ÊÇ·ñÄÚ²¿·Ö·¢
-    bool                     m_bReport; ///<ÊÇ·ñÒÑ¾­±¨¸æ
-    CWX_UINT8                m_ucDispatchType; ///<·Ö·¢ÀàĞÍ
-    UnistorDispatchSyncSession*  m_syncSession; ///<Á¬½Ó¶ÔÓ¦µÄsession
-    UnistorDispatchExportSession* m_exportSession; ///<Êı¾İexportµÄsession
-    CWX_UINT64               m_ullSessionId; ///<sessionµÄid
-    CWX_UINT64               m_ullSentSeq; ///<·¢ËÍµÄĞòÁĞºÅ
-    CWX_UINT32               m_uiConnId; ///<Á¬½Óid
-    UnistorApp*              m_pApp;  ///<app¶ÔÏó
-    CwxMsgHead               m_header; ///<ÏûÏ¢Í·
-    char                     m_szHeadBuf[CwxMsgHead::MSG_HEAD_LEN+1]; ///<ÏûÏ¢Í·µÄbuf
+    bool                     m_bInner; ///<æ˜¯å¦å†…éƒ¨åˆ†å‘
+    bool                     m_bReport; ///<æ˜¯å¦å·²ç»æŠ¥å‘Š
+    CWX_UINT8                m_ucDispatchType; ///<åˆ†å‘ç±»å‹
+    UnistorDispatchSyncSession*  m_syncSession; ///<è¿æ¥å¯¹åº”çš„session
+    UnistorDispatchExportSession* m_exportSession; ///<æ•°æ®exportçš„session
+    CWX_UINT64               m_ullSessionId; ///<sessionçš„id
+    CWX_UINT64               m_ullSentSeq; ///<å‘é€çš„åºåˆ—å·
+    CWX_UINT32               m_uiConnId; ///<è¿æ¥id
+    UnistorApp*              m_pApp;  ///<appå¯¹è±¡
+    CwxMsgHead               m_header; ///<æ¶ˆæ¯å¤´
+    char                     m_szHeadBuf[CwxMsgHead::MSG_HEAD_LEN+1]; ///<æ¶ˆæ¯å¤´çš„buf
     CWX_UINT32               m_uiRecvHeadLen; ///<recieved msg header's byte number.
     CWX_UINT32               m_uiRecvDataLen; ///<recieved data's byte number.
     CwxMsgBlock*             m_recvMsgData; ///<the recieved msg data
-    string                   m_strPeerHost; ///<¶Ô¶Ëhost
-    CWX_UINT16               m_unPeerPort; ///<¶Ô¶Ëport
-    UnistorTss*              m_tss;        ///<¶ÔÏó¶ÔÓ¦µÄtss¶ÔÏó
+    string                   m_strPeerHost; ///<å¯¹ç«¯host
+    CWX_UINT16               m_unPeerPort; ///<å¯¹ç«¯port
+    UnistorTss*              m_tss;        ///<å¯¹è±¡å¯¹åº”çš„tsså¯¹è±¡
 
 
 };

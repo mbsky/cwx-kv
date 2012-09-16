@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_TRANS_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_TRANS_H__
 #define __UNISTOR_HANDLER_4_TRANS_H__
 
 #include "CwxCommander.h"
@@ -7,13 +7,13 @@
 #include "CwxAppHandler4Channel.h"
 #include "UnistorStoreBase.h"
 
-///Ç°ÖÃÉùÃ÷
+///å‰ç½®å£°æ˜
 class UnistorApp;
 
-///ÏûÏ¢×ª·¢µÄhandle
+///æ¶ˆæ¯è½¬å‘çš„handle
 class UnistorHandler4Trans : public CwxAppHandler4Channel{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorHandler4Trans(UnistorApp* pApp, CWX_UINT32 uiConnid, CwxAppChannel *channel):
       CwxAppHandler4Channel(channel),m_uiConnId(uiConnid), m_pApp(pApp)
       {
@@ -23,79 +23,79 @@ public:
           m_bAuth = false;
           m_tss = NULL;
       }
-      ///Îö¹¹º¯Êı
+      ///ææ„å‡½æ•°
       virtual ~UnistorHandler4Trans(){
           if (m_recvMsgData) CwxMsgBlockAlloc::free(m_recvMsgData);
       }
 public:
     /**
-    @brief ³õÊ¼»¯½¨Á¢µÄÁ¬½Ó£¬²¢ÍùReactor×¢²áÁ¬½Ó
-    @param [in] arg ½¨Á¢Á¬½ÓµÄacceptor»òÎªNULL
-    @return -1£º·ÅÆú½¨Á¢µÄÁ¬½Ó£» 0£ºÁ¬½Ó½¨Á¢³É¹¦
+    @brief åˆå§‹åŒ–å»ºç«‹çš„è¿æ¥ï¼Œå¹¶å¾€Reactoræ³¨å†Œè¿æ¥
+    @param [in] arg å»ºç«‹è¿æ¥çš„acceptoræˆ–ä¸ºNULL
+    @return -1ï¼šæ”¾å¼ƒå»ºç«‹çš„è¿æ¥ï¼› 0ï¼šè¿æ¥å»ºç«‹æˆåŠŸ
     */
     virtual int open (void * arg= 0);
     /**
-    @brief Í¨ÖªÁ¬½Ó¹Ø±Õ¡£
-    @return 1£º²»´ÓengineÖĞÒÆ³ı×¢²á£»0£º´ÓengineÖĞÒÆ³ı×¢²áµ«²»É¾³ıhandler£»-1£º´ÓengineÖĞ½«handleÒÆ³ı²¢É¾³ı¡£
+    @brief é€šçŸ¥è¿æ¥å…³é—­ã€‚
+    @return 1ï¼šä¸ä»engineä¸­ç§»é™¤æ³¨å†Œï¼›0ï¼šä»engineä¸­ç§»é™¤æ³¨å†Œä½†ä¸åˆ é™¤handlerï¼›-1ï¼šä»engineä¸­å°†handleç§»é™¤å¹¶åˆ é™¤ã€‚
     */
     virtual int onConnClosed();
     /**
-    @brief Á¬½Ó¿É¶ÁÊÂ¼ş£¬·µ»Ø-1£¬close()»á±»µ÷ÓÃ
-    @return -1£º´¦ÀíÊ§°Ü£¬»áµ÷ÓÃclose()£» 0£º´¦Àí³É¹¦
+    @brief è¿æ¥å¯è¯»äº‹ä»¶ï¼Œè¿”å›-1ï¼Œclose()ä¼šè¢«è°ƒç”¨
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œä¼šè°ƒç”¨close()ï¼› 0ï¼šå¤„ç†æˆåŠŸ
     */
     virtual int onInput();
     /**
-    @brief Í¨ÖªÁ¬½ÓÍê³ÉÒ»¸öÏûÏ¢µÄ·¢ËÍ¡£<br>
-    Ö»ÓĞÔÚMsgÖ¸¶¨FINISH_NOTICEµÄÊ±ºò²Åµ÷ÓÃ.
-    @param [in,out] msg ´«Èë·¢ËÍÍê±ÏµÄÏûÏ¢£¬Èô·µ»ØNULL£¬ÔòmsgÓĞÉÏ²ãÊÍ·Å£¬·ñÔòµ×²ãÊÍ·Å¡£
+    @brief é€šçŸ¥è¿æ¥å®Œæˆä¸€ä¸ªæ¶ˆæ¯çš„å‘é€ã€‚<br>
+    åªæœ‰åœ¨MsgæŒ‡å®šFINISH_NOTICEçš„æ—¶å€™æ‰è°ƒç”¨.
+    @param [in,out] msg ä¼ å…¥å‘é€å®Œæ¯•çš„æ¶ˆæ¯ï¼Œè‹¥è¿”å›NULLï¼Œåˆ™msgæœ‰ä¸Šå±‚é‡Šæ”¾ï¼Œå¦åˆ™åº•å±‚é‡Šæ”¾ã€‚
     @return 
-    CwxMsgSendCtrl::UNDO_CONN£º²»ĞŞ¸ÄÁ¬½ÓµÄ½ÓÊÕ×´Ì¬
-    CwxMsgSendCtrl::RESUME_CONN£ºÈÃÁ¬½Ó´Ósuspend×´Ì¬±äÎªÊı¾İ½ÓÊÕ×´Ì¬¡£
-    CwxMsgSendCtrl::SUSPEND_CONN£ºÈÃÁ¬½Ó´ÓÊı¾İ½ÓÊÕ×´Ì¬±äÎªsuspend×´Ì¬
+    CwxMsgSendCtrl::UNDO_CONNï¼šä¸ä¿®æ”¹è¿æ¥çš„æ¥æ”¶çŠ¶æ€
+    CwxMsgSendCtrl::RESUME_CONNï¼šè®©è¿æ¥ä»suspendçŠ¶æ€å˜ä¸ºæ•°æ®æ¥æ”¶çŠ¶æ€ã€‚
+    CwxMsgSendCtrl::SUSPEND_CONNï¼šè®©è¿æ¥ä»æ•°æ®æ¥æ”¶çŠ¶æ€å˜ä¸ºsuspendçŠ¶æ€
     */
     virtual CWX_UINT32 onEndSendMsg(CwxMsgBlock*& msg);
 
     /**
-    @brief Í¨ÖªÁ¬½ÓÉÏ£¬Ò»¸öÏûÏ¢·¢ËÍÊ§°Ü¡£<br>
-    Ö»ÓĞÔÚMsgÖ¸¶¨FAIL_NOTICEµÄÊ±ºò²Åµ÷ÓÃ.
-    @param [in,out] msg ·¢ËÍÊ§°ÜµÄÏûÏ¢£¬Èô·µ»ØNULL£¬ÔòmsgÓĞÉÏ²ãÊÍ·Å£¬·ñÔòµ×²ãÊÍ·Å¡£
-    @return void¡£
+    @brief é€šçŸ¥è¿æ¥ä¸Šï¼Œä¸€ä¸ªæ¶ˆæ¯å‘é€å¤±è´¥ã€‚<br>
+    åªæœ‰åœ¨MsgæŒ‡å®šFAIL_NOTICEçš„æ—¶å€™æ‰è°ƒç”¨.
+    @param [in,out] msg å‘é€å¤±è´¥çš„æ¶ˆæ¯ï¼Œè‹¥è¿”å›NULLï¼Œåˆ™msgæœ‰ä¸Šå±‚é‡Šæ”¾ï¼Œå¦åˆ™åº•å±‚é‡Šæ”¾ã€‚
+    @return voidã€‚
     */
     virtual void onFailSendMsg(CwxMsgBlock*& msg);
 
 public:
 
-    ///ÏûÏ¢·Ö·¢´¦Àíº¯Êı
-    static void doEvent(UnistorApp* pApp, ///<app¶ÔÏó
-        UnistorTss* tss, ///<Ïß³Ìtss
-        CwxMsgBlock*& msg ///<·Ö·¢µÄÏûÏ¢
+    ///æ¶ˆæ¯åˆ†å‘å¤„ç†å‡½æ•°
+    static void doEvent(UnistorApp* pApp, ///<appå¯¹è±¡
+        UnistorTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgBlock*& msg ///<åˆ†å‘çš„æ¶ˆæ¯
         );
 
-    ///Íùmaster×ª·¢ÏûÏ¢¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü¡£
-    static bool transMsg(UnistorTss* tss, ///<Ïß³Ìtss
-        CWX_UINT32 uiTaskId, ///<ÏûÏ¢µÄtaskid
-        CwxMsgBlock* msg ///<×ª·¢µÄÏûÏ¢
+    ///å¾€masterè½¬å‘æ¶ˆæ¯ã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥ã€‚
+    static bool transMsg(UnistorTss* tss, ///<çº¿ç¨‹tss
+        CWX_UINT32 uiTaskId, ///<æ¶ˆæ¯çš„taskid
+        CwxMsgBlock* msg ///<è½¬å‘çš„æ¶ˆæ¯
         );
 
-    ///³õÊ¼»¯Handler»·¾³ĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    static int init(CWX_UINT32 uiConnNum/*Á¬½ÓµÄÊıÁ¿*/){
+    ///åˆå§‹åŒ–Handlerç¯å¢ƒä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    static int init(CWX_UINT32 uiConnNum/*è¿æ¥çš„æ•°é‡*/){
         m_bCanTrans = false;
         m_strMasterHost = "";
         m_uiMaxConnNum = uiConnNum;
-        m_uiAuthConnNum = 0; ///<ÒÑ¾­ÈÏÖ¤µÄhostµÄÊıÁ¿
-        m_authConn = new UnistorHandler4Trans*[uiConnNum]; ///<ÈÏÖ¤µÄÁ¬½Ó
+        m_uiAuthConnNum = 0; ///<å·²ç»è®¤è¯çš„hostçš„æ•°é‡
+        m_authConn = new UnistorHandler4Trans*[uiConnNum]; ///<è®¤è¯çš„è¿æ¥
         m_handlers = new map<CWX_UINT32, UnistorHandler4Trans*>;
         m_bRebuildConn = false;
         m_ttLastRebuildConn = 0;
         return 0;
     }
 
-    ///ÊÍ·Å×ª·¢handleµÄ»·¾³ĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///é‡Šæ”¾è½¬å‘handleçš„ç¯å¢ƒä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     static int destroy(){
         m_bCanTrans = false;
         m_strMasterHost = "";
         m_uiMaxConnNum = 0;
-        m_uiAuthConnNum = 0; ///<ÒÑ¾­ÈÏÖ¤µÄhostµÄÊıÁ¿
+        m_uiAuthConnNum = 0; ///<å·²ç»è®¤è¯çš„hostçš„æ•°é‡
         if (m_authConn) delete [] m_authConn;
         m_authConn = NULL;
         if (m_handlers) delete m_handlers;
@@ -105,33 +105,33 @@ public:
         return 0;
     }
 
-    ///ÖØ½¨×ª·¢µÄÁ¬½Ó¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///é‡å»ºè½¬å‘çš„è¿æ¥ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     static int rebuildConn(UnistorApp* app);
     
-    ///¼ì²â²¢½¨Á¢×ª·¢Á¬½Ó
-    static void checkTrans(UnistorApp* app, ///<app¶ÔÏó
-        UnistorTss* tss ///<Ïß³Ìtss
+    ///æ£€æµ‹å¹¶å»ºç«‹è½¬å‘è¿æ¥
+    static void checkTrans(UnistorApp* app, ///<appå¯¹è±¡
+        UnistorTss* tss ///<çº¿ç¨‹tss
         );
 private:
-    CWX_UINT32				m_uiConnId; ///<Á¬½Óid
-    UnistorApp*             m_pApp;  ///<app¶ÔÏó
-    CwxMsgHead              m_header; ///<ÏûÏ¢µÄÏûÏ¢Í·
+    CWX_UINT32				m_uiConnId; ///<è¿æ¥id
+    UnistorApp*             m_pApp;  ///<appå¯¹è±¡
+    CwxMsgHead              m_header; ///<æ¶ˆæ¯çš„æ¶ˆæ¯å¤´
     char                    m_szHeadBuf[CwxMsgHead::MSG_HEAD_LEN + 1];
     CWX_UINT32              m_uiRecvHeadLen; ///<recieved msg header's byte number.
     CWX_UINT32              m_uiRecvDataLen; ///<recieved data's byte number.
     CwxMsgBlock*            m_recvMsgData; ///<the recieved msg data
-    bool                    m_bAuth;       ///<µ±Ç°Á¬½ÓÊÇ·ñÈÏÖ¤Íê³É
-    UnistorTss*              m_tss;        ///<¶ÔÏó¶ÔÓ¦µÄtss¶ÔÏó
+    bool                    m_bAuth;       ///<å½“å‰è¿æ¥æ˜¯å¦è®¤è¯å®Œæˆ
+    UnistorTss*              m_tss;        ///<å¯¹è±¡å¯¹åº”çš„tsså¯¹è±¡
 public:
-    static volatile bool                m_bCanTrans; ///<ÊÇ·ñÄÜ¹»×ª·¢
+    static volatile bool                m_bCanTrans; ///<æ˜¯å¦èƒ½å¤Ÿè½¬å‘
 private:
-    static string                       m_strMasterHost; ///<µ±Ç°µÄÖ÷»ú
-    static CWX_UINT32                   m_uiMaxConnNum; ///<×î´óµÄÁ¬½ÓÊıÁ¿
-    static CWX_UINT32                   m_uiAuthConnNum; ///<ÒÑ¾­ÈÏÖ¤µÄhostµÄÊıÁ¿
-    static UnistorHandler4Trans**       m_authConn; ///<ÈÏÖ¤µÄÁ¬½Ó
-    static map<CWX_UINT32, UnistorHandler4Trans*>* m_handlers; ///<ËùÓĞÁ¬½ÓµÄmap
-    static bool                         m_bRebuildConn; ///<ÊÇ·ñĞèÒªÖØĞÂ½¨Á¢Á¬½Ó
-    static CWX_UINT32                   m_ttLastRebuildConn; ///<ÉÏ´ÎÖØ½¨Á¬½ÓµÄÊ±¼ä
+    static string                       m_strMasterHost; ///<å½“å‰çš„ä¸»æœº
+    static CWX_UINT32                   m_uiMaxConnNum; ///<æœ€å¤§çš„è¿æ¥æ•°é‡
+    static CWX_UINT32                   m_uiAuthConnNum; ///<å·²ç»è®¤è¯çš„hostçš„æ•°é‡
+    static UnistorHandler4Trans**       m_authConn; ///<è®¤è¯çš„è¿æ¥
+    static map<CWX_UINT32, UnistorHandler4Trans*>* m_handlers; ///<æ‰€æœ‰è¿æ¥çš„map
+    static bool                         m_bRebuildConn; ///<æ˜¯å¦éœ€è¦é‡æ–°å»ºç«‹è¿æ¥
+    static CWX_UINT32                   m_ttLastRebuildConn; ///<ä¸Šæ¬¡é‡å»ºè¿æ¥çš„æ—¶é—´
 
 };
 #endif 

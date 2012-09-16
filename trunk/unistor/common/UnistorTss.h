@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_TSS_H__
+ï»¿#ifndef __UNISTOR_TSS_H__
 #define __UNISTOR_TSS_H__
 
 
@@ -12,42 +12,42 @@
 
 
 
-///¶¨ÒåEVENTÀàĞÍ
-#define EVENT_ZK_CONNECTED      (CwxEventInfo::SYS_EVENT_NUM + 1) ///<½¨Á¢ÁËÓëzkµÄÁ¬½Ó
-#define EVENT_ZK_EXPIRED        (CwxEventInfo::SYS_EVENT_NUM + 2) ///<zkµÄÁ¬½ÓÊ§Ğ§
-#define EVENT_ZK_FAIL_AUTH      (CwxEventInfo::SYS_EVENT_NUM + 3) ///<zkµÄÈÏÖ¤Ê§°Ü
-#define EVENT_ZK_SUCCESS_AUTH   (CwxEventInfo::SYS_EVENT_NUM + 4) ///<zkµÄÈÏÖ¤³É¹¦ 
-#define EVENT_ZK_CONF_CHANGE    (CwxEventInfo::SYS_EVENT_NUM + 5) ///<ZKµÄconf½ÚµãÅäÖÃ±ä»¯
-#define EVENT_ZK_LOCK_CHANGE    (CwxEventInfo::SYS_EVENT_NUM + 6) ///<ZKµÄËø±ä»¯
-#define EVENT_ZK_LOST_WATCH     (CwxEventInfo::SYS_EVENT_NUM + 7) ///<Ê§È¥watch
-#define EVENT_ZK_ERROR          (CwxEventInfo::SYS_EVENT_NUM + 8) ///<zk´íÎó
-#define EVENT_ZK_SET_SID        (CwxEventInfo::SYS_EVENT_NUM + 9) ///<ÉèÖÃzkµÄsid
-#define EVENT_SEND_MSG          (CwxEventInfo::SYS_EVENT_NUM + 10) ///<·¢ËÍÏûÏ¢
-#define EVENT_STORE_MSG_START   (CwxEventInfo::SYS_EVENT_NUM + 100)  ///<´æ´¢µÄÏûÏ¢ÆğÊ¼Öµ
-#define EVENT_STORE_COMMIT       EVENT_STORE_MSG_START ///<´æ´¢ÒıÇæÖ´ĞĞÁËÒ»´Îcommit
-#define EVENT_STORE_DEL_EXPIRE   (EVENT_STORE_MSG_START + 2)  ///<É¾³ıÖ¸¶¨µÄ³¬Ê±key
-#define EVENT_STORE_DEL_EXPIRE_REPLY (EVENT_STORE_MSG_START + 3) ///<É¾³ıÖ¸¶¨µÄ³¬Ê±keyµÄ»Ø¸´
+///å®šä¹‰EVENTç±»å‹
+#define EVENT_ZK_CONNECTED      (CwxEventInfo::SYS_EVENT_NUM + 1) ///<å»ºç«‹äº†ä¸zkçš„è¿æ¥
+#define EVENT_ZK_EXPIRED        (CwxEventInfo::SYS_EVENT_NUM + 2) ///<zkçš„è¿æ¥å¤±æ•ˆ
+#define EVENT_ZK_FAIL_AUTH      (CwxEventInfo::SYS_EVENT_NUM + 3) ///<zkçš„è®¤è¯å¤±è´¥
+#define EVENT_ZK_SUCCESS_AUTH   (CwxEventInfo::SYS_EVENT_NUM + 4) ///<zkçš„è®¤è¯æˆåŠŸ 
+#define EVENT_ZK_CONF_CHANGE    (CwxEventInfo::SYS_EVENT_NUM + 5) ///<ZKçš„confèŠ‚ç‚¹é…ç½®å˜åŒ–
+#define EVENT_ZK_LOCK_CHANGE    (CwxEventInfo::SYS_EVENT_NUM + 6) ///<ZKçš„é”å˜åŒ–
+#define EVENT_ZK_LOST_WATCH     (CwxEventInfo::SYS_EVENT_NUM + 7) ///<å¤±å»watch
+#define EVENT_ZK_ERROR          (CwxEventInfo::SYS_EVENT_NUM + 8) ///<zké”™è¯¯
+#define EVENT_ZK_SET_SID        (CwxEventInfo::SYS_EVENT_NUM + 9) ///<è®¾ç½®zkçš„sid
+#define EVENT_SEND_MSG          (CwxEventInfo::SYS_EVENT_NUM + 10) ///<å‘é€æ¶ˆæ¯
+#define EVENT_STORE_MSG_START   (CwxEventInfo::SYS_EVENT_NUM + 100)  ///<å­˜å‚¨çš„æ¶ˆæ¯èµ·å§‹å€¼
+#define EVENT_STORE_COMMIT       EVENT_STORE_MSG_START ///<å­˜å‚¨å¼•æ“æ‰§è¡Œäº†ä¸€æ¬¡commit
+#define EVENT_STORE_DEL_EXPIRE   (EVENT_STORE_MSG_START + 2)  ///<åˆ é™¤æŒ‡å®šçš„è¶…æ—¶key
+#define EVENT_STORE_DEL_EXPIRE_REPLY (EVENT_STORE_MSG_START + 3) ///<åˆ é™¤æŒ‡å®šçš„è¶…æ—¶keyçš„å›å¤
 
-///tssµÄÓÃ»§Ïß³ÌÊı¾İ¶ÔÏó
+///tssçš„ç”¨æˆ·çº¿ç¨‹æ•°æ®å¯¹è±¡
 class UnistorTssUserObj{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorTssUserObj(){}
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorTssUserObj(){}
 };
 
-///Îª´æ´¢engineÔ¤ÁôµÄÅäÖÃ¶ÔÏóĞÅÏ¢
+///ä¸ºå­˜å‚¨engineé¢„ç•™çš„é…ç½®å¯¹è±¡ä¿¡æ¯
 class UnistorTssEngineObj{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorTssEngineObj(){}
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorTssEngineObj(){}
 
 };
 
-///¶¨ÒåReadÏß³ÌÏòWriteÏß³Ì´«µİmsg²ÎÊıµÄ¶ÔÏó
+///å®šä¹‰Readçº¿ç¨‹å‘Writeçº¿ç¨‹ä¼ é€’msgå‚æ•°çš„å¯¹è±¡
 class UnistorWriteMsgArg{
 public:
     UnistorWriteMsgArg(){
@@ -71,26 +71,26 @@ public:
         m_bCache = true;
     }
 public:
-    CwxMsgBlock*              m_recvMsg; ///<RecvÏß³ÌÊÕµ½µÄĞ´ÏûÏ¢
-    CwxMsgBlock*              m_replyMsg; ///<Write»Ø¸´µÄÏûÏ¢
-    UnistorWriteMsgArg*       m_next;  ///<¿ÕÏĞÁ´±íÏÂÒ»¸ö
-    CwxKeyValueItemEx         m_key; ///<²Ù×÷¶ÔÓ¦µÄkey²ÎÊı
-    CwxKeyValueItemEx         m_field; ///<²Ù×÷µÄfield²ÎÊı
-    CwxKeyValueItemEx         m_extra; ///<²Ù×÷µÄextra²ÎÊı
-    CwxKeyValueItemEx         m_data; ///<²Ù×÷µÄdata²ÎÊı
-    CWX_INT64                 m_llNum; ///<²Ù×÷µÄnum²ÎÊı
-    CWX_INT64                 m_llMax; ///<²Ù×÷µÄmax²ÎÊı
-    CWX_INT64                 m_llMin; ///<²Ù×÷µÄmin²ÎÊı
-    CWX_UINT32                m_uiSign; ///<²Ù×÷µÄsign²ÎÊı
-    CWX_UINT32                m_uiVersion; ///<²Ù×÷µÄversion²ÎÊı
-    CWX_UINT32                m_uiExpire; ///<²Ù×÷µÄexpire²ÎÊı
-    bool                      m_bCache;  ///<²Ù×÷µÄcache²ÎÊı
+    CwxMsgBlock*              m_recvMsg; ///<Recvçº¿ç¨‹æ”¶åˆ°çš„å†™æ¶ˆæ¯
+    CwxMsgBlock*              m_replyMsg; ///<Writeå›å¤çš„æ¶ˆæ¯
+    UnistorWriteMsgArg*       m_next;  ///<ç©ºé—²é“¾è¡¨ä¸‹ä¸€ä¸ª
+    CwxKeyValueItemEx         m_key; ///<æ“ä½œå¯¹åº”çš„keyå‚æ•°
+    CwxKeyValueItemEx         m_field; ///<æ“ä½œçš„fieldå‚æ•°
+    CwxKeyValueItemEx         m_extra; ///<æ“ä½œçš„extraå‚æ•°
+    CwxKeyValueItemEx         m_data; ///<æ“ä½œçš„dataå‚æ•°
+    CWX_INT64                 m_llNum; ///<æ“ä½œçš„numå‚æ•°
+    CWX_INT64                 m_llMax; ///<æ“ä½œçš„maxå‚æ•°
+    CWX_INT64                 m_llMin; ///<æ“ä½œçš„minå‚æ•°
+    CWX_UINT32                m_uiSign; ///<æ“ä½œçš„signå‚æ•°
+    CWX_UINT32                m_uiVersion; ///<æ“ä½œçš„versionå‚æ•°
+    CWX_UINT32                m_uiExpire; ///<æ“ä½œçš„expireå‚æ•°
+    bool                      m_bCache;  ///<æ“ä½œçš„cacheå‚æ•°
 };
 
-//unistorµÄrecvÏß³Ì³ØµÄtss
+//unistorçš„recvçº¿ç¨‹æ± çš„tss
 class UnistorTss:public CwxTss{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorTss():CwxTss(){
         m_writeMsgHead = NULL;
         m_pZkConf = NULL;
@@ -117,17 +117,17 @@ public:
         m_uiBinLogVersion = 0;
         m_uiBinlogType = 0;
         m_pBinlogData = NULL;
-        ///Í³¼Æ³õÊ¼»¯
+        ///ç»Ÿè®¡åˆå§‹åŒ–
         resetStats();
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorTss();
 public:
-    ///tssµÄ³õÊ¼»¯£¬0£º³É¹¦£»-1£ºÊ§°Ü
+    ///tssçš„åˆå§‹åŒ–ï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int init(UnistorTssUserObj* pUserObj=NULL);
-    ///»ñÈ¡ÓÃ»§µÄÊı¾İ
+    ///è·å–ç”¨æˆ·çš„æ•°æ®
     UnistorTssUserObj* getUserObj() { return m_userObj;}
-    ///»ñÈ¡Ò»¸öwrite arg¶ÔÏó
+    ///è·å–ä¸€ä¸ªwrite argå¯¹è±¡
     inline UnistorWriteMsgArg* popWriteMsgArg(){
         UnistorWriteMsgArg* arg = m_writeMsgHead;
         if (arg){
@@ -138,13 +138,13 @@ public:
         }
         return arg;
     }
-    ///ÊÍ·ÅÒ»¸öwrite arg¶ÔÏó
+    ///é‡Šæ”¾ä¸€ä¸ªwrite argå¯¹è±¡
     inline void pushWriteMsgArg(UnistorWriteMsgArg* arg){
         arg->m_next = m_writeMsgHead;
         m_writeMsgHead = arg;
 
     }
-    ///»ñÈ¡packageµÄbuf£¬·µ»ØNULL±íÊ¾Ê§°Ü
+    ///è·å–packageçš„bufï¼Œè¿”å›NULLè¡¨ç¤ºå¤±è´¥
     inline char* getBuf(CWX_UINT32 uiSize){
         if (m_uiDataBufLen < uiSize){
             delete [] m_szDataBuf;
@@ -153,7 +153,7 @@ public:
         }
         return m_szDataBuf;
     }
-    ///»ñÈ¡packageµÄbuf£¬·µ»ØNULL±íÊ¾Ê§°Ü
+    ///è·å–packageçš„bufï¼Œè¿”å›NULLè¡¨ç¤ºå¤±è´¥
     inline char* getBuf1(CWX_UINT32 uiSize){
         if (m_uiDataBufLen1 < uiSize){
             delete [] m_szDataBuf1;
@@ -162,7 +162,7 @@ public:
         }
         return m_szDataBuf1;
     }
-    ///»ñÈ¡packageµÄbuf£¬·µ»ØNULL±íÊ¾Ê§°Ü
+    ///è·å–packageçš„bufï¼Œè¿”å›NULLè¡¨ç¤ºå¤±è´¥
     inline char* getBuf2(CWX_UINT32 uiSize){
         if (m_uiDataBufLen2 < uiSize){
             delete [] m_szDataBuf2;
@@ -171,7 +171,7 @@ public:
         }
         return m_szDataBuf2;
     }
-    ///»ñÈ¡packageµÄbuf£¬·µ»ØNULL±íÊ¾Ê§°Ü
+    ///è·å–packageçš„bufï¼Œè¿”å›NULLè¡¨ç¤ºå¤±è´¥
     inline char* getBuf3(CWX_UINT32 uiSize){
         if (m_uiDataBufLen3 < uiSize){
             delete [] m_szDataBuf3;
@@ -180,32 +180,32 @@ public:
         }
         return m_szDataBuf3;
     }
-    ///ÊÇ·ñÊÇmaster idc
+    ///æ˜¯å¦æ˜¯master idc
     bool isMasterIdc(){
         if (m_pZkConf && m_pZkConf->m_bMasterIdc) return true;
         return false;
     }
-    ///»ñÈ¡master idcµÄÃû×Ö
+    ///è·å–master idcçš„åå­—
     char const* getMasterIdc() const{
         if (m_pZkConf && m_pZkConf->m_strMasterIdc.length()) return m_pZkConf->m_strMasterIdc.c_str();
         return "";
     }
-    ///×Ô¼ºÊÇ·ñÊÇmaster
+    ///è‡ªå·±æ˜¯å¦æ˜¯master
     bool isMaster(){
         if (m_pZkLock && m_pZkLock->m_bMaster) return true;
         return false;
     }
-    ///ÊÇ·ñ´æÔÚmaster
+    ///æ˜¯å¦å­˜åœ¨master
     bool isExistMaster(){
         if (m_pZkLock && m_pZkLock->m_strMaster.length()) return true;
         return false;
     }
-    ///»ñÈ¡masterµÄÖ÷»úÃû
+    ///è·å–masterçš„ä¸»æœºå
     char const* getMasterHost() const{
         if (m_pZkLock && m_pZkLock->m_strMaster.length()) return m_pZkLock->m_strMaster.c_str();
         return "";
     }
-    ///»ñÈ¡idcÄÚµÄÉÏÒ»¸ösyncµÄÖ÷»úÃû
+    ///è·å–idcå†…çš„ä¸Šä¸€ä¸ªsyncçš„ä¸»æœºå
     char const* getSyncHost() const{
         if (m_pZkLock){
             if (m_pZkLock->m_strPrev.length()) return m_pZkLock->m_strPrev.c_str();
@@ -214,97 +214,97 @@ public:
         return "";
     }
     inline void resetStats(){
-        ///Í³¼Æ³õÊ¼»¯
-        m_ullStatsGetNum = 0; ///<get²éÑ¯µÄÊıÁ¿
-        m_ullStatsGetReadCacheNum = 0; ///<get²éÑ¯Ê¹ÓÃCacheÊıÁ¿
-        m_ullStatsGetExistNum = 0; ///<get²éÑ¯´æÔÚ½á¹ûµÄÊıÁ¿
-        m_ullStatsGetsNum = 0; ///<gets²éÑ¯µÄÊıÁ¿
-        m_ullStatsGetsKeyNum = 0; ///<getsµÄkeyµÄÊıÁ¿
-        m_ullStatsGetsKeyReadCacheNum = 0; ///<getsµÄkeyµÄcacheÊıÁ¿
-        m_ullStatsGetsKeyExistNum = 0; ///<getsµÄkeyµÄ´æÔÚµÄÊıÁ¿
-        m_ullStatsListNum = 0; ///<listµÄÊıÁ¿
-        m_ullStatsExistNum = 0; ///<existµÄÊıÁ¿
-        m_ullStatsExistReadCacheNum = 0; ///<existµÄcacheÊıÁ¿
-        m_ullStatsExistExistNum = 0; ///<existµÄ´æÔÚµÄÊıÁ¿
-        m_ullStatsAddNum = 0; ///<addµÄÊıÁ¿
-        m_ullStatsAddReadCacheNum = 0; ///<addµÄread cacheÊıÁ¿
-        m_ullStatsAddWriteCacheNum = 0; ///<addµÄwrite cacheÊıÁ¿
-        m_ullStatsSetNum = 0; ///<setµÄÊıÁ¿
-        m_ullStatsSetReadCacheNum = 0; ///<setµÄread cacheÊıÁ¿
-        m_ullStatsSetWriteCacheNum = 0; ///<setµÄwrite cacheÊıÁ¿
-        m_ullStatsUpdateNum = 0; ///<updateµÄÊıÁ¿
-        m_ullStatsUpdateReadCacheNum = 0; ///<updateµÄread cacheÊıÁ¿
-        m_ullStatsUpdateWriteCacheNum = 0; ///<updateµÄwrite cacheÊıÁ¿
-        m_ullStatsIncNum = 0; ///<incµÄÊıÁ¿
-        m_ullStatsIncReadCacheNum = 0; ///<incµÄread cacheÊıÁ¿
-        m_ullStatsIncWriteCacheNum = 0; ///<incµÄwrite cacheÊıÁ¿
-        m_ullStatsDelNum = 0; ///<delµÄÊıÁ¿
-        m_ullStatsDelReadCacheNum = 0; ///<delµÄread cacheÊıÁ¿
-        m_ullStatsDelWriteCacheNum = 0; ///<delµÄwrite cacheÊıÁ¿
-        m_ullStatsImportNum = 0; ///<delµÄÊıÁ¿
-        m_ullStatsImportReadCacheNum = 0; ///<delµÄread cacheÊıÁ¿
-        m_ullStatsImportWriteCacheNum = 0; ///<delµÄwrite cacheÊıÁ¿
+        ///ç»Ÿè®¡åˆå§‹åŒ–
+        m_ullStatsGetNum = 0; ///<getæŸ¥è¯¢çš„æ•°é‡
+        m_ullStatsGetReadCacheNum = 0; ///<getæŸ¥è¯¢ä½¿ç”¨Cacheæ•°é‡
+        m_ullStatsGetExistNum = 0; ///<getæŸ¥è¯¢å­˜åœ¨ç»“æœçš„æ•°é‡
+        m_ullStatsGetsNum = 0; ///<getsæŸ¥è¯¢çš„æ•°é‡
+        m_ullStatsGetsKeyNum = 0; ///<getsçš„keyçš„æ•°é‡
+        m_ullStatsGetsKeyReadCacheNum = 0; ///<getsçš„keyçš„cacheæ•°é‡
+        m_ullStatsGetsKeyExistNum = 0; ///<getsçš„keyçš„å­˜åœ¨çš„æ•°é‡
+        m_ullStatsListNum = 0; ///<listçš„æ•°é‡
+        m_ullStatsExistNum = 0; ///<existçš„æ•°é‡
+        m_ullStatsExistReadCacheNum = 0; ///<existçš„cacheæ•°é‡
+        m_ullStatsExistExistNum = 0; ///<existçš„å­˜åœ¨çš„æ•°é‡
+        m_ullStatsAddNum = 0; ///<addçš„æ•°é‡
+        m_ullStatsAddReadCacheNum = 0; ///<addçš„read cacheæ•°é‡
+        m_ullStatsAddWriteCacheNum = 0; ///<addçš„write cacheæ•°é‡
+        m_ullStatsSetNum = 0; ///<setçš„æ•°é‡
+        m_ullStatsSetReadCacheNum = 0; ///<setçš„read cacheæ•°é‡
+        m_ullStatsSetWriteCacheNum = 0; ///<setçš„write cacheæ•°é‡
+        m_ullStatsUpdateNum = 0; ///<updateçš„æ•°é‡
+        m_ullStatsUpdateReadCacheNum = 0; ///<updateçš„read cacheæ•°é‡
+        m_ullStatsUpdateWriteCacheNum = 0; ///<updateçš„write cacheæ•°é‡
+        m_ullStatsIncNum = 0; ///<incçš„æ•°é‡
+        m_ullStatsIncReadCacheNum = 0; ///<incçš„read cacheæ•°é‡
+        m_ullStatsIncWriteCacheNum = 0; ///<incçš„write cacheæ•°é‡
+        m_ullStatsDelNum = 0; ///<delçš„æ•°é‡
+        m_ullStatsDelReadCacheNum = 0; ///<delçš„read cacheæ•°é‡
+        m_ullStatsDelWriteCacheNum = 0; ///<delçš„write cacheæ•°é‡
+        m_ullStatsImportNum = 0; ///<delçš„æ•°é‡
+        m_ullStatsImportReadCacheNum = 0; ///<delçš„read cacheæ•°é‡
+        m_ullStatsImportWriteCacheNum = 0; ///<delçš„write cacheæ•°é‡
     }
 
 public:
-    CWX_UINT32              m_uiBinLogVersion; ///<binlogµÄÊı¾İ°æ±¾£¬ÓÃÓÚbinlogµÄ·Ö·¢
-    CWX_UINT32              m_uiBinlogType;   ///<binlogµÄÏûÏ¢µÄÀàĞÍ£¬ÓÃÓÚbinlogµÄ·Ö·¢
-    CwxKeyValueItemEx const*  m_pBinlogData; ///<binlogµÄdata£¬ÓÃÓÚbinglogµÄ·Ö·¢
-    UnistorZkConf*          m_pZkConf;  ///<zkµÄÅäÖÃ¶ÔÏó
-    UnistorZkLock*          m_pZkLock;  ///<zkµÄËøĞÅÏ¢
-    CwxPackageReaderEx*       m_pReader; ///<Êı¾İ°üµÄ½â°ü¶ÔÏó
-    CwxPackageReaderEx*       m_pItemReader; ///<Êı¾İ°üµÄ½â°ü¶ÔÏó
-    CwxPackageReaderEx*       m_pEngineReader; ///<engineÊ¹ÓÃµÄreader£¬Íâ²¿²»ÄÜÊ¹ÓÃ
-    CwxPackageReaderEx*       m_pEngineItemReader; ///<engineÊ¹ÓÃµÄreader£¬´æ´¢ÒıÇæ²»ÄÜÊ¹ÓÃ
-    CwxPackageWriterEx*       m_pWriter; ///<Êı¾İ°üµÄpack¶ÔÏó
-    CwxPackageWriterEx*       m_pItemWriter; ///<Ò»¸öÏûÏ¢µÄÊı¾İ°üµÄpack¶ÔÏó
-    CwxPackageWriterEx*       m_pEngineWriter; ///<engineÊ¹ÓÃµÄwriter£¬Íâ²¿²»ÄÜÊ¹ÓÃ
-    CwxPackageWriterEx*       m_pEngineItemWriter; ///<engineÊ¹ÓÃµÄwriter£¬Íâ²¿²»ÄÜÊ¹ÓÃ
-    char			        m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<´æ´¢µÄkey
-    CWX_UINT32              m_uiThreadIndex; ///<Ïß³ÌµÄË÷ÒıºÅ
-    UnistorTssEngineObj*    m_engineConf;       ///<engineµÄconfĞÅÏ¢£¬ÒıÇæ¿ÉÒÔÊ¹ÓÃ
-    ///ÏÂÃæÊÇ·ÃÎÊÍ³¼ÆĞÅÏ¢
-    volatile CWX_UINT64     m_ullStatsGetNum; ///<get²éÑ¯µÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetReadCacheNum; ///<get²éÑ¯Ê¹ÓÃCacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetExistNum; ///<get²éÑ¯´æÔÚ½á¹ûµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetsNum; ///<gets²éÑ¯µÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetsKeyNum; ///<getsµÄkeyµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetsKeyReadCacheNum; ///<getsµÄkeyµÄcacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsGetsKeyExistNum; ///<getsµÄkeyµÄ´æÔÚµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsListNum; ///<listµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsExistNum; ///<existµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsExistReadCacheNum; ///<existµÄcacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsExistExistNum; ///<existµÄ´æÔÚµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsAddNum; ///<addµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsAddReadCacheNum; ///<addµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsAddWriteCacheNum; ///<addµÄwrite cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsSetNum; ///<setµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsSetReadCacheNum; ///<setµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsSetWriteCacheNum; ///<setµÄwrite cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsUpdateNum; ///<updateµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsUpdateReadCacheNum; ///<updateµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsUpdateWriteCacheNum; ///<updateµÄwrite cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsIncNum; ///<incµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsIncReadCacheNum; ///<incµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsIncWriteCacheNum; ///<incµÄwrite cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsDelNum; ///<delµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsDelReadCacheNum; ///<delµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsDelWriteCacheNum; ///<delµÄwrite cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsImportNum; ///<delµÄÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsImportReadCacheNum; ///<delµÄread cacheÊıÁ¿
-    volatile CWX_UINT64     m_ullStatsImportWriteCacheNum; ///<delµÄwrite cacheÊıÁ¿
+    CWX_UINT32              m_uiBinLogVersion; ///<binlogçš„æ•°æ®ç‰ˆæœ¬ï¼Œç”¨äºbinlogçš„åˆ†å‘
+    CWX_UINT32              m_uiBinlogType;   ///<binlogçš„æ¶ˆæ¯çš„ç±»å‹ï¼Œç”¨äºbinlogçš„åˆ†å‘
+    CwxKeyValueItemEx const*  m_pBinlogData; ///<binlogçš„dataï¼Œç”¨äºbinglogçš„åˆ†å‘
+    UnistorZkConf*          m_pZkConf;  ///<zkçš„é…ç½®å¯¹è±¡
+    UnistorZkLock*          m_pZkLock;  ///<zkçš„é”ä¿¡æ¯
+    CwxPackageReaderEx*       m_pReader; ///<æ•°æ®åŒ…çš„è§£åŒ…å¯¹è±¡
+    CwxPackageReaderEx*       m_pItemReader; ///<æ•°æ®åŒ…çš„è§£åŒ…å¯¹è±¡
+    CwxPackageReaderEx*       m_pEngineReader; ///<engineä½¿ç”¨çš„readerï¼Œå¤–éƒ¨ä¸èƒ½ä½¿ç”¨
+    CwxPackageReaderEx*       m_pEngineItemReader; ///<engineä½¿ç”¨çš„readerï¼Œå­˜å‚¨å¼•æ“ä¸èƒ½ä½¿ç”¨
+    CwxPackageWriterEx*       m_pWriter; ///<æ•°æ®åŒ…çš„packå¯¹è±¡
+    CwxPackageWriterEx*       m_pItemWriter; ///<ä¸€ä¸ªæ¶ˆæ¯çš„æ•°æ®åŒ…çš„packå¯¹è±¡
+    CwxPackageWriterEx*       m_pEngineWriter; ///<engineä½¿ç”¨çš„writerï¼Œå¤–éƒ¨ä¸èƒ½ä½¿ç”¨
+    CwxPackageWriterEx*       m_pEngineItemWriter; ///<engineä½¿ç”¨çš„writerï¼Œå¤–éƒ¨ä¸èƒ½ä½¿ç”¨
+    char			        m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<å­˜å‚¨çš„key
+    CWX_UINT32              m_uiThreadIndex; ///<çº¿ç¨‹çš„ç´¢å¼•å·
+    UnistorTssEngineObj*    m_engineConf;       ///<engineçš„confä¿¡æ¯ï¼Œå¼•æ“å¯ä»¥ä½¿ç”¨
+    ///ä¸‹é¢æ˜¯è®¿é—®ç»Ÿè®¡ä¿¡æ¯
+    volatile CWX_UINT64     m_ullStatsGetNum; ///<getæŸ¥è¯¢çš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetReadCacheNum; ///<getæŸ¥è¯¢ä½¿ç”¨Cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetExistNum; ///<getæŸ¥è¯¢å­˜åœ¨ç»“æœçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetsNum; ///<getsæŸ¥è¯¢çš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetsKeyNum; ///<getsçš„keyçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetsKeyReadCacheNum; ///<getsçš„keyçš„cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsGetsKeyExistNum; ///<getsçš„keyçš„å­˜åœ¨çš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsListNum; ///<listçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsExistNum; ///<existçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsExistReadCacheNum; ///<existçš„cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsExistExistNum; ///<existçš„å­˜åœ¨çš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsAddNum; ///<addçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsAddReadCacheNum; ///<addçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsAddWriteCacheNum; ///<addçš„write cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsSetNum; ///<setçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsSetReadCacheNum; ///<setçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsSetWriteCacheNum; ///<setçš„write cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsUpdateNum; ///<updateçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsUpdateReadCacheNum; ///<updateçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsUpdateWriteCacheNum; ///<updateçš„write cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsIncNum; ///<incçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsIncReadCacheNum; ///<incçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsIncWriteCacheNum; ///<incçš„write cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsDelNum; ///<delçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsDelReadCacheNum; ///<delçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsDelWriteCacheNum; ///<delçš„write cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsImportNum; ///<delçš„æ•°é‡
+    volatile CWX_UINT64     m_ullStatsImportReadCacheNum; ///<delçš„read cacheæ•°é‡
+    volatile CWX_UINT64     m_ullStatsImportWriteCacheNum; ///<delçš„write cacheæ•°é‡
 
 private:
-    UnistorWriteMsgArg*     m_writeMsgHead;  ///<»º´æµÄWriteÏûÏ¢²ÎÊıµÄÍ·
-    UnistorTssUserObj*    m_userObj;  ///ÓÃ»§µÄÊı¾İ
-    char*                  m_szDataBuf; ///<Êı¾İbuf
-    CWX_UINT32             m_uiDataBufLen; ///<Êı¾İbufµÄ¿Õ¼ä´óĞ¡
-    char*                  m_szDataBuf1; ///<Êı¾İbuf1
-    CWX_UINT32             m_uiDataBufLen1; ///<Êı¾İbuf1µÄ¿Õ¼ä´óĞ¡
-    char*                  m_szDataBuf2; ///<Êı¾İbuf2
-    CWX_UINT32             m_uiDataBufLen2; ///<Êı¾İbuf2µÄ¿Õ¼ä´óĞ¡
-    char*                  m_szDataBuf3; ///<Êı¾İbuf3
-    CWX_UINT32             m_uiDataBufLen3; ///<Êı¾İbuf3µÄ¿Õ¼ä´óĞ¡
+    UnistorWriteMsgArg*     m_writeMsgHead;  ///<ç¼“å­˜çš„Writeæ¶ˆæ¯å‚æ•°çš„å¤´
+    UnistorTssUserObj*    m_userObj;  ///ç”¨æˆ·çš„æ•°æ®
+    char*                  m_szDataBuf; ///<æ•°æ®buf
+    CWX_UINT32             m_uiDataBufLen; ///<æ•°æ®bufçš„ç©ºé—´å¤§å°
+    char*                  m_szDataBuf1; ///<æ•°æ®buf1
+    CWX_UINT32             m_uiDataBufLen1; ///<æ•°æ®buf1çš„ç©ºé—´å¤§å°
+    char*                  m_szDataBuf2; ///<æ•°æ®buf2
+    CWX_UINT32             m_uiDataBufLen2; ///<æ•°æ®buf2çš„ç©ºé—´å¤§å°
+    char*                  m_szDataBuf3; ///<æ•°æ®buf3
+    CWX_UINT32             m_uiDataBufLen3; ///<æ•°æ®buf3çš„ç©ºé—´å¤§å°
 };
 
 

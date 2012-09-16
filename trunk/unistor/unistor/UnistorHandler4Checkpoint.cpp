@@ -1,8 +1,8 @@
-#include "UnistorHandler4Checkpoint.h"
+ï»¿#include "UnistorHandler4Checkpoint.h"
 #include "UnistorApp.h"
 
 
-///checkpoint¼ì²â
+///checkpointæ£€æµ‹
 int UnistorHandler4Checkpoint::onTimeoutCheck(CwxMsgBlock*& , CwxTss* pThrEvn )
 {
     UnistorTss* tss = (UnistorTss*)pThrEvn;
@@ -16,7 +16,7 @@ int UnistorHandler4Checkpoint::onTimeoutCheck(CwxMsgBlock*& , CwxTss* pThrEvn )
     return 1;
 }
 
-/// return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+/// return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
 int UnistorHandler4Checkpoint::onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 {
     UnistorTss* pTss = (UnistorTss*)pThrEnv;
@@ -32,7 +32,7 @@ int UnistorHandler4Checkpoint::onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 }
 
 
-///¼ì²âÊÇ·ñĞèÒªcheckpoint
+///æ£€æµ‹æ˜¯å¦éœ€è¦checkpoint
 bool UnistorHandler4Checkpoint::isNeedCheckOut(time_t now) const {
     static CWX_UINT32 ttTimeBase = 0;
     if (UnistorApp::isClockBack(ttTimeBase, now)){

@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_READ_CACHE_H__
+ï»¿#ifndef __UNISTOR_READ_CACHE_H__
 #define __UNISTOR_READ_CACHE_H__
 
 
@@ -10,10 +10,10 @@
 #include "CwxStl.h"
 #include "CwxStlFunc.h"
 
-///¶ÁcacheµÄÊı¾İ
+///è¯»cacheçš„æ•°æ®
 struct UnistorReadCacheItem{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorReadCacheItem(){
         m_prev = NULL;
         m_next = NULL;
@@ -21,43 +21,43 @@ public:
         m_uiCapacity = 0;
         m_unKeyLen = 0;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorReadCacheItem(){
     }
 public:
-    ///»ñÈ¡key
+    ///è·å–key
     inline char const* getKey() const{
         return m_szBuf;
     }
-    ///»ñÈ¡data
+    ///è·å–data
     inline char const* getData() const{
         return m_szBuf + m_unKeyLen;
     }
-    ///»ñÈ¡keyµÄ³¤¶È
+    ///è·å–keyçš„é•¿åº¦
     inline CWX_UINT16 getKeyLen() const{
         return m_unKeyLen;
     }
-    ///»ñÈ¡dataµÄ³¤¶È
+    ///è·å–dataçš„é•¿åº¦
     inline CWX_UINT32 getDataLen() const{
         return m_uiDataLen;
     }
-    ///»ñÈ¡keyµÄ´óĞ¡
+    ///è·å–keyçš„å¤§å°
     inline CWX_UINT32 size() const{
         return m_uiCapacity + sizeof(UnistorReadCacheItem);
     }
-    ///±È½ÏÁ½¸ökeyÊÇ·ñÏàµÈ
+    ///æ¯”è¾ƒä¸¤ä¸ªkeyæ˜¯å¦ç›¸ç­‰
     bool operator == (UnistorReadCacheItem const& item) const{
         return m_fnEqual(m_szBuf, m_unKeyLen, item.m_szBuf, item.m_unKeyLen);
     }
-    ///»ñÈ¡keyµÄhashÖµ
+    ///è·å–keyçš„hashå€¼
     inline size_t hash() const{
         return m_fnHash(m_szBuf, m_unKeyLen);
     }
 public:
-    ///»ñÈ¡ÈİÁ¿
-    inline static CWX_UINT32 calBufCapacity(CWX_UINT16 unKeyLen,///<keyµÄ³¤¶È
-        CWX_UINT32 uiDataLen, ///<dataµÄ³¤¶È
-        CWX_UINT16 unAlign ///<¶ÔÆë×Ö½ÚÊı
+    ///è·å–å®¹é‡
+    inline static CWX_UINT32 calBufCapacity(CWX_UINT16 unKeyLen,///<keyçš„é•¿åº¦
+        CWX_UINT32 uiDataLen, ///<dataçš„é•¿åº¦
+        CWX_UINT16 unAlign ///<å¯¹é½å­—èŠ‚æ•°
         )
     {
         if (0 == unAlign)  return uiDataLen + unKeyLen;
@@ -68,51 +68,51 @@ public:
 private:
     friend class UnistorReadCache;
 private:
-    UnistorReadCacheItem*  m_prev; ///Ç°Ò»¸ö
-    UnistorReadCacheItem*  m_next; ///ÏÂÒ»¸ö
-    CWX_UINT32             m_uiDataLen;///<dataµÄ³¤¶È
-    CWX_UINT32             m_uiCapacity;///<¿Õ¼äµÄÈİÁ¿
-    CWX_UINT16             m_unKeyLen; ///<keyµÄ³¤¶È
-    char                   m_szBuf[0]; ///<Êı¾İµÄÖ¸Õë
+    UnistorReadCacheItem*  m_prev; ///å‰ä¸€ä¸ª
+    UnistorReadCacheItem*  m_next; ///ä¸‹ä¸€ä¸ª
+    CWX_UINT32             m_uiDataLen;///<dataçš„é•¿åº¦
+    CWX_UINT32             m_uiCapacity;///<ç©ºé—´çš„å®¹é‡
+    CWX_UINT16             m_unKeyLen; ///<keyçš„é•¿åº¦
+    char                   m_szBuf[0]; ///<æ•°æ®çš„æŒ‡é’ˆ
 
-    static UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyÏàµÈµÄ±È½Ïº¯Êı
-    static UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyĞ¡ÓÚµÄ±È½Ïº¯Êı
-    static UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyµÄhashÖµµÄ¼ÆËãº¯Êı
+    static UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyç›¸ç­‰çš„æ¯”è¾ƒå‡½æ•°
+    static UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyå°äºçš„æ¯”è¾ƒå‡½æ•°
+    static UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyçš„hashå€¼çš„è®¡ç®—å‡½æ•°
 }__attribute__ ((__packed__));
 
 
-///¶Ácache¶ÔÏó£¬ÎªLRU cache
+///è¯»cacheå¯¹è±¡ï¼Œä¸ºLRU cache
 class UnistorReadCache{
 private:
-    typedef hash_map<UnistorReadCacheItem*, UnistorReadCacheItem*, CwxPointHash<UnistorReadCacheItem>, CwxPointEqual<UnistorReadCacheItem> > _MAP;///<keyµÄË÷ÒıÀàĞÍ
-    typedef _MAP::iterator _MAP_ITERATOR;///<keyµÄË÷Òıiterator
+    typedef hash_map<UnistorReadCacheItem*, UnistorReadCacheItem*, CwxPointHash<UnistorReadCacheItem>, CwxPointEqual<UnistorReadCacheItem> > _MAP;///<keyçš„ç´¢å¼•ç±»å‹
+    typedef _MAP::iterator _MAP_ITERATOR;///<keyçš„ç´¢å¼•iterator
 private:
     UnistorReadCacheItem*    m_chain_head; ///<lru key's chain head
     UnistorReadCacheItem*    m_chain_tail;///<lru key's chain tail
-    CWX_UINT32 const         m_max_cache_num; ///<cache keyµÄ×î¶àÊıÁ¿
+    CWX_UINT32 const         m_max_cache_num; ///<cache keyçš„æœ€å¤šæ•°é‡
     unsigned long int        m_size; ///<used size
     CWX_UINT32               m_count; ///<cached key count
     unsigned long int        m_max_size; ///<max key size
     _MAP                     m_index; ///<key's index
     CwxRwLock*               m_lock; ///<lru cache's lock
-    CWX_UINT16 const         m_unAlign; ///<alignÖµ
-    UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyÏàµÈµÄ±È½Ïº¯Êı
-    UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyĞ¡ÓÚµÄ±È½Ïº¯Êı
-    UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyµÄhashÖµµÄ¼ÆËãº¯Êı
+    CWX_UINT16 const         m_unAlign; ///<alignå€¼
+    UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyç›¸ç­‰çš„æ¯”è¾ƒå‡½æ•°
+    UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyå°äºçš„æ¯”è¾ƒå‡½æ•°
+    UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyçš„hashå€¼çš„è®¡ç®—å‡½æ•°
 public:
     /**
-    @brief ¹¹Ôìº¯Êı£¬ÉèÖÃLRU CACHEµÄÄÚ´æ¼°KEYµÄ¿ÉÄÜ×î´óÊıÁ¿¡£
-    @param [in] size LRU CACHEµÄÄÚ´æ×ÜÁ¿
-    @param [in] count LRU CACHEµÄKEYµÄ¿ÉÄÜ×î´óÖµ
-    @param [in] bLock ÊÇ·ñ¶àÏß³Ì°²È«£¬ÄÚ²¿½øĞĞËøÍ¬²½
+    @brief æ„é€ å‡½æ•°ï¼Œè®¾ç½®LRU CACHEçš„å†…å­˜åŠKEYçš„å¯èƒ½æœ€å¤§æ•°é‡ã€‚
+    @param [in] size LRU CACHEçš„å†…å­˜æ€»é‡
+    @param [in] count LRU CACHEçš„KEYçš„å¯èƒ½æœ€å¤§å€¼
+    @param [in] bLock æ˜¯å¦å¤šçº¿ç¨‹å®‰å…¨ï¼Œå†…éƒ¨è¿›è¡Œé”åŒæ­¥
     */
-    UnistorReadCache(unsigned long int size, ///<¿Õ¼ä´óĞ¡
-        CWX_UINT32 count, ///<keyµÄÊıÁ¿
-        UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyÏàµÈ±È½Ïº¯Êı
-        UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessµÄ±È½Ïº¯Êı
-        UNISTOR_KEY_HASH_FN    fnHash, ///<keyµÄhashº¯Êı
-        CWX_UINT16 unAlign=32, ///<¶ÔÆë×Ö½ÚÊı
-        CwxRwLock* lock=NULL ///<Ëø
+    UnistorReadCache(unsigned long int size, ///<ç©ºé—´å¤§å°
+        CWX_UINT32 count, ///<keyçš„æ•°é‡
+        UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyç›¸ç­‰æ¯”è¾ƒå‡½æ•°
+        UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessçš„æ¯”è¾ƒå‡½æ•°
+        UNISTOR_KEY_HASH_FN    fnHash, ///<keyçš„hashå‡½æ•°
+        CWX_UINT16 unAlign=32, ///<å¯¹é½å­—èŠ‚æ•°
+        CwxRwLock* lock=NULL ///<é”
         ):m_max_cache_num(count), m_max_size(size), m_index((CWX_UINT32)(count*1.2)),m_unAlign(unAlign)
     {
         m_chain_head = NULL;
@@ -124,7 +124,7 @@ public:
         UnistorReadCacheItem::m_fnLess = m_fnLess = fnLess;
         UnistorReadCacheItem::m_fnHash = m_fnHash = fnHash;        
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorReadCache(){
         while(m_chain_head){
             m_chain_tail = m_chain_head->m_next;
@@ -133,31 +133,31 @@ public:
         }
     }
 public:
-    ///»ñÈ¡ÄÚ´æÊ¹ÓÃÁ¿
+    ///è·å–å†…å­˜ä½¿ç”¨é‡
     inline unsigned long int size( void ){
         CwxReadLockGuard<CwxRwLock> lock(m_lock);
         return m_size; 
     }
 
-    ///»ñÈ¡cacheµÄkeyµÄÊıÁ¿
+    ///è·å–cacheçš„keyçš„æ•°é‡
     inline CWX_UINT32 count( void ){
         CwxReadLockGuard<CwxRwLock> lock(this->m_lock);
         return m_count; 
     }
     
-    ///»ñÈ¡Ë÷ÒıÖĞ¶ÔÏóµÄÊıÁ¿
+    ///è·å–ç´¢å¼•ä¸­å¯¹è±¡çš„æ•°é‡
     inline CWX_UINT32 long mapSize(){
         CwxReadLockGuard<CwxRwLock> lock(this->m_lock);
         return m_index.size(); 
     }
     
-    ///»ñÈ¡×î´ó¿ÉÊ¹ÓÃÄÚ´æµÄÊıÁ¿
+    ///è·å–æœ€å¤§å¯ä½¿ç”¨å†…å­˜çš„æ•°é‡
     inline unsigned long int maxSize( void ){
         CwxReadLockGuard<CwxRwLock> lock(this->m_lock);
         return m_max_size;
     }
     
-    ///Çå¿ÕCACHE    
+    ///æ¸…ç©ºCACHE    
     void clear( void ){
         CwxWriteLockGuard<CwxRwLock> lock(this->m_lock);
         m_index.clear();
@@ -172,9 +172,9 @@ public:
         m_count =0;
     }
 
-    ///¼ì²ékeyÔÚCACHEÖĞÊÇ·ñ´æÔÚ¡£·µ»ØÖµ£ºtrue£º´æÔÚ£»false£º²»´æÔÚ
+    ///æ£€æŸ¥keyåœ¨CACHEä¸­æ˜¯å¦å­˜åœ¨ã€‚è¿”å›å€¼ï¼štrueï¼šå­˜åœ¨ï¼›falseï¼šä¸å­˜åœ¨
     inline bool exist(char const* szKey, ///<key
-        CWX_UINT16 unKeyLen ///<keyµÄ³¤¶È
+        CWX_UINT16 unKeyLen ///<keyçš„é•¿åº¦
         )
     {
         char key_buf[sizeof(UnistorReadCacheItem) + UnistorReadCacheItem::calBufCapacity(unKeyLen , 0, 0)];
@@ -187,9 +187,9 @@ public:
         }
     }
 
-    ///½«keyÒÆµ½LRU cacheµÄ¿ªÊ¼Î»ÖÃ£¬·ÀÖ¹»»³ö
+    ///å°†keyç§»åˆ°LRU cacheçš„å¼€å§‹ä½ç½®ï¼Œé˜²æ­¢æ¢å‡º
     inline void touch(char const* szKey, ///<key
-        CWX_UINT16 unKeyLen ///<keyµÄ³¤¶È
+        CWX_UINT16 unKeyLen ///<keyçš„é•¿åº¦
         )
     {
         char key_buf[sizeof(UnistorReadCacheItem) + UnistorReadCacheItem::calBufCapacity(unKeyLen , 0, 0)];
@@ -205,10 +205,10 @@ public:
     }
 
     /**
-    @brief »ñÈ¡Ò»¸öKEYµÄdata¡£
-    @param [in] szKey Òª»ñÈ¡kye
-    @param [in] bTouch ÈôszKey´æÔÚ£¬ÊÇ·ñ½«´ËszKeyµÄÒÆµ½LRU CACHEµÄÍ·¡£
-    @return NULL£ºszKey²»´æÔÚ£»·ñÔòÎªszKeyµÄdata
+    @brief è·å–ä¸€ä¸ªKEYçš„dataã€‚
+    @param [in] szKey è¦è·å–kye
+    @param [in] bTouch è‹¥szKeyå­˜åœ¨ï¼Œæ˜¯å¦å°†æ­¤szKeyçš„ç§»åˆ°LRU CACHEçš„å¤´ã€‚
+    @return NULLï¼šszKeyä¸å­˜åœ¨ï¼›å¦åˆ™ä¸ºszKeyçš„data
     */
     inline UnistorReadCacheItem* fetch(char const* szKey,
         CWX_UINT16 unKeyLen,
@@ -228,11 +228,11 @@ public:
     }    
 
     /**
-    @brief ÍùLRU CACHEÖĞ²åÈëÒ»¸öKEY¡£
-    @param [in] szKey Òª²åÈëµÄKEY
-    @param [in] unKeyLen Òª²åÈëµÄKEYµÄ³¤¶È
-    @param [in] szData Òª²åÈëKeyµÄdata¡£
-    @param [in] uiDataLen Òª²åÈëKeyµÄdataµÄ³¤¶È¡£
+    @brief å¾€LRU CACHEä¸­æ’å…¥ä¸€ä¸ªKEYã€‚
+    @param [in] szKey è¦æ’å…¥çš„KEY
+    @param [in] unKeyLen è¦æ’å…¥çš„KEYçš„é•¿åº¦
+    @param [in] szData è¦æ’å…¥Keyçš„dataã€‚
+    @param [in] uiDataLen è¦æ’å…¥Keyçš„dataçš„é•¿åº¦ã€‚
     @return void
     */
     inline void insert(char const* szKey,
@@ -284,7 +284,7 @@ public:
         this->m_index[item] = item;
     }
 
-    ///´ÓLRU cacheÖĞÉ¾³ıÒ»¸öszKey
+    ///ä»LRU cacheä¸­åˆ é™¤ä¸€ä¸ªszKey
     inline void remove( char const* szKey, CWX_UINT16 unKeyLen){
         char key_buf[sizeof(UnistorReadCacheItem) + UnistorReadCacheItem::calBufCapacity(unKeyLen , 0, 0)];
         UnistorReadCacheItem* key = (UnistorReadCacheItem*)key_buf;
@@ -297,7 +297,7 @@ public:
     }
 private:
 
-    ///²»´øËøµÄtouch²Ù×÷
+    ///ä¸å¸¦é”çš„touchæ“ä½œ
     inline void _touch(UnistorReadCacheItem* data ){
         if (data->m_prev == NULL) //the head
             return;
@@ -314,7 +314,7 @@ private:
         m_chain_head = data;
     }
 
-    ///²»´øËøµÄremove²Ù×÷
+    ///ä¸å¸¦é”çš„removeæ“ä½œ
     inline void _remove(_MAP_ITERATOR& miter )
     {
         UnistorReadCacheItem* data = miter->second;

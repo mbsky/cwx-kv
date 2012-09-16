@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_MASTER_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_MASTER_H__
 #define __UNISTOR_HANDLER_4_MASTER_H__
 
 #include "CwxCommander.h"
@@ -9,13 +9,13 @@
 #include "UnistorTss.h"
 #include "UnistorConnector.h"
 
-///Ç°ÖÃÉùÃ÷¶ÔÏó
+///å‰ç½®å£°æ˜å¯¹è±¡
 class UnistorApp;
 
-///binlogÍ¬²½µÄsession
+///binlogåŒæ­¥çš„session
 class UnistorSyncSession{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorSyncSession(CWX_UINT32 uiHostId){
         m_uiHostId = uiHostId;
         m_ullSessionId = 0;
@@ -34,7 +34,7 @@ public:
         }
     }
 public:
-    ///½ÓÊÕĞÂÏûÏ¢£¬·µ»ØÒÑ¾­ÊÕµ½µÄÏûÏ¢ÁĞ±í
+    ///æ¥æ”¶æ–°æ¶ˆæ¯ï¼Œè¿”å›å·²ç»æ”¶åˆ°çš„æ¶ˆæ¯åˆ—è¡¨
     bool recv(CWX_UINT64 ullSeq, CwxMsgBlock* msg, list<CwxMsgBlock*>& finished){
         map<CWX_UINT32,  bool>::iterator iter = m_conns.find(msg->event().getConnId());
         if ( (iter == m_conns.end()) || !iter->second ) return false;
@@ -60,7 +60,7 @@ public:
         return true;
     }
 
-    //¼ì²âÊÇ·ñ³¬Ê±
+    //æ£€æµ‹æ˜¯å¦è¶…æ—¶
     bool isTimeout(CWX_UINT32 uiTimeout) const{
         if (!m_msg.size()) return false;
         CWX_UINT32 uiNow = time(NULL);
@@ -68,124 +68,124 @@ public:
     }
 public:
     CWX_UINT64              m_ullSessionId; ///<session id
-    CWX_UINT64              m_ullNextSeq; ///<ÏÂÒ»¸ö´ı½ÓÊÕµÄsid
-    CWX_UINT32              m_uiHostId; ///<µ±Ç°µÄhost id
-    string                  m_strHost; ///<µ±Ç°Í¬²½µÄÖ÷»ú
-    CWX_UINT16              m_unPort; ///<Í¬²½µÄ¶Ë¿ÚºÅ
-    string                  m_strUser; ///<Í¬²½µÄÓÃ»§Ãû
-    string                  m_strPasswd; ///<µ±Ç°Í¬²½µÄÓÃ»§¿ÚÁî
-    bool                    m_bZip;  ///<ÊÇ·ñÑ¹Ëõ
-    string                  m_strSign; ///<Ç©Ãû
-    CWX_UINT32              m_uiChunkSize; ///<chunkµÄsize
-    CWX_UINT16              m_unConnNum;   ///<conn µÄÊıÁ¿
-    map<CWX_UINT64/*seq*/, CwxMsgBlock*>  m_msg;   ///<µÈ´ıÅÅĞòµÄÏûÏ¢
-    map<CWX_UINT32,  bool/*ÊÇ·ñÒÑ¾­report*/>  m_conns; ///<½¨Á¢µÄÁ¬½Ó
-    CWX_UINT32              m_uiReportDatetime; ///<±¨¸æµÄÊ±¼ä´Á£¬Èô¹ıÁËÖ¸¶¨µÄÊ±¼äÃ»ÓĞ»Ø¸´£¬Ôò¹Ø±Õ
+    CWX_UINT64              m_ullNextSeq; ///<ä¸‹ä¸€ä¸ªå¾…æ¥æ”¶çš„sid
+    CWX_UINT32              m_uiHostId; ///<å½“å‰çš„host id
+    string                  m_strHost; ///<å½“å‰åŒæ­¥çš„ä¸»æœº
+    CWX_UINT16              m_unPort; ///<åŒæ­¥çš„ç«¯å£å·
+    string                  m_strUser; ///<åŒæ­¥çš„ç”¨æˆ·å
+    string                  m_strPasswd; ///<å½“å‰åŒæ­¥çš„ç”¨æˆ·å£ä»¤
+    bool                    m_bZip;  ///<æ˜¯å¦å‹ç¼©
+    string                  m_strSign; ///<ç­¾å
+    CWX_UINT32              m_uiChunkSize; ///<chunkçš„size
+    CWX_UINT16              m_unConnNum;   ///<conn çš„æ•°é‡
+    map<CWX_UINT64/*seq*/, CwxMsgBlock*>  m_msg;   ///<ç­‰å¾…æ’åºçš„æ¶ˆæ¯
+    map<CWX_UINT32,  bool/*æ˜¯å¦å·²ç»report*/>  m_conns; ///<å»ºç«‹çš„è¿æ¥
+    CWX_UINT32              m_uiReportDatetime; ///<æŠ¥å‘Šçš„æ—¶é—´æˆ³ï¼Œè‹¥è¿‡äº†æŒ‡å®šçš„æ—¶é—´æ²¡æœ‰å›å¤ï¼Œåˆ™å…³é—­
 };
 
-///slave´Ómaster½ÓÊÕbinlogµÄ´¦Àíhandle
+///slaveä»masteræ¥æ”¶binlogçš„å¤„ç†handle
 class UnistorHandler4Master : public CwxCmdOp{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorHandler4Master(UnistorApp* pApp):m_pApp(pApp){
         m_unzipBuf = NULL;
         m_uiBufLen = 0;
         m_syncSession = NULL;
         m_uiCurHostId = 0;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorHandler4Master(){
         if (m_unzipBuf) delete [] m_unzipBuf;
         if (m_syncSession) delete m_syncSession;
     }
 public:
     /**
-    @brief Á¬½Ó¹Ø±ÕÊÂ¼şµÄµÄº¯Êı¡£
-    @param [in] msg Á¬½Ó¹Ø±ÕµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief è¿æ¥å…³é—­äº‹ä»¶çš„çš„å‡½æ•°ã€‚
+    @param [in] msg è¿æ¥å…³é—­çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onConnClosed(CwxMsgBlock*& msg, CwxTss* pThrEnv);
     /**
-    @brief ÊÕµ½Í¨ĞÅÊı¾İ°üÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ÊÕµ½Í¨ĞÅÊı¾İ°üµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief æ”¶åˆ°é€šä¿¡æ•°æ®åŒ…äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg æ”¶åˆ°é€šä¿¡æ•°æ®åŒ…çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv);
 public:
-    ///zkÅäÖÃ¸Ä±ä´¦Àíº¯Êı
+    ///zké…ç½®æ”¹å˜å¤„ç†å‡½æ•°
     void configChange(UnistorTss* pTss);
-    ///Ê±ÖÓ¶¨Ê±¼ì²éº¯Êı
+    ///æ—¶é’Ÿå®šæ—¶æ£€æŸ¥å‡½æ•°
     void timecheck(UnistorTss* pTss);
 private:
-    ///ÊÕµ½Ò»ÌõÏûÏ¢µÄ´¦Àíº¯Êı¡£·µ»ØÖµ£º0:³É¹¦£»-1£ºÊ§°Ü
-    int recvMsg(CwxMsgBlock*& msg, ///<ÊÕµ½µÄÏûÏ¢
-        list<CwxMsgBlock*>& msgs ///<½ÓÊÕ³ØÖĞ·µ»ØµÄ¿É´¦ÀíµÄÏûÏ¢¡£ÔÚlist°´ÕÕÏÈºó´ÎĞòÅÅĞò
+    ///æ”¶åˆ°ä¸€æ¡æ¶ˆæ¯çš„å¤„ç†å‡½æ•°ã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int recvMsg(CwxMsgBlock*& msg, ///<æ”¶åˆ°çš„æ¶ˆæ¯
+        list<CwxMsgBlock*>& msgs ///<æ¥æ”¶æ± ä¸­è¿”å›çš„å¯å¤„ç†çš„æ¶ˆæ¯ã€‚åœ¨listæŒ‰ç…§å…ˆåæ¬¡åºæ’åº
         );
 
-    ///´¦ÀíSync reportµÄreplyÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int dealSyncReportReply(CwxMsgBlock*& msg, ///<ÊÕµ½µÄÏûÏ¢
-        UnistorTss* pTss ///<tss¶ÔÏó
+    ///å¤„ç†Sync reportçš„replyæ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int dealSyncReportReply(CwxMsgBlock*& msg, ///<æ”¶åˆ°çš„æ¶ˆæ¯
+        UnistorTss* pTss ///<tsså¯¹è±¡
         );
 
-    ///´¦ÀíÊÕµ½µÄsync data¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int dealSyncData(CwxMsgBlock*& msg, ///<ÊÕµ½µÄÏûÏ¢
-        UnistorTss* pTss ///<tss¶ÔÏó
+    ///å¤„ç†æ”¶åˆ°çš„sync dataã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int dealSyncData(CwxMsgBlock*& msg, ///<æ”¶åˆ°çš„æ¶ˆæ¯
+        UnistorTss* pTss ///<tsså¯¹è±¡
         );
 
-    //´¦ÀíÊÕµ½µÄchunkÄ£Ê½ÏÂµÄsync data¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int dealSyncChunkData(CwxMsgBlock*& msg, ///<ÊÕµ½µÄÏûÏ¢
-        UnistorTss* pTss ///<tss¶ÔÏó
+    //å¤„ç†æ”¶åˆ°çš„chunkæ¨¡å¼ä¸‹çš„sync dataã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int dealSyncChunkData(CwxMsgBlock*& msg, ///<æ”¶åˆ°çš„æ¶ˆæ¯
+        UnistorTss* pTss ///<tsså¯¹è±¡
         );
 
-    //´¦Àí´íÎóÏûÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int dealErrMsg(CwxMsgBlock*& msg,  ///<ÊÕµ½µÄÏûÏ¢
-        UnistorTss* pTss ///<tss¶ÔÏó
+    //å¤„ç†é”™è¯¯æ¶ˆæ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int dealErrMsg(CwxMsgBlock*& msg,  ///<æ”¶åˆ°çš„æ¶ˆæ¯
+        UnistorTss* pTss ///<tsså¯¹è±¡
         );
 
-    //±£´æbinlog¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int saveBinlog(UnistorTss* pTss, ///<tss¶ÔÏó
-        char const* szBinLog, ///<ÊÕµ½µÄÒ»ÌõbinlogÊı¾İ
-        CWX_UINT32 uiLen  ///<binlogÊı¾İµÄ³¤¶È
+    //ä¿å­˜binlogã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int saveBinlog(UnistorTss* pTss, ///<tsså¯¹è±¡
+        char const* szBinLog, ///<æ”¶åˆ°çš„ä¸€æ¡binlogæ•°æ®
+        CWX_UINT32 uiLen  ///<binlogæ•°æ®çš„é•¿åº¦
         );
 
-    ///¼ì²éÊı¾İµÄÇ©Ãû¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü
-    bool checkSign(char const* data, ///<binlogÊı¾İ
-        CWX_UINT32 uiDateLen, ///<binlogÊı¾İµÄ³¤¶È
-        char const* szSign,   ///<Ç©ÃûÀàĞÍ£¬Îªmd5»òcrc32
-        char const* sign  ///<Ç©ÃûÖµ
+    ///æ£€æŸ¥æ•°æ®çš„ç­¾åã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+    bool checkSign(char const* data, ///<binlogæ•°æ®
+        CWX_UINT32 uiDateLen, ///<binlogæ•°æ®çš„é•¿åº¦
+        char const* szSign,   ///<ç­¾åç±»å‹ï¼Œä¸ºmd5æˆ–crc32
+        char const* sign  ///<ç­¾åå€¼
         );
 
-    //»ñÈ¡unzipµÄbuf¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü
+    //è·å–unzipçš„bufã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
     bool prepareUnzipBuf();
 
-    //¹Ø±ÕÒÑÓĞÁ¬½Ó
+    //å…³é—­å·²æœ‰è¿æ¥
     void closeSession();
 
-    ///´´½¨ÓëmasterÍ¬²½µÄÁ¬½Ó¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int createSession(UnistorTss* pTss, ///<tss¶ÔÏó
-        string const& strHost, ///<ÒªÁ¬½ÓµÄÖ÷»ú
-        CWX_UINT16 unPort, ///<Á¬½ÓµÄ¶Ë¿ÚºÅ
-        CWX_UINT16 unConnNum, ///<½¨Á¢Á¬½ÓµÄÊıÁ¿
-        char const* user, ///<Á¬½ÓµÄÓÃ»§
-        char const* passwd, ///<Á¬½ÓµÄÓÃ»§¿ÚÁî
-        CWX_UINT32 uiChunk, ///<binlogÍ¬²½µÄchunk´óĞ¡
-        char const* subscribe, ///<binlogµÄ¶©ÔÄ¹æÔò
-        char const* sign, ///<ÏûÏ¢µÄÇ©Ãû·½Ê½£¬Îªmd5»òcrc32
-        bool  bZip  ///<ÊÇ·ñÑ¹Ëõ
+    ///åˆ›å»ºä¸masteråŒæ­¥çš„è¿æ¥ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int createSession(UnistorTss* pTss, ///<tsså¯¹è±¡
+        string const& strHost, ///<è¦è¿æ¥çš„ä¸»æœº
+        CWX_UINT16 unPort, ///<è¿æ¥çš„ç«¯å£å·
+        CWX_UINT16 unConnNum, ///<å»ºç«‹è¿æ¥çš„æ•°é‡
+        char const* user, ///<è¿æ¥çš„ç”¨æˆ·
+        char const* passwd, ///<è¿æ¥çš„ç”¨æˆ·å£ä»¤
+        CWX_UINT32 uiChunk, ///<binlogåŒæ­¥çš„chunkå¤§å°
+        char const* subscribe, ///<binlogçš„è®¢é˜…è§„åˆ™
+        char const* sign, ///<æ¶ˆæ¯çš„ç­¾åæ–¹å¼ï¼Œä¸ºmd5æˆ–crc32
+        bool  bZip  ///<æ˜¯å¦å‹ç¼©
         );
 
-    ///¼ì²éÊÇ·ñĞèÒªÖØ½¨Á¬½Ó
+    ///æ£€æŸ¥æ˜¯å¦éœ€è¦é‡å»ºè¿æ¥
     bool isNeedReconnect(UnistorTransInfo const& trans);
 
 private:
-    UnistorApp*             m_pApp;  ///<app¶ÔÏó
-    CwxPackageReaderEx        m_reader; ///<½â°üµÄreader
-    unsigned char*          m_unzipBuf; ///<½âÑ¹µÄbuffer
-    CWX_UINT32              m_uiBufLen; ///<½âÑ¹bufferµÄ´óĞ¡£¬ÆäÎªtrunkµÄ20±¶£¬×îĞ¡Îª20M¡£
-    UnistorSyncSession*     m_syncSession; ///<Êı¾İÍ¬²½µÄsession
-    CWX_UINT32              m_uiCurHostId; ///<µ±Ç°µÄhost id
+    UnistorApp*             m_pApp;  ///<appå¯¹è±¡
+    CwxPackageReaderEx        m_reader; ///<è§£åŒ…çš„reader
+    unsigned char*          m_unzipBuf; ///<è§£å‹çš„buffer
+    CWX_UINT32              m_uiBufLen; ///<è§£å‹bufferçš„å¤§å°ï¼Œå…¶ä¸ºtrunkçš„20å€ï¼Œæœ€å°ä¸º20Mã€‚
+    UnistorSyncSession*     m_syncSession; ///<æ•°æ®åŒæ­¥çš„session
+    CWX_UINT32              m_uiCurHostId; ///<å½“å‰çš„host id
 };
 
 #endif 

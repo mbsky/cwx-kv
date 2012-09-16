@@ -1,4 +1,4 @@
-#define __STDC_FORMAT_MACROS
+ï»¿#define __STDC_FORMAT_MACROS
 #include "ZkAdaptor.h"
 #include <string.h>
 #include <sstream>
@@ -298,7 +298,7 @@ int ZkAdaptor::getNodeChildren( const string &path, list<string>& childs, int wa
 	{
 		childs.push_back(string(children.data[i]));
 	}
-    //ÊÍ·Å
+    //é‡Šæ”¾
     if (children.data) {
         int32_t i;
         for (i=0; i<children.count; i++) {
@@ -636,7 +636,7 @@ int ZkAdaptor::split(string const& src, list<string>& value, char ch)
 	return num;
 }
 
-//¿ÉÒÔÎªall,self,read»òÕßuser:passwd:acrwd
+//å¯ä»¥ä¸ºall,self,readæˆ–è€…user:passwd:acrwd
 bool ZkAdaptor::fillAcl(char const* priv, struct ACL& acl)
 {
 	struct ACL _OPEN_ACL_UNSAFE_ACL[] = {{0x1f, {"world", "anyone"}}};
@@ -714,7 +714,7 @@ bool ZkAdaptor::fillAcl(char const* priv, struct ACL& acl)
 	return true;
 }
 
-///Êä³öÈ¨ÏŞĞÅÏ¢£¬Ã¿ĞĞÒ»¸öÈ¨ÏŞ
+///è¾“å‡ºæƒé™ä¿¡æ¯ï¼Œæ¯è¡Œä¸€ä¸ªæƒé™
 void ZkAdaptor::dumpAcl(ACL_vector const& acl, list<string>& info)
 {
 	char line[1024];
@@ -740,7 +740,7 @@ static char const* toString(int64_t llNum, char* szBuf, int base)
 	return szBuf;
 }
 
-///Êä³ö½ÚµãµÄĞÅÏ¢,Ò»ĞĞÒ»¸öĞÅÏ¢Ïî
+///è¾“å‡ºèŠ‚ç‚¹çš„ä¿¡æ¯,ä¸€è¡Œä¸€ä¸ªä¿¡æ¯é¡¹
 void ZkAdaptor::dumpStat(struct Stat const& stat, string& info)
 {
 	char szTmp[64];
@@ -779,27 +779,27 @@ void ZkAdaptor::dumpStat(struct Stat const& stat, string& info)
 	info += line;
 }
 
-///node´´½¨ÊÂ¼ş
+///nodeåˆ›å»ºäº‹ä»¶
 void ZkAdaptor::onNodeCreated(int , char const* )
 {
 }
 
-///nodeÉ¾³ıÊÂ¼ş
+///nodeåˆ é™¤äº‹ä»¶
 void ZkAdaptor::onNodeDeleted(int , char const* )
 {
 }
 
-///nodeĞŞ¸ÄÊÂ¼ş
+///nodeä¿®æ”¹äº‹ä»¶
 void ZkAdaptor::onNodeChanged(int , char const* )
 {
 }
 
-///node childĞŞ¸ÄÊÂ¼ş
+///node childä¿®æ”¹äº‹ä»¶
 void ZkAdaptor::onNodeChildChanged(int , char const* )
 {
 }
 
-///node ²»ÔÙwatchÊÂ¼ş
+///node ä¸å†watchäº‹ä»¶
 void ZkAdaptor::onNoWatching(int , char const* )
 {
 }	

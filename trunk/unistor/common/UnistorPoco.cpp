@@ -1,7 +1,7 @@
-#include "UnistorPoco.h"
+ï»¿#include "UnistorPoco.h"
 #include "CwxZlib.h"
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvImport(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const& key,
                              CwxKeyValueItemEx const* extra,
@@ -60,7 +60,7 @@ int UnistorPoco::packRecvImport(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvImport(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
@@ -172,7 +172,7 @@ int UnistorPoco::parseRecvImport(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvAdd(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const& key,
                              CwxKeyValueItemEx const* field,
@@ -245,7 +245,7 @@ int UnistorPoco::packRecvAdd(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvAdd(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
@@ -369,7 +369,7 @@ int UnistorPoco::parseRecvAdd(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvSet(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const& key,
                              CwxKeyValueItemEx const* field,
@@ -487,7 +487,7 @@ int UnistorPoco::packRecvSet(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvSet(CwxPackageReaderEx* reader,
                               CwxKeyValueItemEx const*& key,
                               CwxKeyValueItemEx const*& field,
@@ -559,7 +559,7 @@ int UnistorPoco::parseRecvSet(CwxPackageReaderEx* reader,
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
                                 CwxKeyValueItemEx const& key,
                                 CwxKeyValueItemEx const* field,
@@ -626,7 +626,7 @@ int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
@@ -670,7 +670,7 @@ int UnistorPoco::packRecvUpdate(CwxPackageWriterEx* writer,
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvUpdate(CwxPackageReaderEx* reader,
                                  CwxKeyValueItemEx const*& key,
                                  CwxKeyValueItemEx const*& field,
@@ -822,7 +822,7 @@ int UnistorPoco::packRecvInc(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvInc(CwxPackageWriterEx* writer,
 							  CwxMsgBlock*& msg,
 							  CWX_UINT32 uiTaskId,
@@ -871,7 +871,7 @@ int UnistorPoco::packRecvInc(CwxPackageWriterEx* writer,
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvInc(CwxPackageReaderEx* reader,
                               CwxKeyValueItemEx const*& key,
                               CwxKeyValueItemEx const*& field,
@@ -942,7 +942,7 @@ int UnistorPoco::parseRecvInc(CwxPackageReaderEx* reader,
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const& key,
                              CwxKeyValueItemEx const* field,
@@ -989,7 +989,7 @@ int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
 						   CwxMsgBlock*& msg,
 						   CWX_UINT32 uiTaskId,
@@ -1027,7 +1027,7 @@ int UnistorPoco::packRecvDel(CwxPackageWriterEx* writer,
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£¬UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼ŒUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvDel(CwxPackageReaderEx* reader,
                               CwxKeyValueItemEx const*& key,
                               CwxKeyValueItemEx const*& field,
@@ -1071,7 +1071,7 @@ int UnistorPoco::parseRecvDel(CwxPackageReaderEx* reader,
 
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvReply(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
@@ -1122,7 +1122,7 @@ int UnistorPoco::packRecvReply(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvReply(CwxPackageReaderEx* reader,
                                   CwxMsgBlock const* msg,
                                   int& ret,
@@ -1159,7 +1159,7 @@ int UnistorPoco::parseRecvReply(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvIncReply(CwxPackageWriterEx* writer,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
@@ -1206,7 +1206,7 @@ int UnistorPoco::packRecvIncReply(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvIncReply(CwxPackageReaderEx* reader,
                              CwxMsgBlock const* msg,
                              int& ret,
@@ -1305,7 +1305,7 @@ int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packGetKey(CwxPackageWriterEx* writer,
                       CwxMsgBlock*& msg,
                       CWX_UINT32 uiTaskId,
@@ -1384,7 +1384,7 @@ int UnistorPoco::parseGetKey(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
                               CwxKeyValueItemEx const& key,
                               CwxKeyValueItemEx const* field,
@@ -1405,7 +1405,7 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
         szErr2K);
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
@@ -1440,7 +1440,7 @@ int UnistorPoco::packExistKey(CwxPackageWriterEx* writer,
     }
     return UNISTOR_ERR_SUCCESS;
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseExistKey(CwxPackageReaderEx* reader,
                          CwxKeyValueItemEx const*& key,
                          CwxKeyValueItemEx const*& field,
@@ -1541,7 +1541,7 @@ int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
 
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packGetKeys(CwxPackageWriterEx* writer,
                              CwxPackageWriterEx* writer1,
                             CwxMsgBlock*& msg,
@@ -1629,7 +1629,7 @@ int UnistorPoco::parseGetKeys(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
                              CwxKeyValueItemEx const* begin,
                              CwxKeyValueItemEx const* end,
@@ -1712,7 +1712,7 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
 
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
                        CwxMsgBlock*& msg,
                        CWX_UINT32 uiTaskId,
@@ -1756,7 +1756,7 @@ int UnistorPoco::packGetList(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
                         CwxKeyValueItemEx const*& begin,
                         CwxKeyValueItemEx const*& end,
@@ -1811,7 +1811,7 @@ int UnistorPoco::parseGetList(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvAuth(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
@@ -1845,7 +1845,7 @@ int UnistorPoco::packRecvAuth(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvAuth(CwxPackageReaderEx* reader,
                          CwxMsgBlock const* msg,
                          char const*& szUser,
@@ -1868,7 +1868,7 @@ int UnistorPoco::parseRecvAuth(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packRecvAuthReply(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
@@ -1901,7 +1901,7 @@ int UnistorPoco::packRecvAuthReply(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseRecvAuthReply(CwxPackageReaderEx* reader,
                               CwxMsgBlock const* msg,
                               int& ret,
@@ -1933,7 +1933,7 @@ int UnistorPoco::parseRecvAuthReply(CwxPackageReaderEx* reader,
 
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExportReport(CwxPackageWriterEx* writer,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,
@@ -1983,7 +1983,7 @@ int UnistorPoco::packExportReport(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseExportReport(CwxPackageReaderEx* reader,
                            CwxMsgBlock const* msg,
                            CWX_UINT32&  uiChunkSize,
@@ -2035,7 +2035,7 @@ int UnistorPoco::parseExportReport(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExportReportReply(CwxPackageWriterEx* writer,
                                  CwxMsgBlock*& msg,
                                  CWX_UINT32 uiTaskId,
@@ -2065,7 +2065,7 @@ int UnistorPoco::packExportReportReply(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseExportReportReply(CwxPackageReaderEx* reader,
                                   CwxMsgBlock const* msg,
                                   CWX_UINT64& ullSession,
@@ -2090,7 +2090,7 @@ int UnistorPoco::parseExportReportReply(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExportDataItem(CwxPackageWriterEx* writer,
                                     CwxKeyValueItemEx const& key,
                                     CwxKeyValueItemEx const& data,
@@ -2129,7 +2129,7 @@ int UnistorPoco::packExportDataItem(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseExportDataItem(CwxPackageReaderEx* reader,
                                      char const* szData,
                                      CWX_UINT32  uiDataLen,
@@ -2206,7 +2206,7 @@ int UnistorPoco::parseMultiExportData(
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packExportDataReply(CwxPackageWriterEx* ,
                                CwxMsgBlock*& msg,
                                CWX_UINT32 uiTaskId,
@@ -2224,7 +2224,7 @@ int UnistorPoco::packExportDataReply(CwxPackageWriterEx* ,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseExportDataReply(CwxPackageReaderEx* ,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSeq,
@@ -2348,7 +2348,7 @@ int UnistorPoco::packReportData(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseReportData(CwxPackageReaderEx* reader,
                            CwxMsgBlock const* msg,
                            CWX_UINT64& ullSid,
@@ -2413,7 +2413,7 @@ int UnistorPoco::parseReportData(CwxPackageReaderEx* reader,
     }
     return UNISTOR_ERR_SUCCESS;
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packReportDataReply(CwxPackageWriterEx* writer,
                                CwxMsgBlock*& msg,
                                CWX_UINT32 uiTaskId,
@@ -2439,7 +2439,7 @@ int UnistorPoco::packReportDataReply(CwxPackageWriterEx* writer,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseReportDataReply(CwxPackageReaderEx* reader,
                                 CwxMsgBlock const* msg,
                                 CWX_UINT64& ullSession,
@@ -2458,7 +2458,7 @@ int UnistorPoco::parseReportDataReply(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packReportNewConn(CwxPackageWriterEx* writer,
                              CwxMsgBlock*& msg,
                              CWX_UINT32 uiTaskId,
@@ -2484,7 +2484,7 @@ int UnistorPoco::packReportNewConn(CwxPackageWriterEx* writer,
 
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseReportNewConn(CwxPackageReaderEx* reader,
                               CwxMsgBlock const* msg,
                               CWX_UINT64& ullSession,
@@ -2502,7 +2502,7 @@ int UnistorPoco::parseReportNewConn(CwxPackageReaderEx* reader,
     return UNISTOR_ERR_SUCCESS;
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packSyncErr(CwxPackageWriterEx* writer,
                                   CwxMsgBlock*& msg,
                                   CWX_UINT32 uiTaskId,
@@ -2532,7 +2532,7 @@ int UnistorPoco::packSyncErr(CwxPackageWriterEx* writer,
     return UNISTOR_ERR_SUCCESS;
 
 }
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseSyncErr(CwxPackageReaderEx* reader,
                                    CwxMsgBlock const* msg,
                                    int& ret,
@@ -2559,7 +2559,7 @@ int UnistorPoco::parseSyncErr(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packSyncData(CwxPackageWriterEx* writer,
                         CwxMsgBlock*& msg,
                         CWX_UINT32 uiTaskId,
@@ -2655,13 +2655,13 @@ int UnistorPoco::packSyncDataItem(CwxPackageWriterEx* writer,
         return UNISTOR_ERR_ERROR;
     }
     if (sign){
-		if (strcmp(sign, UNISTOR_KEY_CRC32) == 0){//CRC32Ç©Ãû
+		if (strcmp(sign, UNISTOR_KEY_CRC32) == 0){//CRC32ç­¾å
             CWX_UINT32 uiCrc32 = CwxCrc32::value(writer->getMsg(), writer->getMsgSize());
             if (!writer->addKeyValue(UNISTOR_KEY_CRC32, strlen(UNISTOR_KEY_CRC32), (char*)&uiCrc32, sizeof(uiCrc32))){
                 if (szErr2K) strcpy(szErr2K, writer->getErrMsg());
                 return UNISTOR_ERR_ERROR;
             }
-		}else if (strcmp(sign, UNISTOR_KEY_MD5) == 0){//md5Ç©Ãû
+		}else if (strcmp(sign, UNISTOR_KEY_MD5) == 0){//md5ç­¾å
             CwxMd5 md5;
             unsigned char szMd5[16];
             md5.update((char unsigned*)writer->getMsg(), writer->getMsgSize());
@@ -2738,7 +2738,7 @@ int UnistorPoco::parseSyncData(CwxPackageReaderEx* reader,
         szErr2K);
 }
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::parseSyncData(CwxPackageReaderEx* reader,
                          char const* szData,
                          CWX_UINT32 uiDataLen,
@@ -2815,7 +2815,7 @@ int UnistorPoco::parseSyncData(CwxPackageReaderEx* reader,
 }
 
 
-///·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû¶¼ÊÇÊ§°Ü
+///è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–éƒ½æ˜¯å¤±è´¥
 int UnistorPoco::packSyncDataReply(CwxPackageWriterEx* ,
                             CwxMsgBlock*& msg,
                             CWX_UINT32 uiTaskId,

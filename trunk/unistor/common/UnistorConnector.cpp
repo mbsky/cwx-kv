@@ -1,4 +1,4 @@
-#include "UnistorConnector.h"
+ï»¿#include "UnistorConnector.h"
 
 int UnistorConnector::complete (set<int>& fds, CwxTimeouter* timeout){
 
@@ -54,17 +54,17 @@ int UnistorConnector::connect (CwxINetAddr const& addr,
                                int* fd,
                                CwxTimeouter* timeout,
                                bool reuse_addr,
-                               CWX_NET_SOCKET_ATTR_FUNC fn, ///<socketÉèÖÃµÄfunction
+                               CWX_NET_SOCKET_ATTR_FUNC fn, ///<socketè®¾ç½®çš„function
                                void* fnArg)
 {
     CWX_UINT16 i;
     bool bRet = false;
     CwxSockStream stream;
     set<int> fdset;
-    ///³õÊ¼»¯Á¬½Ó
+    ///åˆå§‹åŒ–è¿æ¥
     for (i=0; i<unConnNum; i++) fd[i] = -1;
     do{
-        ///½¨Á¢socket
+        ///å»ºç«‹socket
         for (i=0; i<unConnNum; i++){
             if (stream.open(addr.getType(), SOCK_STREAM, 0, reuse_addr) == -1){
                 break;

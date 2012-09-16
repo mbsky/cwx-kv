@@ -1,14 +1,14 @@
-#ifndef __UNISTOR_DEF_H__
+ï»¿#ifndef __UNISTOR_DEF_H__
 #define __UNISTOR_DEF_H__
 #include "UnistorMacro.h"
 #include "CwxStl.h"
 #include "CwxHostInfo.h"
 
 
-///idc¼äÊı¾İÍ¬²½µÄ´«ÊäĞÅÏ¢¶¨Òå
+///idcé—´æ•°æ®åŒæ­¥çš„ä¼ è¾“ä¿¡æ¯å®šä¹‰
 class UnistorTransInfo{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorTransInfo(){
         m_bZip = false;
         m_unConnNum = UNISTOR_DEF_CONN_NUM;
@@ -53,17 +53,17 @@ public:
     }
 
 public:
-    list<string>        m_ips; ///<¿ÉÓÃµÄipÁĞ±í
-    CWX_UINT16          m_unPort; ///<¶Ë¿ÚºÅ
-    string              m_strUser; ///<Í¬²½µÄÓÃ»§Ãû
-    string              m_strPasswd; ///<Í¬²½µÄÓÃ»§¿ÚÁî
-    bool                m_bZip; ///<ÊÇ·ñÑ¹Ëõ
-    string              m_strSign; ///<Ç©Ãû·½Ê½
-    CWX_UINT16          m_unConnNum; ///<²¢·¢Á¬½ÓµÄÊıÁ¿
-    CWX_UINT32          m_uiChunkSize; ///<chunkµÄ´óĞ¡
+    list<string>        m_ips; ///<å¯ç”¨çš„ipåˆ—è¡¨
+    CWX_UINT16          m_unPort; ///<ç«¯å£å·
+    string              m_strUser; ///<åŒæ­¥çš„ç”¨æˆ·å
+    string              m_strPasswd; ///<åŒæ­¥çš„ç”¨æˆ·å£ä»¤
+    bool                m_bZip; ///<æ˜¯å¦å‹ç¼©
+    string              m_strSign; ///<ç­¾åæ–¹å¼
+    CWX_UINT16          m_unConnNum; ///<å¹¶å‘è¿æ¥çš„æ•°é‡
+    CWX_UINT32          m_uiChunkSize; ///<chunkçš„å¤§å°
 };
 
-///ZK confÅäÖÃ½ÚµãµÄĞÅÏ¢
+///ZK confé…ç½®èŠ‚ç‚¹çš„ä¿¡æ¯
 class UnistorZkConf{
 public:
     UnistorZkConf(){
@@ -90,13 +90,13 @@ public:
         return (m_strMasterIdc == item.m_strMasterIdc)&& (m_transInfo == item.m_transInfo);
     }
 public:
-    bool                m_bMasterIdc; ///<ÊÇ·ñÎªmaster idc
-    string              m_strMasterIdc; ///<master idcµÄÃû×Ö
-    UnistorTransInfo    m_transInfo;   ///<×ª·¢µÄÖ÷»úĞÅÏ¢
-    CWX_UINT64          m_ullVersion; ///<°æ±¾ºÅ
+    bool                m_bMasterIdc; ///<æ˜¯å¦ä¸ºmaster idc
+    string              m_strMasterIdc; ///<master idcçš„åå­—
+    UnistorTransInfo    m_transInfo;   ///<è½¬å‘çš„ä¸»æœºä¿¡æ¯
+    CWX_UINT64          m_ullVersion; ///<ç‰ˆæœ¬å·
 };
 
-///zookeeperËøµÄĞÅÏ¢
+///zookeeperé”çš„ä¿¡æ¯
 class UnistorZkLock{
 public:
     UnistorZkLock(){
@@ -125,14 +125,14 @@ public:
         return (m_strMaster == item.m_strMaster)&&(m_strPrev == item.m_strPrev);
     }
 public:
-    bool        m_bMaster; ///<ÊÇ·ñ»ñµÃËø
-    string      m_strMaster; ///<MasterÖ÷»ú
-    string      m_strPrev;  ///<Ç°Ò»¸öÖ÷»ú
-    CWX_UINT64  m_ullPreMasterMaxSid; ///<Ç°Ò»¸ömasterµÄ×î´ósid
-    CWX_UINT64          m_ullVersion; ///<°æ±¾ºÅ
+    bool        m_bMaster; ///<æ˜¯å¦è·å¾—é”
+    string      m_strMaster; ///<Masterä¸»æœº
+    string      m_strPrev;  ///<å‰ä¸€ä¸ªä¸»æœº
+    CWX_UINT64  m_ullPreMasterMaxSid; ///<å‰ä¸€ä¸ªmasterçš„æœ€å¤§sid
+    CWX_UINT64          m_ullVersion; ///<ç‰ˆæœ¬å·
 };
 
-///Á¬½ÓÊôĞÔ¶¨Òå
+///è¿æ¥å±æ€§å®šä¹‰
 class UnistorConnAttr{
 public:
     UnistorConnAttr(){
@@ -143,18 +143,18 @@ public:
         m_bKeepalive = false;
     }
 public:
-    bool        m_bNoDelay; ///<ÊÇ·ñnodelay
-    bool        m_bLinger; ///<ÊÇ·ñÉèÖÃLINGER
-    CWX_UINT32  m_uiRecvBuf; ///<½ÓÊÕbuf´óĞ¡,0±íÊ¾²»ÉèÖÃ
-    CWX_UINT32  m_uiSendBuf; ///<·¢ËÍbuf´óĞ¡£¬0±íÊ¾²»ÉèÖÃ
-    bool        m_bKeepalive; ///<ÊÇ·ñÉèÖÃkeepalive
+    bool        m_bNoDelay; ///<æ˜¯å¦nodelay
+    bool        m_bLinger; ///<æ˜¯å¦è®¾ç½®LINGER
+    CWX_UINT32  m_uiRecvBuf; ///<æ¥æ”¶bufå¤§å°,0è¡¨ç¤ºä¸è®¾ç½®
+    CWX_UINT32  m_uiSendBuf; ///<å‘é€bufå¤§å°ï¼Œ0è¡¨ç¤ºä¸è®¾ç½®
+    bool        m_bKeepalive; ///<æ˜¯å¦è®¾ç½®keepalive
 };
 
 
 
-///½âÎöip:port¸ñÊ½µÄÄÚÈİ¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü
-bool parseHostPort(string const& strHostPort,///<¸ñÊ½Îªip/host:portµÄ×Ö·û´®
-                   CwxHostInfo& host ///<·µ»ØhostµÄ¶ÔÏó
+///è§£æip:portæ ¼å¼çš„å†…å®¹ã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+bool parseHostPort(string const& strHostPort,///<æ ¼å¼ä¸ºip/host:portçš„å­—ç¬¦ä¸²
+                   CwxHostInfo& host ///<è¿”å›hostçš„å¯¹è±¡
                    );
 
 

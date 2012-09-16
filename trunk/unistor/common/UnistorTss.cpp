@@ -1,6 +1,6 @@
-#include "UnistorTss.h"
+ï»¿#include "UnistorTss.h"
 
-///Îö¹¹º¯Êı
+///ææ„å‡½æ•°
 UnistorTss::~UnistorTss(){
     if (m_pZkConf) delete m_pZkConf;
     if (m_pZkLock) delete m_pZkLock;
@@ -45,7 +45,7 @@ int UnistorTss::init(UnistorTssUserObj* pUserObj){
     m_uiDataBufLen= UNISTOR_DEF_KV_SIZE;
     m_userObj = pUserObj;
     m_engineConf = NULL;
-    ///Í³¼Æ³õÊ¼»¯
+    ///ç»Ÿè®¡åˆå§‹åŒ–
     resetStats();
     return 0;
 }

@@ -1,4 +1,4 @@
-#include "CwxSocket.h"
+Ôªø#include "CwxSocket.h"
 #include "CwxINetAddr.h"
 #include "CwxSockStream.h"
 #include "CwxSockConnector.h"
@@ -17,7 +17,7 @@ string g_passwd;
 bool g_bMaster=false;
 CWX_UINT8 g_ucKeyInfo = 0;
 CWX_UINT64 g_sid = 0;
-///-1£∫ ß∞‹£ª0£∫help£ª1£∫≥…π¶
+///-1ÔºöÂ§±Ë¥•Ôºõ0ÔºöhelpÔºõ1ÔºöÊàêÂäü
 int parseArg(int argc, char**argv)
 {
     CwxGetOpt cmd_option(argc, argv, "H:P:k:f:X:u:p:i:mvh");

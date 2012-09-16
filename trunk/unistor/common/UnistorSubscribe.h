@@ -1,11 +1,11 @@
-#ifndef __UNISTOR_SUBSCRIBE_H__
+ï»¿#ifndef __UNISTOR_SUBSCRIBE_H__
 #define __UNISTOR_SUBSCRIBE_H__
 
 #include "UnistorMacro.h"
 #include "CwxStl.h"
 #include "CwxCommon.h"
 
-///»ùÓÚmodÄ£Ê½µÄ¶©ÔÄ¹æÔòµÄ¹æÔòĞÅÏ¢¶ÔÏó
+///åŸºäºmodæ¨¡å¼çš„è®¢é˜…è§„åˆ™çš„è§„åˆ™ä¿¡æ¯å¯¹è±¡
 class UnistorSubscribeMod{
 public:
     UnistorSubscribeMod(){
@@ -23,7 +23,7 @@ public:
         return *this;
     }
 public:
-    ///ÊÇ·ñ¶©ÔÄÖ¸¶¨µÄid
+    ///æ˜¯å¦è®¢é˜…æŒ‡å®šçš„id
     inline bool isSubscribe(CWX_UINT32 uiGroup) const{
         if (m_uiMod) uiGroup %= m_uiMod;
         return m_indexs.find(uiGroup) != m_indexs.end();
@@ -33,7 +33,7 @@ public:
     set<CWX_UINT32> m_indexs;
 };
 
-///»ùÓÚmodµÄrangeÄ£Ê½µÄ¶©ÔÄ¹æÔòµÄ¹æÔòĞÅÏ¢¶ÔÏó
+///åŸºäºmodçš„rangeæ¨¡å¼çš„è®¢é˜…è§„åˆ™çš„è§„åˆ™ä¿¡æ¯å¯¹è±¡
 class UnistorSubscribeRange{
 public:
     UnistorSubscribeRange(){
@@ -61,10 +61,10 @@ public:
     }
 public:
     CWX_UINT32   m_uiMod;
-    map<CWX_UINT32, CWX_UINT32> m_range; ///<¶©ÔÄµÄgroup·¶Î§ÁĞ±í
+    map<CWX_UINT32, CWX_UINT32> m_range; ///<è®¢é˜…çš„groupèŒƒå›´åˆ—è¡¨
 };
 
-///»ùÓÚkey·¶Î§Ä£Ê½µÄ¶©ÔÄ¹æÔòµÄ¹æÔòĞÅÏ¢¶ÔÏó
+///åŸºäºkeyèŒƒå›´æ¨¡å¼çš„è®¢é˜…è§„åˆ™çš„è§„åˆ™ä¿¡æ¯å¯¹è±¡
 class UnistorSubscribeKey{
 public:
     UnistorSubscribeKey(){
@@ -84,7 +84,7 @@ public:
     map<string,string>           m_keys;
 };
 
-///¶©ÔÄ¹æÔò±í´ïÊ½¶ÔÏó
+///è®¢é˜…è§„åˆ™è¡¨è¾¾å¼å¯¹è±¡
 class UnistorSubscribe{
 public:
     enum{
@@ -119,7 +119,7 @@ public:
     }
 
 public:
-    ///ÊÇ·ñ¶©ÔÄÖ¸¶¨µÄgroup¡¢type¶Ô
+    ///æ˜¯å¦è®¢é˜…æŒ‡å®šçš„groupã€typeå¯¹
     inline bool isSubscribe(CWX_UINT32 uiGroup, char const* szKey) const{
         if (!m_bAll){
             if (SUBSCRIBE_MODE_MOD == m_uiMode){
@@ -133,30 +133,30 @@ public:
         }
         return true;
     }
-    ///½âÎö¶©ÔÄµÄÓï·¨
+    ///è§£æè®¢é˜…çš„è¯­æ³•
     /*
-    ±í´ïÊ½Îª
-    type:group_express»òÕßÎª*»òÕßÎªall
-    ÆäÖĞ£º
-    type:mod¡¢range¡¢keyËÄÖÖÀàĞÍ¡£
-    all£º¶©ÔÄÈ«²¿ÏûÏ¢
-    mod£º»ùÓÚgroupÇóÓà£¬group_expressÄÚÈİÎª[mod£ºindex1,index2....]£¬±íÊ¾¶ÔgroupÒÔmodÇóÓà£¬ÓàÊıÎªindex1¡¢index2µÈ¡£modÎª0±íÊ¾²»ÇóÓà
-    range£º»ùÓÚgroupµÄ·¶Î§£¬group_expressÄÚÈİÎª[mod:begin-end,begin-end,...]±íÊ¾¶Ôgroup%modµÄÖµºóµÄgroup·¶Î§£¬¶à¸ö·¶Î§¿ÉÒÔÒÔ¡¾,¡¿·Ö¸î£¬Èôbegin==end£¬ÔòÖ»Ğ´begin¾Í¿ÉÒÔÁË¡£modÎª0±íÊ¾²»ÇóÓà¡£
-    key£º»ùÓÚkey·¶Î§µÄ»ñÈ¡£¬ÄÚÈİÎª[key1-key2,key3-key4,...]£¬±íÊ¾key[key1,key2)¡¢[key3,key4)°ë¿ª°ë±ÕÇø¼ä¡£ÈôkeyÖĞ³öÏÖ¡¾,¡¿»ò¡¾-¡¿£¬ÔòÓÃ,,»ò--±íÊ¾¡£ÈôÇ°Ò»¸öÎª¿Õ£¬Ôò±íÊ¾×îĞ¡£¬ÈôºóÒ»¸öÎª¿Õ£¬Ôò±íÊ¾×î´ó
-    ÈôÎª¿Õ£¬±íÊ¾all
+    è¡¨è¾¾å¼ä¸º
+    type:group_expressæˆ–è€…ä¸º*æˆ–è€…ä¸ºall
+    å…¶ä¸­ï¼š
+    type:modã€rangeã€keyå››ç§ç±»å‹ã€‚
+    allï¼šè®¢é˜…å…¨éƒ¨æ¶ˆæ¯
+    modï¼šåŸºäºgroupæ±‚ä½™ï¼Œgroup_expresså†…å®¹ä¸º[modï¼šindex1,index2....]ï¼Œè¡¨ç¤ºå¯¹groupä»¥modæ±‚ä½™ï¼Œä½™æ•°ä¸ºindex1ã€index2ç­‰ã€‚modä¸º0è¡¨ç¤ºä¸æ±‚ä½™
+    rangeï¼šåŸºäºgroupçš„èŒƒå›´ï¼Œgroup_expresså†…å®¹ä¸º[mod:begin-end,begin-end,...]è¡¨ç¤ºå¯¹group%modçš„å€¼åçš„groupèŒƒå›´ï¼Œå¤šä¸ªèŒƒå›´å¯ä»¥ä»¥ã€,ã€‘åˆ†å‰²ï¼Œè‹¥begin==endï¼Œåˆ™åªå†™beginå°±å¯ä»¥äº†ã€‚modä¸º0è¡¨ç¤ºä¸æ±‚ä½™ã€‚
+    keyï¼šåŸºäºkeyèŒƒå›´çš„è·å–ï¼Œå†…å®¹ä¸º[key1-key2,key3-key4,...]ï¼Œè¡¨ç¤ºkey[key1,key2)ã€[key3,key4)åŠå¼€åŠé—­åŒºé—´ã€‚è‹¥keyä¸­å‡ºç°ã€,ã€‘æˆ–ã€-ã€‘ï¼Œåˆ™ç”¨,,æˆ–--è¡¨ç¤ºã€‚è‹¥å‰ä¸€ä¸ªä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæœ€å°ï¼Œè‹¥åä¸€ä¸ªä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæœ€å¤§
+    è‹¥ä¸ºç©ºï¼Œè¡¨ç¤ºall
     */
     bool parseSubsribe(string const& strSubscribe);
 private:
-    ///½âÎöÒ»¸ö¶©ÔÄ±í´ïÊ½
+    ///è§£æä¸€ä¸ªè®¢é˜…è¡¨è¾¾å¼
     int parseSubscribeKey(char const* szKey, list<string>& keys, char split);
 
 public:
-    CWX_UINT32      m_uiMode;  ///¶¨ÓÚÄ£Ê½
-    UnistorSubscribeMod     m_mod; ///<ÇóÓà¶©ÔÄÄ£Ê½
-    UnistorSubscribeRange   m_range; ///<rangeµÄ¶©ÔÄÄ£Ê½
-    UnistorSubscribeKey     m_key; ///<keyµÄ¶©ÔÄÄ£Ê½
-    bool    m_bAll;         ///<ÊÇ·ñ¶©ÔÄÈ«²¿ÏûÏ¢
-    string          m_strErrMsg; ///<½âÎöµÄ´íÎóÏûÏ¢
+    CWX_UINT32      m_uiMode;  ///å®šäºæ¨¡å¼
+    UnistorSubscribeMod     m_mod; ///<æ±‚ä½™è®¢é˜…æ¨¡å¼
+    UnistorSubscribeRange   m_range; ///<rangeçš„è®¢é˜…æ¨¡å¼
+    UnistorSubscribeKey     m_key; ///<keyçš„è®¢é˜…æ¨¡å¼
+    bool    m_bAll;         ///<æ˜¯å¦è®¢é˜…å…¨éƒ¨æ¶ˆæ¯
+    string          m_strErrMsg; ///<è§£æçš„é”™è¯¯æ¶ˆæ¯
 };
 
 

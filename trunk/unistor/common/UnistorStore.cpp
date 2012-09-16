@@ -1,11 +1,11 @@
-#include "UnistorStore.h"
+ï»¿#include "UnistorStore.h"
 
 UnistorStore::UnistorStore(){
 	m_impl = NULL;
 	m_dllHandle = NULL;
 }
 
-///Îö¹¹º¯Êı
+///ææ„å‡½æ•°
 UnistorStore::~UnistorStore(){
     if (m_impl){
         delete m_impl;

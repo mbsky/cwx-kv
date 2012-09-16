@@ -1,16 +1,16 @@
-#include "UnistorHandler4Master.h"
+ï»¿#include "UnistorHandler4Master.h"
 #include "UnistorApp.h"
 #include "CwxZlib.h"
 
-///ÅäÖÃ±ä»¯
+///é…ç½®å˜åŒ–
 void UnistorHandler4Master::configChange(UnistorTss* pTss){
     string strSyncHost = pTss->getSyncHost();
     if (pTss->isMasterIdc()){
-        if (pTss->isMaster() || (strSyncHost == m_pApp->getConfig().getCommon().m_strHost) ){///ÎÒÊÇmaster idcµÄmaster£¬Ôò²»ĞèÒªÍ¬²½
+        if (pTss->isMaster() || (strSyncHost == m_pApp->getConfig().getCommon().m_strHost) ){///æˆ‘æ˜¯master idcçš„masterï¼Œåˆ™ä¸éœ€è¦åŒæ­¥
             CWX_INFO(("UnistorHandler4Master: I'am master-idc's master."));
-            ///Èç¹û´æÔÚÍ¬²½session£¬ÔòÊÍ·Å
+            ///å¦‚æœå­˜åœ¨åŒæ­¥sessionï¼Œåˆ™é‡Šæ”¾
             if (m_syncSession) closeSession();
-        }else{///²»ÊÇmaster£¬ÔòĞèÒª´Óprev£¬ÈôÇ°Ò»¸ö²»´æÔÚÔò´ÓmasterÍ¬²½
+        }else{///ä¸æ˜¯masterï¼Œåˆ™éœ€è¦ä»prevï¼Œè‹¥å‰ä¸€ä¸ªä¸å­˜åœ¨åˆ™ä»masteråŒæ­¥
             CWX_INFO(("UnistorHandler4Master: I'am master-idc's slave. sync host:%s", pTss->getSyncHost()));
             if (!m_syncSession || m_syncSession->m_strHost != pTss->getSyncHost()){
                 CWX_INFO(("UnistorHandler4Master: Sync host is changed from [%s] to [%s]", m_syncSession?m_syncSession->m_strHost.c_str():"", pTss->getSyncHost()));
@@ -31,7 +31,7 @@ void UnistorHandler4Master::configChange(UnistorTss* pTss){
             }
         }
     }else{
-        if (pTss->isMaster() || (strSyncHost == m_pApp->getConfig().getCommon().m_strHost)){///´ÓÖ÷idcÍ¬²½
+        if (pTss->isMaster() || (strSyncHost == m_pApp->getConfig().getCommon().m_strHost)){///ä»ä¸»idcåŒæ­¥
             CWX_INFO(("UnistorHandler4Master: I'm slave idc's master."));
             if (pTss->m_pZkConf && isNeedReconnect(pTss->m_pZkConf->m_transInfo)){
                 CWX_INFO(("UnistorHandler4Master: Reconnect to master-idc host...."));
@@ -54,7 +54,7 @@ void UnistorHandler4Master::configChange(UnistorTss* pTss){
                     iter++;
                 }
             }
-        }else{///²»ÊÇslave idcµÄmaster£¬ÔòĞèÒª´ÓmasterÍ¬²½
+        }else{///ä¸æ˜¯slave idcçš„masterï¼Œåˆ™éœ€è¦ä»masteråŒæ­¥
             CWX_INFO(("UnistorHandler4Master: I'm slave idc's slave."));
             if (!m_syncSession || m_syncSession->m_strHost != pTss->getSyncHost()){
                 if (m_syncSession) closeSession();
@@ -83,7 +83,7 @@ bool UnistorHandler4Master::isNeedReconnect(UnistorTransInfo const& trans){
         if (*iter == m_syncSession->m_strHost) break;
         iter++;
     }
-    if (iter == trans.m_ips.end()) return true; ///Ö÷»ú¸Ä±ä
+    if (iter == trans.m_ips.end()) return true; ///ä¸»æœºæ”¹å˜
     if (trans.m_bZip != m_syncSession->m_bZip) return true;
     if (trans.m_strSign != m_syncSession->m_strSign) return true;
     if (trans.m_strUser != m_syncSession->m_strUser) return true;
@@ -106,7 +106,7 @@ void UnistorHandler4Master::timecheck(UnistorTss* pTss){
             configChange(pTss);
         }
     }else{
-        ///Èç¹û»Ø¸´³¬Ê±£¬Ôò¹Ø±ÕÁ¬½Ó
+        ///å¦‚æœå›å¤è¶…æ—¶ï¼Œåˆ™å…³é—­è¿æ¥
         CWX_UINT32 now =time(NULL);
         if (m_syncSession){
             if (!m_syncSession->m_ullSessionId){
@@ -136,7 +136,7 @@ int UnistorHandler4Master::createSession(UnistorTss* pTss,
 {
     if (m_syncSession) closeSession();
     if (strHost.length()){
-        ///ÖØ½¨ËùÓĞÁ¬½Ó
+        ///é‡å»ºæ‰€æœ‰è¿æ¥
         CwxINetAddr addr;
         if (0 != addr.set(unPort, strHost.c_str())){
             CWX_ERROR(("Failure to init addr, addr:%s, port:%u, err=%d", strHost.c_str(), unPort, errno));
@@ -164,7 +164,7 @@ int UnistorHandler4Master::createSession(UnistorTss* pTss,
         m_uiCurHostId++;
         if (0 == m_uiCurHostId) m_uiCurHostId = 1;
         m_syncSession = new UnistorSyncSession(m_uiCurHostId);
-        ///×¢²áÁ¬½Óid
+        ///æ³¨å†Œè¿æ¥id
         int ret = 0;
         for (i=0; i<unConnNum; i++){
             if ((ret = m_pApp->noticeHandle4Msg(UnistorApp::SVR_TYPE_MASTER,
@@ -176,15 +176,15 @@ int UnistorHandler4Master::createSession(UnistorTss* pTss,
             }
             m_syncSession->m_conns[(CWX_UINT32)ret] = false;
         }
-        if (i != unConnNum){///Ê§°Ü
+        if (i != unConnNum){///å¤±è´¥
             for (; i<unConnNum; i++){
                 ::close(fds[i]);
             }
             closeSession();
             return -1;
         }
-        ///·¢ËÍreportµÄÏûÏ¢
-        ///´´½¨Íùmaster±¨¸æsidµÄÍ¨ĞÅÊı¾İ°ü
+        ///å‘é€reportçš„æ¶ˆæ¯
+        ///åˆ›å»ºå¾€masteræŠ¥å‘Šsidçš„é€šä¿¡æ•°æ®åŒ…
         CwxMsgBlock* pBlock = NULL;
         ret = UnistorPoco::packReportData(pTss->m_pWriter,
             pBlock,
@@ -198,13 +198,13 @@ int UnistorHandler4Master::createSession(UnistorTss* pTss,
             sign,
             bZip,
             pTss->m_szBuf2K);
-        if (ret != UNISTOR_ERR_SUCCESS){///Êı¾İ°ü´´½¨Ê§°Ü
+        if (ret != UNISTOR_ERR_SUCCESS){///æ•°æ®åŒ…åˆ›å»ºå¤±è´¥
             CWX_ERROR(("Failure to create report package, err:%s", pTss->m_szBuf2K));
             closeSession();
             return -1;
         } else {
             CWX_INFO(("Report sid to master:%s", strHost.c_str()));
-            ///·¢ËÍÏûÏ¢
+            ///å‘é€æ¶ˆæ¯
             pBlock->send_ctrl().setConnId(m_syncSession->m_conns.begin()->first);
             pBlock->send_ctrl().setSvrId(UnistorApp::SVR_TYPE_MASTER);
             pBlock->send_ctrl().setHostId(m_syncSession->m_uiHostId);
@@ -231,7 +231,7 @@ int UnistorHandler4Master::createSession(UnistorTss* pTss,
 }
 
 
-//¹Ø±ÕÒÑÓĞÁ¬½Ó
+//å…³é—­å·²æœ‰è¿æ¥
 void UnistorHandler4Master::closeSession(){
     CWX_INFO(("UnistorHandler4Master: Close sync session"));
     if (m_syncSession){
@@ -245,7 +245,7 @@ void UnistorHandler4Master::closeSession(){
     }
 }
 
-///masterµÄÁ¬½Ó¹Ø±Õºó£¬ĞèÒªÇåÀí»·¾³
+///masterçš„è¿æ¥å…³é—­åï¼Œéœ€è¦æ¸…ç†ç¯å¢ƒ
 int UnistorHandler4Master::onConnClosed(CwxMsgBlock*& msg, CwxTss* ){
     CWX_ERROR(("Master is closed. master:%s", m_syncSession?m_syncSession->m_strHost.c_str():""));
     if (m_pApp->getRecvWriteHandler()->isCanWrite()) return 1;
@@ -269,7 +269,7 @@ int UnistorHandler4Master::recvMsg(CwxMsgBlock*& msg, list<CwxMsgBlock*>& msgs){
         CWX_ERROR(("sync data's size[%u] is invalid, min-size=%u", msg->length(), sizeof(ullSeq)));
         return -1;
     }
-    map<CWX_UINT32,  bool/*ÊÇ·ñÒÑ¾­report*/>::iterator conn_iter = m_syncSession->m_conns.find(msg->event().getConnId());
+    map<CWX_UINT32,  bool/*æ˜¯å¦å·²ç»report*/>::iterator conn_iter = m_syncSession->m_conns.find(msg->event().getConnId());
     if (conn_iter == m_syncSession->m_conns.end()){
         CWX_ERROR(("Conn-id[%u] doesn't exist.", msg->event().getConnId()));
         return -1;
@@ -282,14 +282,14 @@ int UnistorHandler4Master::recvMsg(CwxMsgBlock*& msg, list<CwxMsgBlock*>& msgs){
     return 0;
 }
 
-///½ÓÊÕÀ´×ÔmasterµÄÏûÏ¢
+///æ¥æ”¶æ¥è‡ªmasterçš„æ¶ˆæ¯
 int UnistorHandler4Master::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv){
     UnistorTss* pTss = (UnistorTss*)pThrEnv;
-    if (!m_syncSession){///¹Ø±ÕÁ¬½Ó
+    if (!m_syncSession){///å…³é—­è¿æ¥
         m_pApp->noticeCloseConn(msg->event().getConnId());
         return 1;
     }
-    if (msg->event().getHostId() != m_syncSession->m_uiHostId){///¹Ø±ÕÁ¬½Ó
+    if (msg->event().getHostId() != m_syncSession->m_uiHostId){///å…³é—­è¿æ¥
         m_pApp->noticeCloseConn(msg->event().getConnId());
         return 1;
     }
@@ -299,7 +299,7 @@ int UnistorHandler4Master::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv){
             CWX_ERROR(("Recv empty msg from master:%s", m_syncSession->m_strHost.c_str()));
             break;
         }
-        //SID±¨¸æµÄ»Ø¸´£¬´ËÊ±£¬Ò»¶¨ÊÇ±¨¸æÊ§°Ü
+        //SIDæŠ¥å‘Šçš„å›å¤ï¼Œæ­¤æ—¶ï¼Œä¸€å®šæ˜¯æŠ¥å‘Šå¤±è´¥
         if (UnistorPoco::MSG_TYPE_SYNC_DATA == msg->event().getMsgHeader().getMsgType() ||
             UnistorPoco::MSG_TYPE_SYNC_DATA_CHUNK == msg->event().getMsgHeader().getMsgType())
         {
@@ -346,7 +346,7 @@ int UnistorHandler4Master::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv){
 
 int UnistorHandler4Master::dealSyncReportReply(CwxMsgBlock*& msg, UnistorTss* pTss){
     char szTmp[64];
-    ///´ËÊ±£¬¶Ô¶Ë»á¹Ø±ÕÁ¬½Ó
+    ///æ­¤æ—¶ï¼Œå¯¹ç«¯ä¼šå…³é—­è¿æ¥
     CWX_UINT64 ullSessionId = 0;
     if (m_syncSession->m_ullSessionId){
         CWX_ERROR(("Session id is replied, session id:%s", CwxCommon::toString(m_syncSession->m_ullSessionId, szTmp, 10)));
@@ -368,8 +368,8 @@ int UnistorHandler4Master::dealSyncReportReply(CwxMsgBlock*& msg, UnistorTss* pT
     }
     m_syncSession->m_ullSessionId = ullSessionId;
     m_syncSession->m_conns[msg->event().getConnId()] = true;
-    ///ÆäËûÁ¬½Ó±¨¸æ
-    map<CWX_UINT32,  bool/*ÊÇ·ñÒÑ¾­report*/>::iterator iter = m_syncSession->m_conns.begin();
+    ///å…¶ä»–è¿æ¥æŠ¥å‘Š
+    map<CWX_UINT32,  bool/*æ˜¯å¦å·²ç»report*/>::iterator iter = m_syncSession->m_conns.begin();
     while(iter != m_syncSession->m_conns.end()){
         if (iter->first != msg->event().getConnId()){
             CwxMsgBlock* pBlock = NULL;
@@ -378,11 +378,11 @@ int UnistorHandler4Master::dealSyncReportReply(CwxMsgBlock*& msg, UnistorTss* pT
                 0,
                 ullSessionId,
                 pTss->m_szBuf2K);
-            if (ret != UNISTOR_ERR_SUCCESS)    {///Êı¾İ°ü´´½¨Ê§°Ü
+            if (ret != UNISTOR_ERR_SUCCESS)    {///æ•°æ®åŒ…åˆ›å»ºå¤±è´¥
                 CWX_ERROR(("Failure to create report package, err:%s", pTss->m_szBuf2K));
                 return -1;
             } else {
-                ///·¢ËÍÏûÏ¢
+                ///å‘é€æ¶ˆæ¯
                 pBlock->send_ctrl().setConnId(iter->first);
                 pBlock->send_ctrl().setSvrId(UnistorApp::SVR_TYPE_MASTER);
                 pBlock->send_ctrl().setHostId(m_syncSession->m_uiHostId);
@@ -401,21 +401,21 @@ int UnistorHandler4Master::dealSyncReportReply(CwxMsgBlock*& msg, UnistorTss* pT
 }
 
 int UnistorHandler4Master::dealSyncData(CwxMsgBlock*& msg, UnistorTss* pTss){
-    ///´ËÊ±£¬¶Ô¶Ë»á¹Ø±ÕÁ¬½Ó
+    ///æ­¤æ—¶ï¼Œå¯¹ç«¯ä¼šå…³é—­è¿æ¥
     unsigned long ulUnzipLen = 0;
     bool bZip = false;
     int iRet = 0;
     CWX_UINT32 ullSeq =  UnistorPoco::getSeq(msg->rd_ptr());
     bZip = msg->event().getMsgHeader().isAttr(CwxMsgHead::ATTR_COMPRESS);
-    //ÅĞ¶ÏÊÇ·ñÑ¹ËõÊı¾İ
-    if (bZip){//Ñ¹ËõÊı¾İ£¬ĞèÒª½âÑ¹
-        //Ê×ÏÈ×¼±¸½âÑ¹µÄbuf
+    //åˆ¤æ–­æ˜¯å¦å‹ç¼©æ•°æ®
+    if (bZip){//å‹ç¼©æ•°æ®ï¼Œéœ€è¦è§£å‹
+        //é¦–å…ˆå‡†å¤‡è§£å‹çš„buf
         if (!prepareUnzipBuf()){
             CWX_ERROR(("Failure to prepare unzip buf, size:%u", m_uiBufLen));
             return -1;
         }
         ulUnzipLen = m_uiBufLen;
-        //½âÑ¹
+        //è§£å‹
         if (!CwxZlib::unzip(m_unzipBuf,
             ulUnzipLen,
             (const unsigned char*)(msg->rd_ptr() + sizeof(ullSeq)),
@@ -431,7 +431,7 @@ int UnistorHandler4Master::dealSyncData(CwxMsgBlock*& msg, UnistorTss* pTss){
         iRet = saveBinlog(pTss, msg->rd_ptr() + sizeof(ullSeq), msg->length() - sizeof(ullSeq));
     }
     if (0 != iRet) return -1;
-    //»Ø¸´·¢ËÍÕß
+    //å›å¤å‘é€è€…
     CwxMsgBlock* reply_block = NULL;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::packSyncDataReply(pTss->m_pWriter,
         reply_block,
@@ -456,22 +456,22 @@ int UnistorHandler4Master::dealSyncData(CwxMsgBlock*& msg, UnistorTss* pTss){
 }
 
 int UnistorHandler4Master::dealSyncChunkData(CwxMsgBlock*& msg, UnistorTss* pTss){
-    ///´ËÊ±£¬¶Ô¶Ë»á¹Ø±ÕÁ¬½Ó
+    ///æ­¤æ—¶ï¼Œå¯¹ç«¯ä¼šå…³é—­è¿æ¥
     CWX_UINT64 ullSeq = 0;
     unsigned long ulUnzipLen = 0;
     bool bZip = false;
     CWX_UINT32 i=0;
     ullSeq =  UnistorPoco::getSeq(msg->rd_ptr());
     bZip = msg->event().getMsgHeader().isAttr(CwxMsgHead::ATTR_COMPRESS);
-    //ÅĞ¶ÏÊÇ·ñÑ¹ËõÊı¾İ
-    if (bZip){//Ñ¹ËõÊı¾İ£¬ĞèÒª½âÑ¹
-        //Ê×ÏÈ×¼±¸½âÑ¹µÄbuf
+    //åˆ¤æ–­æ˜¯å¦å‹ç¼©æ•°æ®
+    if (bZip){//å‹ç¼©æ•°æ®ï¼Œéœ€è¦è§£å‹
+        //é¦–å…ˆå‡†å¤‡è§£å‹çš„buf
         if (!prepareUnzipBuf()){
             CWX_ERROR(("Failure to prepare unzip buf, size:%u", m_uiBufLen));
             return -1;
         }
         ulUnzipLen = m_uiBufLen;
-        //½âÑ¹
+        //è§£å‹
         if (!CwxZlib::unzip(m_unzipBuf,
             ulUnzipLen,
             (const unsigned char*)(msg->rd_ptr() + sizeof(ullSeq)),
@@ -492,11 +492,11 @@ int UnistorHandler4Master::dealSyncChunkData(CwxMsgBlock*& msg, UnistorTss* pTss
             return -1;
         }
     }
-    //¼ì²âÇ©Ãû
+    //æ£€æµ‹ç­¾å
     bool bSign = false;
     if (m_syncSession->m_strSign.length()) {
         CwxKeyValueItemEx const* pItem = m_reader.getKey(m_syncSession->m_strSign.c_str());
-        if (pItem){//´æÔÚÇ©Ãûkey
+        if (pItem){//å­˜åœ¨ç­¾åkey
             if (!checkSign(m_reader.getMsg() + sizeof(ullSeq),
                 pItem->m_szKey - CwxPackageEx::getKeyOffset(pItem->m_unKeyLen, pItem->m_uiDataLen) - m_reader.getMsg() - sizeof(ullSeq),
                 pItem->m_szData,
@@ -522,7 +522,7 @@ int UnistorHandler4Master::dealSyncChunkData(CwxMsgBlock*& msg, UnistorTss* pTss
         CWX_ERROR(("Master multi-binlog's key hasn't key"));
         return -1;
     }
-    //»Ø¸´·¢ËÍÕß
+    //å›å¤å‘é€è€…
     CwxMsgBlock* reply_block = NULL;
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::packSyncDataReply(pTss->m_pWriter,
         reply_block,
@@ -566,7 +566,7 @@ int UnistorHandler4Master::dealErrMsg(CwxMsgBlock*& msg, UnistorTss* pTss){
         m_syncSession->m_strHost.c_str(),
         ret,
         szErrMsg));
-    ///Í¨Öª´æ´¢ÒıÇæÊ§È¥ÁËÁ¬½Ó
+    ///é€šçŸ¥å­˜å‚¨å¼•æ“å¤±å»äº†è¿æ¥
     if (UNISTOR_ERR_LOST_SYNC == ret){
         m_pApp->getStore()->lostSync();
     }
@@ -574,7 +574,7 @@ int UnistorHandler4Master::dealErrMsg(CwxMsgBlock*& msg, UnistorTss* pTss){
 }
 
 
-//0£º³É¹¦£»-1£ºÊ§°Ü
+//0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Master::saveBinlog(UnistorTss* pTss,
                                    char const* szBinLog,
                                    CWX_UINT32 uiLen)
@@ -585,7 +585,7 @@ int UnistorHandler4Master::saveBinlog(UnistorTss* pTss,
     CWX_UINT32 uiGroup;
     CWX_UINT32 uiType;
     CwxKeyValueItemEx const* data;
-    ///»ñÈ¡binlogµÄÊı¾İ
+    ///è·å–binlogçš„æ•°æ®
     if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseSyncData(pTss->m_pReader, 
         szBinLog,
         uiLen,
@@ -623,12 +623,12 @@ bool UnistorHandler4Master::checkSign(char const* data,
                char const* sign)
 {
     if (!sign) return true;
-    if (strcmp(sign, UNISTOR_KEY_CRC32) == 0)//CRC32Ç©Ãû
+    if (strcmp(sign, UNISTOR_KEY_CRC32) == 0)//CRC32ç­¾å
     {
         CWX_UINT32 uiCrc32 = CwxCrc32::value(data, uiDateLen);
         if (memcmp(&uiCrc32, szSign, sizeof(uiCrc32)) == 0) return true;
         return false;
-	}else if (strcmp(sign, UNISTOR_KEY_MD5)==0){//md5Ç©Ãû
+	}else if (strcmp(sign, UNISTOR_KEY_MD5)==0){//md5ç­¾å
         CwxMd5 md5;
         unsigned char szMd5[16];
         md5.update((const unsigned char*)data, uiDateLen);

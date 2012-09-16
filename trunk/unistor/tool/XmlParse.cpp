@@ -1,4 +1,4 @@
-#include "XmlParse.h"
+﻿#include "XmlParse.h"
 
 XmlParser::XmlParser(CWX_UINT32 uiBufSize) 
 {
@@ -821,7 +821,7 @@ bool CwxXmlPackageConv::packageToXmlNode(char const* szNodeName,
 }
 
 
-///xmlת��Ϊpackage
+///xml转换为package
 bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, CWX_UINT32& uiOutLen)
 {
     CWX_UINT32 pos = 0;
@@ -918,7 +918,7 @@ bool CwxXmlPackageConv::xmlToPackage(XmlTreeNode const * treeNode, char* szOut, 
     return true;
 }
 
-///packageת��Ϊxml
+///package转换为xml
 bool CwxXmlPackageConv::packageToXml(CwxKeyValueItemEx const& item, char* szOut, CWX_UINT32& uiOutLen)
 {
     CWX_UINT32 pos = 0;

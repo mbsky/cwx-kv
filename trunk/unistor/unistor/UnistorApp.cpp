@@ -1,6 +1,6 @@
-#include "UnistorApp.h"
+ï»¿#include "UnistorApp.h"
 #include "CwxDate.h"
-///¹¹Ôìº¯Êı
+///æ„é€ å‡½æ•°
 UnistorApp::UnistorApp(){
     m_store = NULL;
     m_recvChannel = NULL;
@@ -21,44 +21,44 @@ UnistorApp::UnistorApp(){
     m_zkHandler = NULL;
 }
 
-///Îö¹¹º¯Êı
+///ææ„å‡½æ•°
 UnistorApp::~UnistorApp(){
 }
 
-///³õÊ¼»¯
+///åˆå§‹åŒ–
 int UnistorApp::init(int argc, char** argv){
     string strErrMsg;
-    ///Ê×ÏÈµ÷ÓÃ¼Ü¹¹µÄinit api
+    ///é¦–å…ˆè°ƒç”¨æ¶æ„çš„init api
     if (CwxAppFramework::init(argc, argv) == -1) return -1;
-    ///¼ì²éÊÇ·ñÍ¨¹ı-fÖ¸¶¨ÁËÅäÖÃÎÄ¼ş£¬ÈôÃ»ÓĞ£¬Ôò²ÉÓÃÄ¬ÈÏµÄÅäÖÃÎÄ¼ş
+    ///æ£€æŸ¥æ˜¯å¦é€šè¿‡-fæŒ‡å®šäº†é…ç½®æ–‡ä»¶ï¼Œè‹¥æ²¡æœ‰ï¼Œåˆ™é‡‡ç”¨é»˜è®¤çš„é…ç½®æ–‡ä»¶
     if ((NULL == this->getConfFile()) || (strlen(this->getConfFile()) == 0)){
         this->setConfFile("unistor.cnf");
     }
-    ///¼ÓÔØÅäÖÃÎÄ¼ş£¬ÈôÊ§°ÜÔòÍË³ö
+    ///åŠ è½½é…ç½®æ–‡ä»¶ï¼Œè‹¥å¤±è´¥åˆ™é€€å‡º
     if (0 != m_config.init(getConfFile())){
         CWX_ERROR((m_config.getErrMsg()));
         return -1;
     }
-    ///ÉèÖÃÔËĞĞÈÕÖ¾µÄÊä³ölevel
+    ///è®¾ç½®è¿è¡Œæ—¥å¿—çš„è¾“å‡ºlevel
     setLogLevel(CwxLogger::LEVEL_ERROR|CwxLogger::LEVEL_INFO|CwxLogger::LEVEL_WARNING|CwxLogger::LEVEL_DEBUG);
     return 0;
 }
 
-///ÅäÖÃÔËĞĞ»·¾³ĞÅÏ¢
+///é…ç½®è¿è¡Œç¯å¢ƒä¿¡æ¯
 int UnistorApp::initRunEnv(){
-    ///ÉèÖÃÏµÍ³µÄÊ±ÖÓ¼ä¸ô£¬×îĞ¡¿Ì¶ÈÎª1ms£¬´ËÎª1s¡£
+    ///è®¾ç½®ç³»ç»Ÿçš„æ—¶é’Ÿé—´éš”ï¼Œæœ€å°åˆ»åº¦ä¸º1msï¼Œæ­¤ä¸º1sã€‚
     this->setClick(100);//0.1s
-    ///ÉèÖÃ¹¤×÷Ä¿Â¼
+    ///è®¾ç½®å·¥ä½œç›®å½•
     this->setWorkDir(m_config.getCommon().m_strWorkDir.c_str());
-    ///ÉèÖÃÑ­»·ÔËĞĞÈÕÖ¾µÄÊıÁ¿
+    ///è®¾ç½®å¾ªç¯è¿è¡Œæ—¥å¿—çš„æ•°é‡
     this->setLogFileNum(LOG_FILE_NUM);
-    ///ÉèÖÃÃ¿¸öÈÕÖ¾ÎÄ¼şµÄ´óĞ¡
+    ///è®¾ç½®æ¯ä¸ªæ—¥å¿—æ–‡ä»¶çš„å¤§å°
     this->setLogFileSize(LOG_FILE_SIZE*1024*1024);
-    ///µ÷ÓÃ¼Ü¹¹µÄinitRunEnv£¬Ê¹ÒÔÉÏÉèÖÃµÄ²ÎÊıÉúĞ§
+    ///è°ƒç”¨æ¶æ„çš„initRunEnvï¼Œä½¿ä»¥ä¸Šè®¾ç½®çš„å‚æ•°ç”Ÿæ•ˆ
     if (CwxAppFramework::initRunEnv() == -1 ) return -1;
-    ///½«¼ÓÔØµÄÅäÖÃÎÄ¼şĞÅÏ¢Êä³öµ½ÈÕÖ¾ÎÄ¼şÖĞ£¬ÒÔ¹©²é¿´¼ì²é
+    ///å°†åŠ è½½çš„é…ç½®æ–‡ä»¶ä¿¡æ¯è¾“å‡ºåˆ°æ—¥å¿—æ–‡ä»¶ä¸­ï¼Œä»¥ä¾›æŸ¥çœ‹æ£€æŸ¥
     m_config.outputConfig();
-    ///block¸÷ÖÖsignal
+    ///blockå„ç§signal
     this->blockSignal(SIGTERM);
     this->blockSignal(SIGUSR1);
     this->blockSignal(SIGUSR2);
@@ -78,13 +78,13 @@ int UnistorApp::initRunEnv(){
     this->setLastModifyDatetime(UNISTOR_MODIFY_DATE);
     //set compile date
     this->setLastCompileDatetime(CWX_COMPILE_DATE(_BUILD_DATE));
-    ///ÉèÖÃ·şÎñ×´Ì¬
+    ///è®¾ç½®æœåŠ¡çŠ¶æ€
     this->setAppRunValid(false);
-    ///ÉèÖÃ·şÎñĞÅÏ¢
+    ///è®¾ç½®æœåŠ¡ä¿¡æ¯
     this->setAppRunFailReason("Starting..............");
 	CwxDate::getDateY4MDHMS2(time(NULL), m_strStartTime);
 
-    //Æô¶¯store driver
+    //å¯åŠ¨store driver
     char szErr2K[2048];
     string strEnginePath = m_config.getCommon().m_strWorkDir + "engine/";
 	if (m_store) delete m_store;
@@ -96,32 +96,32 @@ int UnistorApp::initRunEnv(){
             break;
         }
 
-        ///Æô¶¯ÍøÂçÁ¬½ÓÓë¼àÌı
+        ///å¯åŠ¨ç½‘ç»œè¿æ¥ä¸ç›‘å¬
         if (0 != startNetwork()) break;
 
-        //Æô¶¯checkpointÏß³Ì
+        //å¯åŠ¨checkpointçº¿ç¨‹
         {
             m_checkpointHandler = new UnistorHandler4Checkpoint(this);
             getCommander().regHandle(SVR_TYPE_CHECKPOINT, m_checkpointHandler);
-            ///´´½¨Ïß³Ì
+            ///åˆ›å»ºçº¿ç¨‹
             m_checkpointThreadPool = new CwxThreadPool(THREAD_GROUP_CHECKPOINT,
                 1,
                 getThreadPoolMgr(),
                 &getCommander());
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             if ( 0 != m_checkpointThreadPool->start(NULL)){
                 CWX_ERROR(("Failure to start checkpoint thread pool"));
                 break;
             }
         }
 
-        //×¢²ákvĞ´handler
+        //æ³¨å†Œkvå†™handler
         m_recvWriteHandler = new UnistorHandler4RecvWrite(this);
         getCommander().regHandle(SVR_TYPE_RECV_WRITE, m_recvWriteHandler);
-        //×¢²ámasterÊı¾İÍ¬²½´¦Àíhandler
+        //æ³¨å†Œmasteræ•°æ®åŒæ­¥å¤„ç†handler
         m_masterHandler = new UnistorHandler4Master(this);
         getCommander().regHandle(SVR_TYPE_MASTER, m_masterHandler);
-        //Æô¶¯ÄÚ²¿·Ö·¢Ïß³Ì
+        //å¯åŠ¨å†…éƒ¨åˆ†å‘çº¿ç¨‹
         {
             m_innerSyncChannel = new CwxAppChannel();
             m_innerSyncThreadPool = new CwxThreadPool(THREAD_GROUP_INNER_SYNC,
@@ -130,7 +130,7 @@ int UnistorApp::initRunEnv(){
                 &getCommander(),
                 UnistorApp::innerSyncThreadMain,
                 this);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             CwxTss** pTss = new CwxTss*[1];
             pTss[0] = new UnistorTss();
             ((UnistorTss*)pTss[0])->init(new UnistorDispatchThreadUserObj());
@@ -140,7 +140,7 @@ int UnistorApp::initRunEnv(){
             }
         }
 
-        //Æô¶¯Íâ²¿·Ö·¢µÄÏß³Ì
+        //å¯åŠ¨å¤–éƒ¨åˆ†å‘çš„çº¿ç¨‹
         {
             m_outerSyncChannel = new CwxAppChannel();
             m_outerSyncThreadPool = new CwxThreadPool(THREAD_GROUP_OUTER_SYNC,
@@ -149,7 +149,7 @@ int UnistorApp::initRunEnv(){
                 &getCommander(),
                 UnistorApp::outerSyncThreadMain,
                 this);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             CwxTss** pTss = new CwxTss*[1];
             pTss[0] = new UnistorTss();
             ((UnistorTss*)pTss[0])->init(new UnistorDispatchThreadUserObj());
@@ -159,25 +159,25 @@ int UnistorApp::initRunEnv(){
             }
         }
 
-        //´´½¨Êı¾İĞ´µÄÏß³Ì³Ø
+        //åˆ›å»ºæ•°æ®å†™çš„çº¿ç¨‹æ± 
         {
             m_writeThreadPool = new CwxThreadPool(THREAD_GROUP_WRITE,
                 1,
                 getThreadPoolMgr(),
                 &getCommander());
-            ///´´½¨Ïß³ÌµÄtss¶ÔÏó
+            ///åˆ›å»ºçº¿ç¨‹çš„tsså¯¹è±¡
             CwxTss** pTss = new CwxTss*[1];
             pTss[0] = new UnistorTss();
             ((UnistorTss*)pTss[0])->init(NULL);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             if ( 0 != m_writeThreadPool->start(pTss)){
                 CWX_ERROR(("Failure to start write thread pool"));
                 break;
             }
         }
 
-        //´´½¨Êı¾İ²éÑ¯Ïß³Ì³Ø
-        ///´´½¨recvµÄ³õÊ¼»¯
+        //åˆ›å»ºæ•°æ®æŸ¥è¯¢çº¿ç¨‹æ± 
+        ///åˆ›å»ºrecvçš„åˆå§‹åŒ–
         CWX_UINT32 i=0;
         m_recvChannel = new CwxAppChannel*[m_config.getCommon().m_uiThreadNum];
         m_recvThreadPool = new CwxThreadPool*[m_config.getCommon().m_uiThreadNum];
@@ -192,7 +192,7 @@ int UnistorApp::initRunEnv(){
                 &getCommander(),
                 UnistorApp::recvThreadMain,
                 &m_recvArgs[i]);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             CwxTss**pTss = new CwxTss*[1];
             pTss[0] = new UnistorTss();
             ((UnistorTss*)pTss[0])->init(new UnistorRecvThreadUserObj());
@@ -203,8 +203,8 @@ int UnistorApp::initRunEnv(){
         }
         if (i != m_config.getCommon().m_uiThreadNum) break;
 
-        //Æô¶¯masterÏûÏ¢×ª·¢Ïß³Ì³Ø
-        ///×ª·¢handler×ÊÔ´µÄ³õÊ¼»¯
+        //å¯åŠ¨masteræ¶ˆæ¯è½¬å‘çº¿ç¨‹æ± 
+        ///è½¬å‘handlerèµ„æºçš„åˆå§‹åŒ–
         UnistorHandler4Trans::init(getConfig().getCommon().m_uiTranConnNum);
         {
             m_transChannel = new CwxAppChannel();
@@ -214,7 +214,7 @@ int UnistorApp::initRunEnv(){
                 &getCommander(),
                 UnistorApp::transThreadMain,
                 this);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             CwxTss** pTss = new CwxTss*[1];
             pTss[0] = new UnistorTss();
             ((UnistorTss*)pTss[0])->init(NULL);
@@ -224,7 +224,7 @@ int UnistorApp::initRunEnv(){
             }
         }
 
-        //Æô¶¯zkÏß³Ì³Ø
+        //å¯åŠ¨zkçº¿ç¨‹æ± 
         {
             m_zkThreadPool = new CwxThreadPool(THREAD_GROUP_ZK,
                 1,
@@ -232,13 +232,13 @@ int UnistorApp::initRunEnv(){
                 &getCommander(),
                 UnistorApp::zkThreadMain,
                 this);
-            ///Æô¶¯Ïß³Ì
+            ///å¯åŠ¨çº¿ç¨‹
             if ( 0 != m_zkThreadPool->start(NULL)){
                 CWX_ERROR(("Failure to start zookeeper thread pool"));
                 break;
             }
         }
-        //´´½¨zkµÄhandler
+        //åˆ›å»ºzkçš„handler
         m_zkHandler = new UnistorHandler4Zk(this);
         if (0 != m_zkHandler->init()){
             CWX_ERROR(("Failure to init zk handler"));
@@ -252,9 +252,9 @@ int UnistorApp::initRunEnv(){
 }
 
 
-///Ê±ÖÓº¯Êı
+///æ—¶é’Ÿå‡½æ•°
 void UnistorApp::onTime(CwxTimeValue const& current){
-    ///µ÷ÓÃ»ùÀàµÄonTimeº¯Êı
+    ///è°ƒç”¨åŸºç±»çš„onTimeå‡½æ•°
     CwxAppFramework::onTime(current);
 	static CWX_UINT32 ttCheckTimeoutTime = 0;
     static CWX_UINT32 ttTimeBase = 0;
@@ -263,30 +263,30 @@ void UnistorApp::onTime(CwxTimeValue const& current){
 
     if (bClockBack || (uiNow - ttCheckTimeoutTime >= 1)){
         ttCheckTimeoutTime = uiNow;
-        ///Ïò³ıÁËrecv¶ÓÁĞÍâµÄÆäËû¶ÓÁĞËÍÈëÊ±ÖÓĞÅºÅ
+        ///å‘é™¤äº†recvé˜Ÿåˆ—å¤–çš„å…¶ä»–é˜Ÿåˆ—é€å…¥æ—¶é’Ÿä¿¡å·
         CwxMsgBlock* block = NULL;
         CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
         msg->event().setEvent(CwxEventInfo::TIMEOUT_CHECK);
         msg->event().setTimestamp(uiNow);
-        ///Íùwrite¶ÓÁĞËÍÈë
+        ///å¾€writeé˜Ÿåˆ—é€å…¥
         if (m_writeThreadPool){
             block = CwxMsgBlockAlloc::clone(msg);
             block->event().setSvrId(SVR_TYPE_RECV_WRITE);
             m_writeThreadPool->append(block);
         }
-        ///Íù×ª·¢¶ÓÁĞËÍÈë
+        ///å¾€è½¬å‘é˜Ÿåˆ—é€å…¥
         if (m_transThreadPool){
             block = CwxMsgBlockAlloc::clone(msg);
             block->event().setSvrId(SVR_TYPE_TRANSFER);
             m_transThreadPool->append(block);
         }
-        ///ÍùcheckpointÏß³ÌËÍÈë
+        ///å¾€checkpointçº¿ç¨‹é€å…¥
         if (m_checkpointThreadPool &&  m_checkpointHandler && m_checkpointHandler->isNeedCheckOut(uiNow)){
             block = CwxMsgBlockAlloc::clone(msg);
             block->event().setSvrId(SVR_TYPE_CHECKPOINT);
             m_checkpointThreadPool->append(block);
         }
-        ///ÍùzkÏß³ÌËÍÈë
+        ///å¾€zkçº¿ç¨‹é€å…¥
         if (m_zkThreadPool){
             msg->event().setSvrId(SVR_TYPE_ZK);
             m_zkThreadPool->append(msg);
@@ -296,22 +296,22 @@ void UnistorApp::onTime(CwxTimeValue const& current){
     }
 }
 
-///ĞÅºÅ´¦Àíº¯Êı
+///ä¿¡å·å¤„ç†å‡½æ•°
 void UnistorApp::onSignal(int signum){
     switch(signum){
     case SIGQUIT: 
-        ///Èô¼à¿Ø½ø³ÌÍ¨ÖªÍË³ö£¬ÔòÍÆ³ö
+        ///è‹¥ç›‘æ§è¿›ç¨‹é€šçŸ¥é€€å‡ºï¼Œåˆ™æ¨å‡º
         CWX_INFO(("Recv exit signal, exit right now."));
         this->stop();
         break;
     default:
-        ///ÆäËûĞÅºÅ£¬È«²¿ºöÂÔ
+        ///å…¶ä»–ä¿¡å·ï¼Œå…¨éƒ¨å¿½ç•¥
         CWX_INFO(("Recv signal=%d, ignore it.", signum));
         break;
     }
 }
 
-///½ö½ö½¨Á¢Á¬½ÓµÄÁ¬½Ó½¨Á¢
+///ä»…ä»…å»ºç«‹è¿æ¥çš„è¿æ¥å»ºç«‹
 int UnistorApp::onConnCreated(CWX_UINT32 uiSvrId,
                           CWX_UINT32 uiHostId,
                           CWX_HANDLE handle,
@@ -327,12 +327,12 @@ int UnistorApp::onConnCreated(CWX_UINT32 uiSvrId,
         msg->event().setConnId(CWX_APP_INVALID_CONN_ID);
         msg->event().setIoHandle(handle);
         msg->event().setEvent(CwxEventInfo::CONN_CREATED);
-        if (SVR_TYPE_RECV == uiSvrId){///Êı¾İ½ÓÊÕÁ¬½Ó½¨Á¢£¬·Åµ½recvÏß³Ì
+        if (SVR_TYPE_RECV == uiSvrId){///æ•°æ®æ¥æ”¶è¿æ¥å»ºç«‹ï¼Œæ”¾åˆ°recvçº¿ç¨‹
             CWX_UINT32 uiIndex = handle%m_config.getCommon().m_uiThreadNum;
             if (m_recvThreadPool[uiIndex]->append(msg) <= 1) m_recvChannel[uiIndex]->notice();
-        }else if (SVR_TYPE_INNER_SYNC == uiSvrId){///ÄÚ²¿Í¬²½
+        }else if (SVR_TYPE_INNER_SYNC == uiSvrId){///å†…éƒ¨åŒæ­¥
             if (m_innerSyncThreadPool->append(msg) <= 1) m_innerSyncChannel->notice();
-        }else if (SVR_TYPE_OUTER_SYNC == uiSvrId){///Íâ²¿Í¬²½
+        }else if (SVR_TYPE_OUTER_SYNC == uiSvrId){///å¤–éƒ¨åŒæ­¥
             if (m_outerSyncThreadPool->append(msg) <= 1) m_outerSyncChannel->notice();
         }
     }else{
@@ -343,12 +343,12 @@ int UnistorApp::onConnCreated(CWX_UINT32 uiSvrId,
 
 }
 
-///½ÓÊÕmsgµÄÁ¬½Ó½¨Á¢
+///æ¥æ”¶msgçš„è¿æ¥å»ºç«‹
 int UnistorApp::onConnCreated(CwxAppHandler4Msg& conn,
 						  bool& ,
 						  bool& )
 {
-    if (SVR_TYPE_MONITOR == conn.getConnInfo().getSvrId()){///Èç¹ûÊÇ¼à¿ØµÄÁ¬½Ó½¨Á¢£¬Ôò½¨Á¢Ò»¸östringµÄbuf£¬ÓÃÓÚ»º´æ²»ÍêÕûµÄÃüÁî
+    if (SVR_TYPE_MONITOR == conn.getConnInfo().getSvrId()){///å¦‚æœæ˜¯ç›‘æ§çš„è¿æ¥å»ºç«‹ï¼Œåˆ™å»ºç«‹ä¸€ä¸ªstringçš„bufï¼Œç”¨äºç¼“å­˜ä¸å®Œæ•´çš„å‘½ä»¤
 		string* buf = new string();
 		conn.getConnInfo().setUserData(buf);
         return 0;
@@ -357,17 +357,17 @@ int UnistorApp::onConnCreated(CwxAppHandler4Msg& conn,
 	return 0;
 }
 
-///Á¬½Ó¹Ø±Õ
+///è¿æ¥å…³é—­
 int UnistorApp::onConnClosed(CwxAppHandler4Msg& conn){
-	if (SVR_TYPE_MASTER == conn.getConnInfo().getSvrId()){///Èç¹ûÊÇmasterµÄÍ¬²½Á¬½Ó¹Ø±Õ
+	if (SVR_TYPE_MASTER == conn.getConnInfo().getSvrId()){///å¦‚æœæ˜¯masterçš„åŒæ­¥è¿æ¥å…³é—­
 		CwxMsgBlock* pBlock = CwxMsgBlockAlloc::malloc(0);
 		pBlock->event().setSvrId(conn.getConnInfo().getSvrId());
 		pBlock->event().setHostId(conn.getConnInfo().getHostId());
 		pBlock->event().setConnId(conn.getConnInfo().getConnId());
-		///ÉèÖÃÊÂ¼şÀàĞÍ
+		///è®¾ç½®äº‹ä»¶ç±»å‹
 		pBlock->event().setEvent(CwxEventInfo::CONN_CLOSED);
 		m_writeThreadPool->append(pBlock);
-	}else if (SVR_TYPE_MONITOR == conn.getConnInfo().getSvrId()){///ÈôÊÇ¼à¿ØµÄÁ¬½Ó¹Ø±Õ£¬Ôò±ØĞëÊÍ·ÅÏÈÇ°Ëù´´½¨µÄstring¶ÔÏó¡£
+	}else if (SVR_TYPE_MONITOR == conn.getConnInfo().getSvrId()){///è‹¥æ˜¯ç›‘æ§çš„è¿æ¥å…³é—­ï¼Œåˆ™å¿…é¡»é‡Šæ”¾å…ˆå‰æ‰€åˆ›å»ºçš„stringå¯¹è±¡ã€‚
 		if (conn.getConnInfo().getUserData()){
 			delete (string*)conn.getConnInfo().getUserData();
 			conn.getConnInfo().setUserData(NULL);
@@ -380,13 +380,13 @@ int UnistorApp::onConnClosed(CwxAppHandler4Msg& conn){
 }
 
 
-///ÊÕµ½ÏûÏ¢
+///æ”¶åˆ°æ¶ˆæ¯
 int UnistorApp::onRecvMsg(CwxMsgBlock* msg,
 						CwxAppHandler4Msg& conn,
 						CwxMsgHead const& header,
 						bool& )
 {
-    if (SVR_TYPE_MASTER == conn.getConnInfo().getSvrId()){///Ö»ÓĞ×ª·¢À´µÄÏûÏ¢
+    if (SVR_TYPE_MASTER == conn.getConnInfo().getSvrId()){///åªæœ‰è½¬å‘æ¥çš„æ¶ˆæ¯
         msg->event().setSvrId(conn.getConnInfo().getSvrId());
         msg->event().setHostId(conn.getConnInfo().getHostId());
         msg->event().setConnId(conn.getConnInfo().getConnId());
@@ -400,7 +400,7 @@ int UnistorApp::onRecvMsg(CwxMsgBlock* msg,
     return 0;
 }
 
-///ÊÕµ½ÏûÏ¢µÄÏìÓ¦º¯Êı
+///æ”¶åˆ°æ¶ˆæ¯çš„å“åº”å‡½æ•°
 int UnistorApp::onRecvMsg(CwxAppHandler4Msg& conn,
 						bool& ){
 	if (SVR_TYPE_MONITOR == conn.getConnInfo().getSvrId()){
@@ -415,7 +415,7 @@ int UnistorApp::onRecvMsg(CwxAppHandler4Msg& conn,
 				return 0;
 			}
 		}
-		///¼à¿ØÏûÏ¢
+		///ç›‘æ§æ¶ˆæ¯
 		return monitorStats(szBuf, (CWX_UINT32)recv_size, conn);
 	}else{
         CWX_ERROR(("Recv msg from Unknown svr-type[%u]'s connection.", conn.getConnInfo().getSvrId()));
@@ -427,30 +427,30 @@ int UnistorApp::onRecvMsg(CwxAppHandler4Msg& conn,
 
 void UnistorApp::destroy(){
 	CWX_UINT32 i=0;
-    //Í£Ö¹zkÏß³Ì£¬±ØĞëÏŞÓÚzkHandler->stop£¬·ñÔò»áËÀËø¡£
+    //åœæ­¢zkçº¿ç¨‹ï¼Œå¿…é¡»é™äºzkHandler->stopï¼Œå¦åˆ™ä¼šæ­»é”ã€‚
     if (m_zkThreadPool) m_zkThreadPool->stop();
-    //Í£Ö¹zookeeperµ×²ãÏß³Ì
+    //åœæ­¢zookeeperåº•å±‚çº¿ç¨‹
     if (m_zkHandler){
         m_zkHandler->stop();
     }
-    //Í£Ö¹recvÏß³Ì
+    //åœæ­¢recvçº¿ç¨‹
     if (m_recvThreadPool){
         for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){
             if (m_recvThreadPool[i]) m_recvThreadPool[i]->stop();
         }
     }
-    ///Í£Ö¹Ğ´Ïß³Ì
+    ///åœæ­¢å†™çº¿ç¨‹
     if (m_writeThreadPool) m_writeThreadPool->stop();
-    //Í£Ö¹innersyncÏß³Ì
+    //åœæ­¢innersyncçº¿ç¨‹
     if (m_innerSyncThreadPool) m_innerSyncThreadPool->stop();
-    //Í£Ö¹outersyncÏß³Ì
+    //åœæ­¢outersyncçº¿ç¨‹
     if (m_outerSyncThreadPool) m_outerSyncThreadPool->stop();
-    //Í£Ö¹checkpointÏß³Ì
+    //åœæ­¢checkpointçº¿ç¨‹
     if (m_checkpointThreadPool) m_checkpointThreadPool->stop();
-    //Í£Ö¹×ª·¢Ïß³Ì
+    //åœæ­¢è½¬å‘çº¿ç¨‹
     if (m_transThreadPool) m_transThreadPool->stop();
 
-    //ÊÍ·Åhandler
+    //é‡Šæ”¾handler
     UnistorHandler4Trans::destroy();
     if (m_masterHandler) delete m_masterHandler;
     m_masterHandler = NULL;
@@ -464,7 +464,7 @@ void UnistorApp::destroy(){
     if (m_zkHandler) delete m_zkHandler;
     m_zkHandler = NULL;
 
-    //ÊÍ·ÅÏß³Ì³Ø¼°channel
+    //é‡Šæ”¾çº¿ç¨‹æ± åŠchannel
     if (m_recvThreadPool){
 		for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){
 			if (m_recvThreadPool[i]) delete m_recvThreadPool[i];
@@ -485,27 +485,27 @@ void UnistorApp::destroy(){
     if (m_innerSyncChannel) delete m_innerSyncChannel;
     m_innerSyncChannel = NULL;
 
-    //É¾³ıÍâ²¿Í¬²½µÄÏß³Ì¼°channel
+    //åˆ é™¤å¤–éƒ¨åŒæ­¥çš„çº¿ç¨‹åŠchannel
     if (m_outerSyncThreadPool) delete m_outerSyncThreadPool;
     m_outerSyncThreadPool = NULL;
     if (m_outerSyncChannel) delete m_outerSyncChannel;
     m_outerSyncChannel = NULL;
 
-    //É¾³ıwrite pool¼°handler
+    //åˆ é™¤write poolåŠhandler
 	if (m_writeThreadPool) delete m_writeThreadPool;
     m_writeThreadPool = NULL;
 
-    //É¾³ıcheckpointÏß³Ì
+    //åˆ é™¤checkpointçº¿ç¨‹
 	if (m_checkpointThreadPool) delete m_checkpointThreadPool;
     m_checkpointThreadPool = NULL;
 
-    //É¾³ı×ª·¢Ïß³Ì
+    //åˆ é™¤è½¬å‘çº¿ç¨‹
     if (m_transThreadPool) delete m_transThreadPool;
     m_transThreadPool = NULL;
     if (m_transChannel) delete m_transChannel;
     m_transChannel = NULL;
 
-    //É¾³ızkÏß³Ì
+    //åˆ é™¤zkçº¿ç¨‹
     if (m_zkThreadPool) delete m_zkThreadPool;
     m_zkThreadPool = NULL;
 
@@ -531,9 +531,9 @@ int UnistorApp::monitorStats(char const* buf,
 		CwxCommon::trim(*strCmd);
 		end = strCmd->find('\n');
 		if (string::npos == end){
-			if (strCmd->length() > 10){//ÎŞĞ§µÄÃüÁî
-				strCmd->erase(); ///Çå¿Õ½ÓÊÜµ½µÄÃüÁî
-				///»Ø¸´ĞÅÏ¢
+			if (strCmd->length() > 10){//æ— æ•ˆçš„å‘½ä»¤
+				strCmd->erase(); ///æ¸…ç©ºæ¥å—åˆ°çš„å‘½ä»¤
+				///å›å¤ä¿¡æ¯
 				msg = CwxMsgBlockAlloc::malloc(1024);
 				strcpy(msg->wr_ptr(), "ERROR\r\n");
 				msg->wr_ptr(strlen(msg->wr_ptr()));
@@ -542,16 +542,16 @@ int UnistorApp::monitorStats(char const* buf,
 			}
 		}else{
 			if (memcmp(strCmd->c_str(), "stats", 5) == 0){
-				strCmd->erase(); ///Çå¿Õ½ÓÊÜµ½µÄÃüÁî
+				strCmd->erase(); ///æ¸…ç©ºæ¥å—åˆ°çš„å‘½ä»¤
 				CWX_UINT32 uiLen = packMonitorInfo();
 				msg = CwxMsgBlockAlloc::malloc(uiLen);
 				memcpy(msg->wr_ptr(), m_szBuf, uiLen);
 				msg->wr_ptr(uiLen);
 			}else if(memcmp(strCmd->c_str(), "quit", 4) == 0){
 				return -1;
-			}else{//ÎŞĞ§µÄÃüÁî
-				strCmd->erase(); ///Çå¿Õ½ÓÊÜµ½µÄÃüÁî
-				///»Ø¸´ĞÅÏ¢
+			}else{//æ— æ•ˆçš„å‘½ä»¤
+				strCmd->erase(); ///æ¸…ç©ºæ¥å—åˆ°çš„å‘½ä»¤
+				///å›å¤ä¿¡æ¯
 				msg = CwxMsgBlockAlloc::malloc(1024);
 				strcpy(msg->wr_ptr(), "ERROR\r\n");
 				msg->wr_ptr(strlen(msg->wr_ptr()));
@@ -602,73 +602,73 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
 	CWX_UINT32 uiPos = 0;
     CWX_UINT32 i=0;
 	do{
-		//Êä³ö½ø³Ìpid
+		//è¾“å‡ºè¿›ç¨‹pid
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %d\r\n", UNISTOR_SYS_KEY_PID, getpid());
 		UNISTOR_MONITOR_APPEND();
-		//Êä³ö¸¸½ø³Ìpid
+		//è¾“å‡ºçˆ¶è¿›ç¨‹pid
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %d\r\n", UNISTOR_SYS_KEY_PPID, getppid());
 		UNISTOR_MONITOR_APPEND();
-		//°æ±¾ºÅ
+		//ç‰ˆæœ¬å·
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_VERSION, this->getAppVersion().c_str());
 		UNISTOR_MONITOR_APPEND();
-		//ĞŞ¸ÄÊ±¼ä
+		//ä¿®æ”¹æ—¶é—´
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_MODIFY, this->getLastModifyDatetime().c_str());
 		UNISTOR_MONITOR_APPEND();
-		//±àÒëÊ±¼ä
+		//ç¼–è¯‘æ—¶é—´
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_COMPILE, this->getLastCompileDatetime().c_str());
 		UNISTOR_MONITOR_APPEND();
-		//Æô¶¯Ê±¼ä
+		//å¯åŠ¨æ—¶é—´
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_START, m_strStartTime.c_str());
 		UNISTOR_MONITOR_APPEND();
-        //ÒıÇæÀàĞÍ
+        //å¼•æ“ç±»å‹
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE, getConfig().getCommon().m_strStoreType.c_str());
 		UNISTOR_MONITOR_APPEND();
-        //ÒıÇæ°æ±¾
+        //å¼•æ“ç‰ˆæœ¬
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_VERSION, getStore()->getVersion());
 		UNISTOR_MONITOR_APPEND();
-        //ÒıÇæ×´Ì¬
+        //å¼•æ“çŠ¶æ€
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_STATE, m_store->isValid()?"valid":"invalid");
 		UNISTOR_MONITOR_APPEND();
         if (!m_store->isValid()){
-            //´íÎóĞÅÏ¢
+            //é”™è¯¯ä¿¡æ¯
             CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ENGINE_ERROR, m_store->getErrMsg());
             UNISTOR_MONITOR_APPEND();
         }
-        //binlogµÄ×´Ì¬
+        //binlogçš„çŠ¶æ€
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_STATE, m_store->getBinLogMgr()->isInvalid()?"invalid":"valid");
 		UNISTOR_MONITOR_APPEND();
-        //binlog´íÎóĞÅÏ¢
+        //binlogé”™è¯¯ä¿¡æ¯
         if (!m_store->getBinLogMgr()->isInvalid()){
             CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_ERROR, m_store->getBinLogMgr()->isInvalid()? m_store->getBinLogMgr()->getInvalidMsg():"");
             UNISTOR_MONITOR_APPEND();
         }
-        //µ±Ç°×îĞ¡µÄsid
+        //å½“å‰æœ€å°çš„sid
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_SID,
 			CwxCommon::toString(m_store->getBinLogMgr()->getMinSid(), szTmp));
 		UNISTOR_MONITOR_APPEND();
-        //µ±Ç°×îĞ¡sidµÄÊ±¼ä´Á
+        //å½“å‰æœ€å°sidçš„æ—¶é—´æˆ³
 		CwxDate::getDateY4MDHMS2(m_store->getBinLogMgr()->getMinTimestamp(), strValue);
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_TIMESTAMP,
 			strValue.c_str());
 		UNISTOR_MONITOR_APPEND();
-        //×îĞ¡µÄbinlogÎÄ¼ş
+        //æœ€å°çš„binlogæ–‡ä»¶
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MIN_FILE,
 			m_store->getBinLogMgr()->getMinFile(strValue).c_str());
 		UNISTOR_MONITOR_APPEND();
-        //×î´óµÄbinlogµÄsid
+        //æœ€å¤§çš„binlogçš„sid
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MAX_SID,
 			CwxCommon::toString(m_store->getBinLogMgr()->getMaxSid(), szTmp));
 		UNISTOR_MONITOR_APPEND();
-        //×î´óbinlog sidµÄÊ±¼ä´Á
+        //æœ€å¤§binlog sidçš„æ—¶é—´æˆ³
 		CwxDate::getDateY4MDHMS2(m_store->getBinLogMgr()->getMaxTimestamp(), strValue);
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n",UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP,
 			strValue.c_str());
 		UNISTOR_MONITOR_APPEND();
-        //×î´óµÄbinlogÎÄ¼ş
+        //æœ€å¤§çš„binlogæ–‡ä»¶
 		CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_BINLOG_MAX_FILE,
 			m_store->getBinLogMgr()->getMaxFile(strValue).c_str());
 		UNISTOR_MONITOR_APPEND();
-        //¶ÁÏß³ÌµÄÊıÁ¿
+        //è¯»çº¿ç¨‹çš„æ•°é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_NUM,
             m_config.getCommon().m_uiThreadNum);
         UNISTOR_MONITOR_APPEND();
@@ -677,171 +677,171 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
         CWX_UINT32 uiConnNum = 0;
         for (i=0; i<m_config.getCommon().m_uiThreadNum; i++){
             tss = (UnistorTss*)getThreadPoolMgr()->getTss(THREAD_GROUP_RECV_BASE + i, 0);
-            //¶ÁÏß³ÌµÄÏûÏ¢¶ÓÁĞÖÍÁôµÄÏûÏ¢
+            //è¯»çº¿ç¨‹çš„æ¶ˆæ¯é˜Ÿåˆ—æ»ç•™çš„æ¶ˆæ¯
             CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX,
                 i, m_recvThreadPool[i]->getQueuedMsgNum());
             UNISTOR_MONITOR_APPEND();
             uiMsgNum += m_recvThreadPool[i]->getQueuedMsgNum();
-            //¶ÁÏß³ÌµÄÁ¬½ÓÊı
+            //è¯»çº¿ç¨‹çš„è¿æ¥æ•°
             CwxCommon::snprintf(szLine, 4096, "STAT %s%d %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX,
                 i, ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum());
             UNISTOR_MONITOR_APPEND();
             uiConnNum += ((UnistorRecvThreadUserObj*)tss->getUserObj())->getConnNum();
         }
-        //¶ÁÏß³ÌµÄÏûÏ¢¶ÓÁĞÖÍÁôµÄÏûÏ¢
+        //è¯»çº¿ç¨‹çš„æ¶ˆæ¯é˜Ÿåˆ—æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_QUEUE,
             uiMsgNum);
         UNISTOR_MONITOR_APPEND();
-        //¶ÁÏß³ÌµÄÁ¬½ÓÊı
+        //è¯»çº¿ç¨‹çš„è¿æ¥æ•°
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_READ_THREAD_CONNECT,
             uiConnNum);
         UNISTOR_MONITOR_APPEND();
 
-        ///Ğ´Ïß³ÌµÄÖÍÁôÏûÏ¢ÊıÁ¿
+        ///å†™çº¿ç¨‹çš„æ»ç•™æ¶ˆæ¯æ•°é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE,
             m_writeThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //×ª·¢Ïß³ÌÖÍÁôµÄÏûÏ¢
+        //è½¬å‘çº¿ç¨‹æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE,
             m_transThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //checkpointÏß³ÌÖÍÁôµÄÏûÏ¢
+        //checkpointçº¿ç¨‹æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE,
             m_checkpointThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //zkÏß³ÌÖÍÁôµÄÏûÏ¢
+        //zkçº¿ç¨‹æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_ZK_THREAD_QUEUE,
             m_zkThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //ÄÚ²¿×ª·¢Ïß³ÌÖÍÁôµÄÏûÏ¢
+        //å†…éƒ¨è½¬å‘çº¿ç¨‹æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE,
             m_innerSyncThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //Íâ²¿×ª·¢Ïß³ÌÖÍÁôµÄÏûÏ¢
+        //å¤–éƒ¨è½¬å‘çº¿ç¨‹æ»ç•™çš„æ¶ˆæ¯
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE,
             m_outerSyncThreadPool->getQueuedMsgNum());
         UNISTOR_MONITOR_APPEND();
-        //master×ª·¢ÏûÏ¢µÄÊáÀí
+        //masterè½¬å‘æ¶ˆæ¯çš„æ¢³ç†
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM,
             getTaskBoard().getTaskNum());
         UNISTOR_MONITOR_APPEND();
-        //zookeeperµÄÁ¬½Ó×´Ì¬
+        //zookeeperçš„è¿æ¥çŠ¶æ€
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ZK_STATE,
             m_zkHandler->isValid()?"valid":"invalid");
         UNISTOR_MONITOR_APPEND();
-        //zookeeperµÄ´íÎó
+        //zookeeperçš„é”™è¯¯
         if (!m_zkHandler->isValid()){
             m_zkHandler->getErrMsg(strValue);
             CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_ZK_ERROR, strValue.c_str());
             UNISTOR_MONITOR_APPEND();
         }
-        //cacheµÄ×´Ì¬
+        //cacheçš„çŠ¶æ€
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_STATE,
             m_store->getStoreEngine()->isCacheValid()?"valid":"invalid");
         UNISTOR_MONITOR_APPEND();
-        //cacheµÄ´íÎóĞÅÏ¢
+        //cacheçš„é”™è¯¯ä¿¡æ¯
         if (!m_store->getStoreEngine()->isCacheValid()){
             CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_CACHE_ERR, m_store->getStoreEngine()->getCacheErrMsg());
             UNISTOR_MONITOR_APPEND();
         }
-        //cacheµÄwrite keyµÄÊıÁ¿
+        //cacheçš„write keyçš„æ•°é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_KEY,
             m_store->getStoreEngine()->getWriteCacheKeyNum());
         UNISTOR_MONITOR_APPEND();
-        //cacheµÄwrite keyµÄ¿Õ¼ä
+        //cacheçš„write keyçš„ç©ºé—´
         CwxCommon::snprintf(szLine, 4096, "STAT %s %u\r\n", UNISTOR_SYS_KEY_WRITE_CACHE_SPACE,
             m_store->getStoreEngine()->getWriteCacheUsedSize());
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄ¿Õ¼ä
+        //read cacheçš„ç©ºé—´
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheMaxSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄ×î´óÊıÁ¿
+        //read cacheçš„æœ€å¤§æ•°é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheMaxKeyNum(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄÊ¹ÓÃ¿Õ¼ä
+        //read cacheçš„ä½¿ç”¨ç©ºé—´
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄÊ¹ÓÃÈİÁ¿
+        //read cacheçš„ä½¿ç”¨å®¹é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄÊı¾İÈİÁ¿
+        //read cacheçš„æ•°æ®å®¹é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheUsedDataSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄfree¿Õ¼ä
+        //read cacheçš„freeç©ºé—´
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheFreeSize(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄfreeÈİÁ¿
+        //read cacheçš„freeå®¹é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheFreeCapacity(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
-        //read cacheµÄcacheµÄkeyµÄÊıÁ¿
+        //read cacheçš„cacheçš„keyçš„æ•°é‡
         CwxCommon::snprintf(szLine, 4096, "STAT %s %s\r\n", UNISTOR_SYS_KEY_READ_CACHE_KEY,
             CwxCommon::toString((CWX_UINT64)m_store->getStoreEngine()->getReadCacheKeyCount(),szTmp, 10));
         UNISTOR_MONITOR_APPEND();
         CWX_UINT64 ullNum = 0;
-        //getµÄ·ÃÎÊÊıÁ¿
+        //getçš„è®¿é—®æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_NUM,m_ullStatsGetNum);
-        ///read cacheµÄÊıÁ¿
+        ///read cacheçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_READ_CACHE_NUM,m_ullStatsGetReadCacheNum);
-        ///get²éÑ¯´æÔÚ½á¹ûµÄÊıÁ¿
+        ///getæŸ¥è¯¢å­˜åœ¨ç»“æœçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GET_EXIST_NUM,m_ullStatsGetExistNum);
-        ///getsµÄ·ÃÎÊÊıÁ¿
+        ///getsçš„è®¿é—®æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_NUM,m_ullStatsGetsNum);
-        ///getsµÄkeyµÄÊıÁ¿
+        ///getsçš„keyçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_NUM,m_ullStatsGetsKeyNum);
-        ///getsµÄkeyµÄcacheÊıÁ¿
+        ///getsçš„keyçš„cacheæ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM,m_ullStatsGetsKeyReadCacheNum);
-        ///getsµÄkeyµÄ´æÔÚµÄÊıÁ¿
+        ///getsçš„keyçš„å­˜åœ¨çš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM,m_ullStatsGetsKeyExistNum);
-        ///listµÄÊıÁ¿
+        ///listçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_LIST_NUM,m_ullStatsListNum);
-        ///existµÄÊıÁ¿
+        ///existçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_NUM,m_ullStatsExistNum);
-        ///existµÄread cacheµÄÊıÁ¿
+        ///existçš„read cacheçš„æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM,m_ullStatsExistReadCacheNum);
-        ///existµÄ´æÔÚÊıÁ¿
+        ///existçš„å­˜åœ¨æ•°é‡
         UNISTOR_STATS_READ_THREAD(UNISTOR_SYS_KEY_EXIST_EXIST_NUM,m_ullStatsExistExistNum);
-        ///addµÄÊıÁ¿
+        ///addçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_NUM,m_ullStatsAddNum);
-        ///addµÄread cacheÊıÁ¿
+        ///addçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM,m_ullStatsAddReadCacheNum);
-        ///addµÄwrite cacheÊıÁ¿
+        ///addçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM,m_ullStatsAddWriteCacheNum);
-        ///setµÄÊıÁ¿
+        ///setçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_NUM,m_ullStatsSetNum);
-        ///setµÄread cacheÊıÁ¿
+        ///setçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_READ_CACHE_NUM,m_ullStatsSetReadCacheNum);
-        ///setµÄwrite cacheÊıÁ¿
+        ///setçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM,m_ullStatsSetWriteCacheNum);
-        ///updateµÄÊıÁ¿
+        ///updateçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_NUM,m_ullStatsUpdateNum);
-        ///updateµÄread cacheÊıÁ¿
+        ///updateçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM,m_ullStatsUpdateReadCacheNum);
-        ///updateµÄwrite cacheÊıÁ¿
+        ///updateçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM,m_ullStatsUpdateWriteCacheNum);
-        ///incµÄÊıÁ¿
+        ///incçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_NUM,m_ullStatsIncNum);
-        ///incµÄread cacheÊıÁ¿
+        ///incçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_READ_CACHE_NUM,m_ullStatsIncReadCacheNum);
-        ///incµÄwrite cacheÊıÁ¿
+        ///incçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM,m_ullStatsIncWriteCacheNum);
-        ///delµÄÊıÁ¿
+        ///delçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_NUM,m_ullStatsDelNum);
-        ///delµÄread cacheÊıÁ¿
+        ///delçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM,m_ullStatsDelReadCacheNum);
-        ///delµÄwrite cacheÊıÁ¿
+        ///delçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM,m_ullStatsDelWriteCacheNum);
-        ///importµÄÊıÁ¿
+        ///importçš„æ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_NUM,m_ullStatsImportNum);
-        ///importµÄread cacheÊıÁ¿
+        ///importçš„read cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM,m_ullStatsImportReadCacheNum);
-        ///importµÄwrite cacheÊıÁ¿
+        ///importçš„write cacheæ•°é‡
         UNISTOR_STATS_WRITE_THREAD(UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM,m_ullStatsImportWriteCacheNum);
 
 	}while(0);
@@ -864,12 +864,12 @@ CWX_UINT32 UnistorApp::packMonitorInfo(){
     ullNum = tss->attr;\
     CwxCommon::snprintf(szData, uiLen, "%s", CwxCommon::toString(ullNum, szTmp, 10));\
 
-//»ñÈ¡ÏµÍ³key¡£1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
-int UnistorApp::getSysKey(void* pApp, ///<app¶ÔÏó
-                          char const* key, ///<Òª»ñÈ¡µÄkey
-                          CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-                          char* szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-                          CWX_UINT32& uiLen  ///<szDataÊı¾İµÄ×Ö½ÚÊı
+//è·å–ç³»ç»Ÿkeyã€‚1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
+int UnistorApp::getSysKey(void* pApp, ///<appå¯¹è±¡
+                          char const* key, ///<è¦è·å–çš„key
+                          CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+                          char* szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+                          CWX_UINT32& uiLen  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
                           )
 {
     UnistorApp* app=(UnistorApp*)pApp;
@@ -1066,7 +1066,7 @@ int UnistorApp::getSysKey(void* pApp, ///<app¶ÔÏó
 }
 
 
-///·Ö·¢channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
+///åˆ†å‘channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
 int UnistorApp::dealRecvThreadQueue(UnistorTss* tss,
                                     CwxMsgQueue* queue,
                                     CWX_UINT32 uiQueueIndex,
@@ -1090,19 +1090,19 @@ int UnistorApp::dealRecvThreadQueue(UnistorTss* tss,
 }
 
 
-///·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
+///åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
 void* UnistorApp::recvThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg)
 {
 	pair<UnistorApp*, CWX_UINT32>* item = (pair<UnistorApp*, CWX_UINT32>*)arg;
     if (0 != item->first->m_recvChannel[item->second]->open()){
         CWX_ERROR(("Failure to open unistor query channel, index=%d. exit......",item->second));
-        ///Í£Ö¹½ø³Ì
+        ///åœæ­¢è¿›ç¨‹
         item->first->stop();
         return NULL;
     }
     ((UnistorTss*)tss)->m_uiThreadIndex = item->second;
     while(1) {
-        //»ñÈ¡¶ÓÁĞÖĞµÄÏûÏ¢²¢´¦Àí
+        //è·å–é˜Ÿåˆ—ä¸­çš„æ¶ˆæ¯å¹¶å¤„ç†
         if (0 != dealRecvThreadQueue((UnistorTss*)tss, queue, item->second,  item->first, item->first->m_recvChannel[item->second])) break;
         if (-1 == item->first->m_recvChannel[item->second]->dispatch(1)){
             CWX_ERROR(("Failure to invoke kv query channel CwxAppChannel::dispatch(), index=%d",item->second));
@@ -1118,7 +1118,7 @@ void* UnistorApp::recvThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg)
     return NULL;
 }
 
-///·Ö·¢channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
+///åˆ†å‘channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
 int UnistorApp::dealInnerSyncThreadQueue(UnistorTss* tss,
                                          CwxMsgQueue* queue,
                                          UnistorApp* app,
@@ -1140,7 +1140,7 @@ int UnistorApp::dealInnerSyncThreadQueue(UnistorTss* tss,
     return 0;
 }
 
-///·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
+///åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
 void* UnistorApp::innerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* arg){
 	UnistorApp* app = (UnistorApp*) arg;
     UnistorTss* tss = (UnistorTss*)pThr;
@@ -1150,7 +1150,7 @@ void* UnistorApp::innerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* ar
 		return NULL;
 	}
 	while(1){
-		//»ñÈ¡¶ÓÁĞÖĞµÄÏûÏ¢²¢´¦Àí
+		//è·å–é˜Ÿåˆ—ä¸­çš„æ¶ˆæ¯å¹¶å¤„ç†
 		if (0 != dealInnerSyncThreadQueue(tss, queue, app, app->getInnerSyncChannel())) break;
 		if (-1 == app->getInnerSyncChannel()->dispatch(1)){
 			CWX_ERROR(("Failure to invoke inner sync channel CwxAppChannel::dispatch()"));
@@ -1164,12 +1164,12 @@ void* UnistorApp::innerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* ar
 		CWX_INFO(("Stop app for inner sync channel thread stopped."));
 		app->stop();
 	}
-    ///ÊÍ·ÅÏß³Ì×ÊÔ´
+    ///é‡Šæ”¾çº¿ç¨‹èµ„æº
     ((UnistorDispatchThreadUserObj*)tss->getUserObj())->free(app);
 	return NULL;
 }
 
-///·Ö·¢channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
+///åˆ†å‘channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
 int UnistorApp::dealOuterSyncThreadQueue(UnistorTss* tss,
                                          CwxMsgQueue* queue,
                                          UnistorApp* app,
@@ -1192,7 +1192,7 @@ int UnistorApp::dealOuterSyncThreadQueue(UnistorTss* tss,
 }
 
 
-///Íâ²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
+///å¤–éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
 void* UnistorApp::outerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* arg){
     UnistorApp* app = (UnistorApp*) arg;
     UnistorTss* tss = (UnistorTss*)pThr;
@@ -1202,7 +1202,7 @@ void* UnistorApp::outerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* ar
         return NULL;
     }
     while(1){
-        //»ñÈ¡¶ÓÁĞÖĞµÄÏûÏ¢²¢´¦Àí
+        //è·å–é˜Ÿåˆ—ä¸­çš„æ¶ˆæ¯å¹¶å¤„ç†
         if (0 != dealOuterSyncThreadQueue((UnistorTss*)tss, queue, app, app->getOuterSyncChannel())) break;
         if (-1 == app->getOuterSyncChannel()->dispatch(1)){
             CWX_ERROR(("Failure to invoke outer sync channel CwxAppChannel::dispatch()"));
@@ -1216,12 +1216,12 @@ void* UnistorApp::outerSyncThreadMain(CwxTss* pThr, CwxMsgQueue* queue, void* ar
         CWX_INFO(("Stop app for outer sync channel thread stopped."));
         app->stop();
     }
-    ///ÊÍ·ÅÏß³Ì×ÊÔ´
+    ///é‡Šæ”¾çº¿ç¨‹èµ„æº
     ((UnistorDispatchThreadUserObj*)tss->getUserObj())->free(app);
     return NULL;
 }
 
-///·Ö·¢channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
+///åˆ†å‘channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
 int UnistorApp::dealTransThreadQueue(UnistorTss* tss,
                                      CwxMsgQueue* queue,
                                      UnistorApp* app,
@@ -1243,7 +1243,7 @@ int UnistorApp::dealTransThreadQueue(UnistorTss* tss,
     return 0;
 }
 
-///·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
+///åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
 void* UnistorApp::transThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg){
     UnistorApp* app = (UnistorApp*) arg;
     if (0 != app->getTransChannel()->open()){
@@ -1252,7 +1252,7 @@ void* UnistorApp::transThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg){
         return NULL;
     }
     while(1){
-        //»ñÈ¡¶ÓÁĞÖĞµÄÏûÏ¢²¢´¦Àí
+        //è·å–é˜Ÿåˆ—ä¸­çš„æ¶ˆæ¯å¹¶å¤„ç†
         if (0 != dealTransThreadQueue((UnistorTss*) tss, queue, app, app->getTransChannel())) break;
         if (-1 == app->getTransChannel()->dispatch(1)){
             CWX_ERROR(("Failure to invoke trans channel CwxAppChannel::dispatch()"));
@@ -1270,7 +1270,7 @@ void* UnistorApp::transThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg){
 }
 
 
-///Íâ²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
+///å¤–éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
 void* UnistorApp::zkThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg){
     UnistorApp* app = (UnistorApp*) arg;
     CwxMsgBlock* block = NULL;
@@ -1288,7 +1288,7 @@ void* UnistorApp::zkThreadMain(CwxTss* tss, CwxMsgQueue* queue, void* arg){
 
 }
 
-///ÉèÖÃmaster recvÁ¬½ÓµÄÊôĞÔ
+///è®¾ç½®master recvè¿æ¥çš„å±æ€§
 int UnistorApp::setConnSockAttr(CWX_HANDLE handle, void* arg){
     UnistorConnAttr* attr = (UnistorConnAttr*)arg;
     if (attr->m_bNoDelay){
@@ -1335,7 +1335,7 @@ int UnistorApp::setConnSockAttr(CWX_HANDLE handle, void* arg){
 
 
 int UnistorApp::startNetwork(){
-    ///ÉèÖÃÁ¬½ÓµÄÊôĞÔ
+    ///è®¾ç½®è¿æ¥çš„å±æ€§
     m_recvSvrSockAttr.m_bNoDelay = m_recvCliSockAttr.m_bNoDelay = true;
     m_recvSvrSockAttr.m_bLinger = m_recvCliSockAttr.m_bLinger = true;
     m_recvSvrSockAttr.m_bKeepalive = m_recvCliSockAttr.m_bKeepalive = true;
@@ -1346,7 +1346,7 @@ int UnistorApp::startNetwork(){
     m_syncSvrSockAttr.m_uiRecvBuf = m_syncCliSockAttr.m_uiSendBuf = 0;
     m_syncSvrSockAttr.m_uiSendBuf = m_syncCliSockAttr.m_uiRecvBuf = m_config.getCommon().m_uiSockBufSize * 1024;
 
-	///Æô¶¯monitorµÄ¼àÌı
+	///å¯åŠ¨monitorçš„ç›‘å¬
 	if (m_config.getCommon().m_monitor.getHostName().length()){
 		if (0 > this->noticeTcpListen(SVR_TYPE_MONITOR,
 			m_config.getCommon().m_monitor.getHostName().c_str(),
@@ -1358,7 +1358,7 @@ int UnistorApp::startNetwork(){
 			return -1;
 		}
 	}
-	///¼àÌıÊı¾İ¸üĞÂ¡¢²éÑ¯listen
+	///ç›‘å¬æ•°æ®æ›´æ–°ã€æŸ¥è¯¢listen
     if (0 > this->noticeTcpListen(SVR_TYPE_RECV, 
         m_config.getRecv().getHostName().c_str(),
         m_config.getRecv().getPort(),
@@ -1373,7 +1373,7 @@ int UnistorApp::startNetwork(){
         return -1;
     }
 
-    ///¼àÌıÄÚ²¿·Ö·¢
+    ///ç›‘å¬å†…éƒ¨åˆ†å‘
     if (0 > this->noticeTcpListen(SVR_TYPE_INNER_SYNC, 
         m_config.getInnerDispatch().getHostName().c_str(),
         m_config.getInnerDispatch().getPort(),
@@ -1388,7 +1388,7 @@ int UnistorApp::startNetwork(){
         return -1;
     }
 
-    ///Íâ²¿¼àÌı·Ö·¢
+    ///å¤–éƒ¨ç›‘å¬åˆ†å‘
     if (0 > this->noticeTcpListen(SVR_TYPE_OUTER_SYNC, 
         m_config.getOuterDispatch().getHostName().c_str(),
         m_config.getOuterDispatch().getPort(),
@@ -1405,7 +1405,7 @@ int UnistorApp::startNetwork(){
 	return 0;
 }
 
-///´æ´¢Çı¶¯µÄÏûÏ¢Í¨µÀ
+///å­˜å‚¨é©±åŠ¨çš„æ¶ˆæ¯é€šé“
 int UnistorApp::storeMsgPipe(void* app,
                              CwxMsgBlock* msg,
                              bool bWriteThread,

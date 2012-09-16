@@ -1,9 +1,9 @@
-#ifndef __CWX_BINLOG_OP_H__
+ï»¿#ifndef __CWX_BINLOG_OP_H__
 #define __CWX_BINLOG_OP_H__
 
 /**
 @file CwxBinlogOp.h
-@brief binlog ÎÄ¼şµÄä¯ÀÀ¶ÔÏó
+@brief binlog æ–‡ä»¶çš„æµè§ˆå¯¹è±¡
 @author cwinux@gmail.com
 @version 0.1
 @date 2009-10-10
@@ -18,8 +18,8 @@ CWINUX_USING_NAMESPACE
 class CwxBinlogOp{
 public:
     enum{
-        BINLOG_INDEX_INTERNAL = 100, ///<binlog½¨Á¢Ë÷ÒıµÄÁ£¶È£¬N,2N,3N......
-        BINLOG_COMPRESS_RATE  = 10   ///<ÈôÊÇÑ¹ËõÊı¾İ£¬ÔòÄ¬ÈÏÑ¹ËõÂÊÎª10±¶
+        BINLOG_INDEX_INTERNAL = 100, ///<binlogå»ºç«‹ç´¢å¼•çš„ç²’åº¦ï¼ŒN,2N,3N......
+        BINLOG_COMPRESS_RATE  = 10   ///<è‹¥æ˜¯å‹ç¼©æ•°æ®ï¼Œåˆ™é»˜è®¤å‹ç¼©ç‡ä¸º10å€
     };
 public:
     CwxBinlogOp();
@@ -29,7 +29,7 @@ public:
 private:
     void clear();
     void prompt();
-    //0£ºexit£¬1£ºcontinue
+    //0ï¼šexitï¼Œ1ï¼šcontinue
     int doCommand(char* szCmd);
     void doHelp();
     void doInfo();
@@ -50,20 +50,20 @@ private:
     char* getData(CWX_UINT32& uiLen);
 
 private:
-    map<CWX_UINT64/*sid*/, CWX_UINT32/*offset*/>  m_sidIndex; ///<Ã¿BINLOG_INDEX_INTERNALÌõ¼ÇÂ¼½¨Á¢Ò»ÌõË÷Òı
-    map<CWX_UINT32/*rec_no*/, CWX_UINT32/*offset*/> m_recIndex; ///<Ã¿BINLOG_INDEX_INTERNALÌõ¼ÇÂ¼½¨Á¢Ë÷Òı
-    CwxBinLogCursor*     m_pCursor; ///<binlogµÄ¶ÁÈ¡cursor
-    char*               m_pBuf; ///<data¶ÁÈ¡µÄbuf
-    CWX_UINT32          m_uiBufLen; ///<data¶ÁÈ¡bufµÄ¿Õ¼ä´óĞ¡
-    char*               m_pUnBuf; ///<data½âÑ¹buf
-    CWX_UINT32          m_uiUnBufLen; ///<data½âÑ¹bufµÄ¿Õ¼ä´óĞ¡
+    map<CWX_UINT64/*sid*/, CWX_UINT32/*offset*/>  m_sidIndex; ///<æ¯BINLOG_INDEX_INTERNALæ¡è®°å½•å»ºç«‹ä¸€æ¡ç´¢å¼•
+    map<CWX_UINT32/*rec_no*/, CWX_UINT32/*offset*/> m_recIndex; ///<æ¯BINLOG_INDEX_INTERNALæ¡è®°å½•å»ºç«‹ç´¢å¼•
+    CwxBinLogCursor*     m_pCursor; ///<binlogçš„è¯»å–cursor
+    char*               m_pBuf; ///<dataè¯»å–çš„buf
+    CWX_UINT32          m_uiBufLen; ///<dataè¯»å–bufçš„ç©ºé—´å¤§å°
+    char*               m_pUnBuf; ///<dataè§£å‹buf
+    CWX_UINT32          m_uiUnBufLen; ///<dataè§£å‹bufçš„ç©ºé—´å¤§å°
     char*               m_pDumpBuf; ///<data dump buf
-    CWX_UINT32           m_uiDumpBufLen; ///<data dump bufµÄ¿Õ¼ä´óĞ¡
-    CWX_UINT64          m_ullMinSid; ///<×îĞ¡µÄsidÖµ
-    CWX_UINT64          m_ullMaxSid; ///<×î´óµÄsidÖµ
-    CWX_UINT32          m_uiRecNum; ///<binlogµÄÊıÁ¿
-    string              m_strLogFileName; ///<binlogÎÄ¼şµÄÃû×Ö
-    char                m_szErr2K[2048]; ///<´íÎóÊ±µÄ´íÎóÏûÏ¢
+    CWX_UINT32           m_uiDumpBufLen; ///<data dump bufçš„ç©ºé—´å¤§å°
+    CWX_UINT64          m_ullMinSid; ///<æœ€å°çš„sidå€¼
+    CWX_UINT64          m_ullMaxSid; ///<æœ€å¤§çš„sidå€¼
+    CWX_UINT32          m_uiRecNum; ///<binlogçš„æ•°é‡
+    string              m_strLogFileName; ///<binlogæ–‡ä»¶çš„åå­—
+    char                m_szErr2K[2048]; ///<é”™è¯¯æ—¶çš„é”™è¯¯æ¶ˆæ¯
 };
 
 #endif
