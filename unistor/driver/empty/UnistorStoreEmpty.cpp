@@ -1,4 +1,4 @@
-#include "UnistorStoreEmpty.h"
+ï»¿#include "UnistorStoreEmpty.h"
 
 #define  EMPTY_MIN_READ_CACHE_MSIZE   128
 #define  EMPTY_MAX_READ_CACHE_MSIZE   (64 * 1024)
@@ -17,23 +17,23 @@ extern "C"{
 	}
 }
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::parseConf(){
-    //TODO ½âÎöunistor.cnfÖĞ[empty]²¿·ÖµÄÅäÖÃ
-    //TODO Êä³öÅäÖÃĞÅÏ¢
+    //TODO è§£æunistor.cnfä¸­[empty]éƒ¨åˆ†çš„é…ç½®
+    //TODO è¾“å‡ºé…ç½®ä¿¡æ¯
 	return 0;
 }
 
 
-//¼ÓÔØÅäÖÃÎÄ¼ş.-1:failure, 0:success
+//åŠ è½½é…ç½®æ–‡ä»¶.-1:failure, 0:success
 int UnistorStoreEmpty::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
-                            UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<»ñÈ¡ÏµÍ³ĞÅÏ¢µÄfunction
-                            void* pApp, ///<UnistorApp¶ÔÏó
+                            UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<è·å–ç³»ç»Ÿä¿¡æ¯çš„function
+                            void* pApp, ///<UnistorAppå¯¹è±¡
                           UnistorConfig const* config)
 {
 	m_bValid = false;
 	strcpy(m_szErrMsg, "Not init");
-    ///µ÷ÓÃ»ùÀàµÄinit
+    ///è°ƒç”¨åŸºç±»çš„init
     if (0 != UnistorStoreBase::init(msgPipeFunc, getSysInfoFunc, pApp, config)) return -1;
     m_uiWriteCacheMSize = m_config->getCommon().m_uiWriteCacheMByte;
     if (m_uiWriteCacheMSize < EMPTY_MIN_WRITE_CACHE_MSIZE) m_uiWriteCacheMSize = EMPTY_MIN_WRITE_CACHE_MSIZE;
@@ -48,7 +48,7 @@ int UnistorStoreEmpty::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
     if (m_uiReadCacheItemNum > EMPTY_MAX_READ_CACHE_KEY_NUM) m_uiReadCacheItemNum = EMPTY_MAX_READ_CACHE_KEY_NUM;
     //parse conf
     if (0 != parseConf()) return -1;
-    //Æô¶¯cache
+    //å¯åŠ¨cache
     if (0 != startCache(m_uiWriteCacheMSize,
         m_uiReadCacheMSize,
         m_uiReadCacheItemNum,
@@ -72,8 +72,8 @@ int UnistorStoreEmpty::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
     m_ullStoreSid = 0;
 
     m_bValid = true;
-	//TODO ³õÊ¼»¯empty ÒıÇæ
-	//»Ö¸´binlog
+	//TODO åˆå§‹åŒ–empty å¼•æ“
+	//æ¢å¤binlog
 	if (0 != restore(m_ullStoreSid)){
 		m_bValid = false;
 		return -1;
@@ -82,7 +82,7 @@ int UnistorStoreEmpty::init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc,
 	return 0;
 }
 
-///¿ªÊ¼Ğ´µÄº¯Êı£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///å¼€å§‹å†™çš„å‡½æ•°ï¼Œè¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::cacheWriteBegin(void* context, char* szErr2K)
 {
     UnistorStoreEmpty* pEmpty = (UnistorStoreEmpty*)context;
@@ -96,10 +96,10 @@ int UnistorStoreEmpty::cacheWriteBegin(void* context, char* szErr2K)
         if (szErr2K) strcpy(szErr2K, pEmpty->m_szErrMsg);
         return -1;
     }
-    //TODO ÒıÇæ×¼±¸±£´ædirtyÊı¾İ
+    //TODO å¼•æ“å‡†å¤‡ä¿å­˜dirtyæ•°æ®
     return 0;
 }
-///Ğ´Êı¾İ£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///å†™æ•°æ®ï¼Œè¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::cacheWrite(void* context,
                                 char const* szKey,
                                 CWX_UINT16 unKeyLen,
@@ -122,7 +122,7 @@ int UnistorStoreEmpty::cacheWrite(void* context,
         if (0 != pEmpty->_delEmptyKey(szStoreKeyBuf, unKeyLen, unKeyBufLen, szErr2K)) return -1;
         if (pEmpty->m_bEnableExpire){
             pKey = (UnistorStoreExpireKey*)szStoreKeyBuf;
-            if (ttOldExpire){///É¾³ı¾Ékey
+            if (ttOldExpire){///åˆ é™¤æ—§key
                 pKey->m_ttExpire = ttOldExpire;
                 memcpy(pKey->m_key, szKey, unKeyLen);
                 if (0 != pEmpty->_delEmptyKey(szStoreKeyBuf, sizeof(UnistorStoreExpireKey) + unKeyLen, unKeyBufLen, szErr2K)) return -1;
@@ -136,7 +136,7 @@ int UnistorStoreEmpty::cacheWrite(void* context,
             CWX_UINT32 ttNewExpire = 0;
             pEmpty->getKvVersion(szData, uiDataLen, ttNewExpire, uiVersion);
             if (ttOldExpire != ttNewExpire){
-                if (ttOldExpire){///É¾³ı¾Ékey
+                if (ttOldExpire){///åˆ é™¤æ—§key
                     pKey->m_ttExpire = ttOldExpire;
                     memcpy(pKey->m_key, szKey, unKeyLen);
                     if (0 != pEmpty->_delEmptyKey(szStoreKeyBuf, sizeof(UnistorStoreExpireKey) + unKeyLen, unKeyBufLen, szErr2K)) return -1;
@@ -150,7 +150,7 @@ int UnistorStoreEmpty::cacheWrite(void* context,
     return 0;
 }
 
-///Ìá½»Êı¾İ£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///æäº¤æ•°æ®ï¼Œè¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::cacheWriteEnd(void* context, CWX_UINT64 ullSid, void* , char* szErr2K)
 {
     UnistorStoreEmpty* pEmpty = (UnistorStoreEmpty*)context;
@@ -162,13 +162,13 @@ int UnistorStoreEmpty::cacheWriteEnd(void* context, CWX_UINT64 ullSid, void* , c
     if (0 != pEmpty->_updateSysInfo(ullSid, szErr2K)){
         return -1;
     }
-    //TODO: Ìá½»Êı¾İ
+    //TODO: æäº¤æ•°æ®
     CWX_INFO(("End commit....................."));
     return 0;
 }
 
 
-///¼ì²âÊÇ·ñ´æÔÚkey£»1£º´æÔÚ£»0£º²»´æÔÚ£»-1£ºÊ§°Ü
+///æ£€æµ‹æ˜¯å¦å­˜åœ¨keyï¼›1ï¼šå­˜åœ¨ï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::isExist(UnistorTss* tss,
                                CwxKeyValueItemEx const& key,
                                CwxKeyValueItemEx const* field,
@@ -193,9 +193,9 @@ int UnistorStoreEmpty::isExist(UnistorTss* tss,
             strcpy(tss->m_szBuf2K, tss->m_pEngineReader->getErrMsg());
             return -1;
         }
-        ///¼ì²éÊÇ·ñ³¬Ê±
+        ///æ£€æŸ¥æ˜¯å¦è¶…æ—¶
         if (m_config->getCommon().m_bEnableExpire && (ttOldExpire <= m_ttExpireClock)) return 0;
-        ///²»ÊÇKey/Value½á¹¹
+        ///ä¸æ˜¯Key/Valueç»“æ„
         if (0 == ret){
             if (field) return 0;
             return 1;
@@ -208,7 +208,7 @@ int UnistorStoreEmpty::isExist(UnistorTss* tss,
     return -1;
 }
 
-///Ìí¼Ókey£¬1£º³É¹¦£»0£º´æÔÚ£»-1£ºÊ§°Ü£»
+///æ·»åŠ keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šå­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
 int UnistorStoreEmpty::addKey(UnistorTss* tss,
                             CwxKeyValueItemEx const& key,
                             CwxKeyValueItemEx const* field,
@@ -240,13 +240,13 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
     CWX_UINT32 ttNewExpire = 0;
     CWX_UINT32 uiOldVersion = 0;
     uiFieldNum = 0;
-    ///ĞŞ¸Äsign
+    ///ä¿®æ”¹sign
     if (uiSign > 2) uiSign = 0;
     int ret = 0;
     bReadCached = false;
     bWriteCached = false;
 
-    if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///Èç¹ûÖ¸¶¨ÁË°æ±¾µÄÈ«Ìæ»»£¬¶øÇÒ²»³¬Ê±
+    if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///å¦‚æœæŒ‡å®šäº†ç‰ˆæœ¬çš„å…¨æ›¿æ¢ï¼Œè€Œä¸”ä¸è¶…æ—¶
         ret = 0;
         ttNewExpire = 0;
         uiOldVersion = 0;
@@ -254,9 +254,9 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
         ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiOldVersion);
-        ///¼ÆËã³¬Ê±Ê±¼ä
+        ///è®¡ç®—è¶…æ—¶æ—¶é—´
         if (m_config->getCommon().m_bEnableExpire){
-            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///³¬Ê±
+            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///è¶…æ—¶
             if (1 == ret){
                 ttNewExpire = ttOldExpire;
             }else{
@@ -267,9 +267,9 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
         }
     }
     if (0 == ret){//not exist
-        if (1 == uiSign){///Ìí¼Ófield£¬¶øÇÒkey±ØĞë´æÔÚ
+        if (1 == uiSign){///æ·»åŠ fieldï¼Œè€Œä¸”keyå¿…é¡»å­˜åœ¨
             strcpy(tss->m_szBuf2K, "Key doesn't exist, you can't add any field.");
-            return -1; ///²»ÄÜµ¥¶ÀÌí¼Ófield
+            return -1; ///ä¸èƒ½å•ç‹¬æ·»åŠ field
         }
         if (field){
             tss->m_pEngineWriter->beginPack();
@@ -296,25 +296,25 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
             bNewKeyValue = data.m_bKeyValue;
             uiFieldNum = iDataFieldNum;
         }
-        if (!uiVersion) uiVersion = UNISTOR_KEY_START_VERION; ///ÆğÊ¼°æ±¾
-    }else if (1 == ret){//key´æÔÚ
+        if (!uiVersion) uiVersion = UNISTOR_KEY_START_VERION; ///èµ·å§‹ç‰ˆæœ¬
+    }else if (1 == ret){//keyå­˜åœ¨
         if (!uiVersion){
             uiVersion = uiOldVersion + 1;
         }
-        if (0 == uiSign){//Ìí¼Ókey
+        if (0 == uiSign){//æ·»åŠ key
             strcpy(tss->m_szBuf2K, "Key exists.");
-            return 0; //key´æÔÚ¡£
+            return 0; //keyå­˜åœ¨ã€‚
         }
         bool bOldKv = isKvData(szBuf, uiBufLen);
-        if (!bOldKv){///Ô­À´Êı¾İ²»ÊÇkey/value½á¹¹£¬ÔòÎŞÂÛÈçºÎ²»ÄÜadd key»òadd field
+        if (!bOldKv){///åŸæ¥æ•°æ®ä¸æ˜¯key/valueç»“æ„ï¼Œåˆ™æ— è®ºå¦‚ä½•ä¸èƒ½add keyæˆ–add field
             strcpy(tss->m_szBuf2K, "Key is not key/value, can't add field.");
-            return 0; //key´æÔÚ¡£
+            return 0; //keyå­˜åœ¨ã€‚
         }
         if (!field && !data.m_bKeyValue){
             strcpy(tss->m_szBuf2K, "The added content is not field.");
-            return 0; //key´æÔÚ¡£
+            return 0; //keyå­˜åœ¨ã€‚
         }
-        //´ËÊ±£¬keyµÄĞÂ¡¢¾ÉvalueÒ»¶¨Îªkey/value½á¹¹
+        //æ­¤æ—¶ï¼Œkeyçš„æ–°ã€æ—§valueä¸€å®šä¸ºkey/valueç»“æ„
         ret = mergeAddKeyField(tss->m_pEngineWriter,
             tss->m_pEngineReader,
             tss->m_pEngineItemReader,
@@ -361,7 +361,7 @@ int UnistorStoreEmpty::addKey(UnistorTss* tss,
     return 1;
 }
                             
-///Ìí¼Ókey£¬1£º³É¹¦£»0£º´æÔÚ£»-1£ºÊ§°Ü£»
+///æ·»åŠ keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šå­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
 int UnistorStoreEmpty::syncAddKey(UnistorTss* tss,
                                 CwxKeyValueItemEx const& key,
                                 CwxKeyValueItemEx const* field,
@@ -372,14 +372,14 @@ int UnistorStoreEmpty::syncAddKey(UnistorTss* tss,
                                 bool bCache,
                                 CWX_UINT32 uiExpire,
                                 CWX_UINT64 ullSid,
-                                bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-                                bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
+                                bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+                                bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
                                 bool  bRestore)
 {
     return syncSetKey(tss, key, field, extra, data, uiSign, uiVersion, bCache, uiExpire, ullSid, bReadCached, bWriteCached, bRestore);
 }
 
-///set key£¬1£º³É¹¦£»-1£º´íÎó£»0£º²»´æÔÚ£¬´ËÊÇÉèÖÃÒ»¸ökeyµÄfieldÊ±¡£
+///set keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ï¼›0ï¼šä¸å­˜åœ¨ï¼Œæ­¤æ˜¯è®¾ç½®ä¸€ä¸ªkeyçš„fieldæ—¶ã€‚
 int UnistorStoreEmpty::setKey(UnistorTss* tss,
                             CwxKeyValueItemEx const& key,
                             CwxKeyValueItemEx const* field,
@@ -414,7 +414,7 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
     bReadCached = false;
     bWriteCached = false;
 
-    if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///Èç¹ûÖ¸¶¨ÁË°æ±¾µÄÈ«Ìæ»»£¬¶øÇÒ²»³¬Ê±
+    if ((0==uiSign) && uiVersion && !m_config->getCommon().m_bEnableExpire){///å¦‚æœæŒ‡å®šäº†ç‰ˆæœ¬çš„å…¨æ›¿æ¢ï¼Œè€Œä¸”ä¸è¶…æ—¶
         ret = 0;
         ttNewExpire = 0;
         uiOldVersion = 0;
@@ -422,9 +422,9 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
         ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiOldVersion);
-        ///¼ÆËã³¬Ê±Ê±¼ä
+        ///è®¡ç®—è¶…æ—¶æ—¶é—´
         if (m_config->getCommon().m_bEnableExpire){
-            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///³¬Ê±
+            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///è¶…æ—¶
             if (1 == ret){
                 ttNewExpire = ttOldExpire;
             }else{
@@ -436,12 +436,12 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
     }
     uiFieldNum = 0;
     if (uiSign > 1) uiSign = 0;
-	if ((0 == ret/*¾ÉÖµ²»´æÔÚ*/) ||
-		(0 == uiSign)/*Ìæ»»Õû¸ökey*/)
+	if ((0 == ret/*æ—§å€¼ä¸å­˜åœ¨*/) ||
+		(0 == uiSign)/*æ›¿æ¢æ•´ä¸ªkey*/)
     {
         if (!uiVersion){
             if (0 == ret){
-                uiVersion = UNISTOR_KEY_START_VERION; ///ÆğÊ¼°æ±¾
+                uiVersion = UNISTOR_KEY_START_VERION; ///èµ·å§‹ç‰ˆæœ¬
             }else{
                 uiVersion = uiOldVersion + 1;
             }
@@ -471,7 +471,7 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
 			bNewKeyValue = data.m_bKeyValue;
             uiFieldNum = iDataFieldNum;
 		}
-	}else{//key´æÔÚ¶øÇÒ²»ÊÇÈ«²¿Ìæ»»
+	}else{//keyå­˜åœ¨è€Œä¸”ä¸æ˜¯å…¨éƒ¨æ›¿æ¢
         if (!isKvData(szBuf, uiBufLen)){
             strcpy(tss->m_szBuf2K, "Key is key/value.");
             return -1;
@@ -481,7 +481,7 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
             return -1;
         }
         if (!uiVersion) uiVersion = uiOldVersion + 1;
-        //´ËÊ±£¬keyµÄ¾É¡¢ĞÂvalueÒ»¶¨Îªkey/value½á¹¹
+        //æ­¤æ—¶ï¼Œkeyçš„æ—§ã€æ–°valueä¸€å®šä¸ºkey/valueç»“æ„
         ret = mergeSetKeyField(tss->m_pEngineWriter,
             tss->m_pEngineReader,
             tss->m_pEngineItemReader,
@@ -527,16 +527,16 @@ int UnistorStoreEmpty::setKey(UnistorTss* tss,
 	return 1;
 }
 
-///import key£¬1£º³É¹¦£»-1£ºÊ§°Ü£»
-int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss¶ÔÏó
-                               CwxKeyValueItemEx const& key, ///<Ìí¼ÓµÄkey
-                               CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-                               CwxKeyValueItemEx const& data, ///<Ìí¼Ókey»òfieldµÄÊı¾İ
-                               CWX_UINT32& uiVersion, ///<Èô´óÓÚ0£¬ÔòÉèÖÃĞŞ¸ÄºóµÄkeyÎª´Ë°æ±¾
-                               bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-                               bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-                               bool bCache, ///<ÊÇ·ñ½«key·Åµ½¶Ácache
-                               CWX_UINT32 uiExpire ///<Èô´´½¨key£¬¶øÇÒÖ¸¶¨ÁËuiExpireÔòÉèÖÃkeyµÄ³¬Ê±Ê±¼ä
+///import keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ï¼›
+int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tsså¯¹è±¡
+                               CwxKeyValueItemEx const& key, ///<æ·»åŠ çš„key
+                               CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+                               CwxKeyValueItemEx const& data, ///<æ·»åŠ keyæˆ–fieldçš„æ•°æ®
+                               CWX_UINT32& uiVersion, ///<è‹¥å¤§äº0ï¼Œåˆ™è®¾ç½®ä¿®æ”¹åçš„keyä¸ºæ­¤ç‰ˆæœ¬
+                               bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+                               bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+                               bool bCache, ///<æ˜¯å¦å°†keyæ”¾åˆ°è¯»cache
+                               CWX_UINT32 uiExpire ///<è‹¥åˆ›å»ºkeyï¼Œè€Œä¸”æŒ‡å®šäº†uiExpireåˆ™è®¾ç½®keyçš„è¶…æ—¶æ—¶é—´
                                )
 {
     if (!m_bValid){
@@ -561,7 +561,7 @@ int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss¶ÔÏó
     }else{
         ttNewExpire = 0;
     }
-    if (!uiVersion) uiVersion = UNISTOR_KEY_START_VERION; ///ÆğÊ¼°æ±¾
+    if (!uiVersion) uiVersion = UNISTOR_KEY_START_VERION; ///èµ·å§‹ç‰ˆæœ¬
     if (data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE - getKvDataSignLen()){
         CwxCommon::snprintf(tss->m_szBuf2K, 2047, "Key/value is too big, max is [%u], now[%u]", UNISTOR_MAX_DATA_SIZE - getKvDataSignLen(), data.m_uiDataLen);
         return -1;
@@ -592,18 +592,18 @@ int UnistorStoreEmpty::importKey(UnistorTss* tss, ///<tss¶ÔÏó
 
 }
 
-///sync import key£¬1£º³É¹¦£»-1£º´íÎó¡£
-int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
-                                     CwxKeyValueItemEx const& key, ///<setµÄkey
-                                     CwxKeyValueItemEx const* , ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-                                     CwxKeyValueItemEx const& data, ///<setµÄÊı¾İ
-                                     CWX_UINT32 uiVersion, ///<setµÄkey °æ±¾ºÅ
-                                     bool bCache,    ///<ÊÇ·ñ½«key·Åµ½¶Ácache
-                                     CWX_UINT32 uiExpire, ///<Èô´´½¨key£¬¶øÇÒÖ¸¶¨ÁËuiExpireÔòÉèÖÃkeyµÄ³¬Ê±Ê±¼ä
-                                     CWX_UINT64 ullSid, ///<²Ù×÷¶ÔÓ¦µÄbinlogµÄsid
-                                     bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-                                     bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-                                     bool  bRestore ///<ÊÇ·ñ´Óbinlog»Ö¸´µÄÊı¾İ
+///sync import keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ã€‚
+int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tssæ•°æ®
+                                     CwxKeyValueItemEx const& key, ///<setçš„key
+                                     CwxKeyValueItemEx const* , ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+                                     CwxKeyValueItemEx const& data, ///<setçš„æ•°æ®
+                                     CWX_UINT32 uiVersion, ///<setçš„key ç‰ˆæœ¬å·
+                                     bool bCache,    ///<æ˜¯å¦å°†keyæ”¾åˆ°è¯»cache
+                                     CWX_UINT32 uiExpire, ///<è‹¥åˆ›å»ºkeyï¼Œè€Œä¸”æŒ‡å®šäº†uiExpireåˆ™è®¾ç½®keyçš„è¶…æ—¶æ—¶é—´
+                                     CWX_UINT64 ullSid, ///<æ“ä½œå¯¹åº”çš„binlogçš„sid
+                                     bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+                                     bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+                                     bool  bRestore ///<æ˜¯å¦ä»binlogæ¢å¤çš„æ•°æ®
                                    )
 {
     if (!m_bValid){
@@ -630,7 +630,7 @@ int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
     if (1 == ret){
         if (bRestore && (uiKeyVersion >= uiVersion)){
             if (ullSid > m_ullStoreSid)  m_ullStoreSid = ullSid;
-            return 1; ///ÒÑ¾­Ìí¼Ó
+            return 1; ///å·²ç»æ·»åŠ 
         }
     }
     if (data.m_uiDataLen > UNISTOR_MAX_DATA_SIZE - getKvDataSignLen()){
@@ -647,7 +647,7 @@ int UnistorStoreEmpty::syncImportKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
 }
 
 
-///set key£¬1£º³É¹¦£»-1£º´íÎó£»0£º²»´æÔÚ£¬´ËÊÇÉèÖÃÒ»¸ökeyµÄfieldÊ±¡£
+///set keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ï¼›0ï¼šä¸å­˜åœ¨ï¼Œæ­¤æ˜¯è®¾ç½®ä¸€ä¸ªkeyçš„fieldæ—¶ã€‚
 int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
                                 CwxKeyValueItemEx const& key,
                                 CwxKeyValueItemEx const* field,
@@ -677,7 +677,7 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
     bWriteCached = false;
     char* szBuf = tss->getBuf(uiBufLen);
     int ret = 0;
-    if ((0==uiSign) && !bRestore && !m_config->getCommon().m_bEnableExpire){///Èç¹ûÖ¸¶¨ÁË°æ±¾µÄÈ«Ìæ»»£¬¶øÇÒ²»³¬Ê±
+    if ((0==uiSign) && !bRestore && !m_config->getCommon().m_bEnableExpire){///å¦‚æœæŒ‡å®šäº†ç‰ˆæœ¬çš„å…¨æ›¿æ¢ï¼Œè€Œä¸”ä¸è¶…æ—¶
         ret = 0;
         ttNewExpire = 0;
         uiKeyVersion = 0;
@@ -685,9 +685,9 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
         ret = _getKey(key.m_szData, key.m_uiDataLen, szBuf, uiBufLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, bCache, tss->m_szBuf2K);
         if (-1 == ret) return -1;
         if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
-        ///¼ÆËã³¬Ê±Ê±¼ä
+        ///è®¡ç®—è¶…æ—¶æ—¶é—´
         if (m_config->getCommon().m_bEnableExpire){
-            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///³¬Ê±
+            if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0;///è¶…æ—¶
             if (1 == ret){
                 ttNewExpire = ttOldExpire;
             }else{
@@ -698,9 +698,9 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
         }
     }
 
-    if ((0 == ret/*¾ÉÖµ²»´æÔÚ*/) ||
-        (!isKvData(szBuf, uiBufLen))/*¾ÉÖµ²»ÊÇkv£¬Ö±½ÓÌæ»»*/ ||
-        (!field && !data.m_uiDataLen)/*ĞÂÖµ²»ÊÇkey/value*/)
+    if ((0 == ret/*æ—§å€¼ä¸å­˜åœ¨*/) ||
+        (!isKvData(szBuf, uiBufLen))/*æ—§å€¼ä¸æ˜¯kvï¼Œç›´æ¥æ›¿æ¢*/ ||
+        (!field && !data.m_uiDataLen)/*æ–°å€¼ä¸æ˜¯key/value*/)
     {
         if (field){
             tss->m_pEngineWriter->beginPack();
@@ -725,14 +725,14 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
             memcpy(szBuf, data.m_szData, uiBufLen);
             bNewKeyValue = data.m_bKeyValue;
         }
-    }else{//key´æÔÚ£¬´ËÊÇÊôÓÚÁ½²¿·ÖµÄmerge
+    }else{//keyå­˜åœ¨ï¼Œæ­¤æ˜¯å±äºä¸¤éƒ¨åˆ†çš„merge
         if (bRestore){
             if (uiKeyVersion >= uiVersion){
                 m_ullStoreSid = ullSid;
-                return 1; ///ÒÑ¾­Ìí¼Ó
+                return 1; ///å·²ç»æ·»åŠ 
             }
         }
-        //´ËÊ±£¬keyµÄ¾É¡¢ĞÂvalueÒ»¶¨Îªkey/value½á¹¹
+        //æ­¤æ—¶ï¼Œkeyçš„æ—§ã€æ–°valueä¸€å®šä¸ºkey/valueç»“æ„
         ret = mergeSetKeyField(tss->m_pEngineWriter,
             tss->m_pEngineReader,
             tss->m_pEngineItemReader,
@@ -762,7 +762,7 @@ int UnistorStoreEmpty::syncSetKey(UnistorTss* tss,
 
 }
 
-///update key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2£º°æ±¾´íÎó
+///update keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2ï¼šç‰ˆæœ¬é”™è¯¯
 int UnistorStoreEmpty::updateKey(UnistorTss* tss,
                                CwxKeyValueItemEx const& key,
                                CwxKeyValueItemEx const* field,
@@ -771,8 +771,8 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
                                CWX_UINT32 uiSign,
                                CWX_UINT32& uiVersion,
                                CWX_UINT32& uiFieldNum,
-                               bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-                               bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
+                               bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+                               bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
                                CWX_UINT32 uiExpire)
 {
     int iDataFieldNum=0;
@@ -799,9 +799,9 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
     if (-1 == ret) return -1;
     bool bOldKv = false;
     if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
-    ///¼ÆËã³¬Ê±Ê±¼ä
+    ///è®¡ç®—è¶…æ—¶æ—¶é—´
     if (m_config->getCommon().m_bEnableExpire){
-        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///³¬Ê±
+        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///è¶…æ—¶
         if (1 == ret){
             ttNewExpire = ttOldExpire;
         }else{
@@ -813,9 +813,9 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
 
     if (0 == ret){//not exist
         strcpy(tss->m_szBuf2K,"Key doesn't exist.");
-        return 0; ///²»ÄÜµ¥¶ÀÌí¼Ófield
+        return 0; ///ä¸èƒ½å•ç‹¬æ·»åŠ field
     }
-    //key´æÔÚ
+    //keyå­˜åœ¨
     if (uiVersion){
         if (uiKeyVersion != uiVersion){
             CwxCommon::snprintf(tss->m_szBuf2K, 2047, "Key's version[%u] is not same with input version[%u].",
@@ -826,7 +826,7 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
     uiVersion = uiKeyVersion + 1;
     if (uiSign>2) uiSign = 1;
     bOldKv = isKvData(szBuf, uiBufLen);
-    if (0 == uiSign){///¸üĞÂÕû¸ökey
+    if (0 == uiSign){///æ›´æ–°æ•´ä¸ªkey
         if (field){
             tss->m_pEngineWriter->beginPack();
             if (!tss->m_pEngineWriter->addKeyValue(field->m_szData,  field->m_uiDataLen, data.m_szData, data.m_uiDataLen, data.m_bKeyValue)){
@@ -852,7 +852,7 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
             bNewKeyValue = data.m_bKeyValue;
             uiFieldNum = iDataFieldNum;
         }
-    }else{//´ËÊ±£¬ĞÂ¡¢¾ÉÖµÈ«²¿Îªkv
+    }else{//æ­¤æ—¶ï¼Œæ–°ã€æ—§å€¼å…¨éƒ¨ä¸ºkv
         if (!bOldKv){
             strcpy(tss->m_szBuf2K, "The old data is not key/value");
             return -1;
@@ -906,7 +906,7 @@ int UnistorStoreEmpty::updateKey(UnistorTss* tss,
     return 1;
 }
 
-///update key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü
+///update keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::syncUpdateKey(UnistorTss* tss,
                                    CwxKeyValueItemEx const& key,
                                    CwxKeyValueItemEx const* field,
@@ -936,7 +936,7 @@ int UnistorStoreEmpty::syncUpdateKey(UnistorTss* tss,
 }
 
 
-///inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2:°æ±¾´íÎó£»-3£º³¬³ö±ß½ç
+///inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2:ç‰ˆæœ¬é”™è¯¯ï¼›-3ï¼šè¶…å‡ºè¾¹ç•Œ
 int UnistorStoreEmpty::incKey(UnistorTss* tss,
                             CwxKeyValueItemEx const& key,
                             CwxKeyValueItemEx const* field,
@@ -974,15 +974,15 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
             CwxCommon::snprintf(tss->m_szBuf2K, 2047, "Key's version[%s] is not same with input version[%s].",
                 uiKeyVersion,
                 uiVersion);
-            return -2; ///°æ±¾´íÎó
+            return -2; ///ç‰ˆæœ¬é”™è¯¯
         }
         uiVersion ++;
     }else{
         uiVersion = UNISTOR_KEY_START_VERION; 
     }
-    ///¼ÆËã³¬Ê±Ê±¼ä
+    ///è®¡ç®—è¶…æ—¶æ—¶é—´
     if (m_config->getCommon().m_bEnableExpire){
-        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///³¬Ê±
+        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///è¶…æ—¶
         if (1 == ret){
             ttNewExpire = ttOldExpire;
         }else{
@@ -997,7 +997,7 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
     if (0 == ret){//not exist
         if (2 != uiSign){
             CwxCommon::snprintf(tss->m_szBuf2K, 2047, "Key[%s] doesn't exist.", key.m_szData);
-            return 0; ///²»ÄÜµ¥¶ÀÌí¼Ófield
+            return 0; ///ä¸èƒ½å•ç‹¬æ·»åŠ field
         }
         if (field){
             tss->m_pEngineWriter->beginPack();
@@ -1077,13 +1077,13 @@ int UnistorStoreEmpty::incKey(UnistorTss* tss,
 
 
 
-///inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»
+///inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
 int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
                                 CwxKeyValueItemEx const& key,
                                 CwxKeyValueItemEx const* field,
                                 CwxKeyValueItemEx const* ,
-                                CWX_INT64 num,  ///<incµÄÊıÖµ£¬¿ÉÒÔÎª¸ºÖµ
-                                CWX_INT64 result,  ///<incµÄÊıÖµ£¬¿ÉÒÔÎª¸ºÖµ
+                                CWX_INT64 num,  ///<incçš„æ•°å€¼ï¼Œå¯ä»¥ä¸ºè´Ÿå€¼
+                                CWX_INT64 result,  ///<incçš„æ•°å€¼ï¼Œå¯ä»¥ä¸ºè´Ÿå€¼
                                 CWX_INT64  llMax,
                                 CWX_INT64  llMin,
                                 CWX_UINT32 ,
@@ -1113,9 +1113,9 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
     CWX_UINT32 uiOutBufLen = UNISTOR_MAX_KV_SIZE;
     bool bKeyValue = false;
     if (1 == ret) getKvVersion(szBuf, uiBufLen, ttOldExpire, uiKeyVersion);
-    ///¼ÆËã³¬Ê±Ê±¼ä
+    ///è®¡ç®—è¶…æ—¶æ—¶é—´
     if (m_config->getCommon().m_bEnableExpire){
-        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///³¬Ê±
+        if((1==ret) && (ttOldExpire<=m_ttExpireClock)) ret = 0; ///è¶…æ—¶
         if (1 == ret){
             ttNewExpire = ttOldExpire;
         }else{
@@ -1180,7 +1180,7 @@ int UnistorStoreEmpty::syncIncKey(UnistorTss* tss,
     return 1;
 }
 
-///inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2:°æ±¾´íÎó£»
+///inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2:ç‰ˆæœ¬é”™è¯¯ï¼›
 int UnistorStoreEmpty::delKey(UnistorTss* tss,
                             CwxKeyValueItemEx const& key,
                             CwxKeyValueItemEx const* field,
@@ -1221,7 +1221,7 @@ int UnistorStoreEmpty::delKey(UnistorTss* tss,
         }
         uiVersion = uiKeyVersion + 1;
         bOldKv = isKvData(szBuf, uiBufLen);
-        if (field){//É¾³ıÒ»¸öfield
+        if (field){//åˆ é™¤ä¸€ä¸ªfield
             if (!bOldKv){
                 CwxCommon::snprintf(tss->m_szBuf2K, 2047, "Key[%s] isn't key/value, can't delete field.", key.m_szData, field->m_szData);
                 return 0;
@@ -1268,15 +1268,15 @@ int UnistorStoreEmpty::delKey(UnistorTss* tss,
     }
     return 1;
 }
-///inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»
+///inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
 int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
                                 CwxKeyValueItemEx const& key,
                                 CwxKeyValueItemEx const* field,
                                 CwxKeyValueItemEx const* ,
                                 CWX_UINT32 uiVersion,
                                 CWX_UINT64 ullSid,
-                                bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-                                bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
+                                bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+                                bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
                                 bool  bRestore)
 {
     if (!m_bValid){
@@ -1307,7 +1307,7 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
             }
         }
         bOldKv = isKvData(szBuf, uiBufLen);
-        if (field){//É¾³ıÒ»¸öfield
+        if (field){//åˆ é™¤ä¸€ä¸ªfield
             if (!bOldKv){
                 return 1;
             }
@@ -1329,7 +1329,7 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
             memcpy(szBuf, tss->m_pEngineWriter->getMsg(), uiBufLen);
             bNewKeyValue = true;
         }
-        //·ñÔò£¬É¾³ıÕû¸ökey
+        //å¦åˆ™ï¼Œåˆ é™¤æ•´ä¸ªkey
     }
     if (ullSid > m_ullStoreSid)  m_ullStoreSid = ullSid;
     if (!field){
@@ -1341,7 +1341,7 @@ int UnistorStoreEmpty::syncDelKey(UnistorTss* tss,
     return 1;
 }
 
-///»ñÈ¡key, 1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
+///è·å–key, 1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
 int UnistorStoreEmpty::get(UnistorTss* tss,
                          CwxKeyValueItemEx const& key,
                          CwxKeyValueItemEx const* field,
@@ -1351,7 +1351,7 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
                          bool& bKeyValue,
                          CWX_UINT32& uiVersion,
                          CWX_UINT32& uiFieldNum,
-                         bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
+                         bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
                          CWX_UINT8 ucKeyInfo)
 {
     uiLen = UNISTOR_MAX_KV_SIZE;
@@ -1370,7 +1370,7 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
     }
 
 	ret = _getKey(key.m_szData, key.m_uiDataLen, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCached, true, tss->m_szBuf2K);
-	if (1 == ret){//key´æÔÚ
+	if (1 == ret){//keyå­˜åœ¨
         CWX_UINT32 ttOldExpire = 0;
         getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
         if (m_config->getCommon().m_bEnableExpire && (ttOldExpire<=m_ttExpireClock)) return 0;
@@ -1404,15 +1404,15 @@ int UnistorStoreEmpty::get(UnistorTss* tss,
 	return -1;
 }
 
-///»ñÈ¡key, 1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
+///è·å–key, 1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
 int UnistorStoreEmpty::gets(UnistorTss* tss,
                  list<pair<char const*, CWX_UINT16> > const& keys,
                  CwxKeyValueItemEx const* field,
                  CwxKeyValueItemEx const* ,
                  char const*& szData,
                  CWX_UINT32& uiLen,
-                 CWX_UINT32& uiReadCacheNum, ///<ÔÚread cacheÖĞµÄÊıÁ¿
-                 CWX_UINT32& uiExistNum, ///<´æÔÚµÄkeyµÄÊıÁ¿
+                 CWX_UINT32& uiReadCacheNum, ///<åœ¨read cacheä¸­çš„æ•°é‡
+                 CWX_UINT32& uiExistNum, ///<å­˜åœ¨çš„keyçš„æ•°é‡
                  CWX_UINT8 ucKeyInfo)
 {
     int ret = 0;
@@ -1438,7 +1438,7 @@ int UnistorStoreEmpty::gets(UnistorTss* tss,
             uiLen = UNISTOR_MAX_KV_SIZE;
             if (2 == ucKeyInfo){
                 ret = _getSysKey(tss, iter->first, iter->second, (char*)szData, uiLen);
-                if (1 == ret){//key´æÔÚ
+                if (1 == ret){//keyå­˜åœ¨
                     tss->m_pEngineWriter->addKeyValue(iter->first,iter->second, szData, uiLen, false);
                 }else{
                     tss->m_pEngineWriter->addKeyValue(iter->first, iter->second, "", 0, false);
@@ -1446,7 +1446,7 @@ int UnistorStoreEmpty::gets(UnistorTss* tss,
             }else{
                 ret = _getKey(iter->first, iter->second, (char*)szData, uiLen, tss->m_szStoreKey, UNISTOR_MAX_KEY_SIZE, bReadCache, true, tss->m_szBuf2K);
                 if (bReadCache) uiReadCacheNum++;
-                if (1 == ret){//key´æÔÚ
+                if (1 == ret){//keyå­˜åœ¨
                     uiExistNum++;
                     getKvVersion(szData, uiLen, ttOldExpire, uiVersion);
                     if (m_config->getCommon().m_bEnableExpire && (ttOldExpire<=m_ttExpireClock)){///timeout
@@ -1483,7 +1483,7 @@ int UnistorStoreEmpty::gets(UnistorTss* tss,
 }
 
 
-///½¨Á¢ÓÎ±ê¡£-1£ºÄÚ²¿´íÎóÊ§°Ü£»0£º²»Ö§³Ö£»1£º³É¹¦
+///å»ºç«‹æ¸¸æ ‡ã€‚-1ï¼šå†…éƒ¨é”™è¯¯å¤±è´¥ï¼›0ï¼šä¸æ”¯æŒï¼›1ï¼šæˆåŠŸ
 int UnistorStoreEmpty::createCursor(UnistorStoreCursor& cursor,
                                     char const* szBeginKey,
                                     char const* szEndKey,
@@ -1492,7 +1492,7 @@ int UnistorStoreEmpty::createCursor(UnistorStoreCursor& cursor,
                                     char* )
 {
     closeCursor(cursor);
-    ///ÉèÖÃ¿ªÊ¼µÄkey
+    ///è®¾ç½®å¼€å§‹çš„key
     if (szBeginKey){
         cursor.m_unBeginKeyLen = strlen(szBeginKey);
         if (cursor.m_unBeginKeyLen > UNISTOR_MAX_KEY_SIZE) cursor.m_unBeginKeyLen = UNISTOR_MAX_KEY_SIZE;
@@ -1500,7 +1500,7 @@ int UnistorStoreEmpty::createCursor(UnistorStoreCursor& cursor,
     }else{
         cursor.m_unBeginKeyLen = 0;
     }
-    ///ÉèÖÃ½áÊøµÄkey
+    ///è®¾ç½®ç»“æŸçš„key
     if (szEndKey){
         cursor.m_unEndKeyLen = strlen(szEndKey);
         if (cursor.m_unEndKeyLen > UNISTOR_MAX_KEY_SIZE) cursor.m_unEndKeyLen = UNISTOR_MAX_KEY_SIZE;
@@ -1508,19 +1508,19 @@ int UnistorStoreEmpty::createCursor(UnistorStoreCursor& cursor,
     }else{
         cursor.m_unEndKeyLen = 0;
     }
-    ///´´½¨cache cursor
+    ///åˆ›å»ºcache cursor
     cursor.m_cacheCursor = new UnistorStoreCacheCursor();
     UnistorStoreEmptyCursor* pCursor =  new UnistorStoreEmptyCursor();
     if (field){
         UnistorStoreBase::parseMultiField(field->m_szData, cursor.m_field);
     }
-    //TODO:´´½¨ÒıÇæµÄcursor
+    //TODO:åˆ›å»ºå¼•æ“çš„cursor
     pCursor->m_bFirst = true;
     cursor.m_cursorHandle = pCursor;
     return 1;
 }
 
-///»ñÈ¡Êı¾İ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö
+///è·å–æ•°æ®ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ª
 int UnistorStoreEmpty::next(UnistorTss* tss,
                           UnistorStoreCursor& cursor,
                           char const*& szKey,
@@ -1538,7 +1538,7 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
     uiDataLen = UNISTOR_MAX_KV_SIZE;
     szData = tss->getBuf(uiDataLen);
     do{
-        if (pEmptyCursor->m_bStoreMore && !pEmptyCursor->m_bStoreValue){///»ñÈ¡storeµÄÖµ
+        if (pEmptyCursor->m_bStoreMore && !pEmptyCursor->m_bStoreValue){///è·å–storeçš„å€¼
             pEmptyCursor->m_unStoreKeyLen = UNISTOR_MAX_KEY_SIZE;
             pEmptyCursor->m_uiStoreDataLen = UNISTOR_MAX_KV_SIZE;
             ret = _nextEmpty(cursor, tss->m_szBuf2K);
@@ -1549,7 +1549,7 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
                 pEmptyCursor->m_bStoreValue = true;
             }
         }
-        if (cursor.m_cacheCursor->m_bCacheMore && !cursor.m_cacheCursor->m_bCacheValue){///»ñÈ¡cacheµÄÖµ
+        if (cursor.m_cacheCursor->m_bCacheMore && !cursor.m_cacheCursor->m_bCacheValue){///è·å–cacheçš„å€¼
             ret = nextCache(cursor, tss->m_szBuf2K);
             if (-1 == ret) return -1;
             if (0 == ret){
@@ -1558,7 +1558,7 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
                 cursor.m_cacheCursor->m_bCacheValue = true;
             }
         }
-        if (!pEmptyCursor->m_bStoreMore && !cursor.m_cacheCursor->m_bCacheMore) return 0; ///Ã»ÓĞÊı¾İ
+        if (!pEmptyCursor->m_bStoreMore && !cursor.m_cacheCursor->m_bCacheMore) return 0; ///æ²¡æœ‰æ•°æ®
 
         bUserCache = false;
         if (cursor.m_cacheCursor->m_bCacheMore){
@@ -1574,7 +1574,7 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
                         bUserCache = true;
                     }else if (0 == ret){
                         bUserCache = true;
-                        pEmptyCursor->m_bStoreValue = false; ///storeÖĞµÄÖµ×÷·Ï£¬ÒòÎªÖØ¸´
+                        pEmptyCursor->m_bStoreValue = false; ///storeä¸­çš„å€¼ä½œåºŸï¼Œå› ä¸ºé‡å¤
                     }
                 }else{
                     ret = keyStoreCmpLess(cursor.m_cacheCursor->m_szCacheKey,
@@ -1585,16 +1585,16 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
                         bUserCache = true;
                     }else if (0 == ret){
                         bUserCache = true;
-                        pEmptyCursor->m_bStoreValue = false;///storeÖĞµÄÖµ×÷·Ï£¬ÒòÎªÖØ¸´
+                        pEmptyCursor->m_bStoreValue = false;///storeä¸­çš„å€¼ä½œåºŸï¼Œå› ä¸ºé‡å¤
                     }
                 }
             }
         }
-        ///¼ì²éÊÇ·ñ³¬Ê±
+        ///æ£€æŸ¥æ˜¯å¦è¶…æ—¶
         if (bUserCache){
             if (cursor.m_cacheCursor->m_bCacheDel){
                 cursor.m_cacheCursor->m_bCacheValue = false;
-                continue; ///¼ÌĞø²éÕÒ
+                continue; ///ç»§ç»­æŸ¥æ‰¾
             }
             getKvVersion(cursor.m_cacheCursor->m_szCacheData, cursor.m_cacheCursor->m_uiCacheDataLen, ttExpire, uiVersion);
             if (m_config->getCommon().m_bEnableExpire && (ttExpire<=m_ttExpireClock)){
@@ -1678,7 +1678,7 @@ int UnistorStoreEmpty::next(UnistorTss* tss,
     ((char*)szKey)[unKeyLen]=0x00;
     return 1;
 }
-///»ñÈ¡Êı¾İ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö
+///è·å–æ•°æ®ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ª
 int UnistorStoreEmpty::_nextEmpty(UnistorStoreCursor& cursor, char* ){
     UnistorStoreEmptyCursor* pCursor = (UnistorStoreEmptyCursor*)cursor.m_cursorHandle;
     pCursor = NULL;
@@ -1686,7 +1686,7 @@ int UnistorStoreEmpty::_nextEmpty(UnistorStoreCursor& cursor, char* ){
 }
 
 
-///ÏûÏ¢Ïà¹ØµÄevent´¦Àí£»0£º³É¹¦£»-1£ºÊ§°Ü
+///æ¶ˆæ¯ç›¸å…³çš„eventå¤„ç†ï¼›0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::storeEvent(UnistorTss* tss, CwxMsgBlock*& msg){
     if (!m_bValid){
         strcpy(tss->m_szBuf2K, m_szErrMsg);
@@ -1700,14 +1700,14 @@ int UnistorStoreEmpty::storeEvent(UnistorTss* tss, CwxMsgBlock*& msg){
         return _dealExpireReplyEvent(tss, msg);
     }
     m_bValid = false;
-    ///Î´ÖªµÄÏûÏ¢ÀàĞÍ
+    ///æœªçŸ¥çš„æ¶ˆæ¯ç±»å‹
     CwxCommon::snprintf(m_szErrMsg, 2047, "Unknown event type:%u", msg->event().getEvent());
     strcpy(tss->m_szBuf2K, m_szErrMsg);
     return -1;
 }
 
 
-///¹Ø±ÕÓÎ±ê
+///å…³é—­æ¸¸æ ‡
 void UnistorStoreEmpty::closeCursor(UnistorStoreCursor& cursor){
 	UnistorStoreEmptyCursor* pCursor = (UnistorStoreEmptyCursor*) cursor.m_cursorHandle;
     if (pCursor){
@@ -1724,7 +1724,7 @@ void UnistorStoreEmpty::closeCursor(UnistorStoreCursor& cursor){
     }
 }
 
-///¿ªÊ¼µ¼³öÊı¾İ¡£-1£ºÄÚ²¿´íÎóÊ§°Ü£»0£º³É¹¦
+///å¼€å§‹å¯¼å‡ºæ•°æ®ã€‚-1ï¼šå†…éƒ¨é”™è¯¯å¤±è´¥ï¼›0ï¼šæˆåŠŸ
 int UnistorStoreEmpty::exportBegin(UnistorStoreCursor& cursor,
                                  char const* ,
                                  char const* ,
@@ -1737,11 +1737,11 @@ int UnistorStoreEmpty::exportBegin(UnistorStoreCursor& cursor,
         return -1;
     }
     exportEnd(cursor);
-    ///´´½¨cache cursor
+    ///åˆ›å»ºcache cursor
     cursor.m_cacheCursor = new UnistorStoreCacheCursor();
 
     UnistorStoreEmptyCursor* pCursor =  new UnistorStoreEmptyCursor();
-    //TODO:´´½¨´æ´¢ÒıÇæµÄcursor
+    //TODO:åˆ›å»ºå­˜å‚¨å¼•æ“çš„cursor
     cursor.m_scribe = scribe;
     if (!cursor.m_scribe.m_bAll &&
         (cursor.m_scribe.m_uiMode != UnistorSubscribe::SUBSCRIBE_MODE_MOD) &&
@@ -1758,7 +1758,7 @@ int UnistorStoreEmpty::exportBegin(UnistorStoreCursor& cursor,
     return 0;
 
 }
-///»ñÈ¡Êı¾İ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
+///è·å–æ•°æ®ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
 int UnistorStoreEmpty::exportNext(UnistorTss* tss,
                                 UnistorStoreCursor& cursor,
                                 char const*& szKey,
@@ -1789,7 +1789,7 @@ int UnistorStoreEmpty::exportNext(UnistorTss* tss,
     return ret;
 }
 
-///½áÊøµ¼³öÊı¾İ
+///ç»“æŸå¯¼å‡ºæ•°æ®
 void UnistorStoreEmpty::exportEnd(UnistorStoreCursor& cursor){
     UnistorStoreEmptyCursor* pCursor = (UnistorStoreEmptyCursor*) cursor.m_cursorHandle;
     if (pCursor){
@@ -1802,9 +1802,9 @@ void UnistorStoreEmpty::exportEnd(UnistorStoreCursor& cursor){
     }
 }
 
-///¼ì²é¶©ÔÄ¸ñÊ½ÊÇ·ñºÏ·¨
-bool UnistorStoreEmpty::isValidSubscribe(UnistorSubscribe const& subscribe,///<¶©ÔÄ¶ÔÏó
-                                       char* szErr2K ///<²»ºÏ·¨Ê±µÄ´íÎóÏûÏ¢
+///æ£€æŸ¥è®¢é˜…æ ¼å¼æ˜¯å¦åˆæ³•
+bool UnistorStoreEmpty::isValidSubscribe(UnistorSubscribe const& subscribe,///<è®¢é˜…å¯¹è±¡
+                                       char* szErr2K ///<ä¸åˆæ³•æ—¶çš„é”™è¯¯æ¶ˆæ¯
                                        )
 {
     if (!subscribe.m_bAll && (UnistorSubscribe::SUBSCRIBE_MODE_KEY == subscribe.m_uiMode)){
@@ -1831,7 +1831,7 @@ int UnistorStoreEmpty::commit(char* szErr2K){
 }
 
 
-///¹Ø±Õ£¬0£º³É¹¦£»-1£ºÊ§°Ü
+///å…³é—­ï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::close(){
     if (getCache())getCache()->stop();
 
@@ -1860,7 +1860,7 @@ void UnistorStoreEmpty::checkpoint(UnistorTss* )
 {
 }
 
-///commit¡£0£º³É¹¦£»-1£ºÊ§°Ü
+///commitã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_commit(char* szErr2K){
     if (!m_bValid){
         if (szErr2K) strcpy(szErr2K, m_szErrMsg);
@@ -1873,7 +1873,7 @@ int UnistorStoreEmpty::_commit(char* szErr2K){
     }
     m_uiUncommitBinlogNum = 0;
     m_uiLastCommitSecond = m_ttExpireClock;
-    ///¸øcheckpointÏß³Ì·¢ËÍcommitÏûÏ¢
+    ///ç»™checkpointçº¿ç¨‹å‘é€commitæ¶ˆæ¯
     if (m_pMsgPipeFunc){
         CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
         msg->event().setEvent(EVENT_STORE_COMMIT);
@@ -1884,7 +1884,7 @@ int UnistorStoreEmpty::_commit(char* szErr2K){
     return 0;
 }
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_updateSysInfo(CWX_UINT64 ullSid, char* szErr2K){
 	if (!m_bValid){
 		if (szErr2K) strcpy(szErr2K, m_szErrMsg);
@@ -1904,12 +1904,12 @@ int UnistorStoreEmpty::_updateSysInfo(CWX_UINT64 ullSid, char* szErr2K){
 }
 
 
-//»ñÈ¡ÏµÍ³key¡£1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
-int UnistorStoreEmpty::_getSysKey(UnistorTss* , ///<Ïß³Ìtss¶ÔÏó
-                                  char const* key, ///<Òª»ñÈ¡µÄkey
-                                  CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-                                  char* szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-                                  CWX_UINT32& uiLen  ///<szDataÊı¾İµÄ×Ö½ÚÊı
+//è·å–ç³»ç»Ÿkeyã€‚1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
+int UnistorStoreEmpty::_getSysKey(UnistorTss* , ///<çº¿ç¨‹tsså¯¹è±¡
+                                  char const* key, ///<è¦è·å–çš„key
+                                  CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+                                  char* szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+                                  CWX_UINT32& uiLen  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
                                 )
 {
     string strValue(key, unKeyLen);
@@ -1923,14 +1923,14 @@ int UnistorStoreEmpty::_getSysKey(UnistorTss* , ///<Ïß³Ìtss¶ÔÏó
     return 1;
 }
 
-//0:³É¹¦£»-1£º³É¹¦
+//0:æˆåŠŸï¼›-1ï¼šæˆåŠŸ
 int UnistorStoreEmpty::_loadSysInfo(char* ){
-    ///»ñÈ¡UNISTOR_KEY_SID£¬»ØÍË1000ÍòµÄbinlog
+    ///è·å–UNISTOR_KEY_SIDï¼Œå›é€€1000ä¸‡çš„binlog
     m_ullStoreSid = m_binLogMgr->getMaxSid()>10000000?m_binLogMgr->getMaxSid()-10000000:0;
     return 0;
 }
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_setKey(char const* szKey,
                                CWX_UINT16 unKeyLen,
                                char const* szData,
@@ -1972,7 +1972,7 @@ int UnistorStoreEmpty::_setKey(char const* szKey,
 }
 
 
-//0:²»´æÔÚ£»1£º»ñÈ¡£»-1£ºÊ§°Ü
+//0:ä¸å­˜åœ¨ï¼›1ï¼šè·å–ï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_getKey(char const* szKey,
                                CWX_UINT16 unKeyLen,
                                char* szData,
@@ -1999,7 +1999,7 @@ int UnistorStoreEmpty::_getKey(char const* szKey,
     }
     isCached = false;
     ret =  _getEmptyKey(szKey, unKeyLen, szData, uiLen, szStoreKeyBuf, unKeyBufLen, szErr2K);
-    //cacheÊı¾İ
+    //cacheæ•°æ®
     if ((1 == ret) && bCache){
         getCache()->cacheKey(szKey, unKeyLen, szData, uiLen, true);
     }
@@ -2007,7 +2007,7 @@ int UnistorStoreEmpty::_getKey(char const* szKey,
 }
 
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_delKey(char const* szKey,
                              CWX_UINT16 unKeyLen,
                              CWX_UINT32 ttOldExpire,
@@ -2044,7 +2044,7 @@ int UnistorStoreEmpty::_delKey(char const* szKey,
 }
 
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_setEmptyKey(char const* ,
                                 CWX_UINT16 ,
                                 CWX_UINT16 ,
@@ -2060,7 +2060,7 @@ int UnistorStoreEmpty::_setEmptyKey(char const* ,
 }
 
 
-//0:²»´æÔÚ£»1£º»ñÈ¡£»-1£ºÊ§°Ü
+//0:ä¸å­˜åœ¨ï¼›1ï¼šè·å–ï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_getEmptyKey(char const* ,
                                 CWX_UINT16 ,
                                 char* ,
@@ -2076,7 +2076,7 @@ int UnistorStoreEmpty::_getEmptyKey(char const* ,
 	return 0;
 }
 
-//0:³É¹¦£»-1£ºÊ§°Ü
+//0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_delEmptyKey(char const* ,
                                 CWX_UINT16 ,
                                 CWX_UINT16 ,
@@ -2090,12 +2090,12 @@ int UnistorStoreEmpty::_delEmptyKey(char const* ,
 }
 
 
-//´¦ÀícommitÊÂ¼ş¡£0£º³É¹¦£»-1£ºÊ§°Ü
+//å¤„ç†commitäº‹ä»¶ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_dealCommitEvent(UnistorTss* tss, CwxMsgBlock*& )
 {
     CWX_UINT32 i=0;
-    if (!m_config->getCommon().m_bEnableExpire) return 0; ///<ÎŞĞè¼ì²â³¬Ê±
-    if (m_unExKeyPos < m_unExKeyNum) return 0; ///<»¹ÓĞÎ´´¦ÀíÍêµÄ³¬Ê±
+    if (!m_config->getCommon().m_bEnableExpire) return 0; ///<æ— éœ€æ£€æµ‹è¶…æ—¶
+    if (m_unExKeyPos < m_unExKeyNum) return 0; ///<è¿˜æœ‰æœªå¤„ç†å®Œçš„è¶…æ—¶
     if (!m_exKey){
         m_exKey = new pair<CWX_UINT32, UnistorStoreExpireKey*>[UNISTOR_PER_FETCH_EXPIRE_KEY_NUM];
         for (i=0; i<UNISTOR_PER_FETCH_EXPIRE_KEY_NUM; i++){
@@ -2113,9 +2113,9 @@ int UnistorStoreEmpty::_dealCommitEvent(UnistorTss* tss, CwxMsgBlock*& )
     return _sendExpireData(tss);
 }
 
-//¼ÓÔØ³¬Ê±µÄÊı¾İ¡£0£ºÃ»ÓĞĞÂÊı¾İ£»1£º»ñÈ¡ÁËÊı¾İ£»-1£ºÊ§°Ü
+//åŠ è½½è¶…æ—¶çš„æ•°æ®ã€‚0ï¼šæ²¡æœ‰æ–°æ•°æ®ï¼›1ï¼šè·å–äº†æ•°æ®ï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_loadExpireData(UnistorTss* , bool bJustContinue){
-    if (bJustContinue){///²»ÖØĞÂ¼ÓÔØ
+    if (bJustContinue){///ä¸é‡æ–°åŠ è½½
         if (m_unExKeyNum < UNISTOR_PER_FETCH_EXPIRE_KEY_NUM) return 0;
     }
     CWX_INFO(("End load expired key.........."));
@@ -2150,7 +2150,7 @@ int UnistorStoreEmpty::_sendExpireData(UnistorTss* tss){
     return 0;
 }
 
-//´¦ÀíexpireÊÂ¼ş¡£0£º³É¹¦£»-1£ºÊ§°Ü
+//å¤„ç†expireäº‹ä»¶ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
 {
     CWX_UINT32 uiVersion = 0;
@@ -2167,7 +2167,7 @@ int UnistorStoreEmpty::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
     }
     if (1 == ret){
         getKvVersion(szBuf, uiBufLen, ttOldExpire, uiVersion);
-        if (ttOldExpire == msg->event().getTimestamp()){///Í¬Ò»¸ökey
+        if (ttOldExpire == msg->event().getTimestamp()){///åŒä¸€ä¸ªkey
             if (0 != _delKey(msg->rd_ptr(), msg->length(), ttOldExpire, bReadCache, tss->m_szBuf2K)) return -1;
         }
     }
@@ -2182,14 +2182,14 @@ int UnistorStoreEmpty::_dealExpireEvent(UnistorTss* tss, CwxMsgBlock*& msg)
     return 0;
 }
 
-//´¦ÀíexpireÊÂ¼şµÄ»Ø¸´¡£0£º³É¹¦£»-1£ºÊ§°Ü
+//å¤„ç†expireäº‹ä»¶çš„å›å¤ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorStoreEmpty::_dealExpireReplyEvent(UnistorTss* tss, CwxMsgBlock*& msg){
     m_exFreeMsg.push_back(msg);
     msg = NULL;
     return _sendExpireData(tss);
 }
 
-//µ¼³ömodÄ£Ê½µÄ¶©ÔÄ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
+//å¯¼å‡ºmodæ¨¡å¼çš„è®¢é˜…ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
 int UnistorStoreEmpty::_exportNext(UnistorTss* ,
                                  UnistorStoreCursor& cursor,
                                  char const*& ,
@@ -2207,7 +2207,7 @@ int UnistorStoreEmpty::_exportNext(UnistorTss* ,
 }
 
 
-//µ¼³ökeyÄ£Ê½µÄ¶©ÔÄ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
+//å¯¼å‡ºkeyæ¨¡å¼çš„è®¢é˜…ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
 int UnistorStoreEmpty::_exportKeyNext(UnistorTss* ,
                                     UnistorStoreCursor& cursor,
                                     char const*& ,
@@ -2234,13 +2234,13 @@ bool UnistorStoreEmpty::_exportKeyInit(string const& strKeyBegin,
         if ((keyStoreCmpLess(strKeyBegin.c_str(), strKeyBegin.size(), iter->second.c_str(), iter->second.size())<0)
             || (!iter->second.size()))
         {
-            ///ÉèÖÃbegin
+            ///è®¾ç½®begin
             if (keyStoreCmpLess(strKeyBegin.c_str(), strKeyBegin.size(), iter->first.c_str(), iter->first.size()) <= 0){
                 strBegin.assign(iter->first.c_str(), iter->first.size());
             }else{
                 strBegin.assign(strKeyBegin.c_str(), strKeyBegin.size());
             }
-            ///ÉèÖÃend
+            ///è®¾ç½®end
             strEnd.assign(iter->second.c_str(), iter->second.size());
             return true;
         }

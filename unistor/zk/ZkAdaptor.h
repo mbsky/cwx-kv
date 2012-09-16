@@ -1,13 +1,13 @@
-#ifndef __ZK_ADAPTOR_H__
+ï»¿#ifndef __ZK_ADAPTOR_H__
 #define __ZK_ADAPTOR_H__
 
 /**
 *@file  ZkAdaptor.h
-*@brief  ZookeeperµÄc++½Ó¿Ú£¬²ÉÓÃZookeeperµÄ¶àÏß³ÌÄ£Ê½
+*@brief  Zookeeperçš„c++æ¥å£ï¼Œé‡‡ç”¨Zookeeperçš„å¤šçº¿ç¨‹æ¨¡å¼
 *@author cwinux@gmail.com
 *@version 1.0
 *@date    2011-11-10
-*@warning ÎŞ
+*@warning æ— 
 *@bug   
 */
 
@@ -27,46 +27,46 @@ class ZkAdaptor
 {
 public:
 	enum{
-		ZK_DEF_RECV_TIMEOUT_MILISECOND = 5000  ///<Í¨ĞÅ³¬Ê±Ê±¼ä£¬5s
+		ZK_DEF_RECV_TIMEOUT_MILISECOND = 5000  ///<é€šä¿¡è¶…æ—¶æ—¶é—´ï¼Œ5s
 	};
-	enum{///<add auth×´Ì¬
-		AUTH_STATE_WAITING = 0,  ///<ÕıÔÚadd auth
-		AUTH_STATE_FAIL = 1,     ///<add authÊ§°Ü
-		AUTH_STATE_SUCCESS = 2   ///<add auth³É¹¦
+	enum{///<add authçŠ¶æ€
+		AUTH_STATE_WAITING = 0,  ///<æ­£åœ¨add auth
+		AUTH_STATE_FAIL = 1,     ///<add authå¤±è´¥
+		AUTH_STATE_SUCCESS = 2   ///<add authæˆåŠŸ
 	};
 public:
 
-	///¹¹Ôìº¯Êı
-	ZkAdaptor(string const& strHost, ///<zookeeperÁ¬½Ó£¬Îªhost:port½á¹¹
+	///æ„é€ å‡½æ•°
+	ZkAdaptor(string const& strHost, ///<zookeeperè¿æ¥ï¼Œä¸ºhost:portç»“æ„
 		uint32_t uiRecvTimeout=ZK_DEF_RECV_TIMEOUT_MILISECOND);
 
-	///Îö¹¹º¯Êı
+	///ææ„å‡½æ•°
 	virtual ~ZkAdaptor(); 
 
 	/**
-	*@brief  ¶ÔÏó³õÊ¼»¯.
-	*@param [in] level ´íÎóÈÕÖ¾¼¶±ğ£¬¿ÉÒÔÎª
+	*@brief  å¯¹è±¡åˆå§‹åŒ–.
+	*@param [in] level é”™è¯¯æ—¥å¿—çº§åˆ«ï¼Œå¯ä»¥ä¸º
 	             ZOO_LOG_LEVEL_ERROR,ZOO_LOG_LEVEL_WARN,ZOO_LOG_LEVEL_INFO,ZOO_LOG_LEVEL_DEBUG
 	*@return 0:success; -1:failure.
 	*/
 	int init(ZooLogLevel level=ZOO_LOG_LEVEL_WARN);
 
 	/**
-	*@brief  ½¨Á¢Á¬½Ó£¬Á¬½Ó½¨Á¢ºó»á´¥·¢onConnect()¡£µ×²ãµ÷ÓÃzookeeper_init()
-	         Ò²¿ÉÒÔÍ¨¹ıisConnected()È¥ÂÖÑ¯Á¬½ÓÊÇ·ñ½¨Á¢¡£
-	*@param [in] clientid_t Á¬½ÓµÄsession
-	*@param [in] flags zookeeper_initµÄflags²ÎÊı£¬µ±Ç°Îª0.
-    *@param [in] watch zkµÄÊÂ¼şwatchº¯Êı£¬Èô²»Ö¸¶¨Ôò²ÉÓÃÏµÍ³Ä¬ÈÏµÄwatch£¬ĞèÒªÖØÔØonµÄº¯Êı´¦ÀíÊÂ¼ş¡£
-    *@param [in] context ÈôÉè¶¨ÁËwatch£¬ÔòĞèÒªÖ¸¶¨watchµÄcontext¡£
+	*@brief  å»ºç«‹è¿æ¥ï¼Œè¿æ¥å»ºç«‹åä¼šè§¦å‘onConnect()ã€‚åº•å±‚è°ƒç”¨zookeeper_init()
+	         ä¹Ÿå¯ä»¥é€šè¿‡isConnected()å»è½®è¯¢è¿æ¥æ˜¯å¦å»ºç«‹ã€‚
+	*@param [in] clientid_t è¿æ¥çš„session
+	*@param [in] flags zookeeper_initçš„flagså‚æ•°ï¼Œå½“å‰ä¸º0.
+    *@param [in] watch zkçš„äº‹ä»¶watchå‡½æ•°ï¼Œè‹¥ä¸æŒ‡å®šåˆ™é‡‡ç”¨ç³»ç»Ÿé»˜è®¤çš„watchï¼Œéœ€è¦é‡è½½onçš„å‡½æ•°å¤„ç†äº‹ä»¶ã€‚
+    *@param [in] context è‹¥è®¾å®šäº†watchï¼Œåˆ™éœ€è¦æŒ‡å®šwatchçš„contextã€‚
 	*@return 0:success; -1:failure.
 	*/
 	virtual int connect(const clientid_t *clientid=NULL, int flags=0, watcher_fn watch=NULL, void *context=NULL);
 
-	///¹Ø±ÕÁ¬½Ó
+	///å…³é—­è¿æ¥
 	void disconnect();
 
 
-	///¼ì²âÁ¬½ÓÊÇ·ñ½¨Á¢¡£true£º½¨Á¢£»false£ºÎ´½¨Á¢¡£
+	///æ£€æµ‹è¿æ¥æ˜¯å¦å»ºç«‹ã€‚trueï¼šå»ºç«‹ï¼›falseï¼šæœªå»ºç«‹ã€‚
 	bool isConnected()
 	{
 		if (m_zkHandle){
@@ -77,29 +77,29 @@ public:
 	}
 
 	/**
-	*@brief  ¶ÔÁ¬½ÓÊÚÈ¨£¬µ×²ãµ÷ÓÃzoo_add_auth()¡£
-	*@param [in] scheme authµÄscheme£¬µ±Ç°Ö»Ö§³ÖdigestÀàĞÍµÄÊÚÈ¨
-	*@param [in] cert authµÄÖ¤Êé¡£¶ÔÓÚdigestÄ£Ê½£¬Îªuser:passwdµÄ¸ñÊ½
-	*@param [in] certLen certµÄ³¤¶È¡£
-	*@param [in] timeout ÊÚÈ¨³¬Ê±µÄÊ±¼ä£¬µ¥Î»Îªms¡£ÈôÎª0Ôò²»µÈ´ı£¬ĞèÒªÖ÷¶¯µ÷ÓÃgetAuthState()»ñÈ¡ÊÚÈ¨µÄ½á¹û¡£
-	*@return true:ÊÚÈ¨³É¹¦£»false£ºÊÚÈ¨Ê§°Ü.
+	*@brief  å¯¹è¿æ¥æˆæƒï¼Œåº•å±‚è°ƒç”¨zoo_add_auth()ã€‚
+	*@param [in] scheme authçš„schemeï¼Œå½“å‰åªæ”¯æŒdigestç±»å‹çš„æˆæƒ
+	*@param [in] cert authçš„è¯ä¹¦ã€‚å¯¹äºdigestæ¨¡å¼ï¼Œä¸ºuser:passwdçš„æ ¼å¼
+	*@param [in] certLen certçš„é•¿åº¦ã€‚
+	*@param [in] timeout æˆæƒè¶…æ—¶çš„æ—¶é—´ï¼Œå•ä½ä¸ºmsã€‚è‹¥ä¸º0åˆ™ä¸ç­‰å¾…ï¼Œéœ€è¦ä¸»åŠ¨è°ƒç”¨getAuthState()è·å–æˆæƒçš„ç»“æœã€‚
+	*@return true:æˆæƒæˆåŠŸï¼›falseï¼šæˆæƒå¤±è´¥.
 	*/
 	bool addAuth(const char* scheme, const char* cert, int certLen, uint32_t timeout=0, void_completion_t completion=NULL, const void *data=NULL);
 
-	///»ñÈ¡¸³È¨×´Ì¬£¬ÎªAUTH_STATE_WAITING£¬AUTH_STATE_FAIL£¬AUTH_STATE_SUCCESSÖ®Ò»
+	///è·å–èµ‹æƒçŠ¶æ€ï¼Œä¸ºAUTH_STATE_WAITINGï¼ŒAUTH_STATE_FAILï¼ŒAUTH_STATE_SUCCESSä¹‹ä¸€
 	int getAuthState() const { return m_iAuthState;}
 
 	/**
-	*@brief  ´´½¨node£¬µ×²ãµ÷ÓÃzoo_create()¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [in] data ½ÚµãµÄÊı¾İ
-	*@param [in] dataLen Êı¾İµÄ³¤¶È¡£
-	*@param [in] acl ½ÚµãµÄ·ÃÎÊÈ¨ÏŞ¡£
-	*@param [in] flags ½ÚµãµÄflag£¬0±íÊ¾Õı³£½Úµã£¬»òÕßÎªZOO_SEQUENCEÓëZOO_EPHEMERALµÄ×éºÏ¡£
-    *@param [in] recursive  ÊÇ·ñµİ¹é´´½¨ËùÓĞ½Úµã¡£
-	*@param [out] pathBuf ÈôÎªZOO_SEQUENCEÀàĞÍµÄ½Úµã£¬·µ»ØÕæÕıµÄ½ÚµãÃû×Ö¡£
-	*@param [in] pathBufLen  pathBufµÄbuf¿Õ¼ä¡£
-	*@return 1:³É¹¦£»0:½Úµã´æÔÚ£»-1£ºÊ§°Ü
+	*@brief  åˆ›å»ºnodeï¼Œåº•å±‚è°ƒç”¨zoo_create()ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [in] data èŠ‚ç‚¹çš„æ•°æ®
+	*@param [in] dataLen æ•°æ®çš„é•¿åº¦ã€‚
+	*@param [in] acl èŠ‚ç‚¹çš„è®¿é—®æƒé™ã€‚
+	*@param [in] flags èŠ‚ç‚¹çš„flagï¼Œ0è¡¨ç¤ºæ­£å¸¸èŠ‚ç‚¹ï¼Œæˆ–è€…ä¸ºZOO_SEQUENCEä¸ZOO_EPHEMERALçš„ç»„åˆã€‚
+    *@param [in] recursive  æ˜¯å¦é€’å½’åˆ›å»ºæ‰€æœ‰èŠ‚ç‚¹ã€‚
+	*@param [out] pathBuf è‹¥ä¸ºZOO_SEQUENCEç±»å‹çš„èŠ‚ç‚¹ï¼Œè¿”å›çœŸæ­£çš„èŠ‚ç‚¹åå­—ã€‚
+	*@param [in] pathBufLen  pathBufçš„bufç©ºé—´ã€‚
+	*@return 1:æˆåŠŸï¼›0:èŠ‚ç‚¹å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
 	*/
 	int createNode(const string &path, 
 		char const* data,
@@ -111,241 +111,241 @@ public:
 		uint32_t pathBufLen=0);
 
 	/**
-	*@brief  É¾³ı½Úµã¼°Æächild½Úµã¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [in] recursive ÊÇ·ñÉ¾³ıchild node¡£
-	*@param [in] version Êı¾İ°æ±¾£¬-1±íÊ¾²»ÑéÖ¤°æ±¾ºÅ¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  åˆ é™¤èŠ‚ç‚¹åŠå…¶childèŠ‚ç‚¹ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [in] recursive æ˜¯å¦åˆ é™¤child nodeã€‚
+	*@param [in] version æ•°æ®ç‰ˆæœ¬ï¼Œ-1è¡¨ç¤ºä¸éªŒè¯ç‰ˆæœ¬å·ã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int deleteNode(const string &path,
 		bool recursive = false,
 		int version = -1);
 
 	/**
-	*@brief  »ñÈ¡Ò»¸önodeµÄº¢×Ó¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [out] childs ½ÚµãµÄº¢×ÓÁĞ±í
-	*@param [in] watch ÊÇ·ñwatch½ÚµãµÄ±ä»¯¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  è·å–ä¸€ä¸ªnodeçš„å­©å­ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [out] childs èŠ‚ç‚¹çš„å­©å­åˆ—è¡¨
+	*@param [in] watch æ˜¯å¦watchèŠ‚ç‚¹çš„å˜åŒ–ã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int getNodeChildren( const string &path, list<string>& childs, int watch=0);
 
 	/**
-	*@brief  ¼ì²âÒ»¸ö½ÚµãÊÇ·ñ´æÔÚ¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [out] stat ½ÚµãµÄĞÅÏ¢
-	*@param [in] watch ÊÇ·ñwatch½ÚµãµÄ±ä»¯¡£
-	*@return 1:´æÔÚ£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  æ£€æµ‹ä¸€ä¸ªèŠ‚ç‚¹æ˜¯å¦å­˜åœ¨ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [out] stat èŠ‚ç‚¹çš„ä¿¡æ¯
+	*@param [in] watch æ˜¯å¦watchèŠ‚ç‚¹çš„å˜åŒ–ã€‚
+	*@return 1:å­˜åœ¨ï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int nodeExists(const string &path, struct Stat& stat, int watch=0);
 
 	/**
-	*@brief  »ñÈ¡Ò»¸ö½ÚµãµÄÊı¾İ¼°ĞÅÏ¢¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [out] data Êı¾İ¿Õ¼ä¡£
-	*@param [in out]  dataLen ´«ÈëÊı¾İ¿Õ¼ä´óĞ¡£¬´«³ödataµÄÕæÊµ´óĞ¡¡£
-	*@param [out] stat ½ÚµãĞÅÏ¢¡£
-	*@param [in] watch ÊÇ·ñwatch½ÚµãµÄ±ä»¯¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  è·å–ä¸€ä¸ªèŠ‚ç‚¹çš„æ•°æ®åŠä¿¡æ¯ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [out] data æ•°æ®ç©ºé—´ã€‚
+	*@param [in out]  dataLen ä¼ å…¥æ•°æ®ç©ºé—´å¤§å°ï¼Œä¼ å‡ºdataçš„çœŸå®å¤§å°ã€‚
+	*@param [out] stat èŠ‚ç‚¹ä¿¡æ¯ã€‚
+	*@param [in] watch æ˜¯å¦watchèŠ‚ç‚¹çš„å˜åŒ–ã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int getNodeData(const string &path, char* data, uint32_t& dataLen, struct Stat& stat, int watch=0);
 
     /**
-    *@brief  »ñÈ¡Ò»¸önodeµÄº¢×Ó£¬²¢×¢²áÊÂ¼şº¯Êı¡£
-    *@param [in] path ½ÚµãÂ·¾¶
-    *@param [out] childs ½ÚµãµÄº¢×ÓÁĞ±í
-    *@param [in] watcher watchº¯Êı£¬Èô²»Ö¸¶¨Ôò²»watch¡£
-    *@param [in] watcherCtx watchº¯ÊıµÄcontext¡£
-    *@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+    *@brief  è·å–ä¸€ä¸ªnodeçš„å­©å­ï¼Œå¹¶æ³¨å†Œäº‹ä»¶å‡½æ•°ã€‚
+    *@param [in] path èŠ‚ç‚¹è·¯å¾„
+    *@param [out] childs èŠ‚ç‚¹çš„å­©å­åˆ—è¡¨
+    *@param [in] watcher watchå‡½æ•°ï¼Œè‹¥ä¸æŒ‡å®šåˆ™ä¸watchã€‚
+    *@param [in] watcherCtx watchå‡½æ•°çš„contextã€‚
+    *@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
     */
     int wgetNodeChildren( const string &path, list<string>& childs, watcher_fn watcher=NULL, void* watcherCtx=NULL);
     /**
-    *@brief  ¼ì²âÒ»¸ö½ÚµãÊÇ·ñ´æÔÚ¡£
-    *@param [in] path ½ÚµãÂ·¾¶
-    *@param [out] stat ½ÚµãµÄĞÅÏ¢
-    *@param [in] watcher watchº¯Êı£¬Èô²»Ö¸¶¨Ôò²»watch¡£
-    *@param [in] watcherCtx watchº¯ÊıµÄcontext¡£
-    *@return 1:´æÔÚ£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+    *@brief  æ£€æµ‹ä¸€ä¸ªèŠ‚ç‚¹æ˜¯å¦å­˜åœ¨ã€‚
+    *@param [in] path èŠ‚ç‚¹è·¯å¾„
+    *@param [out] stat èŠ‚ç‚¹çš„ä¿¡æ¯
+    *@param [in] watcher watchå‡½æ•°ï¼Œè‹¥ä¸æŒ‡å®šåˆ™ä¸watchã€‚
+    *@param [in] watcherCtx watchå‡½æ•°çš„contextã€‚
+    *@return 1:å­˜åœ¨ï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
     */
     int wnodeExists(const string &path, struct Stat& stat, watcher_fn watcher=NULL, void* watcherCtx=NULL);
     /**
-    *@brief  »ñÈ¡Ò»¸ö½ÚµãµÄÊı¾İ¼°ĞÅÏ¢¡£
-    *@param [in] path ½ÚµãÂ·¾¶
-    *@param [out] data Êı¾İ¿Õ¼ä¡£
-    *@param [in out]  dataLen ´«ÈëÊı¾İ¿Õ¼ä´óĞ¡£¬´«³ödataµÄÕæÊµ´óĞ¡¡£
-    *@param [out] stat ½ÚµãĞÅÏ¢¡£
-    *@param [in] watcher watchº¯Êı£¬Èô²»Ö¸¶¨Ôò²»watch¡£
-    *@param [in] watcherCtx watchº¯ÊıµÄcontext¡£
-    *@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+    *@brief  è·å–ä¸€ä¸ªèŠ‚ç‚¹çš„æ•°æ®åŠä¿¡æ¯ã€‚
+    *@param [in] path èŠ‚ç‚¹è·¯å¾„
+    *@param [out] data æ•°æ®ç©ºé—´ã€‚
+    *@param [in out]  dataLen ä¼ å…¥æ•°æ®ç©ºé—´å¤§å°ï¼Œä¼ å‡ºdataçš„çœŸå®å¤§å°ã€‚
+    *@param [out] stat èŠ‚ç‚¹ä¿¡æ¯ã€‚
+    *@param [in] watcher watchå‡½æ•°ï¼Œè‹¥ä¸æŒ‡å®šåˆ™ä¸watchã€‚
+    *@param [in] watcherCtx watchå‡½æ•°çš„contextã€‚
+    *@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
     */
     int wgetNodeData(const string &path, char* data, uint32_t& dataLen, struct Stat& stat, watcher_fn watcher=NULL, void* watcherCtx=NULL);
 
 	/**
-	*@brief  »ñÈ¡Ò»¸ö½ÚµãµÄÊı¾İ¼°ĞÅÏ¢¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [in] data Êı¾İ¡£
-	*@param [in]  dataLen Êı¾İ´óĞ¡¡£
-	*@param [in] version Êı¾İ°æ±¾£¬ÈôÎª-1±íÊ¾²»ÏŞ¶¨¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  è·å–ä¸€ä¸ªèŠ‚ç‚¹çš„æ•°æ®åŠä¿¡æ¯ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [in] data æ•°æ®ã€‚
+	*@param [in]  dataLen æ•°æ®å¤§å°ã€‚
+	*@param [in] version æ•°æ®ç‰ˆæœ¬ï¼Œè‹¥ä¸º-1è¡¨ç¤ºä¸é™å®šã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int setNodeData(const string &path, char const* data, uint32_t dataLen, int version = -1);
 
 	/**
-	*@brief  »ñÈ¡Ò»¸ö½ÚµãµÄACLĞÅÏ¢¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [out] acl ½ÚµãµÄaclĞÅÏ¢¡£
-	*@param [out] stat ½ÚµãµÄÍ³¼ÆĞÅÏ¢¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  è·å–ä¸€ä¸ªèŠ‚ç‚¹çš„ACLä¿¡æ¯ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [out] acl èŠ‚ç‚¹çš„aclä¿¡æ¯ã€‚
+	*@param [out] stat èŠ‚ç‚¹çš„ç»Ÿè®¡ä¿¡æ¯ã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
 	int getAcl(const char *path, struct ACL_vector& acl, struct Stat& stat);
 
 	/**
-	*@brief  ÉèÖÃÒ»¸ö½ÚµãµÄACLĞÅÏ¢¡£
-	*@param [in] path ½ÚµãÂ·¾¶
-	*@param [int] acl ½ÚµãµÄaclĞÅÏ¢¡£
-	*@param [in] version Êı¾İ°æ±¾£¬ÈôÎª-1±íÊ¾²»ÏŞ¶¨¡£
-	*@return 1:³É¹¦£»0£º½Úµã²»´æÔÚ£»-1£ºÊ§°Ü.
+	*@brief  è®¾ç½®ä¸€ä¸ªèŠ‚ç‚¹çš„ACLä¿¡æ¯ã€‚
+	*@param [in] path èŠ‚ç‚¹è·¯å¾„
+	*@param [int] acl èŠ‚ç‚¹çš„aclä¿¡æ¯ã€‚
+	*@param [in] version æ•°æ®ç‰ˆæœ¬ï¼Œè‹¥ä¸º-1è¡¨ç¤ºä¸é™å®šã€‚
+	*@return 1:æˆåŠŸï¼›0ï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥.
 	*/
     int setAcl(const char *path, const struct ACL_vector *acl=&ZOO_OPEN_ACL_UNSAFE, bool recursive=false, int version=-1);
-	///»ñÈ¡zookeeperµÄÖ÷»ú
+	///è·å–zookeeperçš„ä¸»æœº
 	string const& getHost() const { return m_strHost;}
 
-	///»ñÈ¡zookeeperµÄÁ¬½Óhandle
+	///è·å–zookeeperçš„è¿æ¥handle
 	zhandle_t* getZkHandle() { return m_zkHandle;}
 
-	///»ñÈ¡zookeeperÁ¬½ÓµÄclient session
+	///è·å–zookeeperè¿æ¥çš„client session
 	const clientid_t * getClientId() { return  isConnected()?zoo_client_id(m_zkHandle):NULL;}
 
-	///»ñÈ¡³ö´íµÄ´íÎó´úÂë
+	///è·å–å‡ºé”™çš„é”™è¯¯ä»£ç 
 	int  getErrCode() const { return m_iErrCode;}
 
-	///»ñÈ¡´íÎóÏûÏ¢
+	///è·å–é”™è¯¯æ¶ˆæ¯
 	char const* getErrMsg() const { return m_szErr2K;}
 public:
 	
-	///sleep miliSecondºÁÃë
+	///sleep miliSecondæ¯«ç§’
 	static void sleep(uint32_t miliSecond);
 	///split the src
 	static int split(string const& src, list<string>& value, char ch);
 
 	/**
-	*@brief  ¶ÔinputµÄ×Ö·û´®½øĞĞbase64µÄÇ©Ãû£¬ÓÃ»§ĞèÒªÊÍ·Å·µ»ØµÄ×Ö·û¿Õ¼ä¡£
-	*@param [in] input Òªbase64Ç©ÃûµÄ×Ö·û´®
-	*@param [in] length inputµÄ³¤¶È¡£
-	*@return NULL:Ê§°Ü£»·ñÔòÎªinputµÄbase64Ç©Ãû
+	*@brief  å¯¹inputçš„å­—ç¬¦ä¸²è¿›è¡Œbase64çš„ç­¾åï¼Œç”¨æˆ·éœ€è¦é‡Šæ”¾è¿”å›çš„å­—ç¬¦ç©ºé—´ã€‚
+	*@param [in] input è¦base64ç­¾åçš„å­—ç¬¦ä¸²
+	*@param [in] length inputçš„é•¿åº¦ã€‚
+	*@return NULL:å¤±è´¥ï¼›å¦åˆ™ä¸ºinputçš„base64ç­¾å
 	*/
 	static char* base64(const unsigned char *input, int length);
 
 	/**
-	*@brief  ¶ÔinputµÄ×Ö·û´®½øĞĞsha1µÄÇ©Ãû¡£
-	*@param [in] input Òªsha1Ç©ÃûµÄ×Ö·û´®
-	*@param [in] length inputµÄ³¤¶È¡£
-	*@param [out] output 20byteµÄsha1Ç©ÃûÖµ¡£
+	*@brief  å¯¹inputçš„å­—ç¬¦ä¸²è¿›è¡Œsha1çš„ç­¾åã€‚
+	*@param [in] input è¦sha1ç­¾åçš„å­—ç¬¦ä¸²
+	*@param [in] length inputçš„é•¿åº¦ã€‚
+	*@param [out] output 20byteçš„sha1ç­¾åå€¼ã€‚
 	*@return void
 	*/
 	static void sha1(char const* input, int length, unsigned char *output);
 
 	/**
-	*@brief  ¶ÔinputµÄ×Ö·û´®½øĞĞsha1Ç©Ãûºó£¬ÔÙ½øĞĞbase64±ä»»¡£ÓÃ»§ĞèÒªÊÍ·Å·µ»ØµÄ¿Õ¼ä
-	*@param [in] input ÒªÇ©ÃûµÄ×Ö·û´®
-	*@param [in] length inputµÄ³¤¶È¡£
-	*@return NULL:Ê§°Ü£»·ñÔòÎªinputµÄbase64Ç©Ãû
+	*@brief  å¯¹inputçš„å­—ç¬¦ä¸²è¿›è¡Œsha1ç­¾ååï¼Œå†è¿›è¡Œbase64å˜æ¢ã€‚ç”¨æˆ·éœ€è¦é‡Šæ”¾è¿”å›çš„ç©ºé—´
+	*@param [in] input è¦ç­¾åçš„å­—ç¬¦ä¸²
+	*@param [in] length inputçš„é•¿åº¦ã€‚
+	*@return NULL:å¤±è´¥ï¼›å¦åˆ™ä¸ºinputçš„base64ç­¾å
 	*/
 	static char* digest(char const* input, int length);
 
 	/**
-	*@brief  ¸ù¾İprivĞÎ³Éacl¡£priv¿ÉÒÔÎªall,self,read»òÕßuser:passwd:acrwd
-	*@param [in] priv ÒªÇ©ÃûµÄ×Ö·û´®,¿ÉÒÔÎªall,self,read»òÕßuser:passwd:acrwd
-	*@param [in] acl  È¨ÏŞ
-	*@return false:Ê§°Ü£»true:³É¹¦
+	*@brief  æ ¹æ®privå½¢æˆaclã€‚privå¯ä»¥ä¸ºall,self,readæˆ–è€…user:passwd:acrwd
+	*@param [in] priv è¦ç­¾åçš„å­—ç¬¦ä¸²,å¯ä»¥ä¸ºall,self,readæˆ–è€…user:passwd:acrwd
+	*@param [in] acl  æƒé™
+	*@return false:å¤±è´¥ï¼›true:æˆåŠŸ
 	*/
 	static bool fillAcl(char const* priv, struct ACL& acl);
 
 
-	///Êä³öÈ¨ÏŞĞÅÏ¢£¬Ò»¸öÈ¨ÏŞÒ»¸ölistµÄÔªËØ
+	///è¾“å‡ºæƒé™ä¿¡æ¯ï¼Œä¸€ä¸ªæƒé™ä¸€ä¸ªlistçš„å…ƒç´ 
 	static void dumpAcl(ACL_vector const& acl, list<string>& info);
 
-	///Êä³ö½ÚµãµÄĞÅÏ¢,Ò»ĞĞÒ»¸öĞÅÏ¢Ïî
+	///è¾“å‡ºèŠ‚ç‚¹çš„ä¿¡æ¯,ä¸€è¡Œä¸€ä¸ªä¿¡æ¯é¡¹
 	static void dumpStat(struct Stat const& stat, string& info);
 public:
-    ///ÊÂ¼şÍ¨Öª£¬´ËÊ±ËùÓĞÊÂ¼şµÄ¸ùapi
+    ///äº‹ä»¶é€šçŸ¥ï¼Œæ­¤æ—¶æ‰€æœ‰äº‹ä»¶çš„æ ¹api
     virtual void onEvent(zhandle_t *t, int type, int state, const char *path);
 
-    ///Á¬½Ó½¨Á¢µÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ
+    ///è¿æ¥å»ºç«‹çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨
     virtual void onConnect(){}
 
-    ///ÕıÔÚ½¨Á¢ÁªÏµµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ
+    ///æ­£åœ¨å»ºç«‹è”ç³»çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨
     virtual void onAssociating(){}
 
-    ///ÕıÔÚ½¨Á¢Á¬½ÓµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ
+    ///æ­£åœ¨å»ºç«‹è¿æ¥çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨
     virtual void onConnecting(){}
 
-    ///¼øÈ¨Ê§°ÜµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ
+    ///é‰´æƒå¤±è´¥çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨
     virtual void onFailAuth(){}
 
-    ///SessionÊ§Ğ§µÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ
+    ///Sessionå¤±æ•ˆçš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨
     virtual void onExpired(){}
 
     /**
-    *@brief  watchµÄnode´´½¨ÊÂ¼şµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£Ó¦ÓÃÓÚzoo_existsµÄwatch¡£
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  watchçš„nodeåˆ›å»ºäº‹ä»¶çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚åº”ç”¨äºzoo_existsçš„watchã€‚
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onNodeCreated(int state, char const* path);
 
     /**
-    *@brief  watchµÄnodeÉ¾³ıÊÂ¼şµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£Ó¦ÓÃÓÚ zoo_existsÓëzoo_getµÄwatch¡£
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  watchçš„nodeåˆ é™¤äº‹ä»¶çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚åº”ç”¨äº zoo_existsä¸zoo_getçš„watchã€‚
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onNodeDeleted(int state, char const* path);
 
     /**
-    *@brief  watchµÄnodeĞŞ¸ÄÊÂ¼şµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£Ó¦ÓÃÓÚ zoo_existsÓëzoo_getµÄwatch¡£
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  watchçš„nodeä¿®æ”¹äº‹ä»¶çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚åº”ç”¨äº zoo_existsä¸zoo_getçš„watchã€‚
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onNodeChanged(int state, char const* path);
 
     /**
-    *@brief  watchµÄnodeº¢×Ó±ä¸üÊÂ¼şµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£Ó¦ÓÃÓÚzoo_get_childrenµÄwatch¡£
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  watchçš„nodeå­©å­å˜æ›´äº‹ä»¶çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚åº”ç”¨äºzoo_get_childrençš„watchã€‚
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onNodeChildChanged(int state, char const* path);
 
     /**
-    *@brief  zkÈ¡ÏûÄ³¸öwathcµÄÍ¨ÖªÊÂ¼şµÄ»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  zkå–æ¶ˆæŸä¸ªwathcçš„é€šçŸ¥äº‹ä»¶çš„å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onNoWatching(int state, char const* path);
 
     /**
-    *@brief  ÆäËûzookeeperµÄÊÂ¼şÍ¨Öª»Øµ÷º¯Êı£¬ÓĞµ×²ãµÄzkÏß³Ìµ÷ÓÃ¡£
-    *@param [in] typeµÄwatcherµÄÊÂ¼ştype
-    *@param [in] zkµÄwatcherµÄstate
-    *@param [in] path watchµÄpath.
+    *@brief  å…¶ä»–zookeeperçš„äº‹ä»¶é€šçŸ¥å›è°ƒå‡½æ•°ï¼Œæœ‰åº•å±‚çš„zkçº¿ç¨‹è°ƒç”¨ã€‚
+    *@param [in] typeçš„watcherçš„äº‹ä»¶type
+    *@param [in] zkçš„watcherçš„state
+    *@param [in] path watchçš„path.
     *@return void.
     */
     virtual void onOtherEvent(int type, int state, const char *path);
 
 private:
-	///ÄÚ²¿µÄwacher function
+	///å†…éƒ¨çš„wacher function
 	static void watcher(zhandle_t *zzh, int type, int state, const char *path,
 		void* context);
 
-	///ÄÚ²¿add authµÄfunction
+	///å†…éƒ¨add authçš„function
 	static void authCompletion(int rc, const void *data);
 private:
 	string       m_strHost; ///<The host addresses of ZK nodes.
-	uint32_t   m_uiRecvTimeout; ///<ÏûÏ¢½ÓÊÕ³¬Ê±
-	int  		 m_iAuthState; ///<add authµÄÍê³É×´Ì¬
+	uint32_t   m_uiRecvTimeout; ///<æ¶ˆæ¯æ¥æ”¶è¶…æ—¶
+	int  		 m_iAuthState; ///<add authçš„å®ŒæˆçŠ¶æ€
 	zhandle_t*   m_zkHandle; 	///<The current ZK session.
 	int           m_iErrCode;  	///<Err code
 	char          m_szErr2K[2048]; 	///<Err msg

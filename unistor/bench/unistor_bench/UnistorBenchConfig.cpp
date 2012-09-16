@@ -1,11 +1,11 @@
-#include "UnistorBenchConfig.h"
+ï»¿#include "UnistorBenchConfig.h"
 #include "CwxLogger.h"
 #include "UnistorDef.h"
 
 int UnistorBenchConfig::loadConfig(string const & strConfFile){
     CwxIniParse  parser;
     string value;
-    //½âÎöÅäÖÃÎÄ¼ş
+    //è§£æé…ç½®æ–‡ä»¶
     if (false == parser.load(strConfFile)){
         snprintf(m_szError, 2047, "Failure to Load conf file. err=%s", parser.getErrMsg());
         return -1;

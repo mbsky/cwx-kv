@@ -1,4 +1,4 @@
-#include "CwxBinlogOp.h"
+ï»¿#include "CwxBinlogOp.h"
 #include "CwxZlib.h"
 
 CwxBinlogOp::CwxBinlogOp(){
@@ -103,7 +103,7 @@ void CwxBinlogOp::prompt(){
         CwxCommon::toString(m_pCursor->getHeader().getSid(), szBuf));
 }
 
-//0£ºexit£¬1£ºcontinue
+//0ï¼šexitï¼Œ1ï¼šcontinue
 int CwxBinlogOp::doCommand(char* szCmd){
     string strCmd;
     list<string> value;

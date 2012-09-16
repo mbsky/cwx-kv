@@ -1,53 +1,53 @@
-#include "UnistorBenchApp.h"
+ï»¿#include "UnistorBenchApp.h"
 #include "CwxSocket.h"
 
-///¹¹Ôìº¯Êı
+///æ„é€ å‡½æ•°
 UnistorBenchApp::UnistorBenchApp(){
 	m_threadPool = NULL;
 	m_eventHandler = NULL;
 }
 
-///Îö¹¹º¯Êı
+///ææ„å‡½æ•°
 UnistorBenchApp::~UnistorBenchApp(){
 
 }
 
-///³õÊ¼»¯APP£¬¼ÓÔØÅäÖÃÎÄ¼ş
+///åˆå§‹åŒ–APPï¼ŒåŠ è½½é…ç½®æ–‡ä»¶
 int UnistorBenchApp::init(int argc, char** argv){
     string strErrMsg;
-    ///Ê×ÏÈµ÷ÓÃ¼Ü¹¹µÄinit
+    ///é¦–å…ˆè°ƒç”¨æ¶æ„çš„init
     if (CwxAppFramework::init(argc, argv) == -1) return -1;
-    ///ÈôÃ»ÓĞÍ¨¹ı-fÖ¸¶¨ÅäÖÃÎÄ¼ş£¬Ôò²ÉÓÃÄ¬ÈÏµÄÅäÖÃÎÄ¼ş
+    ///è‹¥æ²¡æœ‰é€šè¿‡-fæŒ‡å®šé…ç½®æ–‡ä»¶ï¼Œåˆ™é‡‡ç”¨é»˜è®¤çš„é…ç½®æ–‡ä»¶
     if ((NULL == this->getConfFile()) || (strlen(this->getConfFile()) == 0)){
         this->setConfFile("unistor_bench.cnf");
     }
-    ///¼ÓÔØÅäÖÃÎÄ¼ş
+    ///åŠ è½½é…ç½®æ–‡ä»¶
     if (0 != m_config.loadConfig(getConfFile())){
         CWX_ERROR((m_config.getError()));
         return -1;
     }
-    ///ÉèÖÃÊä³öÔËĞĞÈÕÖ¾µÄlevel
+    ///è®¾ç½®è¾“å‡ºè¿è¡Œæ—¥å¿—çš„level
     setLogLevel(CwxLogger::LEVEL_ERROR|CwxLogger::LEVEL_INFO|CwxLogger::LEVEL_WARNING);
     return 0;
 }
 
 //init the Enviroment before run.0:success, -1:failure.
 int UnistorBenchApp::initRunEnv(){
-    ///ÉèÖÃÊ±ÖÓµÄ¿Ì¶È£¬×îĞ¡Îª1ms£¬´ËÎª1s¡£
+    ///è®¾ç½®æ—¶é’Ÿçš„åˆ»åº¦ï¼Œæœ€å°ä¸º1msï¼Œæ­¤ä¸º1sã€‚
     this->setClick(1000);//1s
     //set work dir
     this->setWorkDir(this->m_config.m_strWorkDir.c_str());
     //Set log file
     this->setLogFileNum(LOG_FILE_NUM);
     this->setLogFileSize(LOG_FILE_SIZE*1024*1024);
-    ///µ÷ÓÃ¼Ü¹¹µÄinitRunEnv£¬Ê¹ÉèÖÃµÄ²ÎÊıÉúĞ§
+    ///è°ƒç”¨æ¶æ„çš„initRunEnvï¼Œä½¿è®¾ç½®çš„å‚æ•°ç”Ÿæ•ˆ
     if (CwxAppFramework::initRunEnv() == -1 ) return -1;
 
     //output config
     m_config.outputConfig();
 
     CWX_UINT16 i=0;
-    //½¨Á¢ÅäÖÃÎÄ¼şÖĞÉèÖÃµÄ¡¢Óëecho·şÎñµÄÁ¬½Ó
+    //å»ºç«‹é…ç½®æ–‡ä»¶ä¸­è®¾ç½®çš„ã€ä¸echoæœåŠ¡çš„è¿æ¥
     for (i=0; i<m_config.m_unConnNum; i++){
         //create  conn
         if (0 > this->noticeTcpConnect(SVR_TYPE_RECV,
@@ -66,10 +66,10 @@ int UnistorBenchApp::initRunEnv(){
             return -1;
         }
     }
-	//×¢²áhandle
+	//æ³¨å†Œhandle
 	m_eventHandler = new UnistorEventHandler(this);         
 	this->getCommander().regHandle(SVR_TYPE_RECV, m_eventHandler);
-	//Æô¶¯Ïß³Ì
+	//å¯åŠ¨çº¿ç¨‹
 	m_threadPool = new CwxThreadPool(2,
 		1,
 		getThreadPoolMgr(),
@@ -77,7 +77,7 @@ int UnistorBenchApp::initRunEnv(){
 	CwxTss** pTss = new CwxTss*[1];
 	pTss[0] = new UnistorTss();
 	((UnistorTss*)pTss[0])->init();
-	///Æô¶¯Ïß³Ì¡£
+	///å¯åŠ¨çº¿ç¨‹ã€‚
 	if ( 0 != m_threadPool->start(pTss)){
 		CWX_ERROR(("Failure to start thread pool"));
 		return -1;
@@ -85,7 +85,7 @@ int UnistorBenchApp::initRunEnv(){
     return 0;
 }
 
-///ĞÅºÅ´¦Àíº¯Êı
+///ä¿¡å·å¤„ç†å‡½æ•°
 void UnistorBenchApp::onSignal(int signum){
     switch(signum){
     case SIGQUIT: 
@@ -93,13 +93,13 @@ void UnistorBenchApp::onSignal(int signum){
         this->stop();
         break;
     default:
-        ///ÆäËûĞÅºÅ£¬ºöÂÔ
+        ///å…¶ä»–ä¿¡å·ï¼Œå¿½ç•¥
         CWX_INFO(("Recv signal=%d, ignore it.", signum));
         break;
     }
 }
 
-///echo·şÎñµÄÁ¬½Ó½¨Á¢ÏìÓ¦º¯Êı
+///echoæœåŠ¡çš„è¿æ¥å»ºç«‹å“åº”å‡½æ•°
 int UnistorBenchApp::onConnCreated(CwxAppHandler4Msg& conn, bool& , bool& ){
 	CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
 	msg->event().setSvrId(conn.getConnInfo().getSvrId());
@@ -110,7 +110,7 @@ int UnistorBenchApp::onConnCreated(CwxAppHandler4Msg& conn, bool& , bool& ){
     return 0;
 }
 
-///echo»Ø¸´µÄÏûÏ¢ÏìÓ¦º¯Êı
+///echoå›å¤çš„æ¶ˆæ¯å“åº”å‡½æ•°
 int UnistorBenchApp::onRecvMsg(CwxMsgBlock* msg,
                                CwxAppHandler4Msg& conn,
                                CwxMsgHead const& header,
@@ -127,7 +127,7 @@ int UnistorBenchApp::onRecvMsg(CwxMsgBlock* msg,
 }
 
 
-///ÉèÖÃÁ¬½ÓµÄÊôĞÔ
+///è®¾ç½®è¿æ¥çš„å±æ€§
 int UnistorBenchApp::setSockAttr(CWX_HANDLE handle, void* arg){
     UnistorBenchApp* app = (UnistorBenchApp*)arg;
 

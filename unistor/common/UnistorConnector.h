@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_CONNECTOR_H__
+ï»¿#ifndef __UNISTOR_CONNECTOR_H__
 #define __UNISTOR_CONNECTOR_H__
 
 #include "CwxPre.h"
@@ -11,28 +11,28 @@
 
 CWINUX_USING_NAMESPACE
 
-///ÔÚtimeoutÖ¸¶¨µÄÊ±¼äÄÚ£¬½¨Á¢addrÖ¸ÏòµÄunConnNumÌõÁ¬½Ó£¬Ö»ÒªÒ»ÌõÊ§°ÜÔò¶¼Ê§°Ü
+///åœ¨timeoutæŒ‡å®šçš„æ—¶é—´å†…ï¼Œå»ºç«‹addræŒ‡å‘çš„unConnNumæ¡è¿æ¥ï¼Œåªè¦ä¸€æ¡å¤±è´¥åˆ™éƒ½å¤±è´¥
 class  UnistorConnector
 {
 public:
-    ///½¨Á¢Á¬½Ó¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü¡£
-    static int connect (CwxINetAddr const& addr, ///<Á¬½ÓµÄµØÖ·
-        CWX_UINT16 unConnNum, ///<Á¬½ÓµÄÊıÁ¿
-        int* fd, ///<·µ»ØfdµÄÊıÖµ£¬Æä¿Õ¼äÓĞÍâ²¿±£Ö¤¡£
-        CwxTimeouter* timeout=NULL, ///<Á¬½Ó³¬Ê±Ê±¼ä
-        bool reuse_addr = false, ///<ÊÇ·ñÖØÓÃ¶Ë¿Ú
-        CWX_NET_SOCKET_ATTR_FUNC fn=NULL, ///<socketÉèÖÃµÄfunction
-        void* fnArg=NULL ///<socketÉèÖÃfunctionµÄ²ÎÊı
+    ///å»ºç«‹è¿æ¥ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ã€‚
+    static int connect (CwxINetAddr const& addr, ///<è¿æ¥çš„åœ°å€
+        CWX_UINT16 unConnNum, ///<è¿æ¥çš„æ•°é‡
+        int* fd, ///<è¿”å›fdçš„æ•°å€¼ï¼Œå…¶ç©ºé—´æœ‰å¤–éƒ¨ä¿è¯ã€‚
+        CwxTimeouter* timeout=NULL, ///<è¿æ¥è¶…æ—¶æ—¶é—´
+        bool reuse_addr = false, ///<æ˜¯å¦é‡ç”¨ç«¯å£
+        CWX_NET_SOCKET_ATTR_FUNC fn=NULL, ///<socketè®¾ç½®çš„function
+        void* fnArg=NULL ///<socketè®¾ç½®functionçš„å‚æ•°
     );
 private:
-    ///µÈ´ıÁ¬½ÓÍê³É²¢´¦Àí
-    static int complete (set<int>& fds, ///<´¦ÀíµÄÁ¬½Ó¼¯ºÏ
-        CwxTimeouter* timeout ///<³¬Ê±Ê±¼ä
+    ///ç­‰å¾…è¿æ¥å®Œæˆå¹¶å¤„ç†
+    static int complete (set<int>& fds, ///<å¤„ç†çš„è¿æ¥é›†åˆ
+        CwxTimeouter* timeout ///<è¶…æ—¶æ—¶é—´
         );
 private:
-    ///Ä¬ÈÏ¹¹Ôìº¯Êı
+    ///é»˜è®¤æ„é€ å‡½æ•°
     UnistorConnector(){}
-    ///Îö¹¹º¯Êı.
+    ///ææ„å‡½æ•°.
     ~UnistorConnector(void){}
 };
 

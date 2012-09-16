@@ -1,4 +1,4 @@
-#include "UnistorHandler4Trans.h"
+ï»¿#include "UnistorHandler4Trans.h"
 #include "UnistorApp.h"
 #include "UnistorTask4Trans.h"
 #include "CwxZlib.h"
@@ -12,7 +12,7 @@ CWX_UINT32 UnistorHandler4Trans::m_uiAuthConnNum=0;
 UnistorHandler4Trans**  UnistorHandler4Trans::m_authConn=0;
 map<CWX_UINT32, UnistorHandler4Trans*>* UnistorHandler4Trans::m_handlers = NULL;
 bool UnistorHandler4Trans::m_bRebuildConn=false;
-CWX_UINT32  UnistorHandler4Trans::m_ttLastRebuildConn=0; ///<ÉÏ´ÎÖØ½¨Á¬½ÓµÄÊ±¼ä
+CWX_UINT32  UnistorHandler4Trans::m_ttLastRebuildConn=0; ///<ä¸Šæ¬¡é‡å»ºè¿æ¥çš„æ—¶é—´
 
 
 int UnistorHandler4Trans::open (void * arg){
@@ -20,7 +20,7 @@ int UnistorHandler4Trans::open (void * arg){
     int ret = CwxAppHandler4Channel::open(arg);
     if (0 == ret){
         UnistorTss* tss = (UnistorTss*)CwxTss::instance();
-        ///·¢ËÍÈÏÖ¤ÏûÏ¢
+        ///å‘é€è®¤è¯æ¶ˆæ¯
         CwxMsgBlock* block = NULL;
         if (UNISTOR_ERR_SUCCESS != UnistorPoco::packRecvAuth(tss->m_pWriter,
             block,
@@ -38,7 +38,7 @@ int UnistorHandler4Trans::open (void * arg){
         }
         (*m_handlers)[m_uiConnId] = this;
         block->send_ctrl().setMsgAttr(CwxMsgSendCtrl::NONE);
-        ///·¢ËÍÏûÏ¢
+        ///å‘é€æ¶ˆæ¯
         putMsg(block);
     }
     return 0;
@@ -69,17 +69,17 @@ int UnistorHandler4Trans::onConnClosed()
 
 int UnistorHandler4Trans::onInput()
 {
-    ///½ÓÊÜÏûÏ¢
+    ///æ¥å—æ¶ˆæ¯
     int ret = CwxAppHandler4Channel::recvPackage(getHandle(),
         m_uiRecvHeadLen,
         m_uiRecvDataLen,
         m_szHeadBuf,
         m_header,
         m_recvMsgData);
-    ///Èç¹ûÃ»ÓĞ½ÓÊÜÍê±Ï£¨0£©»òÊ§°Ü£¨-1£©£¬Ôò·µ»Ø
+    ///å¦‚æœæ²¡æœ‰æ¥å—å®Œæ¯•ï¼ˆ0ï¼‰æˆ–å¤±è´¥ï¼ˆ-1ï¼‰ï¼Œåˆ™è¿”å›
     if (1 != ret) return ret;
-    ///½ÓÊÕµ½Ò»¸öÍêÕûµÄÊı¾İ°ü
-    if (!m_bAuth){///µÚÒ»¸öÏûÏ¢±ØĞëÊÇÈÏÖ¤»Ø¸´ÏûÏ¢
+    ///æ¥æ”¶åˆ°ä¸€ä¸ªå®Œæ•´çš„æ•°æ®åŒ…
+    if (!m_bAuth){///ç¬¬ä¸€ä¸ªæ¶ˆæ¯å¿…é¡»æ˜¯è®¤è¯å›å¤æ¶ˆæ¯
         int ret=UNISTOR_ERR_SUCCESS;
         char const* szErrMsg=NULL;
         if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseRecvAuthReply(m_tss->m_pReader,
@@ -98,7 +98,7 @@ int UnistorHandler4Trans::onInput()
         m_bAuth = true;
         m_bCanTrans = true; 
     }else{
-        ///ÊÕµ½ÁË»Ø¸´ÏûÏ¢
+        ///æ”¶åˆ°äº†å›å¤æ¶ˆæ¯
         CwxTaskBoardTask* pTask = NULL;
         m_pApp->getTaskBoard().noticeRecvMsg(m_header.getTaskId(),
             m_recvMsgData,
@@ -136,7 +136,7 @@ void UnistorHandler4Trans::onFailSendMsg(CwxMsgBlock*& msg)
 
 void UnistorHandler4Trans::doEvent(UnistorApp* pApp, UnistorTss* tss, CwxMsgBlock*& msg)
 {
-    if (CwxEventInfo::RECV_MSG == msg->event().getEvent()){///×ª·¢ÏûÏ¢
+    if (CwxEventInfo::RECV_MSG == msg->event().getEvent()){///è½¬å‘æ¶ˆæ¯
         if (!m_bCanTrans){
             UnistorTask4Trans::reply(pApp,
                 tss, 
@@ -147,14 +147,14 @@ void UnistorHandler4Trans::doEvent(UnistorApp* pApp, UnistorTss* tss, CwxMsgBloc
                 UNISTOR_ERR_NO_MASTER,
                 "No master.");
         }
-        ///´´½¨task
+        ///åˆ›å»ºtask
         UnistorTask4Trans* pTask = new UnistorTask4Trans(pApp, &pApp->getTaskBoard());
         pTask->m_tranMsg = msg;
         pTask->setTaskId(pApp->getTaskBoard().getNextTaskId());
         pTask->execute(tss);
         msg = NULL;
     }else if (CwxEventInfo::TIMEOUT_CHECK == msg->event().getEvent()){
-        ///¼ì²â³¬Ê±µÄ×ª·¢ÈÎÎñ
+        ///æ£€æµ‹è¶…æ—¶çš„è½¬å‘ä»»åŠ¡
         list<CwxTaskBoardTask*> tasks;
         pApp->getTaskBoard().noticeCheckTimeout(tss, tasks);
         if (!tasks.empty())
@@ -170,13 +170,13 @@ void UnistorHandler4Trans::doEvent(UnistorApp* pApp, UnistorTss* tss, CwxMsgBloc
         UnistorZkConf* pConf = NULL;
         memcpy(&pConf, msg->rd_ptr(), sizeof(pConf));
         if (tss->m_pZkConf){
-            if (tss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (tss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pConf;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete tss->m_pZkConf;
                 tss->m_pZkConf = pConf;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             tss->m_pZkConf = pConf;
         }
         checkTrans(pApp, tss);
@@ -184,13 +184,13 @@ void UnistorHandler4Trans::doEvent(UnistorApp* pApp, UnistorTss* tss, CwxMsgBloc
         UnistorZkLock* pLock = NULL;
         memcpy(&pLock, msg->rd_ptr(), sizeof(pLock));
         if (tss->m_pZkLock){
-            if (tss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (tss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pLock;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete tss->m_pZkLock;
                 tss->m_pZkLock = pLock;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             tss->m_pZkLock = pLock;
         }
         checkTrans(pApp, tss);
@@ -199,12 +199,12 @@ void UnistorHandler4Trans::doEvent(UnistorApp* pApp, UnistorTss* tss, CwxMsgBloc
     }
 }
 
-///Íùmaster×ª·¢ÏûÏ¢
+///å¾€masterè½¬å‘æ¶ˆæ¯
 bool UnistorHandler4Trans::transMsg(UnistorTss* , CWX_UINT32 uiTaskId, CwxMsgBlock* msg){
     CwxMsgBlock* block = NULL;
-    ///Èç¹ûÃ»ÓĞÍê³ÉÈÏÖ¤µÄÁ¬½Ó£¬ÔòÊ§°Ü
+    ///å¦‚æœæ²¡æœ‰å®Œæˆè®¤è¯çš„è¿æ¥ï¼Œåˆ™å¤±è´¥
     if (!m_uiAuthConnNum) return false;
-    ///Íùmaster×ª·¢ÏûÏ¢
+    ///å¾€masterè½¬å‘æ¶ˆæ¯
     block = CwxMsgBlockAlloc::malloc(CwxMsgHead::MSG_HEAD_LEN + msg->length());
     CwxMsgHead header(msg->event().getMsgHeader());
     header.setDataLen(msg->length());
@@ -235,7 +235,7 @@ int UnistorHandler4Trans::rebuildConn(UnistorApp* app){
     m_ttLastRebuildConn = ttNow;
 
     m_bCanTrans = false;
-    ///¹Ø±ÕÒÑÓĞµÄËùÓĞÁ¬½Ó
+    ///å…³é—­å·²æœ‰çš„æ‰€æœ‰è¿æ¥
     UnistorHandler4Trans* handle = NULL;
     map<CWX_UINT32, UnistorHandler4Trans*>::iterator iter = m_handlers->begin();
     while(iter != m_handlers->end()){
@@ -250,7 +250,7 @@ int UnistorHandler4Trans::rebuildConn(UnistorApp* app){
         app->getConfig().getRecv().getPort(),
         app->getConfig().getRecv().getUser().length()?app->getConfig().getRecv().getUser().c_str():"",
         app->getConfig().getRecv().getUser().length()?app->getConfig().getRecv().getUser().c_str():""));
-    ///ÖØ½¨ËùÓĞÁ¬½Ó
+    ///é‡å»ºæ‰€æœ‰è¿æ¥
     CwxINetAddr addr;
     if (0 != addr.set(app->getConfig().getRecv().getPort(), m_strMasterHost.c_str())){
         CWX_ERROR(("Failure to init addr, addr:%s, port:%u, err=%d", m_strMasterHost.c_str(), app->getConfig().getRecv().getPort(), errno));
@@ -274,7 +274,7 @@ int UnistorHandler4Trans::rebuildConn(UnistorApp* app){
         CWX_ERROR(("Failure to connect to addr:%s, port:%u, err=%d",m_strMasterHost.c_str(), app->getConfig().getRecv().getPort(), errno)); 
         return -1;
     }
-    ///½«Á¬½Ó×¢²áµ½channel
+    ///å°†è¿æ¥æ³¨å†Œåˆ°channel
     CwxAppChannel* channel = app->getTransChannel();
     for (i=0; i<app->getConfig().getCommon().m_uiTranConnNum; i++){
         if (channel->isRegIoHandle(fds[i])){
@@ -290,7 +290,7 @@ int UnistorHandler4Trans::rebuildConn(UnistorApp* app){
             delete pHandler;
             break;
         }
-        pHandler->m_tss = (UnistorTss*)CwxTss::instance(); ///<¶ÔÏó¶ÔÓ¦µÄtss¶ÔÏó
+        pHandler->m_tss = (UnistorTss*)CwxTss::instance(); ///<å¯¹è±¡å¯¹åº”çš„tsså¯¹è±¡
 
     }
     if (i < app->getConfig().getCommon().m_uiTranConnNum){
@@ -313,7 +313,7 @@ void UnistorHandler4Trans::checkTrans(UnistorApp* app, UnistorTss* tss){
     bool bTrans = false;
     string strTransMaster = "";
     if (tss->m_pZkConf && tss->m_pZkLock){
-        if (tss->m_pZkConf->m_bMasterIdc){///Èç¹ûÊÇmaster idc
+        if (tss->m_pZkConf->m_bMasterIdc){///å¦‚æœæ˜¯master idc
             if (!tss->m_pZkLock->m_bMaster){
                 bTrans = true;
                 strTransMaster = tss->m_pZkLock->m_strMaster;
@@ -325,7 +325,7 @@ void UnistorHandler4Trans::checkTrans(UnistorApp* app, UnistorTss* tss){
         }
     }
     if (!bTrans){
-        ///¹Ø±ÕÒÑÓĞµÄËùÓĞÁ¬½Ó
+        ///å…³é—­å·²æœ‰çš„æ‰€æœ‰è¿æ¥
         map<CWX_UINT32, UnistorHandler4Trans*>::iterator iter = m_handlers->begin();
         while(iter != m_handlers->end()){
             iter->second->close();

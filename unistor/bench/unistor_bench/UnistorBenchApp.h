@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_BENCH_APP_H__
+ï»¿#ifndef __UNISTOR_BENCH_APP_H__
 #define __UNISTOR_BENCH_APP_H__
 
 #include "CwxAppFramework.h"
@@ -11,28 +11,28 @@
 
 CWINUX_USING_NAMESPACE;
 
-///unistorµÄÑ¹Á¦²âÊÔapp
+///unistorçš„åŽ‹åŠ›æµ‹è¯•app
 class UnistorBenchApp : public CwxAppFramework{
 public:
     enum{
-        LOG_FILE_SIZE = 30, ///<Ã¿¸öÑ­»·ÔËÐÐÈÕÖ¾ÎÄ¼þµÄMBTYE
-        LOG_FILE_NUM = 7,///<Ñ­»·ÈÕÖ¾ÎÄ¼þµÄÊýÁ¿
-        SVR_TYPE_RECV = CwxAppFramework::SVR_TYPE_USER_START ///<²éÑ¯µÄsvr-idÀàÐÍ
+        LOG_FILE_SIZE = 30, ///<æ¯ä¸ªå¾ªçŽ¯è¿è¡Œæ—¥å¿—æ–‡ä»¶çš„MBTYE
+        LOG_FILE_NUM = 7,///<å¾ªçŽ¯æ—¥å¿—æ–‡ä»¶çš„æ•°é‡
+        SVR_TYPE_RECV = CwxAppFramework::SVR_TYPE_USER_START ///<æŸ¥è¯¢çš„svr-idç±»åž‹
     };
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
 	UnistorBenchApp();
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
 	virtual ~UnistorBenchApp();
-    //³õÊ¼»¯app, -1:failure, 0 success;
+    //åˆå§‹åŒ–app, -1:failure, 0 success;
     virtual int init(int argc, char** argv);
 public:
-    //ÐÅºÅÏìÓ¦º¯Êý
+    //ä¿¡å·å“åº”å‡½æ•°
     virtual void onSignal(int signum);
-    //echoÁ¬½Ó½¨Á¢º¯Êý
+    //echoè¿žæŽ¥å»ºç«‹å‡½æ•°
     virtual int onConnCreated(CwxAppHandler4Msg& conn,
         bool& bSuspendConn,
         bool& bSuspendListen);
-    //echo·µ»ØµÄÏìÓ¦º¯Êý
+    //echoè¿”å›žçš„å“åº”å‡½æ•°
     virtual int onRecvMsg(CwxMsgBlock* msg,
         CwxAppHandler4Msg& conn,
         CwxMsgHead const& header,
@@ -46,12 +46,12 @@ protected:
 	virtual int initRunEnv();
 	virtual void destroy();
 private:
-    ///ÉèÖÃÁ¬½ÓµÄÊôÐÔ
+    ///è®¾ç½®è¿žæŽ¥çš„å±žæ€§
     static int setSockAttr(CWX_HANDLE handle, void* arg);
 private:
-    UnistorBenchConfig               m_config; ///<ÅäÖÃÎÄ¼þ¶ÔÏó
-	CwxThreadPool*                 m_threadPool;///<Ïß³Ì³Ø¶ÔÏó
-	UnistorEventHandler*			   m_eventHandler; ///<ÏûÏ¢´¦ÀíµÄhandler 
+    UnistorBenchConfig               m_config; ///<é…ç½®æ–‡ä»¶å¯¹è±¡
+	CwxThreadPool*                 m_threadPool;///<çº¿ç¨‹æ± å¯¹è±¡
+	UnistorEventHandler*			   m_eventHandler; ///<æ¶ˆæ¯å¤„ç†çš„handler 
 };
 
 #endif

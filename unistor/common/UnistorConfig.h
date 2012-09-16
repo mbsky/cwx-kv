@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_CONFIG_H__
+ï»¿#ifndef __UNISTOR_CONFIG_H__
 #define __UNISTOR_CONFIG_H__
 
 
@@ -15,7 +15,7 @@
 
 CWINUX_USING_NAMESPACE
 
-///ÅäÖÃÎÄ¼şµÄcommon²ÎÊı¶ÔÏó
+///é…ç½®æ–‡ä»¶çš„commonå‚æ•°å¯¹è±¡
 class UnistorConfigCmn{
 public:
     UnistorConfigCmn(){
@@ -37,49 +37,49 @@ public:
         m_uiMaxMasterTranMsgNum = UNISTOR_DEF_MAX_MASTER_TRAN_MSG_NUM;
     };
 public:
-    string              m_strWorkDir;///<¹¤×÷Ä¿Â¼
-	CWX_UINT32			m_uiThreadNum; ///<Êı¾İ»ñÈ¡Ïß³ÌÊıÁ¿
-	string              m_strStoreType; ///<´æ´¢ÀàĞÍ¡£
-	CWX_UINT32          m_uiSockBufSize; ///<·Ö·¢µÄsocketÁ¬½ÓµÄbuf´óĞ¡
-	CWX_UINT32          m_uiChunkSize; ///<TrunkµÄ´óĞ¡
-	CWX_UINT32          m_uiWriteCacheFlushNum; ///<¸üĞÂ¶àÉÙflush write cache
-    CWX_UINT32          m_uiWriteCacheFlushSecond; ///<¶àÉÙÊ±¼äflush write cache
-    CWX_UINT32          m_uiMasterLostBinlog; ///<±äÎªmasterÔÊĞí¶ªÊ§µÄ×î¶àbinlog
-    string              m_strHost; ///<Ö÷»ú±êÊ¾
-    string              m_strIdc; ///<Ö÷»úËùÊôIDC
-    string              m_strGroup; ///<Ö÷»úËùÊô·Ö×é
-    CwxHostInfo			m_monitor; ///<¼à¿Ø¶Ë¿Ú
-    CWX_UINT32          m_uiWriteCacheMByte; ///<Ğ´cacheµÄM´óĞ¡
-    CWX_UINT32          m_uiReadCacheMByte;   ///<read cacheµÄM´óĞ¡
-    CWX_UINT32          m_uiReadCacheMaxKeyNum; ///<read cacheµÄhash keyÊıÁ¿
-    CWX_UINT32          m_uiTranConnNum; ///<×ª·¢µÄÁ¬½ÓÊıÁ¿
-    CWX_UINT32          m_uiSyncConnNum; ///<Í¬²½µÄÁ¬½ÓÊıÁ¿
-    bool                m_bEnableExpire; ///<ÊÇ·ñÖ§³Öexpire
-    CWX_UINT32          m_uiDefExpire; ///<ÈôÖ§³Ö³¬Ê±£¬ÔòÈ±Ê¡µÄ³¬Ê±Ê±¼ä
-    CWX_UINT32          m_uiExpireConcurrent; ///<³¬Ê±´¦ÀíµÄ²¢·¢
-    CWX_UINT32          m_uiMaxWriteQueueNum; ///<Ğ´¶ÓÁĞ×î´óµÈ´ıÏûÏ¢µÄÊáÀí
-    CWX_UINT32          m_uiMaxMasterTranMsgNum; ///<×ª·¢¸ømasterµÄ×î´óÏûÏ¢ÊıÁ¿
+    string              m_strWorkDir;///<å·¥ä½œç›®å½•
+	CWX_UINT32			m_uiThreadNum; ///<æ•°æ®è·å–çº¿ç¨‹æ•°é‡
+	string              m_strStoreType; ///<å­˜å‚¨ç±»å‹ã€‚
+	CWX_UINT32          m_uiSockBufSize; ///<åˆ†å‘çš„socketè¿æ¥çš„bufå¤§å°
+	CWX_UINT32          m_uiChunkSize; ///<Trunkçš„å¤§å°
+	CWX_UINT32          m_uiWriteCacheFlushNum; ///<æ›´æ–°å¤šå°‘flush write cache
+    CWX_UINT32          m_uiWriteCacheFlushSecond; ///<å¤šå°‘æ—¶é—´flush write cache
+    CWX_UINT32          m_uiMasterLostBinlog; ///<å˜ä¸ºmasterå…è®¸ä¸¢å¤±çš„æœ€å¤šbinlog
+    string              m_strHost; ///<ä¸»æœºæ ‡ç¤º
+    string              m_strIdc; ///<ä¸»æœºæ‰€å±IDC
+    string              m_strGroup; ///<ä¸»æœºæ‰€å±åˆ†ç»„
+    CwxHostInfo			m_monitor; ///<ç›‘æ§ç«¯å£
+    CWX_UINT32          m_uiWriteCacheMByte; ///<å†™cacheçš„Må¤§å°
+    CWX_UINT32          m_uiReadCacheMByte;   ///<read cacheçš„Må¤§å°
+    CWX_UINT32          m_uiReadCacheMaxKeyNum; ///<read cacheçš„hash keyæ•°é‡
+    CWX_UINT32          m_uiTranConnNum; ///<è½¬å‘çš„è¿æ¥æ•°é‡
+    CWX_UINT32          m_uiSyncConnNum; ///<åŒæ­¥çš„è¿æ¥æ•°é‡
+    bool                m_bEnableExpire; ///<æ˜¯å¦æ”¯æŒexpire
+    CWX_UINT32          m_uiDefExpire; ///<è‹¥æ”¯æŒè¶…æ—¶ï¼Œåˆ™ç¼ºçœçš„è¶…æ—¶æ—¶é—´
+    CWX_UINT32          m_uiExpireConcurrent; ///<è¶…æ—¶å¤„ç†çš„å¹¶å‘
+    CWX_UINT32          m_uiMaxWriteQueueNum; ///<å†™é˜Ÿåˆ—æœ€å¤§ç­‰å¾…æ¶ˆæ¯çš„æ¢³ç†
+    CWX_UINT32          m_uiMaxMasterTranMsgNum; ///<è½¬å‘ç»™masterçš„æœ€å¤§æ¶ˆæ¯æ•°é‡
 };
 
-///zkµÄÅäÖÃ
+///zkçš„é…ç½®
 class UnistorConfigZk{
 public:
     UnistorConfigZk(){}
 public:
-    string      m_strZkServer; ///<zkµÄserverµØÖ·£¬¶à¸öserverÒÔ[;]·Ö¸î
-    string      m_strAuth; ///<ÈÏÖ¤×Ö·û´®£¬¶à¸öÒÔ[;]·Ö¸î
-    string      m_strPath; ///<¸ùÂ·¾¶
+    string      m_strZkServer; ///<zkçš„serveråœ°å€ï¼Œå¤šä¸ªserverä»¥[;]åˆ†å‰²
+    string      m_strAuth; ///<è®¤è¯å­—ç¬¦ä¸²ï¼Œå¤šä¸ªä»¥[;]åˆ†å‰²
+    string      m_strPath; ///<æ ¹è·¯å¾„
 };
 
 
-///ÅäÖÃÎÄ¼şµÄbinlog²ÎÊı¶ÔÏó
+///é…ç½®æ–‡ä»¶çš„binlogå‚æ•°å¯¹è±¡
 class UnistorConfigBinLog{
 public:
 	enum
 	{
-		DEF_BINLOG_MSIZE = 1024, ///<È±Ê¡µÄbinlog´óĞ¡
-		MIN_BINLOG_MSIZE = 64, ///<×îĞ¡µÄbinlog´óĞ¡
-		MAX_BINLOG_MSIZE = 2048 ///<×î´óµÄbinlog´óĞ¡
+		DEF_BINLOG_MSIZE = 1024, ///<ç¼ºçœçš„binlogå¤§å°
+		MIN_BINLOG_MSIZE = 64, ///<æœ€å°çš„binlogå¤§å°
+		MAX_BINLOG_MSIZE = 2048 ///<æœ€å¤§çš„binlogå¤§å°
 	};
 public:
 	UnistorConfigBinLog()	{
@@ -91,66 +91,66 @@ public:
 		m_bCache = true;
 	}
 public:
-	string              m_strBinlogPath; ///<binlogµÄÄ¿Â¼
-	string              m_strBinlogPrex; ///<binlogµÄÎÄ¼şµÄÇ°×º
-	CWX_UINT32          m_uiBinLogMSize; ///<binlogÎÄ¼şµÄ×î´ó´óĞ¡£¬µ¥Î»ÎªM
-	CWX_UINT32          m_uiMgrFileNum; ///<¹ÜÀíµÄbinglogµÄ×î´óÎÄ¼şÊı
-	bool                m_bDelOutdayLogFile; ///<ÊÇ·ñÉ¾³ı²»¹ÜÀíµÄÏûÏ¢ÎÄ¼ş
-	CWX_UINT32          m_uiFlushNum; ///<½ÓÊÕ¶àÉÙÌõ¼ÇÂ¼ºó£¬flush binlogÎÄ¼ş
-	CWX_UINT32          m_uiFlushSecond; ///<¼ä¸ô¶àÉÙÃë£¬±ØĞëflush binlogÎÄ¼ş
-	bool				m_bCache;        ///<ÊÇ·ñ¶ÔĞ´ÈëµÄÊı¾İ½øĞĞcache
+	string              m_strBinlogPath; ///<binlogçš„ç›®å½•
+	string              m_strBinlogPrex; ///<binlogçš„æ–‡ä»¶çš„å‰ç¼€
+	CWX_UINT32          m_uiBinLogMSize; ///<binlogæ–‡ä»¶çš„æœ€å¤§å¤§å°ï¼Œå•ä½ä¸ºM
+	CWX_UINT32          m_uiMgrFileNum; ///<ç®¡ç†çš„binglogçš„æœ€å¤§æ–‡ä»¶æ•°
+	bool                m_bDelOutdayLogFile; ///<æ˜¯å¦åˆ é™¤ä¸ç®¡ç†çš„æ¶ˆæ¯æ–‡ä»¶
+	CWX_UINT32          m_uiFlushNum; ///<æ¥æ”¶å¤šå°‘æ¡è®°å½•åï¼Œflush binlogæ–‡ä»¶
+	CWX_UINT32          m_uiFlushSecond; ///<é—´éš”å¤šå°‘ç§’ï¼Œå¿…é¡»flush binlogæ–‡ä»¶
+	bool				m_bCache;        ///<æ˜¯å¦å¯¹å†™å…¥çš„æ•°æ®è¿›è¡Œcache
 };
 
 
-///ÅäÖÃÎÄ¼ş¼ÓÔØ¶ÔÏó
+///é…ç½®æ–‡ä»¶åŠ è½½å¯¹è±¡
 class UnistorConfig{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorConfig(){
         m_szErrMsg[0] = 0x00;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorConfig(){
     }
 public:
-    //¼ÓÔØÅäÖÃÎÄ¼ş.-1:failure, 0:success
+    //åŠ è½½é…ç½®æ–‡ä»¶.-1:failure, 0:success
     int init(string const& strCnfFile);
-    //Êä³ö¼ÓÔØµÄÅäÖÃÎÄ¼şĞÅÏ¢
+    //è¾“å‡ºåŠ è½½çš„é…ç½®æ–‡ä»¶ä¿¡æ¯
     void outputConfig() const;
 public:
-    ///»ñÈ¡commonÅäÖÃĞÅÏ¢
+    ///è·å–commoné…ç½®ä¿¡æ¯
     inline UnistorConfigCmn const& getCommon() const {
         return  m_common;
     }
-    ///»ñÈ¡zookeeperµÄÅäÖÃ
+    ///è·å–zookeeperçš„é…ç½®
 	inline UnistorConfigZk const& getZk() const{
         return  m_zk;
     }
-    ///»ñÈ¡ÄÚ²¿dispatchµÄÅäÖÃ
+    ///è·å–å†…éƒ¨dispatchçš„é…ç½®
     inline CwxHostInfo const& getInnerDispatch() const{
-        return m_dispatchInner;  ///<ÄÚ²¿·Ö·¢ÅäÖÃ
+        return m_dispatchInner;  ///<å†…éƒ¨åˆ†å‘é…ç½®
     }
-    ///»ñÈ¡Íâ²¿dispatchµÄÅäÖÃ
+    ///è·å–å¤–éƒ¨dispatchçš„é…ç½®
     inline CwxHostInfo const& getOuterDispatch() const{
-        return m_dispatchOuter;   ///<Íâ²¿·Ö·¢ÅäÖÃ
+        return m_dispatchOuter;   ///<å¤–éƒ¨åˆ†å‘é…ç½®
     }
-    ///»ñÈ¡recvµÄÅäÖÃ
+    ///è·å–recvçš„é…ç½®
     inline CwxHostInfo const& getRecv() const{
-        return m_recv;           ///<Êı¾İ½ÓÊÕÅäÖÃ
+        return m_recv;           ///<æ•°æ®æ¥æ”¶é…ç½®
     }
-    ///»ñÈ¡binlog
+    ///è·å–binlog
     inline UnistorConfigBinLog const& getBinlog() const{
-        return m_binlog; ///<binlogµÄÅäÖÃ
+        return m_binlog; ///<binlogçš„é…ç½®
     }
-	///»ñÈ¡ÅäÖÃÎÄ¼ş¶¨ÒåĞÅÏ¢
+	///è·å–é…ç½®æ–‡ä»¶å®šä¹‰ä¿¡æ¯
 	inline CwxIniParse const& getConfFileCnf() const{
 		return m_cnf;
 	}
-    ///»ñÈ¡ÅäÖÃÎÄ¼ş¼ÓÔØµÄÊ§°ÜÔ­Òò
+    ///è·å–é…ç½®æ–‡ä»¶åŠ è½½çš„å¤±è´¥åŸå› 
     inline char const* getErrMsg() const{
         return m_szErrMsg;
     };
-	///»ñÈ¡´æ´¢µÄÇı¶¯
+	///è·å–å­˜å‚¨çš„é©±åŠ¨
 	inline string const& getDriverFile(string const& strEnginePath, string& strEngineFile) const{
 		strEngineFile = strEnginePath + "libuni_" + m_common.m_strStoreType + ".so";
 		return strEngineFile;
@@ -158,14 +158,14 @@ public:
 private:
     bool getListenInfo(string const& session, CwxHostInfo& host);
 private:
-    UnistorConfigCmn      m_common; ///<commonµÄÅäÖÃĞÅÏ¢
-	UnistorConfigBinLog   m_binlog; ///<binlogµÄÅäÖÃĞÅÏ¢
-	UnistorConfigZk       m_zk; ///<zookeeperµÄÅäÖÃĞÅÏ¢
-	CwxHostInfo           m_dispatchInner;  ///<ÄÚ²¿·Ö·¢ÅäÖÃ
-    CwxHostInfo           m_dispatchOuter;   ///<Íâ²¿·Ö·¢ÅäÖÃ
-    CwxHostInfo           m_recv;           ///<Êı¾İ½ÓÊÕÅäÖÃ
-    CwxIniParse           m_cnf;    ///<ÅäÖÃ
-    char                  m_szErrMsg[2048];///<´íÎóÏûÏ¢µÄbuf
+    UnistorConfigCmn      m_common; ///<commonçš„é…ç½®ä¿¡æ¯
+	UnistorConfigBinLog   m_binlog; ///<binlogçš„é…ç½®ä¿¡æ¯
+	UnistorConfigZk       m_zk; ///<zookeeperçš„é…ç½®ä¿¡æ¯
+	CwxHostInfo           m_dispatchInner;  ///<å†…éƒ¨åˆ†å‘é…ç½®
+    CwxHostInfo           m_dispatchOuter;   ///<å¤–éƒ¨åˆ†å‘é…ç½®
+    CwxHostInfo           m_recv;           ///<æ•°æ®æ¥æ”¶é…ç½®
+    CwxIniParse           m_cnf;    ///<é…ç½®
+    char                  m_szErrMsg[2048];///<é”™è¯¯æ¶ˆæ¯çš„buf
 };
 
 #endif

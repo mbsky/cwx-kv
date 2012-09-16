@@ -1,4 +1,4 @@
-#include "UnistorEventHandler.h"
+ï»¿#include "UnistorEventHandler.h"
 #include "UnistorBenchApp.h"
 #include "CwxMd5.h"
 
@@ -14,20 +14,20 @@ UnistorEventHandler::UnistorEventHandler(UnistorBenchApp* pApp):m_pApp(pApp){
 	m_szBuf[i] = 0x00;
 }
 
-///Á¬½Ó½¨Á¢
+///è¿žæŽ¥å»ºç«‹
 int UnistorEventHandler::onConnCreated(CwxMsgBlock*& msg, CwxTss* pThrEnv){
 	UnistorTss* tss = (UnistorTss*)pThrEnv;
-	///·¢ËÍÒ»¸öechoÊý¾Ý°ü
+	///å‘é€ä¸€ä¸ªechoæ•°æ®åŒ…
 	sendNextMsg(tss, msg->event().getSvrId(),
 		msg->event().getHostId(),
 		msg->event().getConnId());
 	return 1;
 }
 
-///echoÇëÇóµÄ´¦Àíº¯Êý
+///echoè¯·æ±‚çš„å¤„ç†å‡½æ•°
 int UnistorEventHandler::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv){
 	UnistorTss* tss = (UnistorTss*)pThrEnv;
-	///ÊÕµ½µÄechoÊý¾Ý¼Ó1
+	///æ”¶åˆ°çš„echoæ•°æ®åŠ 1
 	m_uiRecvNum++;
     if (tss->m_pReader->unpack(msg->rd_ptr(), msg->length(), false, true)){
 		CwxKeyValueItemEx const* pItem = tss->m_pReader->getKey(UNISTOR_KEY_RET);
@@ -37,21 +37,21 @@ int UnistorEventHandler::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv){
 			}
 		}
 	}
-	if (m_pApp->getConfig().m_bLasting){///Èç¹ûÊÇ³Ö¾ÃÁ¬½Ó£¬Ôò·¢ËÍÏÂÒ»¸öechoÇëÇóÊý¾Ý°ü
+	if (m_pApp->getConfig().m_bLasting){///å¦‚æžœæ˜¯æŒä¹…è¿žæŽ¥ï¼Œåˆ™å‘é€ä¸‹ä¸€ä¸ªechoè¯·æ±‚æ•°æ®åŒ…
 		sendNextMsg(tss, msg->event().getSvrId(),
 			msg->event().getHostId(),
 			msg->event().getConnId());
     }else{
 		m_pApp->noticeReconnect(msg->event().getConnId());
 	}
-	///ÈôÊÕµ½10000¸öÊý¾Ý°ü£¬ÔòÊä³öÒ»ÌõÈÕÖ¾
+	///è‹¥æ”¶åˆ°10000ä¸ªæ•°æ®åŒ…ï¼Œåˆ™è¾“å‡ºä¸€æ¡æ—¥å¿—
 	if (!(m_uiRecvNum%10000)){
 		CWX_INFO(("opr[%s] Finish total-num=%u  send_num=%u  success-num=%u\n", m_pApp->getConfig().m_strOpr.c_str(),  m_uiRecvNum, m_uiSendNum, m_uiSuccessNum));
 	}
     return 1;
 }
 
-//»ñÈ¡key
+//èŽ·å–key
 void UnistorEventHandler::getKey(CWX_UINT32 uiKey, char* szKey, bool bMd5){
     if (m_pApp->getConfig().m_uiDataMod) uiKey = (uiKey%m_pApp->getConfig().m_uiDataMod);
 	if (!bMd5){
@@ -69,7 +69,7 @@ void UnistorEventHandler::getKey(CWX_UINT32 uiKey, char* szKey, bool bMd5){
 	}
 }
 
-///·¢ËÍ²éÑ¯
+///å‘é€æŸ¥è¯¢
 void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
                                       CWX_UINT32 uiSvrId,
                                       CWX_UINT32 uiHostId,
@@ -242,18 +242,18 @@ void UnistorEventHandler::sendNextMsg(UnistorTss* tss,
             return;
         }
 	}
-	///ÉèÖÃÏûÏ¢µÄ·¢ËÍ·½Ê½
-	///ÉèÖÃÏûÏ¢µÄsvr-id
+	///è®¾ç½®æ¶ˆæ¯çš„å‘é€æ–¹å¼
+	///è®¾ç½®æ¶ˆæ¯çš„svr-id
 	pBlock->send_ctrl().setSvrId(uiSvrId);
-	///ÉèÖÃÏûÏ¢µÄhost-id
+	///è®¾ç½®æ¶ˆæ¯çš„host-id
 	pBlock->send_ctrl().setHostId(uiHostId);
-	///ÉèÖÃÏûÏ¢·¢ËÍµÄÁ¬½Óid
+	///è®¾ç½®æ¶ˆæ¯å‘é€çš„è¿žæŽ¥id
 	pBlock->send_ctrl().setConnId(uiConnId);
-	///ÉèÖÃÏûÏ¢·¢ËÍµÄuser-data
+	///è®¾ç½®æ¶ˆæ¯å‘é€çš„user-data
 	pBlock->send_ctrl().setUserData(NULL);
-	///ÉèÖÃÏûÏ¢·¢ËÍ½×¶ÎµÄÐÐÎª£¬°üÀ¨¿ªÊ¼·¢ËÍÊÇ·ñÍ¨Öª¡¢·¢ËÍÍê³ÉÊÇ·ñÍ¨Öª¡¢·¢ËÍÊ§°ÜÊÇ·ñÍ¨Öª
+	///è®¾ç½®æ¶ˆæ¯å‘é€é˜¶æ®µçš„è¡Œä¸ºï¼ŒåŒ…æ‹¬å¼€å§‹å‘é€æ˜¯å¦é€šçŸ¥ã€å‘é€å®Œæˆæ˜¯å¦é€šçŸ¥ã€å‘é€å¤±è´¥æ˜¯å¦é€šçŸ¥
 	pBlock->send_ctrl().setMsgAttr(CwxMsgSendCtrl::NONE);
-	///·¢ËÍechoÇëÇó
+	///å‘é€echoè¯·æ±‚
 	if (0 != m_pApp->sendMsgByConn(pBlock)){
 		CWX_ERROR(("Failure to send msg"));
 		m_pApp->noticeCloseConn(uiConnId);

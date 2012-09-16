@@ -1,4 +1,4 @@
-#ifndef __XML_PARSE_H__
+ï»¿#ifndef __XML_PARSE_H__
 #define __XML_PARSE_H__
 
 
@@ -15,12 +15,12 @@ CWINUX_USING_NAMESPACE
 
 /**
 @class XmlTreeNode
-@brief Ê÷×´µÄÊı¾İ½Úµã¶ÔÏó£¬ÓÃÓÚ±íÊ¾XML¡¢JSONµÄÊı¾İ½Úµã¡£
+@brief æ ‘çŠ¶çš„æ•°æ®èŠ‚ç‚¹å¯¹è±¡ï¼Œç”¨äºè¡¨ç¤ºXMLã€JSONçš„æ•°æ®èŠ‚ç‚¹ã€‚
 */
 class XmlTreeNode
 {
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     XmlTreeNode()
     {
         m_pChildHead = NULL;
@@ -29,441 +29,441 @@ public:
         m_next = NULL;
         m_pParent = NULL;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~XmlTreeNode()
     {
         if (m_pChildHead) delete m_pChildHead;
         if (m_next) delete m_next;
     }
 public:
-    char*   m_szElement;///<½ÚµãµÄÃû×Ö
-    list<char*>   m_listData; ///<XMLµÄ\<aaa\>aaaaa\</aaa\>ÀàĞÍ½ÚµãµÄÊı¾İ
-    list<pair<char*, char*> > m_lsAttrs;///<½ÚµãÊôĞÔµÄkey,value¶Ô
-    XmlTreeNode* m_pChildHead;///<½ÚµãµÄº¢×Ó½áµãµÄÍ·
-    XmlTreeNode* m_pChildTail;///<½ÚµãµÄº¢×Ó½áµãµÄÎ²
-    XmlTreeNode* m_prev;///<½ÚµãµÄÇ°Ò»¸öĞÖµÜ½Úµã
-    XmlTreeNode* m_next;///<½ÚµãµÄÏÂÒ»¸öĞÖµÜ½Úµã
-    XmlTreeNode* m_pParent;///<½ÚµãµÄ¸¸½Úµã
+    char*   m_szElement;///<èŠ‚ç‚¹çš„åå­—
+    list<char*>   m_listData; ///<XMLçš„\<aaa\>aaaaa\</aaa\>ç±»å‹èŠ‚ç‚¹çš„æ•°æ®
+    list<pair<char*, char*> > m_lsAttrs;///<èŠ‚ç‚¹å±æ€§çš„key,valueå¯¹
+    XmlTreeNode* m_pChildHead;///<èŠ‚ç‚¹çš„å­©å­ç»“ç‚¹çš„å¤´
+    XmlTreeNode* m_pChildTail;///<èŠ‚ç‚¹çš„å­©å­ç»“ç‚¹çš„å°¾
+    XmlTreeNode* m_prev;///<èŠ‚ç‚¹çš„å‰ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
+    XmlTreeNode* m_next;///<èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
+    XmlTreeNode* m_pParent;///<èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 };
 
 /**
 @class XmlParser
-@brief »ùÓÚexpatÊµÏÖµÄXMLÁ÷½âÎö¶ÔÏó¡£³ıÁËÖ§³ÖexpatÄ¬ÈÏÖ§³ÖµÄ×Ö·û¼¯£¬»¹Ö§³ÖGBKÓëgb2312×Ö·û¼¯
+@brief åŸºäºexpatå®ç°çš„XMLæµè§£æå¯¹è±¡ã€‚é™¤äº†æ”¯æŒexpaté»˜è®¤æ”¯æŒçš„å­—ç¬¦é›†ï¼Œè¿˜æ”¯æŒGBKä¸gb2312å­—ç¬¦é›†
 */
 class XmlParser
 {
 public:
     enum{
-        DEF_TRUCK_BUF_SIZE = 16 * 1024, ///<È±Ê¡µÄÊı¾İ¿éµÄ´óĞ¡
-        PATH_BUF_ALIGN = 1024 ///Êı¾İ¿éµÄ±ß½ç¶ÔÆë´óĞ¡
+        DEF_TRUCK_BUF_SIZE = 16 * 1024, ///<ç¼ºçœçš„æ•°æ®å—çš„å¤§å°
+        PATH_BUF_ALIGN = 1024 ///æ•°æ®å—çš„è¾¹ç•Œå¯¹é½å¤§å°
     };
 public:
     /**
-    @brief ¹¹Ôìº¯Êı¡£
-    @param [in] uiBufSize Êı¾İ¿éµÄ´óĞ¡
+    @brief æ„é€ å‡½æ•°ã€‚
+    @param [in] uiBufSize æ•°æ®å—çš„å¤§å°
     */
     XmlParser(CWX_UINT32 uiBufSize=DEF_TRUCK_BUF_SIZE);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~XmlParser(void);
 public:
-    ///½âÎöXMLÊµÌå£¬ÓÃ»§¿ÉÒÔ¶Ô´ËAPI½øĞĞÖØÔØ¡£
+    ///è§£æXMLå®ä½“ï¼Œç”¨æˆ·å¯ä»¥å¯¹æ­¤APIè¿›è¡Œé‡è½½ã€‚
     virtual bool parse();
-    ///expatµÄXML½âÎöÒıÇæÊÇ·ñ³õÊ¼»¯
+    ///expatçš„XMLè§£æå¼•æ“æ˜¯å¦åˆå§‹åŒ–
     bool isReady(void) const
     {
         return m_isReady;
     }
-    ///»ñÈ¡XMLµÄ½âÎö´íÎóÏûÏ¢
+    ///è·å–XMLçš„è§£æé”™è¯¯æ¶ˆæ¯
     XML_Error getLastError(void) const
     {
         return m_lastError;
     }
-    ///»ñÈ¡XML½âÎöµÄ×´Ì¬´úÂë
+    ///è·å–XMLè§£æçš„çŠ¶æ€ä»£ç 
     XML_Status getStatus(void) const
     {
         return m_status; 
     }
-    ///»ñÈ¡XML½âÎöµÄÊı¾İ¿é
+    ///è·å–XMLè§£æçš„æ•°æ®å—
     XML_Char *getBuf(void) const
     {
         return m_szXmlBuf; 
     }
-    ///»ñÈ¡Êı¾İ¿éµÄ´óĞ¡
+    ///è·å–æ•°æ®å—çš„å¤§å°
     CWX_UINT32 getBufSize(void) const
     {
         return m_uiBufSize; 
     }
-    ///»ñÈ¡µ±Ç°½âÎöµ½µÄXMLÂ·¾¶
+    ///è·å–å½“å‰è§£æåˆ°çš„XMLè·¯å¾„
     XML_Char const* getXmlPath() const
     {
         return m_szXmlPath;
     }
-    ///ÅĞ¶ÏXMLÊÇ·ñÎªGBKµÄ±àÂë
+    ///åˆ¤æ–­XMLæ˜¯å¦ä¸ºGBKçš„ç¼–ç 
     bool isGbk() const
     {
         return m_bGbk;
     }
     /**
-    @brief Èô×Ö·û¼¯ÎªGBK»ògb2312£¬Ôò½«expatµÄUTF-8Êä³ö±äÎªGBK»ògb2312µÄ±àÂë¸ñÊ½¡£
-    @param [in] value expatÊä³öµÄUTF-8µÄ×Ö·û´®
-    @param [in] uiValueLen valueµÄ³¤¶È
-    @return ·µ»ØGBK»ògb2312±àÂëµÄ×Ö·û´®
+    @brief è‹¥å­—ç¬¦é›†ä¸ºGBKæˆ–gb2312ï¼Œåˆ™å°†expatçš„UTF-8è¾“å‡ºå˜ä¸ºGBKæˆ–gb2312çš„ç¼–ç æ ¼å¼ã€‚
+    @param [in] value expatè¾“å‡ºçš„UTF-8çš„å­—ç¬¦ä¸²
+    @param [in] uiValueLen valueçš„é•¿åº¦
+    @return è¿”å›GBKæˆ–gb2312ç¼–ç çš„å­—ç¬¦ä¸²
     */
     char const* charsetValue(XML_Char const* value, CWX_UINT32 uiValueLen);
 protected:
-    ///ÉèÖÃexpatµÄÒıÇæµÄready×´Ì¬
+    ///è®¾ç½®expatçš„å¼•æ“çš„readyçŠ¶æ€
     void setReady(bool isReady)
     {
         m_isReady = isReady;
     }
-    ///ÉèÖÃxml½âÎöµÄ×´Ì¬Âë
+    ///è®¾ç½®xmlè§£æçš„çŠ¶æ€ç 
     void setStatus(XML_Status status)
     {
         m_status = status; 
     }
-    ///ÉèÖÃXML½âÎöµÄ´íÎóĞÅÏ¢
+    ///è®¾ç½®XMLè§£æçš„é”™è¯¯ä¿¡æ¯
     void setLastError(XML_Error lastError)
     {
         m_lastError = lastError;
     }
-    ///×¼±¸xml½âÎöµÄ»·¾³£¬¼Ì³ĞÀà¿ÉÒÔÖØÔØ´ËAPI
+    ///å‡†å¤‡xmlè§£æçš„ç¯å¢ƒï¼Œç»§æ‰¿ç±»å¯ä»¥é‡è½½æ­¤API
     virtual bool prepare();
-    ///»ñÈ¡XML½âÎöµÄÏÂÒ»¸öÊı¾İ¿é£¬ÖØÔØÀàĞèÒªÖØÔØ´ËAPI£¬ÎªexpatÒıÇæÌá¹©Êı¾İÁ÷
+    ///è·å–XMLè§£æçš„ä¸‹ä¸€ä¸ªæ•°æ®å—ï¼Œé‡è½½ç±»éœ€è¦é‡è½½æ­¤APIï¼Œä¸ºexpatå¼•æ“æä¾›æ•°æ®æµ
     virtual ssize_t readBlock(void);
     /**
-    @brief Í¨Öª½øÈëÒ»¸öXMLµÄÊı¾İ½Úµã¡£
-    @param [in] name XML½ÚµãµÄÃû×Ö
-    @param [in] atts XML½ÚµãµÄÊôĞÔ£¬atts[2n]ÎªÊôĞÔµÄÃû×Ö£¬atts[2n+1]ÎªÊôĞÔµÄÖµ£¬Èôatts[2n]ÎªNULL£¬±íÊ¾ÊôĞÔ½áÊø
+    @brief é€šçŸ¥è¿›å…¥ä¸€ä¸ªXMLçš„æ•°æ®èŠ‚ç‚¹ã€‚
+    @param [in] name XMLèŠ‚ç‚¹çš„åå­—
+    @param [in] atts XMLèŠ‚ç‚¹çš„å±æ€§ï¼Œatts[2n]ä¸ºå±æ€§çš„åå­—ï¼Œatts[2n+1]ä¸ºå±æ€§çš„å€¼ï¼Œè‹¥atts[2n]ä¸ºNULLï¼Œè¡¨ç¤ºå±æ€§ç»“æŸ
     @return void
     */
     virtual void startElement(const XML_Char *name, const XML_Char **atts);
     /**
-    @brief Í¨ÖªÀë¿ªÒ»¸öXMLµÄÊı¾İ½Úµã¡£
-    @param [in] name XML½ÚµãµÄÃû×Ö
+    @brief é€šçŸ¥ç¦»å¼€ä¸€ä¸ªXMLçš„æ•°æ®èŠ‚ç‚¹ã€‚
+    @param [in] name XMLèŠ‚ç‚¹çš„åå­—
     @return void
     */
     virtual void endElement(const XML_Char *name);
     /**
-    @brief Í¨ÖªÒ»¸ö½ÚµãÄÚµÄÊı¾İ¡£
-    @param [in] s Êı¾İµÄÄÚÈİ£¬Æä±àÂëÎªUTF8µÄ±àÂë
-    @param [in] len Êı¾İµÄÄÚÈİµÄ³¤¶È¡£
+    @brief é€šçŸ¥ä¸€ä¸ªèŠ‚ç‚¹å†…çš„æ•°æ®ã€‚
+    @param [in] s æ•°æ®çš„å†…å®¹ï¼Œå…¶ç¼–ç ä¸ºUTF8çš„ç¼–ç 
+    @param [in] len æ•°æ®çš„å†…å®¹çš„é•¿åº¦ã€‚
     @return void
     */
     virtual void characterData(const XML_Char *s, int len);
     /**
-    @brief Í¨ÖªXMLµÄinstructions.
-    @param [in] target instructionµÄµÚÒ»¸öword.
-    @param [in] data µÚÒ»¸öwordºó£¬È¥µôËùÓĞ¿Õ¸ñµÄ×Ö·û´®¡£
+    @brief é€šçŸ¥XMLçš„instructions.
+    @param [in] target instructionçš„ç¬¬ä¸€ä¸ªword.
+    @param [in] data ç¬¬ä¸€ä¸ªwordåï¼Œå»æ‰æ‰€æœ‰ç©ºæ ¼çš„å­—ç¬¦ä¸²ã€‚
     @return void
     */
     virtual void processingInstruction(const XML_Char *target, const XML_Char *data);
-    ///xmlÖĞµÄ×¢ÊÍ
+    ///xmlä¸­çš„æ³¨é‡Š
     virtual void commentData(const XML_Char *data);
-    ///xmlµÄÈ±Ê¡Êı¾İ´¦Àí¾ä±ú
+    ///xmlçš„ç¼ºçœæ•°æ®å¤„ç†å¥æŸ„
     virtual void defaultHandler(const XML_Char *s, int len);
-    ///Í¨Öª½øÈëXMLµÄCDATAÓï·¨
+    ///é€šçŸ¥è¿›å…¥XMLçš„CDATAè¯­æ³•
     virtual void startCData(void);
-    ///Í¨ÖªÀë¿ªXMLµÄCDATAÓï·¨
+    ///é€šçŸ¥ç¦»å¼€XMLçš„CDATAè¯­æ³•
     virtual void endCData(void);
 
 private:
-    ///×¢²áËùÓĞµÄexpatµÄÊÂ¼ş´¦Àíº¯Êı
+    ///æ³¨å†Œæ‰€æœ‰çš„expatçš„äº‹ä»¶å¤„ç†å‡½æ•°
     void regDefHandlers();
-    ///½øÈëÒ»¸öXML½ÚµãµÄÊÂ¼ş´¦Àíº¯Êı
+    ///è¿›å…¥ä¸€ä¸ªXMLèŠ‚ç‚¹çš„äº‹ä»¶å¤„ç†å‡½æ•°
     static XMLCALL void elementStartHandler(void *userData,
         const XML_Char *name, const XML_Char **atts);
-    ///Àë¿ªÒ»¸öXML½ÚµãµÄÊÂ¼ş´¦Àíº¯Êı
+    ///ç¦»å¼€ä¸€ä¸ªXMLèŠ‚ç‚¹çš„äº‹ä»¶å¤„ç†å‡½æ•°
     static XMLCALL void elementEndHandler(void *userData,
         const XML_Char *name);
-    ///½ÚµãÄÚ²¿Êı¾İµÄ½ÓÊÜº¯Êı
+    ///èŠ‚ç‚¹å†…éƒ¨æ•°æ®çš„æ¥å—å‡½æ•°
     static XMLCALL void characterDataHandler(void *userData,
         const XML_Char *s, int len);
-    ///XML instructionµÄ½ÓÊÜº¯Êı
+    ///XML instructionçš„æ¥å—å‡½æ•°
     static XMLCALL void processingInstrHandler(void *userData,
         const XML_Char *target, const XML_Char *data);
-    ///×¢ÊÍµÄ½ÓÊÜº¯Êı
+    ///æ³¨é‡Šçš„æ¥å—å‡½æ•°
     static XMLCALL void commentHandler(void *userData,
         const XML_Char *data);
-    ///È±Ê¡ÊÂ¼şµÄ´¦Àíº¯Êı
+    ///ç¼ºçœäº‹ä»¶çš„å¤„ç†å‡½æ•°
     static XMLCALL void defaultHandler(void *userData,
         const XML_Char *s, int len);
-    ///½øÈëCDATAµÄÊÂ¼şº¯Êı
+    ///è¿›å…¥CDATAçš„äº‹ä»¶å‡½æ•°
     static XMLCALL void startCDatahandler(void *userData);
-    ///Àë¿ªCDATAµÄÊÂ¼şº¯Êı
+    ///ç¦»å¼€CDATAçš„äº‹ä»¶å‡½æ•°
     static XMLCALL void endCDatahandler(void *userData);
-    ///GBK¡¢gb2312µÄ×Ö·û¼¯×ª»»API
+    ///GBKã€gb2312çš„å­—ç¬¦é›†è½¬æ¢API
     static XMLCALL int convert(void* data, char const* s);
-    ///GBK¡¢gb2312×Ö·û±àÂë×ª»»µÄÊÂ¼şº¯Êı
+    ///GBKã€gb2312å­—ç¬¦ç¼–ç è½¬æ¢çš„äº‹ä»¶å‡½æ•°
     static XMLCALL int encodingHandler(void* userData, XML_Char const* name, XML_Encoding* info);
 private:
-    XML_Parser  m_expatParser;///<expatµÄÒıÇæ
-    XML_Char *  m_szXmlBuf; ///<ÄÚ²¿ÁÙÊ±BUF
-    CWX_UINT32  m_uiBufSize;///<ÁÙÊ±BUFµÄ´óĞ¡
-    bool    m_isReady;///<ÒıÇæ³õÊ¼»¯×´Ì¬±ê¼Ç
-    XML_Status m_status;///<XML½âÎöµÄ×´Ì¬Âë
-    XML_Error m_lastError;///<XML½âÎöµÄ´íÎóĞÅÏ¢
-    XML_Char*  m_szXmlPath;///<µ±Ç°XML½ÚµãµÄÈ«Â·¾¶
-    CWX_UINT32 m_uiPathBufLen;///<XML½ÚµãÈ«Â·¾¶µÄBUFµÄ³¤¶È
-    CWX_UINT32 m_uiPathLen;///<m_szXmlPathÖĞµÄ½ÚµãÂ·¾¶³¤¶È
-    bool      m_bGbk;///<ÊÇ·ñÊÇÖĞÎÄ±àÂë
-    XML_Char*  m_szGbkBuf;///<½øĞĞGBK±àÂë×ª»»µÄÄÚ´æ
-    CWX_UINT32 m_uiGbkBufLen;///<m_szGbkBufµÄÄÚ´æ³¤¶È
+    XML_Parser  m_expatParser;///<expatçš„å¼•æ“
+    XML_Char *  m_szXmlBuf; ///<å†…éƒ¨ä¸´æ—¶BUF
+    CWX_UINT32  m_uiBufSize;///<ä¸´æ—¶BUFçš„å¤§å°
+    bool    m_isReady;///<å¼•æ“åˆå§‹åŒ–çŠ¶æ€æ ‡è®°
+    XML_Status m_status;///<XMLè§£æçš„çŠ¶æ€ç 
+    XML_Error m_lastError;///<XMLè§£æçš„é”™è¯¯ä¿¡æ¯
+    XML_Char*  m_szXmlPath;///<å½“å‰XMLèŠ‚ç‚¹çš„å…¨è·¯å¾„
+    CWX_UINT32 m_uiPathBufLen;///<XMLèŠ‚ç‚¹å…¨è·¯å¾„çš„BUFçš„é•¿åº¦
+    CWX_UINT32 m_uiPathLen;///<m_szXmlPathä¸­çš„èŠ‚ç‚¹è·¯å¾„é•¿åº¦
+    bool      m_bGbk;///<æ˜¯å¦æ˜¯ä¸­æ–‡ç¼–ç 
+    XML_Char*  m_szGbkBuf;///<è¿›è¡ŒGBKç¼–ç è½¬æ¢çš„å†…å­˜
+    CWX_UINT32 m_uiGbkBufLen;///<m_szGbkBufçš„å†…å­˜é•¿åº¦
 };
 
 
 /**
 @class XmlFileParser
-@brief ÖØÔØXmlParser¶ÔÏó£¬ÊµÏÖXMLÎÄ¼şµÄÁ÷½âÎö
+@brief é‡è½½XmlParserå¯¹è±¡ï¼Œå®ç°XMLæ–‡ä»¶çš„æµè§£æ
 */
 class  XmlFileParser : public XmlParser
 {
 public:
-    ///¹¹ÔìÎÄ¼ş£¬strFileNameÎªÒª½âÎöµÄXMLµÄÎÄ¼şÃû
+    ///æ„é€ æ–‡ä»¶ï¼ŒstrFileNameä¸ºè¦è§£æçš„XMLçš„æ–‡ä»¶å
     XmlFileParser(string const& strFileName);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~XmlFileParser();
 protected:
-    ///XMLÎÄ¼ş½âÎöµÄ×¼±¸
+    ///XMLæ–‡ä»¶è§£æçš„å‡†å¤‡
     virtual bool prepare();
-    ///´ÓXMLÎÄ¼şÖĞ¶ÁÈ¡ÏÂÒ»¸ö´ı½âÎöµÄÊı¾İ¿é£¬-1£º±íÊ¾ÎÄ¼şÎ²»òÎÄ¼ş¶Á´íÎó£¬Í¨¹ıstatusÀ´Ê¶±ğ£¬>=0£º¶ÁÈ¡µÄÊı¾İµÄ³¤¶È
+    ///ä»XMLæ–‡ä»¶ä¸­è¯»å–ä¸‹ä¸€ä¸ªå¾…è§£æçš„æ•°æ®å—ï¼Œ-1ï¼šè¡¨ç¤ºæ–‡ä»¶å°¾æˆ–æ–‡ä»¶è¯»é”™è¯¯ï¼Œé€šè¿‡statusæ¥è¯†åˆ«ï¼Œ>=0ï¼šè¯»å–çš„æ•°æ®çš„é•¿åº¦
     virtual ssize_t readBlock(void);
 private:
-    FILE *  m_fd; ///<XMLÎÄ¼şµÄ¾ä±ú
-    string  m_strFileName;///<XMLÎÄ¼şµÄÃû×Ö
+    FILE *  m_fd; ///<XMLæ–‡ä»¶çš„å¥æŸ„
+    string  m_strFileName;///<XMLæ–‡ä»¶çš„åå­—
 
 };
 
 /**
 @class XmlConfigParser
-@brief ½«XMLµÄBUF½âÎö³ÉXmlTreeNode×éÖ¯µÄ½ÚµãÊ÷¡£³ıÁËÖ§³ÖexpatÄ¬ÈÏÖ§³ÖµÄ×Ö·û¼¯£¬»¹Ö§³ÖGBKÓëgb2312×Ö·û¼¯
+@brief å°†XMLçš„BUFè§£ææˆXmlTreeNodeç»„ç»‡çš„èŠ‚ç‚¹æ ‘ã€‚é™¤äº†æ”¯æŒexpaté»˜è®¤æ”¯æŒçš„å­—ç¬¦é›†ï¼Œè¿˜æ”¯æŒGBKä¸gb2312å­—ç¬¦é›†
 */
 class XmlConfigParser
 {
 public:
     /**
-    @brief ¹¹Ôìº¯Êı¡£
-    @param [in] uiAvgTokenLen XMLÖĞµÄÊı¾İ½ÚµãµÄÆ½¾ù³¤¶È
-    @param [in] uiAvgXmlSize Òª½âÎöµÄXMLµÄÆ½¾ù´óĞ¡
+    @brief æ„é€ å‡½æ•°ã€‚
+    @param [in] uiAvgTokenLen XMLä¸­çš„æ•°æ®èŠ‚ç‚¹çš„å¹³å‡é•¿åº¦
+    @param [in] uiAvgXmlSize è¦è§£æçš„XMLçš„å¹³å‡å¤§å°
     */
     XmlConfigParser(CWX_UINT32 uiAvgTokenLen=1024, CWX_UINT32 uiAvgXmlSize=4096);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~XmlConfigParser();
 public:
     /**
-    @brief ½«szXml¶¨ÒåµÄXMLÎÄ±¾£¬½âÎö³ÉXmlTreeNodeµÄ½ÚµãÊ÷¡£
+    @brief å°†szXmlå®šä¹‰çš„XMLæ–‡æœ¬ï¼Œè§£ææˆXmlTreeNodeçš„èŠ‚ç‚¹æ ‘ã€‚
     @param [in] szXml XML
-    @return true£º½âÎö³É¹¦£»false£º½âÎöÊ§°Ü
+    @return trueï¼šè§£ææˆåŠŸï¼›falseï¼šè§£æå¤±è´¥
     */
     bool parse(char const* szXml);
     /**
-    @brief »ñÈ¡Ò»¸öXML½ÚµãµÄÊôĞÔ¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] szAttr ½ÚµãµÄÊôĞÔÃû
-    @return NULL£º²»´æÔÚ£»·ñÔòÎª½ÚµãÊôĞÔµÄÊıÖµ
+    @brief è·å–ä¸€ä¸ªXMLèŠ‚ç‚¹çš„å±æ€§ã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] szAttr èŠ‚ç‚¹çš„å±æ€§å
+    @return NULLï¼šä¸å­˜åœ¨ï¼›å¦åˆ™ä¸ºèŠ‚ç‚¹å±æ€§çš„æ•°å€¼
     */
     char const* getElementAttr(char const* szPath, char const* szAttr) const;
     /**
-    @brief »ñÈ¡Ò»¸öXML½ÚµãµÄËùÓĞÊôĞÔ¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] attrs ½ÚµãµÄËùÓĞÊôĞÔÃû£¬pairµÄfirstÎªÊôĞÔÃû£¬secondÎªÊôĞÔµÄÖµ
-    @return false£º½Úµã²»´æÔÚ£»·ñÔò·µ»Ø½ÚµãµÄÊôĞÔÁĞ±í
+    @brief è·å–ä¸€ä¸ªXMLèŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§ã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] attrs èŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§åï¼Œpairçš„firstä¸ºå±æ€§åï¼Œsecondä¸ºå±æ€§çš„å€¼
+    @return falseï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›å¦åˆ™è¿”å›èŠ‚ç‚¹çš„å±æ€§åˆ—è¡¨
     */
     bool getElementAttrs(char const* szPath, list<pair<char*, char*> >& attrs) const;
     /**
-    @brief »ñÈ¡[\<aa\>xxxx\</aa\>]µÄĞÎÊ½µÄ½ÚµãµÄÊı¾İxxxx¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] strData ½ÚµãµÄÊı¾İ
-    @return false£º½Úµã²»´æÔÚ»ò²»ÊÇ\<aa\>xxxx\</aa\>µÄ¸ñÊ½£»½Úµã´æÔÚ¶øÇÒÎª´Ë¸ñÊ½
+    @brief è·å–[\<aa\>xxxx\</aa\>]çš„å½¢å¼çš„èŠ‚ç‚¹çš„æ•°æ®xxxxã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] strData èŠ‚ç‚¹çš„æ•°æ®
+    @return falseï¼šèŠ‚ç‚¹ä¸å­˜åœ¨æˆ–ä¸æ˜¯\<aa\>xxxx\</aa\>çš„æ ¼å¼ï¼›èŠ‚ç‚¹å­˜åœ¨è€Œä¸”ä¸ºæ­¤æ ¼å¼
     */
     bool getElementData(char const* szPath, string& strData) const;
     /**
-    @brief »ñÈ¡½ÚµãµÄTree Node¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @return NULL£º½Úµã²»´æÔÚ£»Â·¾¶µÄ½Úµã
+    @brief è·å–èŠ‚ç‚¹çš„Tree Nodeã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @return NULLï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›è·¯å¾„çš„èŠ‚ç‚¹
     */
     XmlTreeNode const* getElementNode(char const* szPath) const;
-    ///»ñÈ¡½ÚµãµÄ¸ù
+    ///è·å–èŠ‚ç‚¹çš„æ ¹
     XmlTreeNode const * getRoot() const
     {
         return m_root; 
     }
-    ///ÅĞ¶ÏxmlµÄ±àÂëÊÇ·ñÎªGBK
+    ///åˆ¤æ–­xmlçš„ç¼–ç æ˜¯å¦ä¸ºGBK
     bool isGbk() const 
     {
         return m_bGbk;
     }
 private:
     /**
-    @brief Í¨Öª½øÈëÒ»¸öXMLµÄÊı¾İ½Úµã¡£
-    @param [in] name XML½ÚµãµÄÃû×Ö
-    @param [in] atts XML½ÚµãµÄÊôĞÔ£¬atts[2n]ÎªÊôĞÔµÄÃû×Ö£¬atts[2n+1]ÎªÊôĞÔµÄÖµ£¬Èôatts[2n]ÎªNULL£¬±íÊ¾ÊôĞÔ½áÊø
+    @brief é€šçŸ¥è¿›å…¥ä¸€ä¸ªXMLçš„æ•°æ®èŠ‚ç‚¹ã€‚
+    @param [in] name XMLèŠ‚ç‚¹çš„åå­—
+    @param [in] atts XMLèŠ‚ç‚¹çš„å±æ€§ï¼Œatts[2n]ä¸ºå±æ€§çš„åå­—ï¼Œatts[2n+1]ä¸ºå±æ€§çš„å€¼ï¼Œè‹¥atts[2n]ä¸ºNULLï¼Œè¡¨ç¤ºå±æ€§ç»“æŸ
     @return void
     */
     void startElement(const XML_Char *name, const XML_Char **atts);
     /**
-    @brief Í¨ÖªÀë¿ªÒ»¸öXMLµÄÊı¾İ½Úµã¡£
-    @param [in] name XML½ÚµãµÄÃû×Ö
+    @brief é€šçŸ¥ç¦»å¼€ä¸€ä¸ªXMLçš„æ•°æ®èŠ‚ç‚¹ã€‚
+    @param [in] name XMLèŠ‚ç‚¹çš„åå­—
     @return void
     */
     void endElement(const XML_Char *name);
     /**
-    @brief Í¨ÖªÒ»¸ö½ÚµãÄÚµÄÊı¾İ¡£
-    @param [in] s Êı¾İµÄÄÚÈİ£¬Æä±àÂëÎªUTF8µÄ±àÂë
-    @param [in] len Êı¾İµÄÄÚÈİµÄ³¤¶È¡£
+    @brief é€šçŸ¥ä¸€ä¸ªèŠ‚ç‚¹å†…çš„æ•°æ®ã€‚
+    @param [in] s æ•°æ®çš„å†…å®¹ï¼Œå…¶ç¼–ç ä¸ºUTF8çš„ç¼–ç 
+    @param [in] len æ•°æ®çš„å†…å®¹çš„é•¿åº¦ã€‚
     @return void
     */
     void characterData(const XML_Char *s, int len);
     /**
-    @brief Èô×Ö·û¼¯ÎªGBK»ògb2312£¬Ôò½«expatµÄUTF-8Êä³ö±äÎªGBK»ògb2312µÄ±àÂë¸ñÊ½¡£
-    @param [in] value expatÊä³öµÄUTF-8µÄ×Ö·û´®
-    @param [in] uiValueLen valueµÄ³¤¶È
-    @return ·µ»ØGBK»ògb2312±àÂëµÄ×Ö·û´®
+    @brief è‹¥å­—ç¬¦é›†ä¸ºGBKæˆ–gb2312ï¼Œåˆ™å°†expatçš„UTF-8è¾“å‡ºå˜ä¸ºGBKæˆ–gb2312çš„ç¼–ç æ ¼å¼ã€‚
+    @param [in] value expatè¾“å‡ºçš„UTF-8çš„å­—ç¬¦ä¸²
+    @param [in] uiValueLen valueçš„é•¿åº¦
+    @return è¿”å›GBKæˆ–gb2312ç¼–ç çš„å­—ç¬¦ä¸²
     */
     char const* charsetValue(XML_Char const* value, CWX_UINT32 uiValueLen);
 private:
-    ///×¢²áËùÓĞµÄexpatµÄÊÂ¼ş´¦Àíº¯Êı
+    ///æ³¨å†Œæ‰€æœ‰çš„expatçš„äº‹ä»¶å¤„ç†å‡½æ•°
     void regDefHandlers(void);
-    ///½øÈëÒ»¸öXML½ÚµãµÄÊÂ¼ş´¦Àíº¯Êı
+    ///è¿›å…¥ä¸€ä¸ªXMLèŠ‚ç‚¹çš„äº‹ä»¶å¤„ç†å‡½æ•°
     static XMLCALL void elementStartHandler(void *userData,
         const XML_Char *name, const XML_Char **atts);
-    ///Àë¿ªÒ»¸öXML½ÚµãµÄÊÂ¼ş´¦Àíº¯Êı
+    ///ç¦»å¼€ä¸€ä¸ªXMLèŠ‚ç‚¹çš„äº‹ä»¶å¤„ç†å‡½æ•°
     static XMLCALL void elementEndHandler(void *userData,
         const XML_Char *name);
-    ///½ÚµãÄÚ²¿Êı¾İµÄ½ÓÊÜº¯Êı
+    ///èŠ‚ç‚¹å†…éƒ¨æ•°æ®çš„æ¥å—å‡½æ•°
     static XMLCALL void characterDataHandler(void *userData,
         const XML_Char *s, int len);
-    ///GBK¡¢gb2312µÄ×Ö·û¼¯×ª»»API
+    ///GBKã€gb2312çš„å­—ç¬¦é›†è½¬æ¢API
     static XMLCALL int convert(void* data, char const* s);
-    ///GBK¡¢gb2312×Ö·û±àÂë×ª»»µÄÊÂ¼şº¯Êı
+    ///GBKã€gb2312å­—ç¬¦ç¼–ç è½¬æ¢çš„äº‹ä»¶å‡½æ•°
     static XMLCALL int encodingHandler(void* userData, XML_Char const* name, XML_Encoding* info);
 private:
-    XML_Parser  m_expatParser;///<expatµÄÒıÇæ
-    CwxCharPool m_memPool;///<×Ö·ûÄÚ´æ³Ø
-    XmlTreeNode* m_root;///<¸ù½Úµã
-    XmlTreeNode* m_pCur;///<½âÎö¹ı³ÌÖĞµÄµ±Ç°½Úµã
-    bool      m_bGbk;///<ÊÇ·ñÎªGBK±àÂë
-    XML_Char*  m_szGbkBuf;///<GBK±àÂë×ª»»µÄÁÙÊ±BUF
-    CWX_UINT32 m_uiGbkBufLen;///<m_szGbkBufµÄ¿Õ¼ä´óĞ¡
+    XML_Parser  m_expatParser;///<expatçš„å¼•æ“
+    CwxCharPool m_memPool;///<å­—ç¬¦å†…å­˜æ± 
+    XmlTreeNode* m_root;///<æ ¹èŠ‚ç‚¹
+    XmlTreeNode* m_pCur;///<è§£æè¿‡ç¨‹ä¸­çš„å½“å‰èŠ‚ç‚¹
+    bool      m_bGbk;///<æ˜¯å¦ä¸ºGBKç¼–ç 
+    XML_Char*  m_szGbkBuf;///<GBKç¼–ç è½¬æ¢çš„ä¸´æ—¶BUF
+    CWX_UINT32 m_uiGbkBufLen;///<m_szGbkBufçš„ç©ºé—´å¤§å°
 };
 
 /**
 @class XmlFileConfigParser
-@brief ½«XMLµÄÎÄ¼ş½âÎö³ÉXmlTreeNode×éÖ¯µÄ½ÚµãÊ÷¡£³ıÁËÖ§³ÖexpatÄ¬ÈÏÖ§³ÖµÄ×Ö·û¼¯£¬»¹Ö§³ÖGBKÓëgb2312×Ö·û¼¯
+@brief å°†XMLçš„æ–‡ä»¶è§£ææˆXmlTreeNodeç»„ç»‡çš„èŠ‚ç‚¹æ ‘ã€‚é™¤äº†æ”¯æŒexpaté»˜è®¤æ”¯æŒçš„å­—ç¬¦é›†ï¼Œè¿˜æ”¯æŒGBKä¸gb2312å­—ç¬¦é›†
 */
 class  XmlFileConfigParser
 {
 public:
     /**
-    @brief ¹¹Ôìº¯Êı¡£
-    @param [in] uiAvgTokenLen XMLÖĞµÄÊı¾İ½ÚµãµÄÆ½¾ù³¤¶È
-    @param [in] uiAvgXmlSize Òª½âÎöµÄXMLµÄÆ½¾ù´óĞ¡
+    @brief æ„é€ å‡½æ•°ã€‚
+    @param [in] uiAvgTokenLen XMLä¸­çš„æ•°æ®èŠ‚ç‚¹çš„å¹³å‡é•¿åº¦
+    @param [in] uiAvgXmlSize è¦è§£æçš„XMLçš„å¹³å‡å¤§å°
     */
     XmlFileConfigParser(CWX_UINT32 uiAvgTokenLen=1024, CWX_UINT32 uiAvgXmlSize=4096);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~XmlFileConfigParser(void);
 public:
     /**
-    @brief ½«szXml¶¨ÒåµÄXMLÎÄ±¾£¬½âÎö³ÉXmlTreeNodeµÄ½ÚµãÊ÷¡£
-    @param [in] strFileName XMLÎÄ¼şÃû
-    @return true£º½âÎö³É¹¦£»false£º½âÎöÊ§°Ü
+    @brief å°†szXmlå®šä¹‰çš„XMLæ–‡æœ¬ï¼Œè§£ææˆXmlTreeNodeçš„èŠ‚ç‚¹æ ‘ã€‚
+    @param [in] strFileName XMLæ–‡ä»¶å
+    @return trueï¼šè§£ææˆåŠŸï¼›falseï¼šè§£æå¤±è´¥
     */
     bool parse(string const& strFileName);
     /**
-    @brief »ñÈ¡Ò»¸öXML½ÚµãµÄÊôĞÔ¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] szAttr ½ÚµãµÄÊôĞÔÃû
-    @return NULL£º²»´æÔÚ£»·ñÔòÎª½ÚµãÊôĞÔµÄÊıÖµ
+    @brief è·å–ä¸€ä¸ªXMLèŠ‚ç‚¹çš„å±æ€§ã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] szAttr èŠ‚ç‚¹çš„å±æ€§å
+    @return NULLï¼šä¸å­˜åœ¨ï¼›å¦åˆ™ä¸ºèŠ‚ç‚¹å±æ€§çš„æ•°å€¼
     */
     char const* getElementAttr(char const* szPath, char const* szAttr) const 
     {
         return m_parser.getElementAttr(szPath, szAttr);
     }
     /**
-    @brief »ñÈ¡Ò»¸öXML½ÚµãµÄËùÓĞÊôĞÔ¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] attrs ½ÚµãµÄËùÓĞÊôĞÔÃû£¬pairµÄfirstÎªÊôĞÔÃû£¬secondÎªÊôĞÔµÄÖµ
-    @return false£º½Úµã²»´æÔÚ£»·ñÔò·µ»Ø½ÚµãµÄÊôĞÔÁĞ±í
+    @brief è·å–ä¸€ä¸ªXMLèŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§ã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] attrs èŠ‚ç‚¹çš„æ‰€æœ‰å±æ€§åï¼Œpairçš„firstä¸ºå±æ€§åï¼Œsecondä¸ºå±æ€§çš„å€¼
+    @return falseï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›å¦åˆ™è¿”å›èŠ‚ç‚¹çš„å±æ€§åˆ—è¡¨
     */
     bool getElementAttrs(char const* szPath, list<pair<char*, char*> >& attrs) const
     {
         return m_parser.getElementAttrs(szPath, attrs);
     }
     /**
-    @brief »ñÈ¡[\<aa\>xxxx\</aa\>]µÄĞÎÊ½µÄ½ÚµãµÄÊı¾İxxxx¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @param [in] strData ½ÚµãµÄÊı¾İ
-    @return false£º½Úµã²»´æÔÚ»ò²»ÊÇ\<aa\>xxxx\</aa\>µÄ¸ñÊ½£»½Úµã´æÔÚ¶øÇÒÎª´Ë¸ñÊ½
+    @brief è·å–[\<aa\>xxxx\</aa\>]çš„å½¢å¼çš„èŠ‚ç‚¹çš„æ•°æ®xxxxã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @param [in] strData èŠ‚ç‚¹çš„æ•°æ®
+    @return falseï¼šèŠ‚ç‚¹ä¸å­˜åœ¨æˆ–ä¸æ˜¯\<aa\>xxxx\</aa\>çš„æ ¼å¼ï¼›èŠ‚ç‚¹å­˜åœ¨è€Œä¸”ä¸ºæ­¤æ ¼å¼
     */
     bool getElementData(char const* szPath, string& strData) const 
     {
         return m_parser.getElementData(szPath, strData);
     }
     /**
-    @brief »ñÈ¡½ÚµãµÄTree Node¡£
-    @param [in] szPath XMLµÄ½Úµã£¬²ÉÓÃkey:key1:key2µÄ¸ñÊ½£¬¸÷¸ö½ÚµãÒÔ¡¾:¡¿·Ö¸î
-    @return NULL£º½Úµã²»´æÔÚ£»Â·¾¶µÄ½Úµã
+    @brief è·å–èŠ‚ç‚¹çš„Tree Nodeã€‚
+    @param [in] szPath XMLçš„èŠ‚ç‚¹ï¼Œé‡‡ç”¨key:key1:key2çš„æ ¼å¼ï¼Œå„ä¸ªèŠ‚ç‚¹ä»¥ã€:ã€‘åˆ†å‰²
+    @return NULLï¼šèŠ‚ç‚¹ä¸å­˜åœ¨ï¼›è·¯å¾„çš„èŠ‚ç‚¹
     */
     XmlTreeNode const* getElementNode(char const* szPath) const 
     {
         return m_parser.getElementNode(szPath);
     }
-    ///»ñÈ¡½ÚµãµÄ¸ù
+    ///è·å–èŠ‚ç‚¹çš„æ ¹
     XmlTreeNode const * getRoot() const
     { 
         return m_parser.getRoot(); 
     }
-    ///ÅĞ¶ÏxmlµÄ±àÂëÊÇ·ñÎªGBK
+    ///åˆ¤æ–­xmlçš„ç¼–ç æ˜¯å¦ä¸ºGBK
     bool isGbk() const
     { 
         return m_parser.isGbk();
     }
 private:
-    FILE *  m_fd;///<xmlÎÄ¼şµÄFD
-    string  m_strFileName;///<xmlÎÄ¼şµÄÃû×Ö
-    char*   m_szBuf;///<XMLÎÄ¼ş¶ÁÈ¡BUF
-    XmlConfigParser  m_parser;///<XmlConfigParserÀà£¬Íê³ÉXML ÄÚ´æµÄ½âÎö
+    FILE *  m_fd;///<xmlæ–‡ä»¶çš„FD
+    string  m_strFileName;///<xmlæ–‡ä»¶çš„åå­—
+    char*   m_szBuf;///<XMLæ–‡ä»¶è¯»å–BUF
+    XmlConfigParser  m_parser;///<XmlConfigParserç±»ï¼Œå®ŒæˆXML å†…å­˜çš„è§£æ
 
 };
 
 
 /**
 @class CwxXmlPackageConv
-@brief ÊµÏÖXMLÓëPackageµÄÏà»¥×ª»»¡£
+@brief å®ç°XMLä¸Packageçš„ç›¸äº’è½¬æ¢ã€‚
 */
 class CWX_API CwxXmlPackageConv
 {
 public:
-    ///¹¹Ôìº¯Êı£¬²ÎÊıÎªXMLµÄencodeÌæ»»Æ÷£¬ÓĞÍâ²¿½øĞĞ¹ÜÀí
+    ///æ„é€ å‡½æ•°ï¼Œå‚æ•°ä¸ºXMLçš„encodeæ›¿æ¢å™¨ï¼Œæœ‰å¤–éƒ¨è¿›è¡Œç®¡ç†
     CwxXmlPackageConv(CwxEncodeXml const* encode)
         :m_xmlEncode(encode)
     {
         memset(m_szErrMsg, 0x00, 512);
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~CwxXmlPackageConv()
     {
 
     }
 public:
     /**
-    *@brief  ½«XML×ª»»ÎªPackage.
-    *@param [in] szSrc XML¡£
-    *@param [out] szOut Êä³öµÄPACKAGE¡£
-    *@param [in,out] uiOutLen ÊäÈëszDescµÄÈİÁ¿£¬Êä³öĞÎ³ÉµÄPackageµÄ´óĞ¡¡£
-    *@return false£ºÊ§°Ü£»true£º³É¹¦.
+    *@brief  å°†XMLè½¬æ¢ä¸ºPackage.
+    *@param [in] szSrc XMLã€‚
+    *@param [out] szOut è¾“å‡ºçš„PACKAGEã€‚
+    *@param [in,out] uiOutLen è¾“å…¥szDescçš„å®¹é‡ï¼Œè¾“å‡ºå½¢æˆçš„Packageçš„å¤§å°ã€‚
+    *@return falseï¼šå¤±è´¥ï¼›trueï¼šæˆåŠŸ.
     */ 
     bool xmlToPackage(char const * szSrc,
         char* szOut,
         CWX_UINT32& uiOutLen);
     /**
-    *@brief  ½«Package×ª»»ÎªÍêÕûµÄXML£¬Ä¬ÈÏ²ÉÓÃUTF8±àÂë
-    *@param [in] szRootName ĞÎ³ÉµÄXML¸ù½ÚµãµÄÃû×Ö,Èç¹ûÎª¿Õ£¬Ôò±íÊ¾Ã»ÓĞ¸ù½Úµã¡£
-    *@param [in] szSrc packageµÄbuf¡£
-    *@param [in] uiSrcLen PackageµÄ´óĞ¡¡£
-    *@param [out] szOut Êä³öµÄXML¡£
-    *@param [in,out] uiOutLen ÊäÈëXMLµÄBUF´óĞ¡£¬Êä³öĞÎ³ÉµÄXMLµÄ³¤¶È¡£
-    *@param [in] szXmlTitile XMLµÄ±êÌâ£¬Èô²»Ö¸¶¨£¬ÔòÎª¡¾<?xml version='1.0' encoding=\"utf-8\" ?>¡¿
-    *@return false£ºÊ§°Ü£»true£º³É¹¦.
+    *@brief  å°†Packageè½¬æ¢ä¸ºå®Œæ•´çš„XMLï¼Œé»˜è®¤é‡‡ç”¨UTF8ç¼–ç 
+    *@param [in] szRootName å½¢æˆçš„XMLæ ¹èŠ‚ç‚¹çš„åå­—,å¦‚æœä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæ²¡æœ‰æ ¹èŠ‚ç‚¹ã€‚
+    *@param [in] szSrc packageçš„bufã€‚
+    *@param [in] uiSrcLen Packageçš„å¤§å°ã€‚
+    *@param [out] szOut è¾“å‡ºçš„XMLã€‚
+    *@param [in,out] uiOutLen è¾“å…¥XMLçš„BUFå¤§å°ï¼Œè¾“å‡ºå½¢æˆçš„XMLçš„é•¿åº¦ã€‚
+    *@param [in] szXmlTitile XMLçš„æ ‡é¢˜ï¼Œè‹¥ä¸æŒ‡å®šï¼Œåˆ™ä¸ºã€<?xml version='1.0' encoding=\"utf-8\" ?>ã€‘
+    *@return falseï¼šå¤±è´¥ï¼›trueï¼šæˆåŠŸ.
     */ 
     bool packageToXml(char const* szRootName,
         char const * szSrc,
@@ -472,13 +472,13 @@ public:
         CWX_UINT32& uiOutLen,
         char const* szXmlTitile=NULL);
     /**
-    *@brief  ½«Package×ª»»ÎªÍêÕûµÄXML£¬Ä¬ÈÏ²ÉÓÃUTF8±àÂë
-    *@param [in] szRootName ĞÎ³ÉµÄXML¸ù½ÚµãµÄÃû×Ö,Èç¹ûÎª¿Õ£¬Ôò±íÊ¾Ã»ÓĞ¸ù½Úµã¡£
-    *@param [in] package package¡£
-    *@param [out] szOut Êä³öµÄXML¡£
-    *@param [in,out] uiOutLen ÊäÈëXMLµÄBUF´óĞ¡£¬Êä³öĞÎ³ÉµÄXMLµÄ³¤¶È¡£
-    *@param [in] szXmlTitile XMLµÄ±êÌâ£¬Èô²»Ö¸¶¨£¬ÔòÎª¡¾<?xml version='1.0' encoding=\"utf-8\" ?>¡¿
-    *@return false£ºÊ§°Ü£»true£º³É¹¦.
+    *@brief  å°†Packageè½¬æ¢ä¸ºå®Œæ•´çš„XMLï¼Œé»˜è®¤é‡‡ç”¨UTF8ç¼–ç 
+    *@param [in] szRootName å½¢æˆçš„XMLæ ¹èŠ‚ç‚¹çš„åå­—,å¦‚æœä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæ²¡æœ‰æ ¹èŠ‚ç‚¹ã€‚
+    *@param [in] package packageã€‚
+    *@param [out] szOut è¾“å‡ºçš„XMLã€‚
+    *@param [in,out] uiOutLen è¾“å…¥XMLçš„BUFå¤§å°ï¼Œè¾“å‡ºå½¢æˆçš„XMLçš„é•¿åº¦ã€‚
+    *@param [in] szXmlTitile XMLçš„æ ‡é¢˜ï¼Œè‹¥ä¸æŒ‡å®šï¼Œåˆ™ä¸ºã€<?xml version='1.0' encoding=\"utf-8\" ?>ã€‘
+    *@return falseï¼šå¤±è´¥ï¼›trueï¼šæˆåŠŸ.
     */ 
     bool packageToXml(char const* szRootName,
         CwxPackageReaderEx& package,
@@ -486,13 +486,13 @@ public:
         CWX_UINT32& uiOutLen,
         char const* szXmlTitile=NULL);
     /**
-    *@brief  ½«package×ª»»ÎªÒÔszNodeNameÎª½ÚµãµÄXMLÆ¬¶Î.
-    *@param [in] szNodeName ĞÎ³ÉµÄXMLµÄ½ÚµãµÄÃû×Ö,Èç¹ûÎª¿Õ£¬Ôò±íÊ¾Ã»ÓĞ¸ù½Úµã¡£
-    *@param [in] szSrc packageµÄbuf¡£
-    *@param [in] uiSrcLen PACKAGEµÄ³¤¶È¡£
-    *@param [out] szOut Êä³öµÄXML¡£
-    *@param [in,out] uiOutLen ÊäÈëXMLµÄBUF´óĞ¡£¬Êä³öĞÎ³ÉµÄXMLµÄ³¤¶È¡£
-    *@return false£ºÊ§°Ü£»true£º³É¹¦.
+    *@brief  å°†packageè½¬æ¢ä¸ºä»¥szNodeNameä¸ºèŠ‚ç‚¹çš„XMLç‰‡æ®µ.
+    *@param [in] szNodeName å½¢æˆçš„XMLçš„èŠ‚ç‚¹çš„åå­—,å¦‚æœä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæ²¡æœ‰æ ¹èŠ‚ç‚¹ã€‚
+    *@param [in] szSrc packageçš„bufã€‚
+    *@param [in] uiSrcLen PACKAGEçš„é•¿åº¦ã€‚
+    *@param [out] szOut è¾“å‡ºçš„XMLã€‚
+    *@param [in,out] uiOutLen è¾“å…¥XMLçš„BUFå¤§å°ï¼Œè¾“å‡ºå½¢æˆçš„XMLçš„é•¿åº¦ã€‚
+    *@return falseï¼šå¤±è´¥ï¼›trueï¼šæˆåŠŸ.
     */ 
     bool packageToXmlNode(char const* szNodeName,
         char const * szSrc,
@@ -500,31 +500,31 @@ public:
         char* szOut,
         CWX_UINT32& uiOutLen);
     /**
-    *@brief  ½«package×ª»»ÎªÒÔszNodeNameÎª½ÚµãµÄXMLÆ¬¶Î.
-    *@param [in] szNodeName ĞÎ³ÉµÄXMLµÄ½ÚµãµÄÃû×Ö,Èç¹ûÎª¿Õ£¬Ôò±íÊ¾Ã»ÓĞ¸ù½Úµã¡£
-    *@param [in] package package¡£
-    *@param [out] szOut Êä³öµÄXML¡£
-    *@param [in,out] uiOutLen ÊäÈëXMLµÄBUF´óĞ¡£¬Êä³öĞÎ³ÉµÄXMLµÄ³¤¶È¡£
-    *@return false£ºÊ§°Ü£»true£º³É¹¦.
+    *@brief  å°†packageè½¬æ¢ä¸ºä»¥szNodeNameä¸ºèŠ‚ç‚¹çš„XMLç‰‡æ®µ.
+    *@param [in] szNodeName å½¢æˆçš„XMLçš„èŠ‚ç‚¹çš„åå­—,å¦‚æœä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæ²¡æœ‰æ ¹èŠ‚ç‚¹ã€‚
+    *@param [in] package packageã€‚
+    *@param [out] szOut è¾“å‡ºçš„XMLã€‚
+    *@param [in,out] uiOutLen è¾“å…¥XMLçš„BUFå¤§å°ï¼Œè¾“å‡ºå½¢æˆçš„XMLçš„é•¿åº¦ã€‚
+    *@return falseï¼šå¤±è´¥ï¼›trueï¼šæˆåŠŸ.
     */ 
     bool packageToXmlNode(char const* szNodeName,
         CwxPackageReaderEx& package,
         char* szOut,
         CWX_UINT32& uiOutLen);
-    ///·µ»Ø´íÎóĞÅÏ¢
+    ///è¿”å›é”™è¯¯ä¿¡æ¯
     char const* getErrMsg() const{ return m_szErrMsg;}
 private:
-    ///xml×ª»»Îªpackage
+    ///xmlè½¬æ¢ä¸ºpackage
     bool xmlToPackage(XmlTreeNode const * treeNode, char* szOut, CWX_UINT32& uiOutLen);
-    ///package×ª»»Îªxml
+    ///packageè½¬æ¢ä¸ºxml
     bool packageToXml(CwxKeyValueItemEx const& item, char* szOut, CWX_UINT32& uiOutLen);
     ///append <key>
     bool appendXmlKeyBegin(char const* szKey, CWX_UINT16 unKeyLen, char* szOut, CWX_UINT32& uiOutLen);
     ///append </key>
     bool appendXmlKeyEnd(char const* szKey, CWX_UINT16 unKeyLen, char* szOut, CWX_UINT32& uiOutLen);
 private:
-    CwxEncodeXml const*  m_xmlEncode;///<xmlµÄÌØÊâ×Ö·ûÌæ»»Æ÷
-    char m_szErrMsg[512];///<´íÎóbuf
+    CwxEncodeXml const*  m_xmlEncode;///<xmlçš„ç‰¹æ®Šå­—ç¬¦æ›¿æ¢å™¨
+    char m_szErrMsg[512];///<é”™è¯¯buf
 };
 
 #endif 

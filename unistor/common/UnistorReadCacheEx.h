@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_READ_CACHE_EX_H__
+ï»¿#ifndef __UNISTOR_READ_CACHE_EX_H__
 #define __UNISTOR_READ_CACHE_EX_H__
 
 
@@ -9,10 +9,10 @@
 #include "CwxLockGuard.h"
 
 
-///¶ÁcacheµÄÊı¾İ
+///è¯»cacheçš„æ•°æ®
 struct UnistorReadCacheItemEx{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorReadCacheItemEx(){
         m_prev = NULL;
         m_next = NULL;
@@ -22,39 +22,39 @@ public:
         m_uiCapacity = 0;
         m_unKeyLen = 0;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorReadCacheItemEx(){
     }
 public:
-    ///»ñÈ¡key
+    ///è·å–key
     inline char const* getKey() const{
         return m_szBuf;
     }
-    ///»ñÈ¡data
+    ///è·å–data
     inline char const* getData() const{
         return m_szBuf + m_unKeyLen;
     }
-    ///»ñÈ¡keyµÄ³¤¶È
+    ///è·å–keyçš„é•¿åº¦
     inline CWX_UINT16 getKeyLen() const{
         return m_unKeyLen;
     }
-    ///»ñÈ¡dataµÄ³¤¶È
+    ///è·å–dataçš„é•¿åº¦
     inline CWX_UINT32 getDataLen() const{
         return m_uiDataLen;
     }
-    ///»ñÈ¡keyµÄ´óĞ¡
+    ///è·å–keyçš„å¤§å°
     inline CWX_UINT32 size() const{
         return m_uiCapacity + sizeof(UnistorReadCacheItemEx);
     }
-    ///»ñÈ¡ÈİÁ¿
+    ///è·å–å®¹é‡
     inline CWX_UINT32 capacity() const{
         return m_uiCapacity;
     }
 public:
-    ///»ñÈ¡ÈİÁ¿
-    inline static CWX_UINT32 calBufCapacity(CWX_UINT16 unKeyLen,///<keyµÄ³¤¶È
-        CWX_UINT32 uiDataLen, ///<dataµÄ³¤¶È
-        CWX_UINT16 unAlign ///<¶ÔÆë×Ö½ÚÊı
+    ///è·å–å®¹é‡
+    inline static CWX_UINT32 calBufCapacity(CWX_UINT16 unKeyLen,///<keyçš„é•¿åº¦
+        CWX_UINT32 uiDataLen, ///<dataçš„é•¿åº¦
+        CWX_UINT16 unAlign ///<å¯¹é½å­—èŠ‚æ•°
         )
     {
         CWX_UINT32 uiCapacity = 0;
@@ -65,7 +65,7 @@ public:
             uiCapacity *= unAlign;
         }
         if (uiCapacity < 8) uiCapacity = 8;
-        //±ØĞë°´ÕÕ8¶ÔÆë
+        //å¿…é¡»æŒ‰ç…§8å¯¹é½
         CWX_UINT16 unMod = (sizeof(UnistorReadCacheItemEx) + uiCapacity)%8;
         if (unMod){
             uiCapacity += (8 - unMod);
@@ -75,29 +75,29 @@ public:
 private:
     friend class UnistorReadCacheEx;
 private:
-    UnistorReadCacheItemEx*  m_prev; ///<LRUÁ´±íµÄÇ°Ò»¸ö
-    UnistorReadCacheItemEx*  m_next; ///<LRUÁ´±íµÄÏÂÒ»¸ö
-    UnistorReadCacheItemEx*  m_hashNext; ///<hashÁ´±íµÄÏÂÒ»¸ö
-    UnistorReadCacheItemEx*  m_child; ///<Êı¾İÁ´µÄ¿Õ¼ä
-    CWX_UINT32             m_uiDataLen;///<dataµÄ³¤¶È
-    CWX_UINT32             m_uiCapacity;///<¿Õ¼äµÄÈİÁ¿
-    CWX_UINT16             m_unKeyLen; ///<keyµÄ³¤¶È
-    char                   m_szBuf[0]; ///<Êı¾İµÄÖ¸Õë
+    UnistorReadCacheItemEx*  m_prev; ///<LRUé“¾è¡¨çš„å‰ä¸€ä¸ª
+    UnistorReadCacheItemEx*  m_next; ///<LRUé“¾è¡¨çš„ä¸‹ä¸€ä¸ª
+    UnistorReadCacheItemEx*  m_hashNext; ///<hashé“¾è¡¨çš„ä¸‹ä¸€ä¸ª
+    UnistorReadCacheItemEx*  m_child; ///<æ•°æ®é“¾çš„ç©ºé—´
+    CWX_UINT32             m_uiDataLen;///<dataçš„é•¿åº¦
+    CWX_UINT32             m_uiCapacity;///<ç©ºé—´çš„å®¹é‡
+    CWX_UINT16             m_unKeyLen; ///<keyçš„é•¿åº¦
+    char                   m_szBuf[0]; ///<æ•°æ®çš„æŒ‡é’ˆ
 
-    static UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyÏàµÈµÄ±È½Ïº¯Êı
-    static UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyĞ¡ÓÚµÄ±È½Ïº¯Êı
-    static UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyµÄhashÖµµÄ¼ÆËãº¯Êı
+    static UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyç›¸ç­‰çš„æ¯”è¾ƒå‡½æ•°
+    static UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyå°äºçš„æ¯”è¾ƒå‡½æ•°
+    static UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyçš„hashå€¼çš„è®¡ç®—å‡½æ•°
 }__attribute__ ((__packed__));
 
 
-///¶Ácache¶ÔÏó£¬ÎªLRU cache
+///è¯»cacheå¯¹è±¡ï¼Œä¸ºLRU cache
 class UnistorReadCacheEx{
 private:
     enum{
-        UNISTOR_READ_CACHE_SLOT_SIZE = 1024 * 1024 * 256, ///<ÄÚ´æ²ÛµÄ´óĞ¡
-        UNISTOR_READ_CACHE_MAX_ITEM_SIZE = UNISTOR_MAX_KV_SIZE ///<×î´óµÄÒ»ÌõÊı¾İ´óĞ¡
+        UNISTOR_READ_CACHE_SLOT_SIZE = 1024 * 1024 * 256, ///<å†…å­˜æ§½çš„å¤§å°
+        UNISTOR_READ_CACHE_MAX_ITEM_SIZE = UNISTOR_MAX_KV_SIZE ///<æœ€å¤§çš„ä¸€æ¡æ•°æ®å¤§å°
     };
-    ///hash²éÕÒµÄ·µ»Ø¶ÔÏó
+    ///hashæŸ¥æ‰¾çš„è¿”å›å¯¹è±¡
     class UnistorReadCacheExIter{
     public:
         UnistorReadCacheExIter(){
@@ -106,64 +106,64 @@ private:
             m_uiHash = 0;
         }
     public:
-        UnistorReadCacheItemEx*   m_pFind; ///<·¢ÏÖµÄÖµ
-        UnistorReadCacheItemEx*   m_pPrev; ///<Ç°Ò»¸öÖµ
-        CWX_UINT32                m_uiHash; ///<hashÖµ
+        UnistorReadCacheItemEx*   m_pFind; ///<å‘ç°çš„å€¼
+        UnistorReadCacheItemEx*   m_pPrev; ///<å‰ä¸€ä¸ªå€¼
+        CWX_UINT32                m_uiHash; ///<hashå€¼
     };
 public:
     /**
-    @brief ¹¹Ôìº¯Êı£¬ÉèÖÃLRU CACHEµÄÄÚ´æ¼°KEYµÄ¿ÉÄÜ×î´óÊıÁ¿¡£
-    @param [in] size LRU CACHEµÄÄÚ´æ×ÜÁ¿
-    @param [in] count LRU CACHEµÄKEYµÄ¿ÉÄÜ×î´óÖµ
-    @param [in] bLock ÊÇ·ñ¶àÏß³Ì°²È«£¬ÄÚ²¿½øĞĞËøÍ¬²½
+    @brief æ„é€ å‡½æ•°ï¼Œè®¾ç½®LRU CACHEçš„å†…å­˜åŠKEYçš„å¯èƒ½æœ€å¤§æ•°é‡ã€‚
+    @param [in] size LRU CACHEçš„å†…å­˜æ€»é‡
+    @param [in] count LRU CACHEçš„KEYçš„å¯èƒ½æœ€å¤§å€¼
+    @param [in] bLock æ˜¯å¦å¤šçº¿ç¨‹å®‰å…¨ï¼Œå†…éƒ¨è¿›è¡Œé”åŒæ­¥
     */
-    UnistorReadCacheEx(unsigned long int size, ///<¿Õ¼ä´óĞ¡
-        CWX_UINT32 count, ///<keyµÄÊıÁ¿
-        UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyÏàµÈ±È½Ïº¯Êı
-        UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessµÄ±È½Ïº¯Êı
-        UNISTOR_KEY_HASH_FN    fnHash, ///<keyµÄhashº¯Êı
-        CWX_UINT16 unAlign=32, ///<¶ÔÆë×Ö½ÚÊı
-        CwxRwLock* rwLock=NULL, ///<¶ÁĞ´Ëø
-        CwxMutexLock* mutex=NULL, ///<ÅÅËûËø
-        float  fBucketRate=1.2 ///<Í°µÄ±ÈÂÊ
+    UnistorReadCacheEx(unsigned long int size, ///<ç©ºé—´å¤§å°
+        CWX_UINT32 count, ///<keyçš„æ•°é‡
+        UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyç›¸ç­‰æ¯”è¾ƒå‡½æ•°
+        UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessçš„æ¯”è¾ƒå‡½æ•°
+        UNISTOR_KEY_HASH_FN    fnHash, ///<keyçš„hashå‡½æ•°
+        CWX_UINT16 unAlign=32, ///<å¯¹é½å­—èŠ‚æ•°
+        CwxRwLock* rwLock=NULL, ///<è¯»å†™é”
+        CwxMutexLock* mutex=NULL, ///<æ’ä»–é”
+        float  fBucketRate=1.2 ///<æ¡¶çš„æ¯”ç‡
         );
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorReadCacheEx(){
         clear();
     }
 public:
-    ///³õÊ¼»¯cache¡£·µ»ØÖµ£º0£º³É¹¦£¬-1£ºÊ§°Ü
+    ///åˆå§‹åŒ–cacheã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼Œ-1ï¼šå¤±è´¥
     int init(char* szErr2K);
 
-    ///¼ì²ékeyÔÚCACHEÖĞÊÇ·ñ´æÔÚ¡£·µ»ØÖµ£ºtrue£º´æÔÚ£»false£º²»´æÔÚ
+    ///æ£€æŸ¥keyåœ¨CACHEä¸­æ˜¯å¦å­˜åœ¨ã€‚è¿”å›å€¼ï¼štrueï¼šå­˜åœ¨ï¼›falseï¼šä¸å­˜åœ¨
     bool exist(char const* szKey, ///<key
-        CWX_UINT16 unKeyLen ///<keyµÄ³¤¶È
+        CWX_UINT16 unKeyLen ///<keyçš„é•¿åº¦
         );
 
-    ///½«keyÒÆµ½LRU cacheµÄ¿ªÊ¼Î»ÖÃ£¬·ÀÖ¹»»³ö
+    ///å°†keyç§»åˆ°LRU cacheçš„å¼€å§‹ä½ç½®ï¼Œé˜²æ­¢æ¢å‡º
     void touch(char const* szKey, ///<key
-        CWX_UINT16 unKeyLen ///<keyµÄ³¤¶È
+        CWX_UINT16 unKeyLen ///<keyçš„é•¿åº¦
         );
 
     /**
-    @brief »ñÈ¡Ò»¸öKEYµÄdata¡£
-    @param [in] szKey Òª»ñÈ¡key
-    @param [in] unKeyLen keyµÄ³¤¶È
-    @param [in] bTouch ÈôszKey´æÔÚ£¬ÊÇ·ñ½«´ËszKeyµÄÒÆµ½LRU CACHEµÄÍ·¡£
-    @return NULL£ºszKey²»´æÔÚ£»·ñÔòÎªszKeyµÄdata
+    @brief è·å–ä¸€ä¸ªKEYçš„dataã€‚
+    @param [in] szKey è¦è·å–key
+    @param [in] unKeyLen keyçš„é•¿åº¦
+    @param [in] bTouch è‹¥szKeyå­˜åœ¨ï¼Œæ˜¯å¦å°†æ­¤szKeyçš„ç§»åˆ°LRU CACHEçš„å¤´ã€‚
+    @return NULLï¼šszKeyä¸å­˜åœ¨ï¼›å¦åˆ™ä¸ºszKeyçš„data
     */
     UnistorReadCacheItemEx* fetch(char const* szKey,
         CWX_UINT16 unKeyLen,
         bool bTouch = true);
 
     /**
-    @brief »ñÈ¡Ò»¸öKEYµÄdata¡£
-    @param [in] szKey Òª»ñÈ¡key
-    @param [in] unKeyLen keyµÄ³¤¶È
-    @param [in] szData ·µ»ØÊı¾İ
-    @param [in out] uiDataLen ´«ÈëszDataµÄ´óĞ¡£¬·µ»ØÊµ¼ÊµÄ´óĞ¡
-    @param [in] bTouch ÈôszKey´æÔÚ£¬ÊÇ·ñ½«´ËszKeyµÄÒÆµ½LRU CACHEµÄÍ·¡£
-    @return 0£º²»´æÔÚ£»1£º»ñÈ¡£»-1£º¿Õ¼ä²»×ã
+    @brief è·å–ä¸€ä¸ªKEYçš„dataã€‚
+    @param [in] szKey è¦è·å–key
+    @param [in] unKeyLen keyçš„é•¿åº¦
+    @param [in] szData è¿”å›æ•°æ®
+    @param [in out] uiDataLen ä¼ å…¥szDataçš„å¤§å°ï¼Œè¿”å›å®é™…çš„å¤§å°
+    @param [in] bTouch è‹¥szKeyå­˜åœ¨ï¼Œæ˜¯å¦å°†æ­¤szKeyçš„ç§»åˆ°LRU CACHEçš„å¤´ã€‚
+    @return 0ï¼šä¸å­˜åœ¨ï¼›1ï¼šè·å–ï¼›-1ï¼šç©ºé—´ä¸è¶³
     */
     int fetch(char const* szKey,
         CWX_UINT16 unKeyLen,
@@ -171,12 +171,12 @@ public:
         CWX_UINT32& uiDataLen,
         bool bTouch = true);
     /**
-    @brief ÍùLRU CACHEÖĞ²åÈëÒ»¸öKEY¡£
-    @param [in] szKey Òª²åÈëµÄKEY
-    @param [in] unKeyLen Òª²åÈëµÄKEYµÄ³¤¶È
-    @param [in] szData Òª²åÈëKeyµÄdata¡£
-    @param [in] uiDataLen Òª²åÈëKeyµÄdataµÄ³¤¶È¡£
-    @param [in] bNotExist ÈôÎªtrueÔò²åÈëµÄkey±ØĞë²»´æÔÚ£¬·ñÔò¿ÉÒÔ´æÔÚ¡£
+    @brief å¾€LRU CACHEä¸­æ’å…¥ä¸€ä¸ªKEYã€‚
+    @param [in] szKey è¦æ’å…¥çš„KEY
+    @param [in] unKeyLen è¦æ’å…¥çš„KEYçš„é•¿åº¦
+    @param [in] szData è¦æ’å…¥Keyçš„dataã€‚
+    @param [in] uiDataLen è¦æ’å…¥Keyçš„dataçš„é•¿åº¦ã€‚
+    @param [in] bNotExist è‹¥ä¸ºtrueåˆ™æ’å…¥çš„keyå¿…é¡»ä¸å­˜åœ¨ï¼Œå¦åˆ™å¯ä»¥å­˜åœ¨ã€‚
     @return void
     */
     void insert(char const* szKey,
@@ -185,82 +185,82 @@ public:
         CWX_UINT32 uiDataLen,
         bool bNotExist);
 
-    ///´ÓLRU cacheÖĞÉ¾³ıÒ»¸öszKey
+    ///ä»LRU cacheä¸­åˆ é™¤ä¸€ä¸ªszKey
     void remove( char const* szKey, CWX_UINT16 unKeyLen);
 
-    ///copyÊı¾İ£¬0£º³É¹¦£»-1£º¿Õ¼ä²»×ã
+    ///copyæ•°æ®ï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šç©ºé—´ä¸è¶³
     static int copyData(UnistorReadCacheItemEx const* item, char* szData, CWX_UINT32& uiDataLen);
 
-    ///»ñÈ¡cacheÊı¾İÊ¹ÓÃµÄÄÚ´æ¿Õ¼ä´óĞ¡
+    ///è·å–cacheæ•°æ®ä½¿ç”¨çš„å†…å­˜ç©ºé—´å¤§å°
     inline unsigned long int getUsedSize() const{
-        return m_usedSize; ///<Ê¹ÓÃµÄ¿Õ¼ä´óĞ¡
+        return m_usedSize; ///<ä½¿ç”¨çš„ç©ºé—´å¤§å°
     }
 
-    ///»ñÈ¡cacheÊı¾İµÄÊı¾İ¿Õ¼ä´óĞ¡
+    ///è·å–cacheæ•°æ®çš„æ•°æ®ç©ºé—´å¤§å°
     inline unsigned long int getUsedCapacity() const{
-        return m_usedCapacity; ///<Ê¹ÓÃµÄÈİÁ¿´óĞ¡
+        return m_usedCapacity; ///<ä½¿ç”¨çš„å®¹é‡å¤§å°
     }
 
-    ///»ñÈ¡cacheÊı¾İµÄÊı¾İ´óĞ¡
+    ///è·å–cacheæ•°æ®çš„æ•°æ®å¤§å°
     inline unsigned long int getUsedDataSize() const{
-        return m_usedDataSize; ///<Ê¹ÓÃÓĞĞ§Êı¾İµÄ´óĞ¡
+        return m_usedDataSize; ///<ä½¿ç”¨æœ‰æ•ˆæ•°æ®çš„å¤§å°
     }
 
-    ///»ñÈ¡freeµÄÄÚ´æ¿Õ¼ä´óĞ¡
+    ///è·å–freeçš„å†…å­˜ç©ºé—´å¤§å°
     inline unsigned long int getFreeSize() const{
-        return m_freeSize; ///<¿ÕÏĞµÄ¿Õ¼ä
+        return m_freeSize; ///<ç©ºé—²çš„ç©ºé—´
     }
 
-    ///»ñÈ¡freeµÄÊı¾İ¿Õ¼äÈİÁ¿´óĞ¡
+    ///è·å–freeçš„æ•°æ®ç©ºé—´å®¹é‡å¤§å°
     inline unsigned long int getFreeCapacity() const{
-        return m_freeCapacity; ///<¿ÕÏĞµÄÈİÁ¿
+        return m_freeCapacity; ///<ç©ºé—²çš„å®¹é‡
     }
 
-    ///»ñÈ¡cacheµÄkeyµÄÊıÁ¿
+    ///è·å–cacheçš„keyçš„æ•°é‡
     inline CWX_UINT32 getCachedKeyCount() const{
         return m_cachedKeyCount; ///<cached key count
     }
 
-    ///»ñÈ¡cacheÊ¹ÓÃµÄÄÚ´æ¿éÊıÁ¿
+    ///è·å–cacheä½¿ç”¨çš„å†…å­˜å—æ•°é‡
     inline unsigned long int getCachedItemCount() const{
-        return m_cachedItemCount; ///<cacheÊ¹ÓÃµÄitemÊıÁ¿
+        return m_cachedItemCount; ///<cacheä½¿ç”¨çš„itemæ•°é‡
     }
 
-    ///»ñÈ¡¿ÕÏĞµÄÄÚ´æ¿éÊıÁ¿
+    ///è·å–ç©ºé—²çš„å†…å­˜å—æ•°é‡
     inline unsigned long int getFreeItemCount() const{
-        return m_freeItemCount; ///<¿ÕÏĞµÄitemÊıÁ¿
+        return m_freeItemCount; ///<ç©ºé—²çš„itemæ•°é‡
     }
 
-    ///»ñÈ¡×î´ó¿ÉÊ¹ÓÃÄÚ´æµÄÊıÁ¿
+    ///è·å–æœ€å¤§å¯ä½¿ç”¨å†…å­˜çš„æ•°é‡
     inline unsigned long int maxSize( void ) const{
         return m_max_size;
     }
 
-    ///»ñÈ¡cache×î´ókeyµÄÊıÁ¿
+    ///è·å–cacheæœ€å¤§keyçš„æ•°é‡
     inline CWX_UINT32 getMaxCacheKeyNum() const{
-        return  m_max_cache_num; ///<cache keyµÄ×î¶àÊıÁ¿
+        return  m_max_cache_num; ///<cache keyçš„æœ€å¤šæ•°é‡
     }
 
-    ///Çå¿ÕCACHE    
+    ///æ¸…ç©ºCACHE    
     void clear( void );
 
 private:
 
-    ///²»´øËøµÄtouch²Ù×÷
+    ///ä¸å¸¦é”çš„touchæ“ä½œ
     void _touch(UnistorReadCacheItemEx* data );
 
-    ///½«itemÌí¼Óµ½free list£¬²»ĞŞ¸ÄÈİÁ¿¿Õ¼ä
+    ///å°†itemæ·»åŠ åˆ°free listï¼Œä¸ä¿®æ”¹å®¹é‡ç©ºé—´
     void _addFreeList(UnistorReadCacheItemEx* item);
 
-    ///²»´øËøµÄremove²Ù×÷
+    ///ä¸å¸¦é”çš„removeæ“ä½œ
     void _remove(UnistorReadCacheExIter const& iter);
 
     
-    ///»ñÈ¡UnistorReadCacheItemExµÄitemÊıÁ¿¼°´óĞ¡£¬·µ»ØitemÊıÁ¿
+    ///è·å–UnistorReadCacheItemExçš„itemæ•°é‡åŠå¤§å°ï¼Œè¿”å›itemæ•°é‡
     inline CWX_UINT32 _getItemCountSize(UnistorReadCacheItemEx const* item, ///<item
-        unsigned long int& size, ///<Õ¼ÓÃ¿Õ¼ä
-        unsigned long int& dataSize, ///<Êı¾İ´óĞ¡
-        unsigned long int& capacity ///<Êı¾İÈİÁ¿
+        unsigned long int& size, ///<å ç”¨ç©ºé—´
+        unsigned long int& dataSize, ///<æ•°æ®å¤§å°
+        unsigned long int& capacity ///<æ•°æ®å®¹é‡
         ) const
     {
         CWX_UINT32 num=0;
@@ -277,7 +277,7 @@ private:
         return num;
     }
 
-    ///É¾³ıkey
+    ///åˆ é™¤key
     inline void _removeKey(UnistorReadCacheExIter const& iter){
         if (iter.m_pPrev){
             CWX_ASSERT(iter.m_pPrev->m_hashNext == iter.m_pFind);
@@ -288,42 +288,42 @@ private:
         }
     }
 
-    ///Ìí¼Ókey
+    ///æ·»åŠ key
     void _addKey(UnistorReadCacheItemEx* item);
 
-    ///»ñÈ¡key
+    ///è·å–key
     bool _findKey(UnistorReadCacheItemEx const* item, UnistorReadCacheExIter& iter);
 private:
-    UnistorReadCacheItemEx** m_hashArr; ///<hashµÄÊı×é
-    UnistorReadCacheItemEx*  m_freeHead; ///<¿ÕÏĞµÄÄÚ´æ¶ÔÏóÍ·
-    UnistorReadCacheItemEx*  m_freeTail; ///<¿ÕÏĞµÄÄÚ´æ¶ÔÏóÎ²
+    UnistorReadCacheItemEx** m_hashArr; ///<hashçš„æ•°ç»„
+    UnistorReadCacheItemEx*  m_freeHead; ///<ç©ºé—²çš„å†…å­˜å¯¹è±¡å¤´
+    UnistorReadCacheItemEx*  m_freeTail; ///<ç©ºé—²çš„å†…å­˜å¯¹è±¡å°¾
     UnistorReadCacheItemEx*  m_chain_head; ///<lru key's chain head
     UnistorReadCacheItemEx*  m_chain_tail;///<lru key's chain tail
-    CWX_UINT32 const         m_bucket_num; ///<hashÍ°µÄÊıÁ¿
-    CWX_UINT32 const         m_max_cache_num; ///<cache keyµÄ×î¶àÊıÁ¿
+    CWX_UINT32 const         m_bucket_num; ///<hashæ¡¶çš„æ•°é‡
+    CWX_UINT32 const         m_max_cache_num; ///<cache keyçš„æœ€å¤šæ•°é‡
     unsigned long int         m_max_size; ///<max key size
-    char**                    m_cacheBufArr; ///<cache bufµÄÊı×é
-    CWX_UINT32                m_cacheBufArrSize; ///<cache bufÊı×éµÄ´óĞ¡
-    CWX_UINT32                m_cacheBufArrIndex; ///<µ±Ç°·ÖÅäÄÚ´æµÄÊı×éµÄË÷Òı
-    CWX_UINT32                m_cacheBufArrPos;  ///<µ±Ç°·ÖÅäbufµÄpos
+    char**                    m_cacheBufArr; ///<cache bufçš„æ•°ç»„
+    CWX_UINT32                m_cacheBufArrSize; ///<cache bufæ•°ç»„çš„å¤§å°
+    CWX_UINT32                m_cacheBufArrIndex; ///<å½“å‰åˆ†é…å†…å­˜çš„æ•°ç»„çš„ç´¢å¼•
+    CWX_UINT32                m_cacheBufArrPos;  ///<å½“å‰åˆ†é…bufçš„pos
 
-    volatile unsigned long int  m_usedSize; ///<Ê¹ÓÃµÄ¿Õ¼ä´óĞ¡
-    volatile unsigned long int  m_usedCapacity; ///<Ê¹ÓÃµÄÈİÁ¿´óĞ¡
-    volatile unsigned long int  m_usedDataSize; ///<Ê¹ÓÃÓĞĞ§Êı¾İµÄ´óĞ¡
+    volatile unsigned long int  m_usedSize; ///<ä½¿ç”¨çš„ç©ºé—´å¤§å°
+    volatile unsigned long int  m_usedCapacity; ///<ä½¿ç”¨çš„å®¹é‡å¤§å°
+    volatile unsigned long int  m_usedDataSize; ///<ä½¿ç”¨æœ‰æ•ˆæ•°æ®çš„å¤§å°
 
-    volatile unsigned long int  m_freeSize; ///<¿ÕÏĞµÄ¿Õ¼ä
-    volatile unsigned long int  m_freeCapacity; ///<¿ÕÏĞµÄÈİÁ¿
+    volatile unsigned long int  m_freeSize; ///<ç©ºé—²çš„ç©ºé—´
+    volatile unsigned long int  m_freeCapacity; ///<ç©ºé—²çš„å®¹é‡
 
     volatile CWX_UINT32         m_cachedKeyCount; ///<cached key count
-    volatile unsigned long int  m_cachedItemCount; ///<cacheÊ¹ÓÃµÄitemÊıÁ¿
-    volatile unsigned long int  m_freeItemCount; ///<¿ÕÏĞµÄitemÊıÁ¿
+    volatile unsigned long int  m_cachedItemCount; ///<cacheä½¿ç”¨çš„itemæ•°é‡
+    volatile unsigned long int  m_freeItemCount; ///<ç©ºé—²çš„itemæ•°é‡
 
-    CwxRwLock*               m_rwLock; ///<lru cache ¶ÁĞ´Ëø
-    CwxMutexLock*            m_mutex; ///<lru cache µÄÅÅËûËø
-    CWX_UINT16 const         m_unAlign; ///<alignÖµ
-    UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyÏàµÈµÄ±È½Ïº¯Êı
-    UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyĞ¡ÓÚµÄ±È½Ïº¯Êı
-    UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyµÄhashÖµµÄ¼ÆËãº¯Êı
+    CwxRwLock*               m_rwLock; ///<lru cache è¯»å†™é”
+    CwxMutexLock*            m_mutex; ///<lru cache çš„æ’ä»–é”
+    CWX_UINT16 const         m_unAlign; ///<alignå€¼
+    UNISTOR_KEY_CMP_EQUAL_FN     m_fnEqual; ///<keyç›¸ç­‰çš„æ¯”è¾ƒå‡½æ•°
+    UNISTOR_KEY_CMP_LESS_FN      m_fnLess; ///<keyå°äºçš„æ¯”è¾ƒå‡½æ•°
+    UNISTOR_KEY_HASH_FN          m_fnHash; ///<keyçš„hashå€¼çš„è®¡ç®—å‡½æ•°
 
 
 };

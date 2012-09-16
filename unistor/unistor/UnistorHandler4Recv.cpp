@@ -1,16 +1,16 @@
-#include "UnistorHandler4Recv.h"
+ï»¿#include "UnistorHandler4Recv.h"
 #include "UnistorApp.h"
 
-///master±ä»¯µÄ´¦Àíº¯Êı
+///masterå˜åŒ–çš„å¤„ç†å‡½æ•°
 void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
                                   UnistorTss* tss,
                                   CwxMsgBlock*& msg,
                                   CWX_UINT32 uiPoolIndex)
 {
-    if (EVENT_SEND_MSG == msg->event().getEvent()){ ///·¢ËÍÏûÏ¢
+    if (EVENT_SEND_MSG == msg->event().getEvent()){ ///å‘é€æ¶ˆæ¯
         UnistorHandler4Recv* pHandler =((UnistorRecvThreadUserObj*)tss->getUserObj())->getConn(msg->event().getConnId());
         UnistorWriteMsgArg* pWriteArg=(UnistorWriteMsgArg*)msg->event().getConnUserData();
-        if (pWriteArg){///<´æÔÚÁ½ÖÖ£¬Ò»ÖÖÊÇÀ´×Ôwrite threadµÄ£¬Ò»ÖÖÊÇÀ´×Ôtrans threadµÄ¡£Ö»ÓĞwrite theadĞèÒªÊÍ·Å
+        if (pWriteArg){///<å­˜åœ¨ä¸¤ç§ï¼Œä¸€ç§æ˜¯æ¥è‡ªwrite threadçš„ï¼Œä¸€ç§æ˜¯æ¥è‡ªtrans threadçš„ã€‚åªæœ‰write theadéœ€è¦é‡Šæ”¾
             msg->event().setConnUserData(NULL);
             CwxMsgBlockAlloc::free(pWriteArg->m_recvMsg);
             tss->pushWriteMsgArg(pWriteArg);
@@ -19,7 +19,7 @@ void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
             pHandler->reply(msg, false);
             msg = NULL;
         }
-    }else if (CwxEventInfo::CONN_CREATED == msg->event().getEvent()){///Á¬½Ó½¨Á¢
+    }else if (CwxEventInfo::CONN_CREATED == msg->event().getEvent()){///è¿æ¥å»ºç«‹
         CwxAppChannel* channel = pApp->getRecvChannels()[uiPoolIndex];
         if (channel->isRegIoHandle(msg->event().getIoHandle())){
             CWX_ERROR(("Handler[%] is register, it's a big bug, stop.", msg->event().getIoHandle()));
@@ -48,13 +48,13 @@ void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
         UnistorZkConf* pConf = NULL;
         memcpy(&pConf, msg->rd_ptr(), sizeof(pConf));
         if (tss->m_pZkConf){
-            if (tss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (tss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pConf;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete tss->m_pZkConf;
                 tss->m_pZkConf = pConf;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             tss->m_pZkConf = pConf;
         }
         CWX_INFO(("UnistorHandler4Recv[thread:%u]: ZK config is changed. master_idc:%s, is_master_idc:%s, master_host:%s, is_master=%s, sync_host:%s",
@@ -69,13 +69,13 @@ void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
         UnistorZkLock* pLock = NULL;
         memcpy(&pLock, msg->rd_ptr(), sizeof(pLock));
         if (tss->m_pZkLock){
-            if (tss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (tss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pLock;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete tss->m_pZkLock;
                 tss->m_pZkLock = pLock;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             tss->m_pZkLock = pLock;
         }
         CWX_INFO(("UnistorHandler4Recv[thread:%u]: ZK config is changed. master_idc:%s, is_master_idc:%s, master_host:%s, is_master=%s, sync_host:%s",
@@ -92,9 +92,9 @@ void UnistorHandler4Recv::doEvent(UnistorApp* pApp,
 }
 
 /**
-@brief ³õÊ¼»¯½¨Á¢µÄÁ¬½Ó£¬²¢ÍùReactor×¢²áÁ¬½Ó
-@param [in] arg ½¨Á¢Á¬½ÓµÄacceptor»òÎªNULL
-@return -1£º·ÅÆú½¨Á¢µÄÁ¬½Ó£» 0£ºÁ¬½Ó½¨Á¢³É¹¦
+@brief åˆå§‹åŒ–å»ºç«‹çš„è¿æ¥ï¼Œå¹¶å¾€Reactoræ³¨å†Œè¿æ¥
+@param [in] arg å»ºç«‹è¿æ¥çš„acceptoræˆ–ä¸ºNULL
+@return -1ï¼šæ”¾å¼ƒå»ºç«‹çš„è¿æ¥ï¼› 0ï¼šè¿æ¥å»ºç«‹æˆåŠŸ
 */
 int UnistorHandler4Recv::open (void * arg){
 	int ret = CwxAppHandler4Channel::open(arg);
@@ -105,8 +105,8 @@ int UnistorHandler4Recv::open (void * arg){
 }
 
 /**
-@brief Í¨ÖªÁ¬½Ó¹Ø±Õ¡£
-@return 1£º²»´ÓengineÖĞÒÆ³ı×¢²á£»0£º´ÓengineÖĞÒÆ³ı×¢²áµ«²»É¾³ıhandler£»-1£º´ÓengineÖĞ½«handleÒÆ³ı²¢É¾³ı¡£
+@brief é€šçŸ¥è¿æ¥å…³é—­ã€‚
+@return 1ï¼šä¸ä»engineä¸­ç§»é™¤æ³¨å†Œï¼›0ï¼šä»engineä¸­ç§»é™¤æ³¨å†Œä½†ä¸åˆ é™¤handlerï¼›-1ï¼šä»engineä¸­å°†handleç§»é™¤å¹¶åˆ é™¤ã€‚
 */
 int UnistorHandler4Recv::onConnClosed(){
 	((UnistorRecvThreadUserObj*)m_tss->getUserObj())->removeConn(m_uiConnId);
@@ -115,19 +115,19 @@ int UnistorHandler4Recv::onConnClosed(){
 }
 
 int UnistorHandler4Recv::onInput(){
-	///½ÓÊÜÏûÏ¢
+	///æ¥å—æ¶ˆæ¯
 	int ret = CwxAppHandler4Channel::recvPackage(getHandle(),
 		m_uiRecvHeadLen,
 		m_uiRecvDataLen,
 		m_szHeadBuf,
 		m_header,
 		m_recvMsgData);
-	///Èç¹ûÃ»ÓĞ½ÓÊÜÍê±Ï£¨0£©»òÊ§°Ü£¨-1£©£¬Ôò·µ»Ø
+	///å¦‚æœæ²¡æœ‰æ¥å—å®Œæ¯•ï¼ˆ0ï¼‰æˆ–å¤±è´¥ï¼ˆ-1ï¼‰ï¼Œåˆ™è¿”å›
 	if (1 != ret) return ret;
-	///½ÓÊÕµ½Ò»¸öÍêÕûµÄÊı¾İ°ü
-	///ÏûÏ¢´¦Àí
+	///æ¥æ”¶åˆ°ä¸€ä¸ªå®Œæ•´çš„æ•°æ®åŒ…
+	///æ¶ˆæ¯å¤„ç†
 	ret = recvMessage();
-	///Èç¹ûÃ»ÓĞÊÍ·Å½ÓÊÕµÄÊı¾İ°ü£¬ÊÍ·Å
+	///å¦‚æœæ²¡æœ‰é‡Šæ”¾æ¥æ”¶çš„æ•°æ®åŒ…ï¼Œé‡Šæ”¾
 	if (m_recvMsgData) CwxMsgBlockAlloc::free(m_recvMsgData);
 	this->m_recvMsgData = NULL;
 	this->m_uiRecvHeadLen = 0;
@@ -135,13 +135,13 @@ int UnistorHandler4Recv::onInput(){
 	return ret;
 }
 
-///0£º³É¹¦£»-1£ºÊ§°Ü
+///0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Recv::recvMessage()
 {
 	int ret = 0;
-    bool bUnpack=false; ///<ÊÇ·ñunpackÁËÏûÏ¢±¨
+    bool bUnpack=false; ///<æ˜¯å¦unpackäº†æ¶ˆæ¯æŠ¥
     do{
-        if (!m_recvMsgData){///Ò»¸ö¿Õ°ü
+        if (!m_recvMsgData){///ä¸€ä¸ªç©ºåŒ…
             ret = UNISTOR_ERR_ERROR;
             strcpy(m_tss->m_szBuf2K, "msg is empty.");
             break;
@@ -164,7 +164,7 @@ int UnistorHandler4Recv::recvMessage()
             (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_INC)||
             (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_IMPORT)||
             (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_DEL))
-        {///Èç¹ûÊÇĞ´ÇëÇó
+        {///å¦‚æœæ˜¯å†™è¯·æ±‚
             if (m_pApp->getRecvWriteHandler()->isCanWrite()){
                 if (m_pApp->getWriteTheadPool()->getQueuedMsgNum() > m_pApp->getConfig().getCommon().m_uiMaxWriteQueueNum){
                     ret = UNISTOR_ERR_TOO_MANY_WRITE;
@@ -180,7 +180,7 @@ int UnistorHandler4Recv::recvMessage()
                 }
                 if (UNISTOR_ERR_SUCCESS != (ret = relayWriteThread())) break;
                 return 0;
-            }else if (UnistorHandler4Trans::m_bCanTrans){///×ª·¢¸ømaster
+            }else if (UnistorHandler4Trans::m_bCanTrans){///è½¬å‘ç»™master
                 if (m_pApp->getTaskBoard().getTaskNum() > m_pApp->getConfig().getCommon().m_uiMaxMasterTranMsgNum){
                     ret = UNISTOR_ERR_TOO_MANY_TRANS;
                     CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Too many message for trans to master, max:%u", m_pApp->getConfig().getCommon().m_uiMaxMasterTranMsgNum);
@@ -196,8 +196,8 @@ int UnistorHandler4Recv::recvMessage()
             }
         }else{
             if (UnistorPoco::isFromMaster(m_header.getAttr())){
-                if (m_tss->isMasterIdc()){///ÊÇmaster idc
-                    if (!m_tss->isMaster()){///×Ô¼º²»ÊÇmaster
+                if (m_tss->isMasterIdc()){///æ˜¯master idc
+                    if (!m_tss->isMaster()){///è‡ªå·±ä¸æ˜¯master
                         if (UnistorHandler4Trans::m_bCanTrans){
                             relayTransThread(m_recvMsgData);
                             m_recvMsgData = NULL;
@@ -207,7 +207,7 @@ int UnistorHandler4Recv::recvMessage()
                         strcpy(m_tss->m_szBuf2K, "No master.");
                         break;
                     }
-                    ///Èô×Ô¼ºÊÇmaster£¬Ôò²éÑ¯Êı¾İ
+                    ///è‹¥è‡ªå·±æ˜¯masterï¼Œåˆ™æŸ¥è¯¢æ•°æ®
                 }else{
                     ret = UNISTOR_ERR_NO_MASTER;
                     strcpy(m_tss->m_szBuf2K, "No master.");
@@ -224,22 +224,22 @@ int UnistorHandler4Recv::recvMessage()
 
             if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GET){
                 ret =  getKv(m_tss);
-                if (UNISTOR_ERR_SUCCESS == ret) return 0;///ÒÑ¾­»Ø¸´
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///å·²ç»å›å¤
             }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_GETS){
                 ret = getKvs(m_tss);
-                if (UNISTOR_ERR_SUCCESS == ret) return 0;///ÒÑ¾­»Ø¸´
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///å·²ç»å›å¤
             }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_LIST){
                 ret = getList(m_tss);
-                if (UNISTOR_ERR_SUCCESS == ret) return 0;///ÒÑ¾­»Ø¸´
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///å·²ç»å›å¤
             }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_EXIST){
                 ret = existKv(m_tss);
-                if (UNISTOR_ERR_SUCCESS == ret) return 0;///ÒÑ¾­»Ø¸´
+                if (UNISTOR_ERR_SUCCESS == ret) return 0;///å·²ç»å›å¤
             }else if (m_header.getMsgType() == UnistorPoco::MSG_TYPE_RECV_AUTH){
                 ret = UNISTOR_ERR_SUCCESS;
             }else{
                 ret = UNISTOR_ERR_ERROR;
                 CwxCommon::snprintf(m_tss->m_szBuf2K, 2047, "Invalid msg type:%d", m_header.getMsgType());
-                return -1; ///ÎŞĞ§ÏûÏ¢ÀàĞÍ£¬Ö±½Ó¹Ø±ÕÁ¬½Ó
+                return -1; ///æ— æ•ˆæ¶ˆæ¯ç±»å‹ï¼Œç›´æ¥å…³é—­è¿æ¥
             }
         }
     }while(0);
@@ -251,7 +251,7 @@ int UnistorHandler4Recv::recvMessage()
         0,
         0,
         m_tss->m_szBuf2K);
-    if (!msg) return -1; ///¹Ø±ÕÁ¬½Ó
+    if (!msg) return -1; ///å…³é—­è¿æ¥
     return reply(msg, false);
 }
 
@@ -280,7 +280,7 @@ CwxMsgBlock* UnistorHandler4Recv::packReplyMsg(UnistorTss* tss,
     return msg;
 }
 
-///get kv..UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///get kv..UNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 bool UnistorHandler4Recv::checkAuth(UnistorTss* pTss){
     if (!m_bAuth){
         CwxKeyValueItemEx const* pItem = NULL;
@@ -311,21 +311,21 @@ bool UnistorHandler4Recv::checkAuth(UnistorTss* pTss){
     return true;
 }
 
-///0£º³É¹¦£»-1£ºÊ§°Ü
+///0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Recv::reply(CwxMsgBlock* msg, bool bCloseConn){
-	///·¢ËÍ»Ø¸´µÄÊı¾İ°ü
+	///å‘é€å›å¤çš„æ•°æ®åŒ…
 	msg->send_ctrl().setMsgAttr(bCloseConn?CwxMsgSendCtrl::CLOSE_NOTICE:CwxMsgSendCtrl::NONE);
 	if (!this->putMsg(msg))	{
 		CWX_ERROR(("Failure to send msg to reciever, conn[%u]", getHandle()));
 		CwxMsgBlockAlloc::free(msg);
 		return -1;
-		///¹Ø±ÕÁ¬½Ó
+		///å…³é—­è¿æ¥
 	}
 	return 0;
 }
 
 
-///exist kv..UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///exist kv..UNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4Recv::existKv(UnistorTss* pTss){
     CwxKeyValueItemEx const* key;
     CwxKeyValueItemEx const* field = NULL;
@@ -385,7 +385,7 @@ int UnistorHandler4Recv::existKv(UnistorTss* pTss){
     return ret;
 }
 
-///get kv..UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///get kv..UNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4Recv::getKv(UnistorTss* pTss){
 	CwxKeyValueItemEx const* key=NULL;
     CwxKeyValueItemEx const* field = NULL;
@@ -454,7 +454,7 @@ int UnistorHandler4Recv::getKv(UnistorTss* pTss){
 }
 
 
-///get kv..UNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///get kv..UNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4Recv::getKvs(UnistorTss* pTss){
     CwxKeyValueItemEx const* field = NULL;
     CwxKeyValueItemEx const* extra = NULL;
@@ -621,7 +621,7 @@ int UnistorHandler4Recv::getList(UnistorTss* pTss){
 	return UNISTOR_ERR_SUCCESS;
 }
 
-///½«ÏûÏ¢×ª·¢¸øwriteÏß³Ì
+///å°†æ¶ˆæ¯è½¬å‘ç»™writeçº¿ç¨‹
 int UnistorHandler4Recv::relayWriteThread(){
     int ret = UNISTOR_ERR_SUCCESS;
     CwxKeyValueItemEx const* key = NULL;
@@ -766,7 +766,7 @@ int UnistorHandler4Recv::relayWriteThread(){
     return UNISTOR_ERR_SUCCESS;
 }
 
-///½«ÏûÏ¢×ª·¢¸øtransferÏß³Ì
+///å°†æ¶ˆæ¯è½¬å‘ç»™transferçº¿ç¨‹
 void UnistorHandler4Recv::relayTransThread(CwxMsgBlock* msg){
     msg->event().setConnId(m_uiConnId);
     msg->event().setMsgHeader(m_header);

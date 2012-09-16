@@ -1,4 +1,4 @@
-#include "UnistorConfig.h"
+ï»¿#include "UnistorConfig.h"
 #include "UnistorPoco.h"
 #include "CwxFile.h"
 #include "CwxLogger.h"
@@ -9,7 +9,7 @@
 #include <linux/sockios.h>
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
-///»ñÈ¡Ö÷»úµÄËùÓĞÍø¿¨µÄIPÁĞ±í¡£0£º³É¹¦£»-1£ºÊ§°Ü
+///è·å–ä¸»æœºçš„æ‰€æœ‰ç½‘å¡çš„IPåˆ—è¡¨ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 static int getHostIpAddr(list<string>& ips){
     int s;
     struct ifconf conf;
@@ -121,7 +121,7 @@ int UnistorConfig::init(string const& strCnfFile){
         return -1;
     }
     m_common.m_strHost = value;
-    {//¼ì²âhost
+    {//æ£€æµ‹host
         list<string> ips;
         getHostIpAddr(ips);
         list<string>::iterator iter = ips.begin();

@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_MACRO_H__
+ï»¿#ifndef __UNISTOR_MACRO_H__
 #define __UNISTOR_MACRO_H__
 
 
@@ -10,221 +10,221 @@
 CWINUX_USING_NAMESPACE
 
 
-///Í¨ÐÅµÄkey¶¨Òå
-#define UNISTOR_KEY_ASC    "asc"   ///<ÉýÐò
-#define UNISTOR_KEY_BEGIN      "begin" ///<¿ªÊ¼ 
+///é€šä¿¡çš„keyå®šä¹‰
+#define UNISTOR_KEY_ASC    "asc"   ///<å‡åº
+#define UNISTOR_KEY_BEGIN      "begin" ///<å¼€å§‹ 
 #define UNISTOR_KEY_C       "c"  ///<cache
-#define UNISTOR_KEY_CHUNK "chunk"  ///<Êý¾Ý·¢ËÍµÄchunkµÄkey
-#define UNISTOR_KEY_CRC32  "crc32" ///<crc32Ç©Ãû
-#define UNISTOR_KEY_END    "end"   ///<½áÊøÖµµÄkey
-#define UNISTOR_KEY_ERR  "err"     ///errorµÄkey
-#define UNISTOR_KEY_E "e"          ///<expireµÄkey
-#define UNISTOR_KEY_D "d"           ///<Êý¾ÝµÄdataµÄkey
+#define UNISTOR_KEY_CHUNK "chunk"  ///<æ•°æ®å‘é€çš„chunkçš„key
+#define UNISTOR_KEY_CRC32  "crc32" ///<crc32ç­¾å
+#define UNISTOR_KEY_END    "end"   ///<ç»“æŸå€¼çš„key
+#define UNISTOR_KEY_ERR  "err"     ///errorçš„key
+#define UNISTOR_KEY_E "e"          ///<expireçš„key
+#define UNISTOR_KEY_D "d"           ///<æ•°æ®çš„dataçš„key
 #define UNISTOR_KEY_F  "f"          ///<field
 #define UNISTOR_KEY_FN "fn"         ///<field number
-#define UNISTOR_KEY_G   "g"         ///<group,ÎªkeyµÄ·Ö×é
+#define UNISTOR_KEY_G   "g"         ///<group,ä¸ºkeyçš„åˆ†ç»„
 #define UNISTOR_KEY_I "i"           ///<information
 #define UNISTOR_KEY_IB "ib"         ///<isbegin
-#define UNISTOR_KEY_K "k"           ///<Êý¾ÝµÄkeyµÄkey
-#define UNISTOR_KEY_M      "m"      ///<messageµÄkey
-#define UNISTOR_KEY_MD5    "md5"    ///<md5Ç©ÃûµÄkey
-#define UNISTOR_KEY_MAX    "max"    ///<×î´óÖµ
-#define UNISTOR_KEY_MIN    "min"    ///<×îÐ¡Öµ
+#define UNISTOR_KEY_K "k"           ///<æ•°æ®çš„keyçš„key
+#define UNISTOR_KEY_M      "m"      ///<messageçš„key
+#define UNISTOR_KEY_MD5    "md5"    ///<md5ç­¾åçš„key
+#define UNISTOR_KEY_MAX    "max"    ///<æœ€å¤§å€¼
+#define UNISTOR_KEY_MIN    "min"    ///<æœ€å°å€¼
 #define UNISTOR_KEY_N "n"           ///<number
 #define UNISTOR_KEY_P "p"            ///<password
-#define UNISTOR_KEY_R "r"            ///<incµÄresultÖµ£¬´ËÔÚincµÄsyncµÄÊ±ºò´æÔÚ
-#define UNISTOR_KEY_RET  "ret"       ///<·µ»ØÖµµÄret
-#define UNISTOR_KEY_SEQ   "seq"      ///<Êý¾ÝÍ¬²½µÄÏûÏ¢ÐòÁÐºÅ
-#define UNISTOR_KEY_SESSION "session" ///<Êý¾ÝÍ¬²½µÄsession
-#define UNISTOR_KEY_SID "sid"        ///<Êý¾Ý±ä¸üµÄsid
-#define UNISTOR_KEY_SIGN   "sign"    ///<Êý¾Ý¸üÐÂµÄsign
-#define UNISTOR_KEY_SUBSCRIBE  "subscribe" ///<¶©ÔÄµÄkey
+#define UNISTOR_KEY_R "r"            ///<incçš„resultå€¼ï¼Œæ­¤åœ¨incçš„syncçš„æ—¶å€™å­˜åœ¨
+#define UNISTOR_KEY_RET  "ret"       ///<è¿”å›žå€¼çš„ret
+#define UNISTOR_KEY_SEQ   "seq"      ///<æ•°æ®åŒæ­¥çš„æ¶ˆæ¯åºåˆ—å·
+#define UNISTOR_KEY_SESSION "session" ///<æ•°æ®åŒæ­¥çš„session
+#define UNISTOR_KEY_SID "sid"        ///<æ•°æ®å˜æ›´çš„sid
+#define UNISTOR_KEY_SIGN   "sign"    ///<æ•°æ®æ›´æ–°çš„sign
+#define UNISTOR_KEY_SUBSCRIBE  "subscribe" ///<è®¢é˜…çš„key
 #define UNISTOR_KEY_T "t"           ///<timestamp
-#define UNISTOR_KEY_TYPE   "type"   ///<binlogµÄÀàÐÍ£¬Ò²¾ÍÊÇÊý¾Ý¸üÐÂµÄÏûÏ¢ÀàÐÍ
+#define UNISTOR_KEY_TYPE   "type"   ///<binlogçš„ç±»åž‹ï¼Œä¹Ÿå°±æ˜¯æ•°æ®æ›´æ–°çš„æ¶ˆæ¯ç±»åž‹
 #define UNISTOR_KEY_U    "u"       ///<user
-#define UNISTOR_KEY_ZIP    "zip"  ///<Ñ¹Ëõ±êÊ¾
+#define UNISTOR_KEY_ZIP    "zip"  ///<åŽ‹ç¼©æ ‡ç¤º
 #define UNISTOR_KEY_V      "v"   ///<version key
-#define UNISTOR_KEY_X      "x"  ///<ÒýÇæÀ©Õ¹key
+#define UNISTOR_KEY_X      "x"  ///<å¼•æ“Žæ‰©å±•key
 
 
-#define UNISTOR_SYS_KEY_PID "pid"  ///<½ø³ÌID
-#define UNISTOR_SYS_KEY_PPID "ppid" ///<¸¸½ø³ÌID
-#define UNISTOR_SYS_KEY_VERSION "version"  ///<°æ±¾ºÅ
-#define UNISTOR_SYS_KEY_MODIFY  "modify" ///<´úÂëÐÞ¸ÄÊ±¼ä
-#define UNISTOR_SYS_KEY_COMPILE "compile" ///<´úÂë±àÒëÊ±¼ä
-#define UNISTOR_SYS_KEY_START   "start"   ///<·þÎñÆô¶¯Ê±¼ä
-#define UNISTOR_SYS_KEY_ENGINE  "engine"  ///<´æ´¢ÒýÇæÃû×Ö
-#define UNISTOR_SYS_KEY_ENGINE_VERSION "engine_version" ///<´æ´¢ÒýÇæµÄ°æ±¾
-#define UNISTOR_SYS_KEY_ENGINE_STATE   "engine_state" ///<´æ´¢ÒýÇæµÄ×´Ì¬
-#define UNISTOR_SYS_KEY_ENGINE_ERROR   "engine_error" ///<´æ´¢ÒýÇæµÄ´íÎóÐÅÏ¢
-#define UNISTOR_SYS_KEY_BINLOG_STATE   "binlog_state" ///<binlogµÄ×´Ì¬
-#define UNISTOR_SYS_KEY_BINLOG_ERROR   "binlog_error" ///<binlogµÄ´íÎóÐÅÏ¢
-#define UNISTOR_SYS_KEY_BINLOG_MIN_SID       "binlog_min_sid"   ///<binlogµÄ×îÐ¡µÄsidÖµ
-#define UNISTOR_SYS_KEY_BINLOG_MIN_TIMESTAMP "binlog_min_timestamp" ///<binlogµÄ×îÐ¡Ê±¼ä´Á
-#define UNISTOR_SYS_KEY_BINLOG_MIN_FILE     "binlog_min_file" ///<binlogµÄ×îÐ¡ÎÄ¼þ
-#define UNISTOR_SYS_KEY_BINLOG_MAX_SID  "binlog_max_sid" ///binlogµÄ×î´ósid
-#define UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP "binlog_max_timestamp" ///<binlogµÄ×î´óÊ±¼ä´Á
-#define UNISTOR_SYS_KEY_BINLOG_MAX_FILE "binlog_max_file" ///<binlogµÄ×î´óÎÄ¼þ
-#define UNISTOR_SYS_KEY_READ_THREAD_NUM  "read_thread_num" ///<¶ÁÏß³ÌµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE "read_thread_queue" ///<Ïß³ÌµÄ¶ÓÁÐµÄÏûÏ¢ÊýÁ¿
-#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT "read_thread_connect" ///<¶ÁÏß³ÌµÄÁ´½ÓÊýÁ¿
-#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX "read_thread_queue_" ///<Ïß³ÌµÄ¶ÓÁÐÇ°×º
-#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX "read_thread_connect_" ///<¶ÁÏß³ÌµÄÁ´½ÓÇ°×º
-#define UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE "write_thread_queue" ///<Ð´Ïß³ÌµÄ¶ÓÁÐ
-#define UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE "trans_thread_queue" ///<×ª·¢Ïß³Ì¶ÓÁÐ
-#define UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE "checkpoint_thread_queue" ///<checkpointÏß³ÌµÄ¶ÓÁÐ
-#define UNISTOR_SYS_KEY_ZK_THREAD_QUEUE  "zk_thread_queue" ///<zookeeperÏß³ÌµÄ¶ÓÁÐ
-#define UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE "inner_sync_thread_queue" ///<ÄÚ²¿Í¬²½µÄÏß³Ì¶ÓÁÐ
-#define UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE "outer_sync_thread_queue" ///<Íâ²¿Í¬²½µÄÏß³Ì¶ÓÁÐ
-#define UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM           "master_trans_msg_num" ///<µ±Ç°×ª·¢ÏûÏ¢µÄÊýÁ¿
-#define UNISTOR_SYS_KEY_ZK_STATE "zk_state"  ///<zookeeperµÄÁ¬½Ó×´Ì¬
-#define UNISTOR_SYS_KEY_ZK_ERROR "zk_error"  ///<zookeeperµÄ´íÎóÐÅÏ¢
-#define UNISTOR_SYS_KEY_CACHE_STATE "cache_state" ///<cacheµÄ×´Ì¬
-#define UNISTOR_SYS_KEY_CACHE_ERR   "cache_error" ///<cacheµÄ´íÎóÏûÏ¢
-#define UNISTOR_SYS_KEY_WRITE_CACHE_KEY "write_cache_key" ///<Ð´cacheÖÐkeyµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_WRITE_CACHE_SPACE "write_cache_space" ///<Ð´cacheµÄÊý¾Ý´óÐ¡
-#define UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE "read_cache_max_size" ///<¶ÁcacheµÄ×î´ó´óÐ¡
-#define UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY  "read_cache_max_key" ///<¶ÁcacheµÄ×î´ókeyµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE    "read_cache_used_size" ///<¶ÁcacheÕ¼ÓÃµÄ¿Õ¼ä´óÐ¡
-#define UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY "read_cache_used_capacity" ///<¶ÁcacheÕ¼ÓÃµÄÊý¾ÝµÄÈÝÁ¿
-#define UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE "read_cache_used_data_size" ///<¶ÁcacheµÄÊµ¼ÊÊý¾Ý´óÐ¡
-#define UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE      "read_cache_free_size" ///<¶Ácache¿ÕÏÐµÄ¿Õ¼ä´óÐ¡
-#define UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY  "read_cache_free_capacity" ///<¶Ácache¿ÕÏÐµÄÈÝÁ¿
-#define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cacheµÄkeyµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_GET_NUM                   "get_num" ///<getµÄ·ÃÎÊÊýÁ¿
-#define UNISTOR_SYS_KEY_GET_READ_CACHE_NUM        "get_read_cache_num" ///<read cacheµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_GET_EXIST_NUM             "get_exist_num" ///<´æÔÚµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_GETS_NUM                  "gets_num" ///<getsµÄ·ÃÎÊÊýÁ¿
-#define UNISTOR_SYS_KEY_GETS_KEY_NUM              "gets_key_num" ///<getsµÄkeyµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM   "gets_key_read_cache_num" ///<gets µÄkeyÊ¹ÓÃcacheµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM        "gets_key_exist_num" ///<getsµÄkey´æÔÚµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_LIST_NUM                  "list_num" ///<list·ÃÎÊµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_EXIST_NUM                 "exist_num" ///<existµÄ·ÃÎÊÊýÁ¿
-#define UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM      "exist_read_cache_num" ///<existµÄread cacheµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_EXIST_EXIST_NUM           "exist_exist_num" ///<existµÄ´æÔÚÊýÁ¿
-#define UNISTOR_SYS_KEY_ADD_NUM                   "add_num" ///<addµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM        "add_read_cache_num"//<addµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM       "add_write_cache_num" ///<addµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_SET_NUM                   "set_num" ///<setµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_SET_READ_CACHE_NUM        "set_read_cache_num"//<setµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM       "set_write_cache_num" ///<setµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_UPDATE_NUM                "update_num" ///<updateµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM     "update_read_cache_num"//<updateµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM    "update_write_cache_num" ///<updateµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_INC_NUM                   "inc_num" ///<incµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_INC_READ_CACHE_NUM        "inc_read_cache_num"//<incµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM       "inc_write_cache_num" ///<incµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_DEL_NUM                   "del_num" ///<delµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM        "del_read_cache_num"//<delµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM       "del_write_cache_num" ///<delµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_IMPORT_NUM                "import_num" ///<delµÄÊýÁ¿
-#define UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM     "import_read_cache_num"//<delµÄread cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM    "import_write_cache_num" ///<delµÄwrite cacheÊýÁ¿
-#define UNISTOR_SYS_KEY_ENGINE_INFO               "engine_info"   ///<engineµÄËµÃ÷ÐÅÏ¢
-#define UNISTOR_SYS_KEY_ENGINE_SYS_KEY            "engine_sys_key" ///<engineµÄÏµÍ³key
+#define UNISTOR_SYS_KEY_PID "pid"  ///<è¿›ç¨‹ID
+#define UNISTOR_SYS_KEY_PPID "ppid" ///<çˆ¶è¿›ç¨‹ID
+#define UNISTOR_SYS_KEY_VERSION "version"  ///<ç‰ˆæœ¬å·
+#define UNISTOR_SYS_KEY_MODIFY  "modify" ///<ä»£ç ä¿®æ”¹æ—¶é—´
+#define UNISTOR_SYS_KEY_COMPILE "compile" ///<ä»£ç ç¼–è¯‘æ—¶é—´
+#define UNISTOR_SYS_KEY_START   "start"   ///<æœåŠ¡å¯åŠ¨æ—¶é—´
+#define UNISTOR_SYS_KEY_ENGINE  "engine"  ///<å­˜å‚¨å¼•æ“Žåå­—
+#define UNISTOR_SYS_KEY_ENGINE_VERSION "engine_version" ///<å­˜å‚¨å¼•æ“Žçš„ç‰ˆæœ¬
+#define UNISTOR_SYS_KEY_ENGINE_STATE   "engine_state" ///<å­˜å‚¨å¼•æ“Žçš„çŠ¶æ€
+#define UNISTOR_SYS_KEY_ENGINE_ERROR   "engine_error" ///<å­˜å‚¨å¼•æ“Žçš„é”™è¯¯ä¿¡æ¯
+#define UNISTOR_SYS_KEY_BINLOG_STATE   "binlog_state" ///<binlogçš„çŠ¶æ€
+#define UNISTOR_SYS_KEY_BINLOG_ERROR   "binlog_error" ///<binlogçš„é”™è¯¯ä¿¡æ¯
+#define UNISTOR_SYS_KEY_BINLOG_MIN_SID       "binlog_min_sid"   ///<binlogçš„æœ€å°çš„sidå€¼
+#define UNISTOR_SYS_KEY_BINLOG_MIN_TIMESTAMP "binlog_min_timestamp" ///<binlogçš„æœ€å°æ—¶é—´æˆ³
+#define UNISTOR_SYS_KEY_BINLOG_MIN_FILE     "binlog_min_file" ///<binlogçš„æœ€å°æ–‡ä»¶
+#define UNISTOR_SYS_KEY_BINLOG_MAX_SID  "binlog_max_sid" ///binlogçš„æœ€å¤§sid
+#define UNISTOR_SYS_KEY_BINLOG_MAX_TIMESTAMP "binlog_max_timestamp" ///<binlogçš„æœ€å¤§æ—¶é—´æˆ³
+#define UNISTOR_SYS_KEY_BINLOG_MAX_FILE "binlog_max_file" ///<binlogçš„æœ€å¤§æ–‡ä»¶
+#define UNISTOR_SYS_KEY_READ_THREAD_NUM  "read_thread_num" ///<è¯»çº¿ç¨‹çš„æ•°é‡
+#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE "read_thread_queue" ///<çº¿ç¨‹çš„é˜Ÿåˆ—çš„æ¶ˆæ¯æ•°é‡
+#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT "read_thread_connect" ///<è¯»çº¿ç¨‹çš„é“¾æŽ¥æ•°é‡
+#define UNISTOR_SYS_KEY_READ_THREAD_QUEUE_PREX "read_thread_queue_" ///<çº¿ç¨‹çš„é˜Ÿåˆ—å‰ç¼€
+#define UNISTOR_SYS_KEY_READ_THREAD_CONNECT_PREX "read_thread_connect_" ///<è¯»çº¿ç¨‹çš„é“¾æŽ¥å‰ç¼€
+#define UNISTOR_SYS_KEY_WRITE_THREAD_QUEUE "write_thread_queue" ///<å†™çº¿ç¨‹çš„é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_TRANS_THREAD_QUEUE "trans_thread_queue" ///<è½¬å‘çº¿ç¨‹é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_CHECKPOINT_THREAD_QUEUE "checkpoint_thread_queue" ///<checkpointçº¿ç¨‹çš„é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_ZK_THREAD_QUEUE  "zk_thread_queue" ///<zookeeperçº¿ç¨‹çš„é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_INNER_SYNC_THREAD_QUEUE "inner_sync_thread_queue" ///<å†…éƒ¨åŒæ­¥çš„çº¿ç¨‹é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_OUTER_SYNC_THREAD_QUEUE "outer_sync_thread_queue" ///<å¤–éƒ¨åŒæ­¥çš„çº¿ç¨‹é˜Ÿåˆ—
+#define UNISTOR_SYS_KEY_MASTER_TRANS_MSG_NUM           "master_trans_msg_num" ///<å½“å‰è½¬å‘æ¶ˆæ¯çš„æ•°é‡
+#define UNISTOR_SYS_KEY_ZK_STATE "zk_state"  ///<zookeeperçš„è¿žæŽ¥çŠ¶æ€
+#define UNISTOR_SYS_KEY_ZK_ERROR "zk_error"  ///<zookeeperçš„é”™è¯¯ä¿¡æ¯
+#define UNISTOR_SYS_KEY_CACHE_STATE "cache_state" ///<cacheçš„çŠ¶æ€
+#define UNISTOR_SYS_KEY_CACHE_ERR   "cache_error" ///<cacheçš„é”™è¯¯æ¶ˆæ¯
+#define UNISTOR_SYS_KEY_WRITE_CACHE_KEY "write_cache_key" ///<å†™cacheä¸­keyçš„æ•°é‡
+#define UNISTOR_SYS_KEY_WRITE_CACHE_SPACE "write_cache_space" ///<å†™cacheçš„æ•°æ®å¤§å°
+#define UNISTOR_SYS_KEY_READ_CACHE_MAX_SIZE "read_cache_max_size" ///<è¯»cacheçš„æœ€å¤§å¤§å°
+#define UNISTOR_SYS_KEY_READ_CACHE_MAX_KEY  "read_cache_max_key" ///<è¯»cacheçš„æœ€å¤§keyçš„æ•°é‡
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_SIZE    "read_cache_used_size" ///<è¯»cacheå ç”¨çš„ç©ºé—´å¤§å°
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_CAPACITY "read_cache_used_capacity" ///<è¯»cacheå ç”¨çš„æ•°æ®çš„å®¹é‡
+#define UNISTOR_SYS_KEY_READ_CACHE_USED_DATA_SIZE "read_cache_used_data_size" ///<è¯»cacheçš„å®žé™…æ•°æ®å¤§å°
+#define UNISTOR_SYS_KEY_READ_CACHE_FREE_SIZE      "read_cache_free_size" ///<è¯»cacheç©ºé—²çš„ç©ºé—´å¤§å°
+#define UNISTOR_SYS_KEY_READ_CACHE_FREE_CAPACITY  "read_cache_free_capacity" ///<è¯»cacheç©ºé—²çš„å®¹é‡
+#define UNISTOR_SYS_KEY_READ_CACHE_KEY       "read_cache_key" ///<cacheçš„keyçš„æ•°é‡
+#define UNISTOR_SYS_KEY_GET_NUM                   "get_num" ///<getçš„è®¿é—®æ•°é‡
+#define UNISTOR_SYS_KEY_GET_READ_CACHE_NUM        "get_read_cache_num" ///<read cacheçš„æ•°é‡
+#define UNISTOR_SYS_KEY_GET_EXIST_NUM             "get_exist_num" ///<å­˜åœ¨çš„æ•°é‡
+#define UNISTOR_SYS_KEY_GETS_NUM                  "gets_num" ///<getsçš„è®¿é—®æ•°é‡
+#define UNISTOR_SYS_KEY_GETS_KEY_NUM              "gets_key_num" ///<getsçš„keyçš„æ•°é‡
+#define UNISTOR_SYS_KEY_GETS_KEY_READ_CACHE_NUM   "gets_key_read_cache_num" ///<gets çš„keyä½¿ç”¨cacheçš„æ•°é‡
+#define UNISTOR_SYS_KEY_GETS_KEY_EXIST_NUM        "gets_key_exist_num" ///<getsçš„keyå­˜åœ¨çš„æ•°é‡
+#define UNISTOR_SYS_KEY_LIST_NUM                  "list_num" ///<listè®¿é—®çš„æ•°é‡
+#define UNISTOR_SYS_KEY_EXIST_NUM                 "exist_num" ///<existçš„è®¿é—®æ•°é‡
+#define UNISTOR_SYS_KEY_EXIST_READ_CACHE_NUM      "exist_read_cache_num" ///<existçš„read cacheçš„æ•°é‡
+#define UNISTOR_SYS_KEY_EXIST_EXIST_NUM           "exist_exist_num" ///<existçš„å­˜åœ¨æ•°é‡
+#define UNISTOR_SYS_KEY_ADD_NUM                   "add_num" ///<addçš„æ•°é‡
+#define UNISTOR_SYS_KEY_ADD_READ_CACHE_NUM        "add_read_cache_num"//<addçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_ADD_WRITE_CACHE_NUM       "add_write_cache_num" ///<addçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_SET_NUM                   "set_num" ///<setçš„æ•°é‡
+#define UNISTOR_SYS_KEY_SET_READ_CACHE_NUM        "set_read_cache_num"//<setçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_SET_WRITE_CACHE_NUM       "set_write_cache_num" ///<setçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_UPDATE_NUM                "update_num" ///<updateçš„æ•°é‡
+#define UNISTOR_SYS_KEY_UPDATE_READ_CACHE_NUM     "update_read_cache_num"//<updateçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_UPDATE_WRITE_CACHE_NUM    "update_write_cache_num" ///<updateçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_INC_NUM                   "inc_num" ///<incçš„æ•°é‡
+#define UNISTOR_SYS_KEY_INC_READ_CACHE_NUM        "inc_read_cache_num"//<incçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_INC_WRITE_CACHE_NUM       "inc_write_cache_num" ///<incçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_DEL_NUM                   "del_num" ///<delçš„æ•°é‡
+#define UNISTOR_SYS_KEY_DEL_READ_CACHE_NUM        "del_read_cache_num"//<delçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_DEL_WRITE_CACHE_NUM       "del_write_cache_num" ///<delçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_IMPORT_NUM                "import_num" ///<delçš„æ•°é‡
+#define UNISTOR_SYS_KEY_IMPORT_READ_CACHE_NUM     "import_read_cache_num"//<delçš„read cacheæ•°é‡
+#define UNISTOR_SYS_KEY_IMPORT_WRITE_CACHE_NUM    "import_write_cache_num" ///<delçš„write cacheæ•°é‡
+#define UNISTOR_SYS_KEY_ENGINE_INFO               "engine_info"   ///<engineçš„è¯´æ˜Žä¿¡æ¯
+#define UNISTOR_SYS_KEY_ENGINE_SYS_KEY            "engine_sys_key" ///<engineçš„ç³»ç»Ÿkey
 
-///Çý¶¯µÄ¶ÔÏó´´½¨symbol name
+///é©±åŠ¨çš„å¯¹è±¡åˆ›å»ºsymbol name
 #define UNISTOR_ENGINE_CREATE_SYMBOL_NAME  "unistor_create_engine"
 
-///´íÎó´úÂë¶¨Òå£¬0~100ÊÇÏµÍ³¼¶µÄ´íÎó
-#define UNISTOR_ERR_SUCCESS          0  ///<³É¹¦
-#define UNISTOR_ERR_ERROR            1 ///<ÎÞÐèÇø·ÖµÄÁýÍ³´íÎó
-#define UNISTOR_ERR_FAIL_AUTH        2 ///<¼øÈ¨Ê§°Ü
-#define UNISTOR_ERR_LOST_SYNC        3 ///<Ê§È¥ÁËÍ¬²½×´Ì¬
-#define UNISTOR_ERR_NO_MASTER        4 ///<Ã»ÓÐmaster
-#define UNISTOR_ERR_TOO_MANY_WRITE   5 ///<Ì«¶àµÄÐ´
-#define UNISTOR_ERR_TOO_MANY_TRANS   6 ///<Ì«¶àµÄ×ª·¢ÏûÏ¢
-//100ÒÔÉÏÊÇÓ¦ÓÃ¼°µÄ´íÎó
-#define UNISTOR_ERR_NEXIST            101   ///<²»´æÔÚ
-#define UNISTOR_ERR_EXIST             102   ///<´æÔÚ
-#define UNISTOR_ERR_VERSION           103   ///<°æ±¾´íÎó
-#define UNISTOR_ERR_OUTRANGE          104   ///<inc³¬³ö·¶Î§
-#define UNISTOR_ERR_TIMEOUT           105   ///<³¬Ê±
+///é”™è¯¯ä»£ç å®šä¹‰ï¼Œ0~100æ˜¯ç³»ç»Ÿçº§çš„é”™è¯¯
+#define UNISTOR_ERR_SUCCESS          0  ///<æˆåŠŸ
+#define UNISTOR_ERR_ERROR            1 ///<æ— éœ€åŒºåˆ†çš„ç¬¼ç»Ÿé”™è¯¯
+#define UNISTOR_ERR_FAIL_AUTH        2 ///<é‰´æƒå¤±è´¥
+#define UNISTOR_ERR_LOST_SYNC        3 ///<å¤±åŽ»äº†åŒæ­¥çŠ¶æ€
+#define UNISTOR_ERR_NO_MASTER        4 ///<æ²¡æœ‰master
+#define UNISTOR_ERR_TOO_MANY_WRITE   5 ///<å¤ªå¤šçš„å†™
+#define UNISTOR_ERR_TOO_MANY_TRANS   6 ///<å¤ªå¤šçš„è½¬å‘æ¶ˆæ¯
+//100ä»¥ä¸Šæ˜¯åº”ç”¨åŠçš„é”™è¯¯
+#define UNISTOR_ERR_NEXIST            101   ///<ä¸å­˜åœ¨
+#define UNISTOR_ERR_EXIST             102   ///<å­˜åœ¨
+#define UNISTOR_ERR_VERSION           103   ///<ç‰ˆæœ¬é”™è¯¯
+#define UNISTOR_ERR_OUTRANGE          104   ///<incè¶…å‡ºèŒƒå›´
+#define UNISTOR_ERR_TIMEOUT           105   ///<è¶…æ—¶
 
 
-#define UNISTOR_TRANS_TIMEOUT_SECOND   5  ///<Êý¾Ý×ª·¢³¬Ê±
-#define UNISTOR_CONN_TIMEOUT_SECOND    3  ///<Á¬½Ó³¬Ê±
+#define UNISTOR_TRANS_TIMEOUT_SECOND   5  ///<æ•°æ®è½¬å‘è¶…æ—¶
+#define UNISTOR_CONN_TIMEOUT_SECOND    3  ///<è¿žæŽ¥è¶…æ—¶
 
-#define UNISTOR_CLOCK_INTERANL_SECOND  1  ///<Ê±ÖÓ¼ä¸ô
-#define UNISTOR_CHECK_ZK_LOCK_EXPIRE   10  ///<¼ì²âzkËø×´¿ö³¬Ê±
+#define UNISTOR_CLOCK_INTERANL_SECOND  1  ///<æ—¶é’Ÿé—´éš”
+#define UNISTOR_CHECK_ZK_LOCK_EXPIRE   10  ///<æ£€æµ‹zké”çŠ¶å†µè¶…æ—¶
 
-#define UNISTOR_MAX_DATA_SIZE              2 * 1024 * 1024 ///<×î´óµÄDATA´óÐ¡
-#define UNISTOR_MAX_KEY_SIZE               1024            ///<×î´óµÄkeyµÄ´óÐ¡
-#define UNISTOR_MAX_KV_SIZE				  (2 * 1024 * 1024 +  8 * 1024) ///<×î´óµÄdata size
-#define UNISTOR_DEF_KV_SIZE                (64 * 1024) ///<È±Ê¡µÄ´æ´¢´óÐ¡
-#define UNISTOR_MAX_KVS_SIZE              (20 * 1024 * 1024) ///<×î´ó·µ»ØÊý¾Ý°ü´óÐ¡Îª20M
-#define UNISTOR_MAX_CHUNK_KSIZE         (20 * 1024) ///<×î´óµÄchunk size
+#define UNISTOR_MAX_DATA_SIZE              2 * 1024 * 1024 ///<æœ€å¤§çš„DATAå¤§å°
+#define UNISTOR_MAX_KEY_SIZE               1024            ///<æœ€å¤§çš„keyçš„å¤§å°
+#define UNISTOR_MAX_KV_SIZE				  (2 * 1024 * 1024 +  8 * 1024) ///<æœ€å¤§çš„data size
+#define UNISTOR_DEF_KV_SIZE                (64 * 1024) ///<ç¼ºçœçš„å­˜å‚¨å¤§å°
+#define UNISTOR_MAX_KVS_SIZE              (20 * 1024 * 1024) ///<æœ€å¤§è¿”å›žæ•°æ®åŒ…å¤§å°ä¸º20M
+#define UNISTOR_MAX_CHUNK_KSIZE         (20 * 1024) ///<æœ€å¤§çš„chunk size
 #define UNISTOR_ZIP_EXTRA_BUF           128
-#define UNISTOR_DEF_LIST_NUM             50    ///<listµÄÈ±Ê¡ÊýÁ¿
-#define UNISTOR_MAX_LIST_NUM             1000   ///<listµÄ×î´óÊýÁ¿
-#define UNISTOR_MAX_BINLOG_FLUSH_COUNT  10000 ///<·þÎñÆô¶¯Ê±£¬×î´óµÄskip sidÊýÁ¿
-#define UNISTOR_KEY_START_VERION        1 ///<keyµÄÆðÊ¼°æ±¾ºÅ
-#define UNISTOR_MAX_GETS_KEY_NUM        1024 ///<×î´óµÄmgetµÄkeyµÄÊýÁ¿
+#define UNISTOR_DEF_LIST_NUM             50    ///<listçš„ç¼ºçœæ•°é‡
+#define UNISTOR_MAX_LIST_NUM             1000   ///<listçš„æœ€å¤§æ•°é‡
+#define UNISTOR_MAX_BINLOG_FLUSH_COUNT  10000 ///<æœåŠ¡å¯åŠ¨æ—¶ï¼Œæœ€å¤§çš„skip sidæ•°é‡
+#define UNISTOR_KEY_START_VERION        1 ///<keyçš„èµ·å§‹ç‰ˆæœ¬å·
+#define UNISTOR_MAX_GETS_KEY_NUM        1024 ///<æœ€å¤§çš„mgetçš„keyçš„æ•°é‡
 
-#define  UNISTOR_WRITE_CACHE_MBYTE          128  ///<128MµÄÐ´cache
-#define  UNISTOR_WRITE_CACHE_KEY_NUM        10000 ///<cacheµÄ×î´ó¼ÇÂ¼Êý
+#define  UNISTOR_WRITE_CACHE_MBYTE          128  ///<128Mçš„å†™cache
+#define  UNISTOR_WRITE_CACHE_KEY_NUM        10000 ///<cacheçš„æœ€å¤§è®°å½•æ•°
 
-#define  UNISTOR_DEF_SOCK_BUF_KB  64   ///<È±Ê¡µÄsocket buf£¬µ¥Î»ÎªKB
-#define  UNISTOR_MIN_SOCK_BUF_KB  4    ///<×îÐ¡µÄsocket buf£¬µ¥Î»ÎªKB
-#define  UNISTOR_MAX_SOCK_BUF_KB  (8 * 1024) ///<×î´óµÄsocket buf£¬µ¥Î»ÎªKB
-#define  UNISTOR_DEF_CHUNK_SIZE_KB 64   ///<È±Ê¡µÄchunk´óÐ¡£¬µ¥Î»ÎªKB
-#define  UNISTOR_MIN_CHUNK_SIZE_KB  4   ///<×îÐ¡µÄchunk´óÐ¡£¬µ¥Î»ÎªKB
-#define  UNISTOR_MAX_CHUNK_SIZE_KB  UNISTOR_MAX_CHUNK_KSIZE ///<×î´óµÄchunk´óÐ¡£¬µ¥Î»ÎªKB
-#define  UNISTOR_DEF_WRITE_CACHE_FLUSH_NUM  1000  ///<unistor´æ´¢´¥·¢flushµÄÈ±Ê¡Êý¾Ý±ä¸üÊýÁ¿
-#define  UNISTOR_MIN_WRITE_CACHE_FLUSH_NUM  1     ///<unistor´æ´¢´¥·¢flushµÄ×îÐ¡Êý¾Ý±ä¸üÊýÁ¿
-#define  UNISTOR_MAX_WRITE_CACHE_FLUSH_NUM  500000 ///<unistor´æ´¢´¥·¢flushµÄ×î´óÊý¾Ý±ä¸üÊýÁ¿
-#define  UNISTOR_DEF_WRITE_CACHE_FLUSH_SECOND  60  ///<unistor´æ´¢´¥·¢flushµÄÈ±Ê¡Ê±¼ä
-#define  UNISTOR_MIN_WRITE_CACHE_FLUSH_SECOND  1     ///<unistor´æ´¢´¥·¢flushµÄ×îÐ¡Ê±¼ä
-#define  UNISTOR_MAX_WRITE_CACHE_FLUSH_SECOND  1800  ///<unistor´æ´¢´¥·¢flushµÄ×î´óÊ±¼ä
+#define  UNISTOR_DEF_SOCK_BUF_KB  64   ///<ç¼ºçœçš„socket bufï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_MIN_SOCK_BUF_KB  4    ///<æœ€å°çš„socket bufï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_MAX_SOCK_BUF_KB  (8 * 1024) ///<æœ€å¤§çš„socket bufï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_DEF_CHUNK_SIZE_KB 64   ///<ç¼ºçœçš„chunkå¤§å°ï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_MIN_CHUNK_SIZE_KB  4   ///<æœ€å°çš„chunkå¤§å°ï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_MAX_CHUNK_SIZE_KB  UNISTOR_MAX_CHUNK_KSIZE ///<æœ€å¤§çš„chunkå¤§å°ï¼Œå•ä½ä¸ºKB
+#define  UNISTOR_DEF_WRITE_CACHE_FLUSH_NUM  1000  ///<unistorå­˜å‚¨è§¦å‘flushçš„ç¼ºçœæ•°æ®å˜æ›´æ•°é‡
+#define  UNISTOR_MIN_WRITE_CACHE_FLUSH_NUM  1     ///<unistorå­˜å‚¨è§¦å‘flushçš„æœ€å°æ•°æ®å˜æ›´æ•°é‡
+#define  UNISTOR_MAX_WRITE_CACHE_FLUSH_NUM  500000 ///<unistorå­˜å‚¨è§¦å‘flushçš„æœ€å¤§æ•°æ®å˜æ›´æ•°é‡
+#define  UNISTOR_DEF_WRITE_CACHE_FLUSH_SECOND  60  ///<unistorå­˜å‚¨è§¦å‘flushçš„ç¼ºçœæ—¶é—´
+#define  UNISTOR_MIN_WRITE_CACHE_FLUSH_SECOND  1     ///<unistorå­˜å‚¨è§¦å‘flushçš„æœ€å°æ—¶é—´
+#define  UNISTOR_MAX_WRITE_CACHE_FLUSH_SECOND  1800  ///<unistorå­˜å‚¨è§¦å‘flushçš„æœ€å¤§æ—¶é—´
 
-#define  UNISTOR_DEF_CONN_NUM  10            ///<Êý¾ÝÍ¬²½È±Ê¡µÄ²¢·¢Á¬½ÓÊýÁ¿
-#define  UNISTOR_MIN_CONN_NUM  1            ///<Êý¾ÝÍ¬²½×îÐ¡µÄ²¢·¢Á¬½ÓÊýÁ¿
-#define  UNISTOR_MAX_CONN_NUM  256          ///<Êý¾ÝÍ¬²½×î´óµÄ²¢·¢Á¬½ÓÊýÁ¿ 
-#define  UNISTOR_DEF_EXPIRE_CONNCURRENT 32  ///<³¬Ê±¼ì²éµÄÈ±Ê¡²¢·¢ÏûÏ¢ÊýÁ¿
-#define  UNISTOR_MIN_EXPIRE_CONNCURRENT 1   ///<³¬Ê±¼ì²éµÄ×îÐ¡²¢·¢ÏûÏ¢ÊýÁ¿
-#define  UNISTOR_MAX_EXPIRE_CONNCURRENT 256 ///<³¬Ê±¼ì²éµÄ×î´ó²¢·¢ÏûÏ¢ÊýÁ¿
-#define  UNISTOR_CHECKOUT_INTERNAL   5      ///<´æ´¢ÒýÇæµÄcheckpointµÄ¼ä¸ô
-#define  UNISTOR_PER_FETCH_EXPIRE_KEY_NUM 1024  ///<³¬Ê±¼ì²éµÄÒ»´Î»ñÈ¡keyµÄÊýÁ¿
-#define  UNISTOR_EXPORT_CONTINUE_SEEK_NUM  4096  ///<Êý¾Ýµ¼³öÒ»´Î±éÀúµÄkeyµÄÊýÁ¿
+#define  UNISTOR_DEF_CONN_NUM  10            ///<æ•°æ®åŒæ­¥ç¼ºçœçš„å¹¶å‘è¿žæŽ¥æ•°é‡
+#define  UNISTOR_MIN_CONN_NUM  1            ///<æ•°æ®åŒæ­¥æœ€å°çš„å¹¶å‘è¿žæŽ¥æ•°é‡
+#define  UNISTOR_MAX_CONN_NUM  256          ///<æ•°æ®åŒæ­¥æœ€å¤§çš„å¹¶å‘è¿žæŽ¥æ•°é‡ 
+#define  UNISTOR_DEF_EXPIRE_CONNCURRENT 32  ///<è¶…æ—¶æ£€æŸ¥çš„ç¼ºçœå¹¶å‘æ¶ˆæ¯æ•°é‡
+#define  UNISTOR_MIN_EXPIRE_CONNCURRENT 1   ///<è¶…æ—¶æ£€æŸ¥çš„æœ€å°å¹¶å‘æ¶ˆæ¯æ•°é‡
+#define  UNISTOR_MAX_EXPIRE_CONNCURRENT 256 ///<è¶…æ—¶æ£€æŸ¥çš„æœ€å¤§å¹¶å‘æ¶ˆæ¯æ•°é‡
+#define  UNISTOR_CHECKOUT_INTERNAL   5      ///<å­˜å‚¨å¼•æ“Žçš„checkpointçš„é—´éš”
+#define  UNISTOR_PER_FETCH_EXPIRE_KEY_NUM 1024  ///<è¶…æ—¶æ£€æŸ¥çš„ä¸€æ¬¡èŽ·å–keyçš„æ•°é‡
+#define  UNISTOR_EXPORT_CONTINUE_SEEK_NUM  4096  ///<æ•°æ®å¯¼å‡ºä¸€æ¬¡éåŽ†çš„keyçš„æ•°é‡
 
-#define  UNISTOR_DEF_MAX_WRITE_QUEUE_MSG_NUM  50000 ///<Ð´¶ÓÁÐÈ±Ê¡×î´óÏûÏ¢µÄÊýÁ¿
-#define  UNISTOR_MIN_MAX_WRITE_QUEUE_MSG_NUM  5000  ///<Ð´¶ÓÁÐ×îÐ¡×î´óÏûÏ¢µÄÊýÁ¿
-#define  UNISTOR_MAX_MAX_WRITE_QUEUE_MSG_NUM  500000 ///<Ð´¶ÓÁÐ×î´óÈ±Ê¡ÏûÏ¢µÄÊýÁ¿
+#define  UNISTOR_DEF_MAX_WRITE_QUEUE_MSG_NUM  50000 ///<å†™é˜Ÿåˆ—ç¼ºçœæœ€å¤§æ¶ˆæ¯çš„æ•°é‡
+#define  UNISTOR_MIN_MAX_WRITE_QUEUE_MSG_NUM  5000  ///<å†™é˜Ÿåˆ—æœ€å°æœ€å¤§æ¶ˆæ¯çš„æ•°é‡
+#define  UNISTOR_MAX_MAX_WRITE_QUEUE_MSG_NUM  500000 ///<å†™é˜Ÿåˆ—æœ€å¤§ç¼ºçœæ¶ˆæ¯çš„æ•°é‡
 
-#define  UNISTOR_DEF_MAX_MASTER_TRAN_MSG_NUM  25000 ///<Ð´¶ÓÁÐÈ±Ê¡×î´óÏûÏ¢µÄÊýÁ¿
-#define  UNISTOR_MIN_MAX_MASTER_TRAN_MSG_NUM  25000  ///<Ð´¶ÓÁÐ×îÐ¡×î´óÏûÏ¢µÄÊýÁ¿
-#define  UNISTOR_MAX_MAX_MASTER_TRAN_MSG_NUM  250000 ///<Ð´¶ÓÁÐ×î´óÈ±Ê¡ÏûÏ¢µÄÊýÁ¿
-
-
-
-
-#define  UNISTOR_REPORT_TIMEOUT  30  ///<reportµÄ³¬Ê±Ê±¼ä
-#define  UNISTOR_TRAN_AUTH_TIMEOUT 30  ///<×ª·¢ÈÏÖ¤µÄ³¬Ê±Ê±¼ä
-
-#define  UNISTOR_MASTER_SWITCH_SID_INC  1000000  ///<unistor·¢ËÍmasterÇÐ»»£¬ÐÂmasterÌøÔ¾µÄsidµÄÖµ
+#define  UNISTOR_DEF_MAX_MASTER_TRAN_MSG_NUM  25000 ///<å†™é˜Ÿåˆ—ç¼ºçœæœ€å¤§æ¶ˆæ¯çš„æ•°é‡
+#define  UNISTOR_MIN_MAX_MASTER_TRAN_MSG_NUM  25000  ///<å†™é˜Ÿåˆ—æœ€å°æœ€å¤§æ¶ˆæ¯çš„æ•°é‡
+#define  UNISTOR_MAX_MAX_MASTER_TRAN_MSG_NUM  250000 ///<å†™é˜Ÿåˆ—æœ€å¤§ç¼ºçœæ¶ˆæ¯çš„æ•°é‡
 
 
 
-///»ñÈ¡ÏµÍ³ÐÅÏ¢µÄº¯Êý¡£-1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º»ñÈ¡³É¹¦
-typedef int (*UNISTOR_GET_SYS_INFO_FN)(void* pApp, ///<app¶ÔÏó
-                                      char const* key, ///<Òª»ñÈ¡µÄkey
-                                      CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-                                      char* szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊý¾Ý¡£ÄÚ´æÓÐ´æ´¢ÒýÇæ·ÖÅä
-                                      CWX_UINT32& uiLen  ///<szDataÊý¾ÝµÄ×Ö½ÚÊý
+
+#define  UNISTOR_REPORT_TIMEOUT  30  ///<reportçš„è¶…æ—¶æ—¶é—´
+#define  UNISTOR_TRAN_AUTH_TIMEOUT 30  ///<è½¬å‘è®¤è¯çš„è¶…æ—¶æ—¶é—´
+
+#define  UNISTOR_MASTER_SWITCH_SID_INC  1000000  ///<unistorå‘é€masteråˆ‡æ¢ï¼Œæ–°masterè·³è·ƒçš„sidçš„å€¼
+
+
+
+///èŽ·å–ç³»ç»Ÿä¿¡æ¯çš„å‡½æ•°ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šèŽ·å–æˆåŠŸ
+typedef int (*UNISTOR_GET_SYS_INFO_FN)(void* pApp, ///<appå¯¹è±¡
+                                      char const* key, ///<è¦èŽ·å–çš„key
+                                      CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+                                      char* szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›žæ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“Žåˆ†é…
+                                      CWX_UINT32& uiLen  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
                                       );
-///¿ªÊ¼Ð´µÄº¯Êý£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///å¼€å§‹å†™çš„å‡½æ•°ï¼Œè¿”å›žå€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 typedef int (*UNISTOR_WRITE_CACHE_WRITE_BEGIN_FN)(void* context, char* szErr2K);
-///Ð´Êý¾Ý£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///å†™æ•°æ®ï¼Œè¿”å›žå€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 typedef int (*UNISTOR_WRITE_CACHE_WRITE_WRITE_FN)(void* context, char const* szKey, CWX_UINT16 unKeyLen, char const* szData, CWX_UINT32 uiDataLen, bool bDel, CWX_UINT32 ttOldExpire, char* szStoreKeyBuf, CWX_UINT16 unKeyBufLen, char* szErr2K);
-///Ìá½»Êý¾Ý£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
+///æäº¤æ•°æ®ï¼Œè¿”å›žå€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
 typedef int (*UNISTOR_WRITE_CACHE_WRITE_END_FN)(void* context, CWX_UINT64 ullSid, void* userData, char* szErr2K);
-///keyµÄÏàµÈ±È½Ïº¯Êý¡£true£ºÏàµÈ£»false£º²»ÏàµÈ
+///keyçš„ç›¸ç­‰æ¯”è¾ƒå‡½æ•°ã€‚trueï¼šç›¸ç­‰ï¼›falseï¼šä¸ç›¸ç­‰
 typedef bool (*UNISTOR_KEY_CMP_EQUAL_FN)(char const* key1, CWX_UINT16 unKey1Len, char const* key2, CWX_UINT16 unKey2Len);
-///keyµÄless±È½Ïº¯Êý¡£0£ºÏàµÈ£»-1£ºÐ¡ÓÚ£»1£º´óÓÚ
+///keyçš„lessæ¯”è¾ƒå‡½æ•°ã€‚0ï¼šç›¸ç­‰ï¼›-1ï¼šå°äºŽï¼›1ï¼šå¤§äºŽ
 typedef int (*UNISTOR_KEY_CMP_LESS_FN)(char const* key1, CWX_UINT16 unKey1Len, char const* key2, CWX_UINT16 unKey2Len);
-///keyµÄhashº¯Êý¡£
+///keyçš„hashå‡½æ•°ã€‚
 typedef size_t (*UNISTOR_KEY_HASH_FN)(char const* key1, CWX_UINT16 unKey1Len);
-///keyµÄgroupº¯Êý¡£
+///keyçš„groupå‡½æ•°ã€‚
 typedef CWX_UINT32 (*UNISTOR_KEY_GROUP_FN)(char const* key1, CWX_UINT16 unKey1Len);
 
 #endif

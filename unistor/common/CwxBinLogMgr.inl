@@ -1,4 +1,4 @@
-
+ï»¿
 /***********************************************************************
                     CwxBinLogHeader  class
 ***********************************************************************/
@@ -50,12 +50,12 @@ inline CWX_UINT64 CwxBinLogHeader::getSid() const
     return m_ullSid;
 }
 
-///ÉèÖÃ¼ÇÂ¼ºÅ
+///è®¾ç½®è®°å½•å·
 inline void CwxBinLogHeader::setLogNo(CWX_UINT32 uiLogNo)
 {
 	m_uiLogNo = uiLogNo;
 }
-///»ñÈ¡¼ÇÂ¼ºÅ
+///è·å–è®°å½•å·
 inline CWX_UINT32 CwxBinLogHeader::getLogNo() const
 {
 	return m_uiLogNo;
@@ -101,13 +101,13 @@ inline CWX_UINT32 CwxBinLogHeader::getPrevOffset() const
     return m_uiPrevOffset;
 }
 
-///ÉèÖÃbinlogµÄ·Ö×é
+///è®¾ç½®binlogçš„åˆ†ç»„
 inline void CwxBinLogHeader::setGroup(CWX_UINT32 uiGroup)
 {
     m_uiGroup = uiGroup;
 }
 
-///»ñÈ¡binlogµÄ·Ö×é
+///è·å–binlogçš„åˆ†ç»„
 inline CWX_UINT32 CwxBinLogHeader::getGroup() const
 {
     return m_uiGroup;
@@ -170,7 +170,7 @@ inline CWX_UINT32 CwxBinLogHeader::unserialize(char const* szBuf)
     return pos;
 }
 
-///Çå¿Õ¶ÔÏó
+///æ¸…ç©ºå¯¹è±¡
 inline void CwxBinLogHeader::reset()
 {
     memset(this, 0x00, sizeof(CwxBinLogHeader));
@@ -306,7 +306,7 @@ inline CWX_UINT32 CwxBinLogIndex::unserialize(char const* szBuf)
     return pos;
 }
 
-///Çå¿Õ¶ÔÏó
+///æ¸…ç©ºå¯¹è±¡
 inline void CwxBinLogIndex::reset()
 {
     memset(this, 0x00, sizeof(CwxBinLogIndex));
@@ -372,13 +372,13 @@ inline string const& CwxBinLogCursor::getFileName() const
     return m_strFileName;
 }
 
-///»ñÈ¡ÎÄ¼şµÄÈÕÆÚ
+///è·å–æ–‡ä»¶çš„æ—¥æœŸ
 inline CWX_UINT32 CwxBinLogCursor::getFileDay() const
 {
     return m_uiFileDay;
 }
 
-///»ñÈ¡ÎÄ¼şµÄĞòºÅ
+///è·å–æ–‡ä»¶çš„åºå·
 inline CWX_UINT32 CwxBinLogCursor::getFileNo() const
 {
     return m_uiFileNo;
@@ -395,32 +395,32 @@ inline int CwxBinLogCursor::getHandle() const
     return m_fd;
 }
 
-///»ñÈ¡cursorµÄSEEK STATE
+///è·å–cursorçš„SEEK STATE
 inline CWX_UINT8 CwxBinLogCursor::getSeekState() const{
 	return m_ucSeekState;
 }
-///ÉèÖÃcursorµÄSEEK STATE
+///è®¾ç½®cursorçš„SEEK STATE
 inline void CwxBinLogCursor::setSeekState(CWX_UINT8 ucSeekState){
 	m_ucSeekState = ucSeekState;
 }
-///»ñÈ¡cursorµÄSEEK SID
+///è·å–cursorçš„SEEK SID
 inline CWX_UINT64 CwxBinLogCursor::getSeekSid() const{
 	return m_ullSeekSid;
 }
-///ÉèÖÃcursorµÄSEEK SID
+///è®¾ç½®cursorçš„SEEK SID
 inline void CwxBinLogCursor::setSeekSid(CWX_UINT64 ullSid){
 	m_ullSeekSid = ullSid;
 }
 
-///ÊÇ·ñready
+///æ˜¯å¦ready
 inline bool CwxBinLogCursor::isReady() const{
 	return CURSOR_STATE_READY == m_ucSeekState;
 }
-///ÊÇ·ñunseek
+///æ˜¯å¦unseek
 inline bool CwxBinLogCursor::isUnseek() const{
 	return CURSOR_STATE_UNSEEK == m_ucSeekState;
 }
-///ÊÇ·ñ´íÎó
+///æ˜¯å¦é”™è¯¯
 inline bool CwxBinLogCursor::isError() const{
 	return CURSOR_STATE_ERROR == m_ucSeekState;
 }
@@ -429,31 +429,31 @@ inline bool CwxBinLogCursor::isError() const{
 /***********************************************************************
                     CwxBinLogFile  class
 ***********************************************************************/
-///Ğ¡ÓÚ±È½Ï
+///å°äºæ¯”è¾ƒ
 inline bool CwxBinLogFile::operator < (CwxBinLogFile const& obj) const
 {
     return m_ullMinSid < obj.m_ullMaxSid;
 }
 
-///»ñÈ¡×îĞ¡µÄsid
+///è·å–æœ€å°çš„sid
 inline CWX_UINT64 CwxBinLogFile::getMinSid() const
 {
     return m_ullMinSid;
 }
 
-///»ñÈ¡×î´óµÄsid
+///è·å–æœ€å¤§çš„sid
 inline CWX_UINT64 CwxBinLogFile::getMaxSid() const
 {
     return m_ullMaxSid;
 }
 
-///»ñÈ¡binlogµÄ×îĞ¡Ê±¼ä´Á
+///è·å–binlogçš„æœ€å°æ—¶é—´æˆ³
 inline CWX_UINT32 CwxBinLogFile::getMinTimestamp() const
 {
     return m_ttMinTimestamp;
 }
 
-///»ñÈ¡binlogµÄ×î´óÊ±¼ä´Á
+///è·å–binlogçš„æœ€å¤§æ—¶é—´æˆ³
 inline CWX_UINT32 CwxBinLogFile::getMaxTimestamp() const
 {
     return m_ttMaxTimestamp;
@@ -464,31 +464,31 @@ inline CWX_UINT32 CwxBinLogFile::getFileDay() const
     return m_ttDay;
 }
 
-///»ñÈ¡binlogµÄÎÄ¼şĞòºÅ
+///è·å–binlogçš„æ–‡ä»¶åºå·
 inline CWX_UINT32 CwxBinLogFile::getFileNo() const
 {
     return m_uiFileNo;
 }
 
-///»ñÈ¡binlogÎÄ¼şµÄlog¼ÇÂ¼Êı
+///è·å–binlogæ–‡ä»¶çš„logè®°å½•æ•°
 inline CWX_UINT32 CwxBinLogFile::getLogNum() const
 {
     return m_uiLogNum;
 }
 
-///»ñÈ¡binlogÎÄ¼şµÄ´óĞ¡
+///è·å–binlogæ–‡ä»¶çš„å¤§å°
 inline CWX_UINT32 CwxBinLogFile::getFileSize() const
 {
     return m_uiFileSize;
 }
 
-///ÅĞ¶ÏÊÇ·ñÖ»¶Á
+///åˆ¤æ–­æ˜¯å¦åªè¯»
 inline bool CwxBinLogFile::readOnly() const
 {
     return m_bReadOnly;
 }
 
-///ÉèÖÃÖ»¶Á
+///è®¾ç½®åªè¯»
 inline void CwxBinLogFile::setReadOnly()
 {
     if (!m_bReadOnly)
@@ -506,25 +506,25 @@ inline void CwxBinLogFile::setReadOnly()
     }
 }
 
-///ÅĞ¶ÏÈÕÖ¾ÎÄ¼şÊÇ·ñÎª¿Õ
+///åˆ¤æ–­æ—¥å¿—æ–‡ä»¶æ˜¯å¦ä¸ºç©º
 inline bool CwxBinLogFile::empty() const
 {
     return !m_uiLogNum;
 }
 
-///»ñÈ¡Êı¾İÎÄ¼şµÄÃû×Ö
+///è·å–æ•°æ®æ–‡ä»¶çš„åå­—
 inline string const& CwxBinLogFile::getDataFileName() const
 {
     return m_strPathFileName;
 }
-///»ñÈ¡Ë÷ÒıÎÄ¼şµÄÃû×Ö
+///è·å–ç´¢å¼•æ–‡ä»¶çš„åå­—
 inline string const& CwxBinLogFile::getIndexFileName() const
 {
     return m_strIndexFileName;
 }
 
 
-//-1£ºÊ§°Ü£»0£º³É¹¦¡£
+//-1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
 inline int CwxBinLogFile::readIndex(int fd, CwxBinLogIndex& index, CWX_UINT32 uiOffset, char* szErr2K) const
 {
     char szBuf[CwxBinLogIndex::BIN_LOG_INDEX_SIZE];
@@ -548,7 +548,7 @@ inline int CwxBinLogFile::readIndex(int fd, CwxBinLogIndex& index, CWX_UINT32 ui
     return 0;
 }
 
-// -1£ºÊ§°Ü£»0£º³É¹¦¡£
+// -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
 inline int CwxBinLogFile::writeIndex(int fd, CwxBinLogIndex const& index, CWX_UINT32 uiOffset, char* szErr2K) const
 {
     char szBuf[CwxBinLogIndex::BIN_LOG_INDEX_SIZE];
@@ -564,7 +564,7 @@ inline int CwxBinLogFile::writeIndex(int fd, CwxBinLogIndex const& index, CWX_UI
 /***********************************************************************
                     CwxBinLogMgr  class
 ***********************************************************************/
-///»ñÈ¡¹ÜÀíÆ÷ÊÇ·ñÓĞĞ§
+///è·å–ç®¡ç†å™¨æ˜¯å¦æœ‰æ•ˆ
 inline bool CwxBinLogMgr::isInvalid() const
 {
     return !m_bValid;
@@ -575,14 +575,14 @@ inline bool CwxBinLogMgr::isOutRange(CwxBinLogCursor* pCursor)
     CwxReadLockGuard<CwxRwLock> lock(&m_rwLock);
     return _isOutRange(pCursor);
 }
-///ÊÇ·ñÊÇunseek
+///æ˜¯å¦æ˜¯unseek
 inline bool CwxBinLogMgr::isUnseek(CwxBinLogCursor* pCursor)
 {
     CwxReadLockGuard<CwxRwLock> lock(&m_rwLock);
     return pCursor->isUnseek();
 }
 
-///cursor¶ÔÓ¦µÄÎÄ¼ş£¬ÊÇ·ñÔÚ¹ÜÀíµÄ·¶Î§Ö®Íâ
+///cursorå¯¹åº”çš„æ–‡ä»¶ï¼Œæ˜¯å¦åœ¨ç®¡ç†çš„èŒƒå›´ä¹‹å¤–
 inline bool CwxBinLogMgr::_isOutRange(CwxBinLogCursor*& pCursor)
 {
     bool ret = pCursor->getHeader().getSid() < getMinSid();
@@ -591,58 +591,58 @@ inline bool CwxBinLogMgr::_isOutRange(CwxBinLogCursor*& pCursor)
 }
 
 
-///»ñÈ¡¹ÜÀíÆ÷ÎŞĞ§µÄÔ­Òò
+///è·å–ç®¡ç†å™¨æ— æ•ˆçš„åŸå› 
 inline char const* CwxBinLogMgr::getInvalidMsg() const
 {
     return m_szErr2K;
 }
 
-///»ñÈ¡×îĞ¡µÄsid
+///è·å–æœ€å°çš„sid
 inline CWX_UINT64 CwxBinLogMgr::getMinSid()
 {
     return m_ullMinSid;
 }
-///»ñÈ¡×î´óµÄsid
+///è·å–æœ€å¤§çš„sid
 inline CWX_UINT64 CwxBinLogMgr::getMaxSid()
 {
     return m_ullMaxSid;
 }
-///»ñÈ¡binlogµÄ×îĞ¡Ê±¼ä´Á
+///è·å–binlogçš„æœ€å°æ—¶é—´æˆ³
 inline CWX_UINT32 CwxBinLogMgr::getMinTimestamp()
 {
     return m_ttMinTimestamp;
 }
 
-///»ñÈ¡binlogµÄ×î´óÊ±¼ä´Á
+///è·å–binlogçš„æœ€å¤§æ—¶é—´æˆ³
 inline CWX_UINT32 CwxBinLogMgr::getMaxTimestamp()
 {
     return m_ttMaxTimestamp;
 }
 
-///»ñÈ¡¹ÜÀíµÄbinlogµÄ×îĞ¡ÎÄ¼şĞòºÅ
+///è·å–ç®¡ç†çš„binlogçš„æœ€å°æ–‡ä»¶åºå·
 inline string& CwxBinLogMgr::getMinFile(string& strFile)
 {
-    ///¶ÁËø±£»¤
+    ///è¯»é”ä¿æŠ¤
     CwxReadLockGuard<CwxRwLock> lock(&m_rwLock);
     CwxBinLogFile* pFile = _getMinBinLogFile();
     strFile = pFile?pFile->getDataFileName():"";
     return strFile;
 }
-///»ñÈ¡¹ÜÀíµÄbinlogµÄ×î´óÎÄ¼şĞòºÅ
+///è·å–ç®¡ç†çš„binlogçš„æœ€å¤§æ–‡ä»¶åºå·
 inline string& CwxBinLogMgr::getMaxFile(string& strFile)
 {
-    ///¶ÁËø±£»¤
+    ///è¯»é”ä¿æŠ¤
     CwxReadLockGuard<CwxRwLock> lock(&m_rwLock);
     CwxBinLogFile* pFile = _getMaxBinLogFile();
     strFile = pFile?pFile->getDataFileName():"";
     return strFile;
 }
-///¼ì²éÊÇ·ñÎª¿Õ
+///æ£€æŸ¥æ˜¯å¦ä¸ºç©º
 inline bool CwxBinLogMgr::empty()
 {
     return !getMaxSid();
 }
-///»ñÈ¡ÎÄ¼şºÅ¶ÔÓ¦µÄbinlogÎÄ¼şÃû
+///è·å–æ–‡ä»¶å·å¯¹åº”çš„binlogæ–‡ä»¶å
 inline string& CwxBinLogMgr::getFileNameByFileNo(CWX_UINT32 uiFileNo,
                                                  CWX_UINT32 ttDay,
                                                  string& strFileName)
@@ -658,7 +658,7 @@ inline string& CwxBinLogMgr::getFileNameByFileNo(CWX_UINT32 uiFileNo,
     strFileName = szPathFile;
     return strFileName;
 }
-///»ñÈ¡ÎÄ¼şºÅ¶ÔÓ¦µÄbinlogÎÄ¼şµÄË÷ÒıÎÄ¼şÃû
+///è·å–æ–‡ä»¶å·å¯¹åº”çš„binlogæ–‡ä»¶çš„ç´¢å¼•æ–‡ä»¶å
 inline string& CwxBinLogMgr::getIndexFileNameByFileNo(CWX_UINT32 uiFileNo,
                                                       CWX_UINT32 ttDay,
                                                       string& strFileName)
@@ -687,7 +687,7 @@ inline bool CwxBinLogMgr::isBinLogFile(string const& strFileName)
     return getFileNameByFileNo(uiFileNo, ttDay, strTmp) == strFileName;
 }
 
-///ÅĞ¶ÏÒ»¸öÎÄ¼şÃûÊÇ·ñÊÇÒ»¸öbinlogµÄË÷ÒıÎÄ¼ş
+///åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶åæ˜¯å¦æ˜¯ä¸€ä¸ªbinlogçš„ç´¢å¼•æ–‡ä»¶
 inline bool CwxBinLogMgr::isBinLogIndexFile(string const& strFileName)
 {
     string strTmp;
@@ -695,12 +695,12 @@ inline bool CwxBinLogMgr::isBinLogIndexFile(string const& strFileName)
     CWX_UINT32 uiFileNo = getBinLogFileNo(strFileName, ttDay);
     return getIndexFileNameByFileNo(uiFileNo, ttDay, strTmp) == strFileName;
 }
-///»ñÈ¡binlogµÄÇ°×ºÃû
+///è·å–binlogçš„å‰ç¼€å
 inline  string const& CwxBinLogMgr::getBinlogPrexName() const
 {
     return m_strFilePrex;
 }
-///ÊÇ·ñÓĞĞ§µÄÇ°×ºÃû
+///æ˜¯å¦æœ‰æ•ˆçš„å‰ç¼€å
 inline bool CwxBinLogMgr::isValidPrexName(char const* szName)
 {
     if (!szName) return false;
@@ -733,16 +733,16 @@ inline CwxBinLogFile* CwxBinLogMgr::_getMaxBinLogFile()
 inline bool CwxBinLogMgr::_isManageBinLogFile(CwxBinLogFile* pBinLogFile)
 {
     if (!m_pCurBinlog) return true;
-    ///Èç¹ûÎÄ¼ş±»cursorÊ¹ÓÃ£¬Ôò±»¹ÜÀí
+    ///å¦‚æœæ–‡ä»¶è¢«cursorä½¿ç”¨ï¼Œåˆ™è¢«ç®¡ç†
 	if (m_binlogMap.size() <= m_uiMaxFileNum) return true;
-	//¼ì²âÊÇ·ñÓĞcursorÔÚÊ¹ÓÃ
+	//æ£€æµ‹æ˜¯å¦æœ‰cursoråœ¨ä½¿ç”¨
 	set<CwxBinLogCursor*>::iterator iter = m_cursorSet.begin();
 	while(iter != m_cursorSet.end()){
-		if ((*iter)->isReady()){//cursorµÄheaderÒ»¶¨ÓĞĞ§
+		if ((*iter)->isReady()){//cursorçš„headerä¸€å®šæœ‰æ•ˆ
 			if ((*iter)->getHeader().getSid() <= pBinLogFile->getMaxSid()){
 				return true;
 			}
-        }else if ((*iter)->getSeekSid() <= pBinLogFile->getMaxSid()){//cursor´¦ÓÚĞü¸¡×´Ì¬
+        }else if ((*iter)->getSeekSid() <= pBinLogFile->getMaxSid()){//cursorå¤„äºæ‚¬æµ®çŠ¶æ€
 			return true;
 		}
 		iter++;

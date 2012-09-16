@@ -1,4 +1,4 @@
-#include "CwxSocket.h"
+ï»¿#include "CwxSocket.h"
 #include "CwxINetAddr.h"
 #include "CwxSockStream.h"
 #include "CwxSockConnector.h"
@@ -26,17 +26,17 @@ CWX_UINT64 g_startSid = 0;
 CWX_UINT64 g_endSid = 0;
 CWX_UINT64 g_session = 0;
 
-FILE* g_fdout = NULL; ///ÈÕÖ¾Êä³öÎÄ¼ş¾ä±ú
-UnistorConfig g_config; ///ÅäÖÃÎÄ¼şĞÅÏ¢
-UnistorStore g_store;  ///´æ´¢ÒıÇæ
-UnistorTss   g_tss;  ///tss¶ÔÏó
-CwxSockStream  g_stream; ///Á¬½ÓµÄstream
-CwxSockConnector g_conn; ///Á¬½Ó
+FILE* g_fdout = NULL; ///æ—¥å¿—è¾“å‡ºæ–‡ä»¶å¥æŸ„
+UnistorConfig g_config; ///é…ç½®æ–‡ä»¶ä¿¡æ¯
+UnistorStore g_store;  ///å­˜å‚¨å¼•æ“
+UnistorTss   g_tss;  ///tsså¯¹è±¡
+CwxSockStream  g_stream; ///è¿æ¥çš„stream
+CwxSockConnector g_conn; ///è¿æ¥
 CwxPackageReaderEx  g_reader1; ///reader1
 CwxPackageReaderEx  g_reader2; ///reader2
 
 
-///-1£ºÊ§°Ü£»0£ºhelp£»1£º³É¹¦
+///-1ï¼šå¤±è´¥ï¼›0ï¼šhelpï¼›1ï¼šæˆåŠŸ
 int parseArg(int argc, char**argv)
 {
     CwxGetOpt cmd_option(argc, argv, "H:P:C:c:k:X:S:t:u:p:o:B:E:Nh");
@@ -214,11 +214,11 @@ int msg_notice_fn(void* , CwxMsgBlock* msg,  bool , char* ){
     return 0;
 }
 
-int get_sys_info_fn(void* , ///<app¶ÔÏó
-                  char const* , ///<Òª»ñÈ¡µÄkey
-                  CWX_UINT16 , ///<keyµÄ³¤¶È
-                  char* , ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-                  CWX_UINT32&   ///<szDataÊı¾İµÄ×Ö½ÚÊı
+int get_sys_info_fn(void* , ///<appå¯¹è±¡
+                  char const* , ///<è¦è·å–çš„key
+                  CWX_UINT16 , ///<keyçš„é•¿åº¦
+                  char* , ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+                  CWX_UINT32&   ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
                   )
 {
     return 0;
@@ -237,7 +237,7 @@ bool initOutFile(FILE*& fd){
 }
 
 bool initEnv(){
-    ///³õÊ¼»¯ÈÕÖ¾Êä³ö
+    ///åˆå§‹åŒ–æ—¥å¿—è¾“å‡º
     if (g_output.length()){
         g_fdout = fopen(g_output.c_str(), "a+");
         if (!g_fdout){
@@ -247,17 +247,17 @@ bool initEnv(){
     }else{
         g_fdout = stdout;
     }
-    ///³õÊ¼»¯tss
+    ///åˆå§‹åŒ–tss
     if (0 != g_tss.init(NULL)){
         fprintf(g_fdout, "Failure to init tss\n");
         return false;
     }
-    ///³õÊ¼»¯ÅäÖÃÎÄ¼ş
+    ///åˆå§‹åŒ–é…ç½®æ–‡ä»¶
     if (0 != g_config.init(g_confFile)){
         fprintf(g_fdout, "Failure to init conf file:%s, err=%s\n", g_confFile.c_str(), g_config.getErrMsg());
         return false;
     }
-    ///³õÊ¼»¯´æ´¢ÒıÇæ
+    ///åˆå§‹åŒ–å­˜å‚¨å¼•æ“
     string strEngine=g_config.getCommon().m_strWorkDir + "engine/";
     if (0 != g_store.init(msg_notice_fn, get_sys_info_fn, NULL, &g_config, strEngine, g_tss.m_szBuf2K)){
         fprintf(g_fdout, "Failure to init engine, err=%s\n", g_tss.m_szBuf2K);
@@ -267,7 +267,7 @@ bool initEnv(){
 }
 
 bool connect(){
-    ///³õÊ¼»¯ÍøÂ·
+    ///åˆå§‹åŒ–ç½‘è·¯
     if (g_stream.getHandle() != -1){
         g_stream.close();
     }
@@ -278,7 +278,7 @@ bool connect(){
     }
     return true;
 }
-///ÖØĞÂ¼ÆËã¿ªÊ¼µÄsid
+///é‡æ–°è®¡ç®—å¼€å§‹çš„sid
 void reCalcStartSid(){
     if (g_lastStartSid){
         if (!g_bNewSid){
@@ -292,7 +292,7 @@ void reCalcStartSid(){
         }
     }
 }
-///±¨¸æexportµã
+///æŠ¥å‘Šexportç‚¹
 bool reportExport(){
     CwxMsgBlock* block=NULL;
     CwxMsgHead head;
@@ -322,7 +322,7 @@ bool reportExport(){
         return false;
     }
     CwxMsgBlockAlloc::free(block);
-    ///¶ÁÈ¡»Ø¸´
+    ///è¯»å–å›å¤
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
         fprintf(g_fdout, "failure to read export report reply, errno=%d\n", errno);
         return false;
@@ -360,7 +360,7 @@ bool reportExport(){
     return false;
 }
 
-///½ÓÊÜÊı¾İ¡£0£ºÍê³É£»1£º»ñÈ¡ÁËÒ»×éÊı¾İ£»-1£ºÊ§°Ü£»
+///æ¥å—æ•°æ®ã€‚0ï¼šå®Œæˆï¼›1ï¼šè·å–äº†ä¸€ç»„æ•°æ®ï¼›-1ï¼šå¤±è´¥ï¼›
 int  recvExportData(){
     CwxMsgBlock* block=NULL;
     CwxMsgHead head;
@@ -376,7 +376,7 @@ int  recvExportData(){
     bool bWriteCached = false;
 
     static CWX_UINT32 uiNum = 0;
-    ///¶ÁÈ¡exportÊı¾İ
+    ///è¯»å–exportæ•°æ®
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
         fprintf(g_fdout, "failure to read export data, errno=%d\n", errno);
         return -1;
@@ -391,7 +391,7 @@ int  recvExportData(){
             CwxMsgBlockAlloc::free(block);
             return -1;
         }
-        ///²åÈëÊı¾İ
+        ///æ’å…¥æ•°æ®
         for (CWX_UINT32 i=0; i<g_reader1.getKeyNum(); i++){
             if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseExportDataItem(&g_reader2,
                 g_reader1.getKey(i)->m_szData,
@@ -407,7 +407,7 @@ int  recvExportData(){
                 CwxMsgBlockAlloc::free(block);
                 return -1;
             }
-            ///ÖØĞÂÉèÖÃexpire
+            ///é‡æ–°è®¾ç½®expire
             if (g_uiExpire){
                 uiExpire = g_uiExpire;
             }
@@ -440,7 +440,7 @@ int  recvExportData(){
             fprintf(g_fdout, "export key=%s, extra=%s\n", key->m_szData, extra?extra->m_szData:"");
         }
         CwxMsgBlockAlloc::free(block);
-        ///»Ø¸´ÏûÏ¢
+        ///å›å¤æ¶ˆæ¯
         if (UNISTOR_ERR_SUCCESS != UnistorPoco::packExportDataReply(g_tss.m_pWriter, block, 0, ullSeq, g_tss.m_szBuf2K)){
             fprintf(g_fdout, "Failure to pack export data reply, err=%s\n", g_tss.m_szBuf2K);
             return -1;
@@ -487,7 +487,7 @@ int  recvExportData(){
 
 }
 
-///Êı¾İÍ¬²½±¨¸æ
+///æ•°æ®åŒæ­¥æŠ¥å‘Š
 bool reportSync(){
     CwxMsgBlock* block=NULL;
     CwxMsgHead head;
@@ -519,7 +519,7 @@ bool reportSync(){
         return false;
     }
     CwxMsgBlockAlloc::free(block);
-    ///¶ÁÈ¡»Ø¸´
+    ///è¯»å–å›å¤
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
         fprintf(g_fdout, "failure to read sync report reply, errno=%d\n", errno);
         return false;
@@ -553,7 +553,7 @@ bool reportSync(){
     CwxMsgBlockAlloc::free(block);
     return false;
 }
-///Í¬²½binlog¡£0£ºÍê³É£»1£º»ñÈ¡ÁËÒ»×éÊı¾İ£»-1£ºÊ§°Ü£»
+///åŒæ­¥binlogã€‚0ï¼šå®Œæˆï¼›1ï¼šè·å–äº†ä¸€ç»„æ•°æ®ï¼›-1ï¼šå¤±è´¥ï¼›
 int recvBinlog(){
     CwxMsgBlock* block=NULL;
     CwxMsgHead head;
@@ -567,7 +567,7 @@ int recvBinlog(){
     CWX_UINT32 uiType;
     CwxKeyValueItemEx const* data;
     CWX_UINT32 uiNum = 0;
-    ///¶ÁÈ¡exportÊı¾İ
+    ///è¯»å–exportæ•°æ®
     if (0 >= CwxSocket::read(g_stream.getHandle(), head, block)){
         fprintf(g_fdout, "failure to read export data, errno=%d\n", errno);
         return -1;
@@ -585,7 +585,7 @@ int recvBinlog(){
                 CwxMsgBlockAlloc::free(block);
                 return -1;
             }
-            ///»ñÈ¡binlogµÄÊı¾İ
+            ///è·å–binlogçš„æ•°æ®
             if (UNISTOR_ERR_SUCCESS != UnistorPoco::parseSyncData(&g_reader2,
                 g_reader1.getKey(i)->m_szData,
                 g_reader1.getKey(i)->m_uiDataLen,
@@ -630,7 +630,7 @@ int recvBinlog(){
         }
         CwxMsgBlockAlloc::free(block);
 
-        ///»Ø¸´ÏûÏ¢
+        ///å›å¤æ¶ˆæ¯
         if (UNISTOR_ERR_SUCCESS != UnistorPoco::packSyncDataReply(g_tss.m_pWriter, block, 0, ullSeq, UnistorPoco::MSG_TYPE_SYNC_DATA_CHUNK_REPLY, g_tss.m_szBuf2K)){
             fprintf(g_fdout, "Failure to pack sync binlog reply, err=%s\n", g_tss.m_szBuf2K);
             return -1;
@@ -669,28 +669,28 @@ void closeEnv(){
 }
 
 int main(int argc ,char** argv){
-    ///»ñÈ¡²ÎÊı
+    ///è·å–å‚æ•°
     int iRet = parseArg(argc, argv);
     if (0 == iRet) return 0;
     if (-1 == iRet) return 1;
-    ///³õÊ¼»¯Êä³öÎÄ¼ş
+    ///åˆå§‹åŒ–è¾“å‡ºæ–‡ä»¶
     if (!initEnv()){
         closeEnv();
         return 1;
     }
-    if (!g_lastEndSid){///ĞèÒªµ¼³öÊı¾İ
-        ///³õÊ¼»¯ÍøÂ·
+    if (!g_lastEndSid){///éœ€è¦å¯¼å‡ºæ•°æ®
+        ///åˆå§‹åŒ–ç½‘è·¯
         if (!connect()){
             closeEnv();
             return 1;
         }
-        ///report exportµÄÊı¾İ
+        ///report exportçš„æ•°æ®
         if (!reportExport()){
             closeEnv();
             return 1;
         }
-        ///Í¬²½Êı¾İ
-        ///ÉèÖÃsid
+        ///åŒæ­¥æ•°æ®
+        ///è®¾ç½®sid
         g_store.setCurSid(g_startSid==0?1:g_startSid);
         while(1){
             iRet = recvExportData();
@@ -698,23 +698,23 @@ int main(int argc ,char** argv){
         }
         if (-1 == iRet){
             closeEnv();
-            return 1; ///Ê§°Ü
+            return 1; ///å¤±è´¥
         }
     }else{
         reCalcStartSid();
     }
-    ///¿ªÊ¼µ¼³öbinlog
-    ///ÖØĞÂ³õÊ¼»¯ÍøÂç
+    ///å¼€å§‹å¯¼å‡ºbinlog
+    ///é‡æ–°åˆå§‹åŒ–ç½‘ç»œ
     if (!connect()){
         closeEnv();
         return 1;
     }
-    ///report Í¬²½binlogµÄĞÅÏ¢
+    ///report åŒæ­¥binlogçš„ä¿¡æ¯
     if (!reportSync()){
         closeEnv();
         return 1;
     }
-    ///Í¬²½binlog
+    ///åŒæ­¥binlog
     while(1){
         iRet = recvBinlog();
         if (1 != iRet) break;
@@ -723,12 +723,12 @@ int main(int argc ,char** argv){
         closeEnv();
         return 1;
     }
-    ///±£´æÊı¾İ
+    ///ä¿å­˜æ•°æ®
     if (0 != g_store.commit(g_tss.m_szBuf2K)){
         closeEnv();
         return 1;
     }
-    ///¶ş´ÎÌá½»Êı¾İ
+    ///äºŒæ¬¡æäº¤æ•°æ®
     if (0 != g_store.commit(g_tss.m_szBuf2K)){
         closeEnv();
         return 1;

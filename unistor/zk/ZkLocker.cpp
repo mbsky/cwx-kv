@@ -1,4 +1,4 @@
-#define __STDC_FORMAT_MACROS
+ï»¿#define __STDC_FORMAT_MACROS
 
 #include "ZkLocker.h"
 
@@ -65,7 +65,7 @@ ZkLocker::~ZkLocker()
     pthread_mutex_destroy(&m_mutex);
 }
 
-///¼ÓËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+///åŠ é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
 int ZkLocker::lock(unsigned int uiWatchType){
     ZkMutex locker(&m_mutex);
     m_uiWatchType = uiWatchType;
@@ -96,12 +96,12 @@ int ZkLocker::lock(unsigned int uiWatchType){
     return 0;
 }
 
-///ÊÍ·ÅËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+///é‡Šæ”¾é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
 int ZkLocker::unlock(){
     ZkMutex locker(&m_mutex);
     return _unlock();
 }
-///ÊÍ·ÅËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+///é‡Šæ”¾é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
 int ZkLocker::_unlock()
 {
     if (m_strSelfNode.length()){
@@ -117,7 +117,7 @@ int ZkLocker::_unlock()
     return 0;
 }
 
-///0£º¸ù½Úµã²»´æÔÚ£»1£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+///0ï¼šæ ¹èŠ‚ç‚¹ä¸å­˜åœ¨ï¼›1ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
 int ZkLocker::_retryLock()
 {
     struct Stat stat;
@@ -149,7 +149,7 @@ int ZkLocker::_retryLock()
         iter++;
     }
 
-    if (!m_strSelfNode.length()){//Ã»ÓĞËønode
+    if (!m_strSelfNode.length()){//æ²¡æœ‰é”node
         string strNodePath;
         string strNode = strNodePrex+"-";
         getNodePath(m_strPath, strNode, strNodePath);
@@ -174,7 +174,7 @@ int ZkLocker::_retryLock()
             assert(0);
         }
         m_strSeqMap.clear();
-        ///ÖØĞÂ»ñÈ¡º¢×Ó
+        ///é‡æ–°è·å–å­©å­
         ret = m_zkHandler->getNodeChildren(m_strPath, childs);
         if (-1 == ret) return -1;
         if (0 == ret) return 0;
@@ -189,7 +189,7 @@ int ZkLocker::_retryLock()
         assert(m_strSeqMap.find(mySeq)->second == m_strSelfNode);
     }
 
-    ///ÉèÖÃownerµÄpath
+    ///è®¾ç½®ownerçš„path
     m_strOwnerNode = m_strSeqMap.begin()->second;
     getNodePath(m_strPath, m_strOwnerNode, m_strOwnerPathNode);
 
@@ -200,11 +200,11 @@ int ZkLocker::_retryLock()
         m_lock_func?m_lock_func_context:this
         );
     if (1 != ret){
-        ///½âËø
+        ///è§£é”
         _unlock();
         return -1;
     }
-    ///watchÇ°Ò»¸ö»òmaster
+    ///watchå‰ä¸€ä¸ªæˆ–master
     map<uint64_t, string>::iterator map_iter = m_strSeqMap.find(mySeq);
     assert(map_iter != m_strSeqMap.end());
     if (map_iter == m_strSeqMap.begin()){
@@ -221,7 +221,7 @@ int ZkLocker::_retryLock()
                 m_lock_func?m_lock_func_context:this
                 );
             if (1 != ret){
-                ///½âËø
+                ///è§£é”
                 _unlock();
                 return -1;
             }
@@ -232,7 +232,7 @@ int ZkLocker::_retryLock()
                 m_lock_func?m_lock_func_context:this
                 );
             if (1 != ret){
-                ///½âËø
+                ///è§£é”
                 _unlock();
                 return -1;
             }
@@ -243,7 +243,7 @@ int ZkLocker::_retryLock()
                 m_lock_func?m_lock_func:lock_watcher_fn,
                 m_lock_func?m_lock_func_context:this);
             if (1 != ret){
-                ///½âËø
+                ///è§£é”
                 _unlock();
                 return -1;
             }
@@ -299,13 +299,13 @@ bool ZkLocker::splitSeqNode(string const& strSeqNode, uint64_t& seq, string& str
     return true;
 }
 
-///»ñÈ¡Â·¾¶×îºóÒ»¸ö½ÚµãµÄÃû×Ö
+///è·å–è·¯å¾„æœ€åä¸€ä¸ªèŠ‚ç‚¹çš„åå­—
 char const* ZkLocker::getLastName(char* str){
     char* name = strrchr(str, '/');
     if (name == NULL) return NULL;
     return (name + 1);
 }
-///»ñÈ¡½ÚµãµÄÂ·¾¶
+///è·å–èŠ‚ç‚¹çš„è·¯å¾„
 string const& ZkLocker::getNodePath(string const& strPath, string const& strNode, string& strNodePath){
     if (strPath[strPath.length() - 1] == '/'){
         strNodePath = strPath + strNode;

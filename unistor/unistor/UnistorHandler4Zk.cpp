@@ -1,4 +1,4 @@
-#include "UnistorHandler4Zk.h"
+ï»¿#include "UnistorHandler4Zk.h"
 #include "UnistorApp.h"
 
 UnistorHandler4Zk::UnistorHandler4Zk(UnistorApp* pApp):m_pApp(pApp){
@@ -25,7 +25,7 @@ UnistorHandler4Zk::UnistorHandler4Zk(UnistorApp* pApp):m_pApp(pApp){
     m_ullVersion = 1;
 }
 
-///Îö¹¹º¯Êı
+///ææ„å‡½æ•°
 UnistorHandler4Zk::~UnistorHandler4Zk(){
     stop();
     if (m_clientId){
@@ -66,7 +66,7 @@ int UnistorHandler4Zk::_init(){
         return -1;
     }
     if (0 != _connect()) return -1;
-    ///³õÊ¼»¯Ëø
+    ///åˆå§‹åŒ–é”
     m_zkLocker = new ZkLocker();
     if (0 != m_zkLocker->init(m_zk,
         m_strZkLockNode,
@@ -82,7 +82,7 @@ int UnistorHandler4Zk::_init(){
     return 0;
 }
 
-///³õÊ¼»¯
+///åˆå§‹åŒ–
 void UnistorHandler4Zk::_reset(){
     m_bInit = false;
     m_bConnected = false;
@@ -127,10 +127,10 @@ int UnistorHandler4Zk::_dealTimeoutEvent(CwxTss* , CwxMsgBlock*& , CWX_UINT32 ){
 int UnistorHandler4Zk::_dealConnectedEvent(CwxTss* tss, CwxMsgBlock*& msg, CWX_UINT32 ){
     int ret = 0;
     CWX_INFO(("Connected to zookeeper:%s", m_pApp->getConfig().getZk().m_strZkServer.c_str()));
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
-    ///Á¬½Ó³É¹¦
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
+    ///è¿æ¥æˆåŠŸ
     m_bConnected = true;
-    ///±£´æzkµÄclient id
+    ///ä¿å­˜zkçš„client id
     if (msg->length()){
         if (!m_clientId) m_clientId = new clientid_t;
         memcpy(m_clientId, msg->rd_ptr(), sizeof(clientid_t));
@@ -138,15 +138,15 @@ int UnistorHandler4Zk::_dealConnectedEvent(CwxTss* tss, CwxMsgBlock*& msg, CWX_U
         if (m_clientId) delete m_clientId;
         m_clientId = NULL;
     }
-    ///¼øÈ¨£¬ÈôÊ§°ÜÔò·µ»Ø
+    ///é‰´æƒï¼Œè‹¥å¤±è´¥åˆ™è¿”å›
     ret = _auth();
-    if (-1 == ret){///ÖØĞÂ³õÊ¼»¯
+    if (-1 == ret){///é‡æ–°åˆå§‹åŒ–
         return -1;
     }
     if (1 == ret){
         _setHostInfo();
         if (0 != _loadZkConf(tss)){
-            return -1; ///¼ÓÔØÅäÖÃÊ§°ÜÔò·µ»Ø
+            return -1; ///åŠ è½½é…ç½®å¤±è´¥åˆ™è¿”å›
         }
         if (0 !=_lock()){
             return -1;
@@ -193,12 +193,12 @@ void UnistorHandler4Zk::doEvent(CwxTss* tss, CwxMsgBlock*& msg , CWX_UINT32 uiLe
         bSuccess = true;
     }while(0);
 
-    if (!bSuccess){ ///ÖØĞÂ³õÊ¼»¯
+    if (!bSuccess){ ///é‡æ–°åˆå§‹åŒ–
         m_bInit = false;
     }
 }
 
-///Á¬½Ó0£º³É¹¦£»-1£ºÊ§°Ü
+///è¿æ¥0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Zk::_connect(){
     if (0 != m_zk->connect(m_clientId, 0, UnistorHandler4Zk::watcher, this)){
         CwxCommon::snprintf(m_szErr2K, 2048, "Failure to invoke ZkAdaptor::connect(), err:%s", m_zk->getErrMsg());
@@ -208,9 +208,9 @@ int UnistorHandler4Zk::_connect(){
     return 0;
 }
 
-///ÈÏÖ¤£»1£ºÈÏÖ¤³É¹¦£»0£ºµÈ´ıÈÏÖ¤½á¹û£»-1£ºÈÏÖ¤Ê§°Ü
+///è®¤è¯ï¼›1ï¼šè®¤è¯æˆåŠŸï¼›0ï¼šç­‰å¾…è®¤è¯ç»“æœï¼›-1ï¼šè®¤è¯å¤±è´¥
 int UnistorHandler4Zk::_auth(){
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (m_pApp->getConfig().getZk().m_strAuth.length()){
         if (!m_zk->addAuth("digest",
             m_pApp->getConfig().getZk().m_strAuth.c_str(),
@@ -223,10 +223,10 @@ int UnistorHandler4Zk::_auth(){
             CWX_ERROR((m_szErr2K));
             return - 1;
         }
-        ///µÈ´ı¼øÈ¨
+        ///ç­‰å¾…é‰´æƒ
         return 0;
     }
-    ///ÎŞĞè¼øÈ¨
+    ///æ— éœ€é‰´æƒ
     m_bAuth = true;
     return 1;
 }
@@ -236,7 +236,7 @@ int UnistorHandler4Zk::_loadZkConf(CwxTss* ){
     struct Stat stats;
     CWX_UINT32 uiLen = MAX_ZK_DATA_SIZE;
     int ret = 0;
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     //get master
     if (1 != (ret = m_zk->wgetNodeData(m_strZkConfNode,
         m_szZkDataBuf,
@@ -257,14 +257,14 @@ int UnistorHandler4Zk::_loadZkConf(CwxTss* ){
     if (0 != _parseConf(conf)){
         return -1;
     }
-    if (!(m_conf == conf)){///ÅäÖÃ·¢Éú¸Ä±ä
+    if (!(m_conf == conf)){///é…ç½®å‘ç”Ÿæ”¹å˜
         m_conf = conf;
         _noticeConfChange();
     }
     return 0;
 }
 
-///½âÎöÅäÖÃÎÄ¼ş£»0£º³É¹¦£»-1£ºÊ§°Ü
+///è§£æé…ç½®æ–‡ä»¶ï¼›0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int  UnistorHandler4Zk::_parseConf(UnistorZkConf& conf){
     CwxIniParse parse;
     if (!parse.parse(m_szZkDataBuf)){
@@ -280,7 +280,7 @@ int  UnistorHandler4Zk::_parseConf(UnistorZkConf& conf){
         return 0;
     }
     conf.m_strMasterIdc = strValue;
-    if (conf.m_strMasterIdc != m_pApp->getConfig().getCommon().m_strIdc){///±ØĞëÅäÖÃsync½Úµã
+    if (conf.m_strMasterIdc != m_pApp->getConfig().getCommon().m_strIdc){///å¿…é¡»é…ç½®syncèŠ‚ç‚¹
         conf.m_bMasterIdc = false;
         //get sync:ip
         if (!parse.getAttr("sync", "ip", strValue) || !strValue.length()){
@@ -356,13 +356,13 @@ int  UnistorHandler4Zk::_parseConf(UnistorZkConf& conf){
     return 0;
 }
 
-///»ñÈ¡ËøµÄĞÅÏ¢£»0£º³É¹¦£»-1£ºÊ§°Ü
+///è·å–é”çš„ä¿¡æ¯ï¼›0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Zk::_loadLockInfo(CwxTss* ){
     string strValue;
     string strSession;
     uint64_t seq;
     UnistorZkLock lock;
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     lock.m_bMaster = m_zkLocker->isLocked();
     m_zkLocker->getOwnerNode(strValue);
@@ -386,7 +386,7 @@ int UnistorHandler4Zk::_loadLockInfo(CwxTss* ){
     }else{
         lock.m_strPrev = "";
     }
-    if (lock.m_bMaster && !m_lock.m_bMaster){///±äÎªmaster
+    if (lock.m_bMaster && !m_lock.m_bMaster){///å˜ä¸ºmaster
         string strMaster;
         CWX_UINT64 ullMasterSid=0;
         CWX_UINT64 ullSid=0;
@@ -396,7 +396,7 @@ int UnistorHandler4Zk::_loadLockInfo(CwxTss* ){
         if (0 !=_getMasterInfo(strMaster, ullMasterSid, ullSid, strTimeStamp)){
             return -1;
         }
-        ///ÉèÖÃÇ°Ò»¸öµÄ×î´ósid
+        ///è®¾ç½®å‰ä¸€ä¸ªçš„æœ€å¤§sid
         lock.m_ullPreMasterMaxSid = ullSid;
         CWX_INFO(("I become master, last master info: master(%s), master_sid(%s), max_sid(%s), max_time(%s)",
             strMaster.length()?strMaster.c_str():"",
@@ -404,7 +404,7 @@ int UnistorHandler4Zk::_loadLockInfo(CwxTss* ){
             CwxCommon::toString(ullSid, szTmp2, 10),
             strTimeStamp.length()?strTimeStamp.c_str():""));
 
-        if (strMaster != m_pApp->getConfig().getCommon().m_strHost){///²»ÊÇÎÒ×Ô¼º
+        if (strMaster != m_pApp->getConfig().getCommon().m_strHost){///ä¸æ˜¯æˆ‘è‡ªå·±
             ullSid = m_pApp->getStore()->getBinLogMgr()->getMaxSid();
             if (ullSid < ullMasterSid){
                 CWX_INFO(("I can't become master, master_sid(%s), mine_max_sid(%s)",
@@ -422,13 +422,13 @@ int UnistorHandler4Zk::_loadLockInfo(CwxTss* ){
     }
     return 0;
 }
-///Í¨ÖªÅäÖÃ±ä»¯
+///é€šçŸ¥é…ç½®å˜åŒ–
 void UnistorHandler4Zk::_noticeConfChange(){
     CwxMsgBlock* msg = NULL;
     UnistorZkConf* pConf = NULL;
     m_ullVersion++;
     m_conf.m_ullVersion = m_ullVersion;
-    ///Í¨ÖªĞ´Ïß³Ì
+    ///é€šçŸ¥å†™çº¿ç¨‹
     pConf = new UnistorZkConf(m_conf);
     msg = CwxMsgBlockAlloc::malloc(sizeof(pConf));
     memcpy(msg->wr_ptr(), &pConf, sizeof(pConf));
@@ -436,7 +436,7 @@ void UnistorHandler4Zk::_noticeConfChange(){
     msg->event().setSvrId(UnistorApp::SVR_TYPE_RECV_WRITE);
     msg->event().setEvent(EVENT_ZK_CONF_CHANGE);
     m_pApp->getWriteTheadPool()->appendHead(msg);
-    ///Í¨Öª×ª·¢Ïß³Ì
+    ///é€šçŸ¥è½¬å‘çº¿ç¨‹
     pConf = new UnistorZkConf(m_conf);
     msg = CwxMsgBlockAlloc::malloc(sizeof(pConf));
     memcpy(msg->wr_ptr(), &pConf, sizeof(pConf));
@@ -444,7 +444,7 @@ void UnistorHandler4Zk::_noticeConfChange(){
     msg->event().setSvrId(UnistorApp::SVR_TYPE_TRANSFER);
     msg->event().setEvent(EVENT_ZK_CONF_CHANGE);
     m_pApp->getTransThreadPool()->appendHead(msg);
-    ///Í¨ÖªrecieveÏß³Ì
+    ///é€šçŸ¥recieveçº¿ç¨‹
     CwxThreadPool** pools = m_pApp->getRecvThreadPools();
     for (CWX_UINT32 i=0; i<m_pApp->getConfig().getCommon().m_uiThreadNum; i++){
         pConf = new UnistorZkConf(m_conf);
@@ -457,13 +457,13 @@ void UnistorHandler4Zk::_noticeConfChange(){
     }
 
 }
-///Í¨ÖªËø±ä»¯
+///é€šçŸ¥é”å˜åŒ–
 void UnistorHandler4Zk::_noticeLockChange(){
     CwxMsgBlock* msg = NULL;
     UnistorZkLock* pLock = NULL;
     m_ullVersion++;
     m_lock.m_ullVersion = m_ullVersion;
-    ///Í¨ÖªĞ´Ïß³Ì
+    ///é€šçŸ¥å†™çº¿ç¨‹
     pLock = new UnistorZkLock(m_lock);
     msg = CwxMsgBlockAlloc::malloc(sizeof(pLock));
     memcpy(msg->wr_ptr(), &pLock, sizeof(pLock));
@@ -471,7 +471,7 @@ void UnistorHandler4Zk::_noticeLockChange(){
     msg->event().setSvrId(UnistorApp::SVR_TYPE_RECV_WRITE);
     msg->event().setEvent(EVENT_ZK_LOCK_CHANGE);
     m_pApp->getWriteTheadPool()->appendHead(msg);
-    ///Í¨Öª×ª·¢Ïß³Ì
+    ///é€šçŸ¥è½¬å‘çº¿ç¨‹
     pLock = new UnistorZkLock(m_lock);
     msg = CwxMsgBlockAlloc::malloc(sizeof(pLock));
     memcpy(msg->wr_ptr(), &pLock, sizeof(pLock));
@@ -479,7 +479,7 @@ void UnistorHandler4Zk::_noticeLockChange(){
     msg->event().setSvrId(UnistorApp::SVR_TYPE_TRANSFER);
     msg->event().setEvent(EVENT_ZK_LOCK_CHANGE);
     m_pApp->getTransThreadPool()->appendHead(msg);
-    ///Í¨ÖªrecieveÏß³Ì
+    ///é€šçŸ¥recieveçº¿ç¨‹
     CwxThreadPool** pools = m_pApp->getRecvThreadPools();
     for (CWX_UINT32 i=0; i<m_pApp->getConfig().getCommon().m_uiThreadNum; i++){
         pLock = new UnistorZkLock(m_lock);
@@ -494,7 +494,7 @@ void UnistorHandler4Zk::_noticeLockChange(){
 
 
 int UnistorHandler4Zk::_lock(){
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     CWX_INFO(("Lock..................."));
     if (0 != m_zkLocker->lock(ZkLocker::ZK_WATCH_TYPE_ROOT)){
@@ -505,7 +505,7 @@ int UnistorHandler4Zk::_lock(){
     return 0;
 }
 
-///zkµÄÈÏÖ¤µÄ»Øµ÷º¯Êı
+///zkçš„è®¤è¯çš„å›è°ƒå‡½æ•°
 void UnistorHandler4Zk::zk_auth_callback(int rc, const void *data){
     UnistorHandler4Zk* zk = (UnistorHandler4Zk*) data;
     CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
@@ -514,7 +514,7 @@ void UnistorHandler4Zk::zk_auth_callback(int rc, const void *data){
     zk->m_pApp->getZkThreadPool()->append(msg);
 }
 
-///zk½Úµã±ä¸üµÄwatch»Øµ÷º¯Êı
+///zkèŠ‚ç‚¹å˜æ›´çš„watchå›è°ƒå‡½æ•°
 void UnistorHandler4Zk::nodeDataWatcher(zhandle_t *, int , int , const char *, void* context)
 {
     UnistorHandler4Zk* zk = (UnistorHandler4Zk*) context;
@@ -525,7 +525,7 @@ void UnistorHandler4Zk::nodeDataWatcher(zhandle_t *, int , int , const char *, v
 }
 
 
-///ËøµÄ»Øµ÷º¯Êı
+///é”çš„å›è°ƒå‡½æ•°
 void UnistorHandler4Zk::lock_complete(bool , void* context){
     UnistorHandler4Zk* zk = (UnistorHandler4Zk*) context;
     CwxMsgBlock* msg = CwxMsgBlockAlloc::malloc(0);
@@ -535,7 +535,7 @@ void UnistorHandler4Zk::lock_complete(bool , void* context){
 }
 
 
-///ÄÚ²¿µÄwacher function
+///å†…éƒ¨çš„wacher function
 void UnistorHandler4Zk::watcher(zhandle_t *,
                                 int type,
                                 int state,
@@ -584,9 +584,9 @@ void UnistorHandler4Zk::watcher(zhandle_t *,
     }
 }
 
-///ÉèÖÃhostµÄĞÅÏ¢
+///è®¾ç½®hostçš„ä¿¡æ¯
 int UnistorHandler4Zk::_setHostInfo(){
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     string strNode = m_strHostNode + "/" + m_pApp->getConfig().getCommon().m_strHost;
     char szTmp[128];
@@ -597,7 +597,7 @@ int UnistorHandler4Zk::_setHostInfo(){
         CwxCommon::toString(m_pApp->getStore()->getBinLogMgr()->getMaxSid(), szSid, 10),
         m_pApp->getStore()->getBinLogMgr()->getMaxTimestamp());
     int ret = m_zk->setNodeData(strNode, szTmp, strlen(szTmp));
-    if (0 == ret){///´´½¨½Úµã
+    if (0 == ret){///åˆ›å»ºèŠ‚ç‚¹
         ret = m_zk->createNode(strNode, "", 0);
         if (-1 == ret){
             CWX_ERROR(("Failure to create node:%s, err=%s", strNode.c_str(), m_zk->getErrMsg()));
@@ -615,9 +615,9 @@ int UnistorHandler4Zk::_setHostInfo(){
     return -1;
 }
 
-///ÉèÖÃmasterµÄĞÅÏ¢
+///è®¾ç½®masterçš„ä¿¡æ¯
 int UnistorHandler4Zk::_setMasterInfo(){
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     string strNode = m_strMasterNode;
     string strTime;
@@ -638,7 +638,7 @@ int UnistorHandler4Zk::_setMasterInfo(){
         CwxCommon::toString(ullMaxSid, szSid1, 10),
         CwxDate::getDateY4MDHMS2(m_pApp->getStore()->getBinLogMgr()->getMaxTimestamp(), strTime).c_str());
     int ret = m_zk->setNodeData(strNode, szTmp, strlen(szTmp));
-    if (0 == ret){///´´½¨½Úµã
+    if (0 == ret){///åˆ›å»ºèŠ‚ç‚¹
         ret = m_zk->createNode(strNode, szTmp, strlen(szTmp));
         if (-1 == ret){
             CWX_ERROR(("Failure to create master node:%s, err=%s", strNode.c_str(), m_zk->getErrMsg()));
@@ -656,12 +656,12 @@ int UnistorHandler4Zk::_setMasterInfo(){
     return -1;
 }
 
-///»ñÈ¡hostµÄĞÅÏ¢£¬0£º³É¹¦£»-1£ºÊ§°Ü
+///è·å–hostçš„ä¿¡æ¯ï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 int UnistorHandler4Zk::_getHostInfo(char const* szHost,
                                     CWX_UINT64& ullSid,
                                     CWX_UINT32& uiTimeStamp)
 {
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     string strNode = m_strHostNode + "/" + szHost;
     char szTmp[128];
@@ -689,7 +689,7 @@ int UnistorHandler4Zk::_getHostInfo(char const* szHost,
     }
     return -1;
 }
-///»ñÈ¡masterµÄĞÅÏ¢
+///è·å–masterçš„ä¿¡æ¯
 int UnistorHandler4Zk::_getMasterInfo(string& strMaster,
                                       CWX_UINT64& ullMasterSid,
                                       CWX_UINT64& ullSid,
@@ -700,7 +700,7 @@ int UnistorHandler4Zk::_getMasterInfo(string& strMaster,
     ullSid = 0;
     strTimeStamp.erase();
 
-    if (!m_bInit) return 0; ///Èç¹ûÃ»ÓĞinit£¬ÔòºöÂÔ
+    if (!m_bInit) return 0; ///å¦‚æœæ²¡æœ‰initï¼Œåˆ™å¿½ç•¥
     if (!m_zk) return 0;
     string strNode = m_strMasterNode;
     char szTmp[512];

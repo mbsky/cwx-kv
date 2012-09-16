@@ -1,4 +1,4 @@
-#ifndef __COUNTER_EVENT_HANDLER_H__
+ï»¿#ifndef __COUNTER_EVENT_HANDLER_H__
 #define __COUNTER_EVENT_HANDLER_H__
 
 #include "CwxCommander.h"
@@ -7,7 +7,7 @@
 CWINUX_USING_NAMESPACE
 
 class CounterBenchApp;
-///counterÇëÇóµÄ´¦Àíhandle£¬ÎªcommandµÄhandle
+///counterè¯·æ±‚çš„å¤„ç†handleï¼Œä¸ºcommandçš„handle
 class CounterEventHandler : public CwxCmdOp 
 {
 public:
@@ -15,33 +15,33 @@ public:
         COUNTER_BUF_SIZE=1024 * 1024
     };
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     CounterEventHandler(CounterBenchApp* pApp);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~CounterEventHandler(){
     }
 public:
-	///Á¬½Ó½¨Á¢
+	///è¿æ¥å»ºç«‹
 	virtual int onConnCreated(CwxMsgBlock*& msg, CwxTss* pThrEnv);
-    ///ÊÕµ½echoÇëÇóµÄ´¦Àíº¯Êı
-    virtual int onRecvMsg(CwxMsgBlock*& msg,///<echoÊı¾İ°ü¼°Ïà¹ØµÄÇëÇóÁ¬½ÓĞÅÏ¢
-                            CwxTss* pThrEnv///<´¦ÀíÏß³ÌµÄthread-specific-store
+    ///æ”¶åˆ°echoè¯·æ±‚çš„å¤„ç†å‡½æ•°
+    virtual int onRecvMsg(CwxMsgBlock*& msg,///<echoæ•°æ®åŒ…åŠç›¸å…³çš„è¯·æ±‚è¿æ¥ä¿¡æ¯
+                            CwxTss* pThrEnv///<å¤„ç†çº¿ç¨‹çš„thread-specific-store
                             );
 private:
-	//·¢ËÍechoÇëÇó
+	//å‘é€echoè¯·æ±‚
 	void sendNextMsg(UnistorTss* tss,
         CWX_UINT32 uiSvrId,
         CWX_UINT32 uiHostId,
         CWX_UINT32 uiConnId);
-	//»ñÈ¡key
+	//è·å–key
 	void getKey(CWX_UINT32 uiKey, char* szKey);
 private:
-    CounterBenchApp*  m_pApp;  ///<app¶ÔÏó
-    char             m_szBuf[COUNTER_BUF_SIZE]; ///<·¢ËÍµÄÊı¾İbuf¼°ÄÚÈİ
-    CWX_UINT32       m_uiBufLen; ///<bufÖĞÊı¾İµÄ³¤¶Ì
-	CWX_UINT32      m_uiSendNum;///<·¢ËÍÇëÇóµÄÊıÁ¿
-	CWX_UINT32      m_uiRecvNum;///<½ÓÊÕµ½»Ø¸´µÄÊıÁ¿
-	CWX_UINT32		m_uiSuccessNum; ///<³É¹¦µÄÊıÁ¿
+    CounterBenchApp*  m_pApp;  ///<appå¯¹è±¡
+    char             m_szBuf[COUNTER_BUF_SIZE]; ///<å‘é€çš„æ•°æ®bufåŠå†…å®¹
+    CWX_UINT32       m_uiBufLen; ///<bufä¸­æ•°æ®çš„é•¿çŸ­
+	CWX_UINT32      m_uiSendNum;///<å‘é€è¯·æ±‚çš„æ•°é‡
+	CWX_UINT32      m_uiRecvNum;///<æ¥æ”¶åˆ°å›å¤çš„æ•°é‡
+	CWX_UINT32		m_uiSuccessNum; ///<æˆåŠŸçš„æ•°é‡
 };
 
 #endif 

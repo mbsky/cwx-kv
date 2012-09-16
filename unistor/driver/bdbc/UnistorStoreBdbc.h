@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_STORE_BDBC_H__
+ï»¿#ifndef __UNISTOR_STORE_BDBC_H__
 #define __UNISTOR_STORE_BDBC_H__
 
 
@@ -11,68 +11,68 @@
 #include <db.h>
 #include "UnistorStoreBase.h"
 
-///ÅäÖÃÎÄ¼ş
+///é…ç½®æ–‡ä»¶
 /****
 [bdbc]
-env_home=/data3/bdb_home      #bdbµÄhomeÄ¿Â¼
-db_path=/data4/bdb_data       #bdbµÄÊı¾İÄ¿Â¼
-compress=no                   #ÊÇ·ğÑ¹Ëõ
-cache_msize=8192              #cacheµÄ´óĞ¡
-page_ksize = 32               #bdb pageµÄ´óĞ¡
-key_type=int32/int64/int128/int256/char #keyµÄÀàĞÍ£¬¶ÔÓÚÊı×ÖÀàĞÍ£¬È«²¿ÊÇÎŞ·ûºÅÕûÊı
-int32_hex=yes/no              #ÊÇ·ñ½«·µ»ØÖµÄ¬ÈÏ10½øÖÆ¸ÄÎª16½øÖÆ
-int64_hex=yes/no              #ÊÇ·ñ½«·µ»ØÖµÄ¬ÈÏ16½øÖÆ¸ÄÎª10½øÖÆ
-hex_upper=yes/no              #¶ÔÓÚ·µ»ØµÄhex½øÖÆÊı×ÖÊÇ·ñÎª´óĞ´£¬Ä¬ÈÏÎªĞ¡Ğ´
-group_start_time_bit = 4      #»ùÓÚ32Î»groupµÄÊı¾İÎÄ¼ş·Ö×éµÄ¿ªÊ¼Î»£¬´Ó0¿ªÊ¼±íÊ¾bit0¡£
-group_end_time_bit =7         #»ùÓÚ32Î»groupµÄÊı¾İÎÄ¼ş·Ö×éµÄ½áÊøÎ»£¬7±íÊ¾[4,7]¹¤4Î»¡£
-counter_def_file =/data4/bdb_data/counter.def #counterµÄ¶¨ÒåÎÄ¼ş
+env_home=/data3/bdb_home      #bdbçš„homeç›®å½•
+db_path=/data4/bdb_data       #bdbçš„æ•°æ®ç›®å½•
+compress=no                   #æ˜¯ä½›å‹ç¼©
+cache_msize=8192              #cacheçš„å¤§å°
+page_ksize = 32               #bdb pageçš„å¤§å°
+key_type=int32/int64/int128/int256/char #keyçš„ç±»å‹ï¼Œå¯¹äºæ•°å­—ç±»å‹ï¼Œå…¨éƒ¨æ˜¯æ— ç¬¦å·æ•´æ•°
+int32_hex=yes/no              #æ˜¯å¦å°†è¿”å›å€¼é»˜è®¤10è¿›åˆ¶æ”¹ä¸º16è¿›åˆ¶
+int64_hex=yes/no              #æ˜¯å¦å°†è¿”å›å€¼é»˜è®¤16è¿›åˆ¶æ”¹ä¸º10è¿›åˆ¶
+hex_upper=yes/no              #å¯¹äºè¿”å›çš„hexè¿›åˆ¶æ•°å­—æ˜¯å¦ä¸ºå¤§å†™ï¼Œé»˜è®¤ä¸ºå°å†™
+group_start_time_bit = 4      #åŸºäº32ä½groupçš„æ•°æ®æ–‡ä»¶åˆ†ç»„çš„å¼€å§‹ä½ï¼Œä»0å¼€å§‹è¡¨ç¤ºbit0ã€‚
+group_end_time_bit =7         #åŸºäº32ä½groupçš„æ•°æ®æ–‡ä»¶åˆ†ç»„çš„ç»“æŸä½ï¼Œ7è¡¨ç¤º[4,7]å·¥4ä½ã€‚
+counter_def_file =/data4/bdb_data/counter.def #counterçš„å®šä¹‰æ–‡ä»¶
 ****/
 
-/***********************************bdbcÒıÇæËµÃ÷*******************************/
-//1¡¢key£º¿ÉÒÔÎªint32¡¢int64¡¢int128¡¢int256¡¢char¡£
-//        ¶ÔÓÚ²»Í¬µÄkeyÀàĞÍ£¬group¶ÔÓ¦ÖµÈçÏÂ£º
-//        int32-->¾ÍÊÇgroupÖµ
-//        int64-->µÍ32Î»ÎªgroupÖµ
-//        int128-->µÍ32Î»ÎªgroupÖµ
-//        int256-->µÍ32Î»ÎªgroupÖµ
-//        char-->md5Ç©ÃûµÄµÍ32Î»ÎªgroupÖµ
-//        ¶ÔÓÚ²»Í¬µÄkeyÀàĞÍ£¬hash¶ÔÓ¦ÖµÈçÏÂ
-//        int32-->¾ÍÊÇhashÖµ
-//        int64-->µÍ32Î»ÎªhashÖµ
-//        int128-->µÍ32Î»ÎªhashÖµ
-//        int256-->µÍ32Î»ÎªhashÖµ
-//        char-->md5Ç©ÃûµÄµÍ32Î»ÎªhashÖµ
-//2¡¢keyµÄ´«µİ
-//        int32-->¿ÉÒÔÎª10½øÖÆ£¬Ò²¿ÉÒÔÎª16½øÖÆ£¬16½øÖÆÒÔ0x¿ªÍ·¡£·µ»ØÊ±Ä¬ÈÏÊÇ10½øÖÆ£¬¿ÉÒÔÅäÖÃÎª16½øÖÆ¡£
-//        int64-->¿ÉÒÔÎª10½øÖÆ£¬Ò²¿ÉÒÔÎª16½øÖÆ£¬16½øÖÆÒÔ0x¿ªÍ·¡£·µ»ØÊ±Ä¬ÈÏÊÇ16½øÖÆ£¬¿ÉÒÔÅäÖÃÎª10½øÖÆ¡£
-//        int128-->16½øÖÆµÄ×Ö·û´®£¬ÎŞĞè0x¿ªÍ·¡£·µ»ØÊ±ÊÇ16½øÖÆ
-//        int256-->16½øÖÆµÄ×Ö·û´®£¬ÎŞĞè0x¿ªÍ·¡£·µ»ØÊ±ÊÇ16½øÖÆ
+/***********************************bdbcå¼•æ“è¯´æ˜*******************************/
+//1ã€keyï¼šå¯ä»¥ä¸ºint32ã€int64ã€int128ã€int256ã€charã€‚
+//        å¯¹äºä¸åŒçš„keyç±»å‹ï¼Œgroupå¯¹åº”å€¼å¦‚ä¸‹ï¼š
+//        int32-->å°±æ˜¯groupå€¼
+//        int64-->ä½32ä½ä¸ºgroupå€¼
+//        int128-->ä½32ä½ä¸ºgroupå€¼
+//        int256-->ä½32ä½ä¸ºgroupå€¼
+//        char-->md5ç­¾åçš„ä½32ä½ä¸ºgroupå€¼
+//        å¯¹äºä¸åŒçš„keyç±»å‹ï¼Œhashå¯¹åº”å€¼å¦‚ä¸‹
+//        int32-->å°±æ˜¯hashå€¼
+//        int64-->ä½32ä½ä¸ºhashå€¼
+//        int128-->ä½32ä½ä¸ºhashå€¼
+//        int256-->ä½32ä½ä¸ºhashå€¼
+//        char-->md5ç­¾åçš„ä½32ä½ä¸ºhashå€¼
+//2ã€keyçš„ä¼ é€’
+//        int32-->å¯ä»¥ä¸º10è¿›åˆ¶ï¼Œä¹Ÿå¯ä»¥ä¸º16è¿›åˆ¶ï¼Œ16è¿›åˆ¶ä»¥0xå¼€å¤´ã€‚è¿”å›æ—¶é»˜è®¤æ˜¯10è¿›åˆ¶ï¼Œå¯ä»¥é…ç½®ä¸º16è¿›åˆ¶ã€‚
+//        int64-->å¯ä»¥ä¸º10è¿›åˆ¶ï¼Œä¹Ÿå¯ä»¥ä¸º16è¿›åˆ¶ï¼Œ16è¿›åˆ¶ä»¥0xå¼€å¤´ã€‚è¿”å›æ—¶é»˜è®¤æ˜¯16è¿›åˆ¶ï¼Œå¯ä»¥é…ç½®ä¸º10è¿›åˆ¶ã€‚
+//        int128-->16è¿›åˆ¶çš„å­—ç¬¦ä¸²ï¼Œæ— éœ€0xå¼€å¤´ã€‚è¿”å›æ—¶æ˜¯16è¿›åˆ¶
+//        int256-->16è¿›åˆ¶çš„å­—ç¬¦ä¸²ï¼Œæ— éœ€0xå¼€å¤´ã€‚è¿”å›æ—¶æ˜¯16è¿›åˆ¶
 
-//2¡¢¶ÔÓÚÊı¾İ£¬bdbÄÚ²¿´æ´¢µÄÎª[¼ÆÊıÆ÷1][¼ÆÊıÆ÷2]...[version].
-//     ¼ÆÊıÆ÷µÄ¸ñÊ½Îª£º[Ò»¸ö×Ö·ûµÄ¼ÆÊıÆ÷Ãû×Ö][32Î»µÄ¼ÆÊıÖµ]¹²5¸ö×Ö½Ú
-//     version£ºÎª32Î»µÄÕûÊı¡£
-//3¡¢¶ÔÓÚ¼ÆÊıÆ÷Îª0µÄ¼ÆÊıÆ÷£¬ÏµÍ³»á×Ô¶¯É¾³ı¡£
-//4¡¢Èô»ñÈ¡keyµÄÒ»¸öÖ¸¶¨µÄ¼ÆÊıÆ÷£¬Ôò·µ»Ø¼ÆÊıÆ÷µÄÊıÖµ£¬Îª10½øÖÆ±íÊ¾¡£
-//5¡¢Èô»ñÈ¡keyµÄ¶à¸ö¼ÆÊıÆ÷£¬Ôò·µ»ØµÄ¸ñÊ½Îª£º[¼ÆÊıÆ÷1Ãû×Ö=ÊıÖµ];[¼ÆÊıÆ÷2Ãû×Ö=ÊıÖµ].....
-//     Ò»¸ö¼ÆÊıÆ÷ÄÚ£¬Ãû×ÖÓëÊıÖµÍ¨¹ı¡¾=¡¿·Ö¸î£¬Êı×ÖÎª10½øÖÆµÄ×Ö·û´®
-//     ¶à¸ö¼ÆÊıÆ÷¼äÍ¨¹ı¡¾;¡¿·Ö¸î¡£
-//7¡¢ÔÚÒ»¸öÊµÀıÄÚ²¿£¬¼ÆÊıÆ÷»á²ÉÓÃ2^[group_end_time_bit - group_start_time_bit + 1]¸öbdbÎÄ¼ş´æ´¢¡£
-//   Ã¿¸öÎÄ¼şµÄÃû×ÖÎªbdbc.¿ªÊ¼bit-·Ö×éÊı-0.dat, bdbc.¿ªÊ¼bit-·Ö×éÊı-1.dat.....µÄÎÄ¼ş´æ´¢¡£
-//   Ã¿¸öÎÄ¼ş´æ·ÅµÄÊÇ¶ÔÓ¦µÄ[2^group_start_time_bit]ÃëÄÚµÄÊı¾İ¡£group_start_time_bitÊÇÓÃÀ´Íâ²¿·Ö×éµÄ¡£
-//   ·Ö×éÒ»µ©ÆôÓÃ²»ÄÜĞŞ¸Ä
-//8¡¢ÏµÍ³´æÔÚÒ»¸öÏµÍ³Êı¾İ¿â.bdbc.sys£¬Æä±£»¤ÈçÏÂµÄkey£º
-//   sid:µ±Ç°ÒÑ¾­commitµÄsidµÄÖµ
-//   group_start_time_bit:¿ªÊ¼µÄÊ±¼äÎ»
-//   group_end_time_bit:½áÊøÊ±¼äÎ»
-/********************Ğ´±ØĞëµ¥Ïß³Ì*************************/
-#define  BDBC_MIN_READ_CACHE_MSIZE   128            ///<×îĞ¡¶Ácache
-#define  BDBC_MAX_READ_CACHE_MSIZE   (64 * 1024)   ///<×î´ó¶Ácache
+//2ã€å¯¹äºæ•°æ®ï¼Œbdbå†…éƒ¨å­˜å‚¨çš„ä¸º[è®¡æ•°å™¨1][è®¡æ•°å™¨2]...[version].
+//     è®¡æ•°å™¨çš„æ ¼å¼ä¸ºï¼š[ä¸€ä¸ªå­—ç¬¦çš„è®¡æ•°å™¨åå­—][32ä½çš„è®¡æ•°å€¼]å…±5ä¸ªå­—èŠ‚
+//     versionï¼šä¸º32ä½çš„æ•´æ•°ã€‚
+//3ã€å¯¹äºè®¡æ•°å™¨ä¸º0çš„è®¡æ•°å™¨ï¼Œç³»ç»Ÿä¼šè‡ªåŠ¨åˆ é™¤ã€‚
+//4ã€è‹¥è·å–keyçš„ä¸€ä¸ªæŒ‡å®šçš„è®¡æ•°å™¨ï¼Œåˆ™è¿”å›è®¡æ•°å™¨çš„æ•°å€¼ï¼Œä¸º10è¿›åˆ¶è¡¨ç¤ºã€‚
+//5ã€è‹¥è·å–keyçš„å¤šä¸ªè®¡æ•°å™¨ï¼Œåˆ™è¿”å›çš„æ ¼å¼ä¸ºï¼š[è®¡æ•°å™¨1åå­—=æ•°å€¼];[è®¡æ•°å™¨2åå­—=æ•°å€¼].....
+//     ä¸€ä¸ªè®¡æ•°å™¨å†…ï¼Œåå­—ä¸æ•°å€¼é€šè¿‡ã€=ã€‘åˆ†å‰²ï¼Œæ•°å­—ä¸º10è¿›åˆ¶çš„å­—ç¬¦ä¸²
+//     å¤šä¸ªè®¡æ•°å™¨é—´é€šè¿‡ã€;ã€‘åˆ†å‰²ã€‚
+//7ã€åœ¨ä¸€ä¸ªå®ä¾‹å†…éƒ¨ï¼Œè®¡æ•°å™¨ä¼šé‡‡ç”¨2^[group_end_time_bit - group_start_time_bit + 1]ä¸ªbdbæ–‡ä»¶å­˜å‚¨ã€‚
+//   æ¯ä¸ªæ–‡ä»¶çš„åå­—ä¸ºbdbc.å¼€å§‹bit-åˆ†ç»„æ•°-0.dat, bdbc.å¼€å§‹bit-åˆ†ç»„æ•°-1.dat.....çš„æ–‡ä»¶å­˜å‚¨ã€‚
+//   æ¯ä¸ªæ–‡ä»¶å­˜æ”¾çš„æ˜¯å¯¹åº”çš„[2^group_start_time_bit]ç§’å†…çš„æ•°æ®ã€‚group_start_time_bitæ˜¯ç”¨æ¥å¤–éƒ¨åˆ†ç»„çš„ã€‚
+//   åˆ†ç»„ä¸€æ—¦å¯ç”¨ä¸èƒ½ä¿®æ”¹
+//8ã€ç³»ç»Ÿå­˜åœ¨ä¸€ä¸ªç³»ç»Ÿæ•°æ®åº“.bdbc.sysï¼Œå…¶ä¿æŠ¤å¦‚ä¸‹çš„keyï¼š
+//   sid:å½“å‰å·²ç»commitçš„sidçš„å€¼
+//   group_start_time_bit:å¼€å§‹çš„æ—¶é—´ä½
+//   group_end_time_bit:ç»“æŸæ—¶é—´ä½
+/********************å†™å¿…é¡»å•çº¿ç¨‹*************************/
+#define  BDBC_MIN_READ_CACHE_MSIZE   128            ///<æœ€å°è¯»cache
+#define  BDBC_MAX_READ_CACHE_MSIZE   (64 * 1024)   ///<æœ€å¤§è¯»cache
 
-#define  BDBC_MIN_WRITE_CACHE_MSIZE  8             ///<×îĞ¡Ğ´cache
-#define  BDBC_MAX_WRITE_CACHE_MSIZE  128           ///<×î´óĞ´cache
+#define  BDBC_MIN_WRITE_CACHE_MSIZE  8             ///<æœ€å°å†™cache
+#define  BDBC_MAX_WRITE_CACHE_MSIZE  128           ///<æœ€å¤§å†™cache
 
-#define  BDBC_MIN_READ_CACHE_KEY_NUM   100000     ///<¶ÁcacheµÄ×î¶àkeyµÄÊıÁ¿
-#define  BDBC_MAX_READ_CACHE_KEY_NUM   1600000000  ///<¶ÁcacheµÄ×î¶àkeyµÄÊıÁ¿
+#define  BDBC_MIN_READ_CACHE_KEY_NUM   100000     ///<è¯»cacheçš„æœ€å¤škeyçš„æ•°é‡
+#define  BDBC_MAX_READ_CACHE_KEY_NUM   1600000000  ///<è¯»cacheçš„æœ€å¤škeyçš„æ•°é‡
 
 
 #define  BDBC_KEY_GROUP_START_TIME_BIT  "bdbc_group_start_time_bit"
@@ -82,59 +82,59 @@ counter_def_file =/data4/bdb_data/counter.def #counterµÄ¶¨ÒåÎÄ¼ş
 
 #define  BDBC_MAX_COUNTER_VALUE         0xFFFFFFFF 
 
-#define  BDBC_KEY_COUNTER_SPLIT_CHR      ';'     ///<¼ÆÊıÆ÷µÄ·Ö¸î×Ö·û
+#define  BDBC_KEY_COUNTER_SPLIT_CHR      ';'     ///<è®¡æ•°å™¨çš„åˆ†å‰²å­—ç¬¦
 
-#define  BDBC_DATA_FILE_FORMAT           "bdbc.%u-%u-%u.dat"  ///<Êı¾İÎÄ¼şµÄformat×Ö·û´®£¬Èı¸ö%·Ö±ğÊÇ·Ö×éµÄ¿ªÊ¼Î»¡¢·Ö×éÊıÁ¿¡¢ËùÊô·Ö×é
-#define  BDBC_SYS_FILE_NAME              ".bdbc.sys"   ///<ÏµÍ³bdbÎÄ¼şÃû
-#define  BDBC_KEY_VERSION                "version"  ///<°æ±¾ºÅ
-#define  BDBC_SYS_COUNTER_VERSION        "counter_version"  ///<°æ±¾ºÅ
+#define  BDBC_DATA_FILE_FORMAT           "bdbc.%u-%u-%u.dat"  ///<æ•°æ®æ–‡ä»¶çš„formatå­—ç¬¦ä¸²ï¼Œä¸‰ä¸ª%åˆ†åˆ«æ˜¯åˆ†ç»„çš„å¼€å§‹ä½ã€åˆ†ç»„æ•°é‡ã€æ‰€å±åˆ†ç»„
+#define  BDBC_SYS_FILE_NAME              ".bdbc.sys"   ///<ç³»ç»Ÿbdbæ–‡ä»¶å
+#define  BDBC_KEY_VERSION                "version"  ///<ç‰ˆæœ¬å·
+#define  BDBC_SYS_COUNTER_VERSION        "counter_version"  ///<ç‰ˆæœ¬å·
 
-#define BDBC_ENGINE_KEY_TYPE_INT32       "int32"    ///<int32ÀàĞÍµÄkey
-#define BDBC_ENGINE_KEY_TYPE_INT64       "int64"    ///<int64ÀàĞÍµÄkey
-#define BDBC_ENGINE_KEY_TYPE_INT128      "int128"   ///<int128ÀàĞÍµÄkey
-#define BDBC_ENGINE_KEY_TYPE_INT256      "int256"   ///<int256ÀàĞÍµÄkey
-#define BDBC_ENGINE_KEY_TYPE_CHAR        "char"     ///<charÀàĞÍµÄkey
+#define BDBC_ENGINE_KEY_TYPE_INT32       "int32"    ///<int32ç±»å‹çš„key
+#define BDBC_ENGINE_KEY_TYPE_INT64       "int64"    ///<int64ç±»å‹çš„key
+#define BDBC_ENGINE_KEY_TYPE_INT128      "int128"   ///<int128ç±»å‹çš„key
+#define BDBC_ENGINE_KEY_TYPE_INT256      "int256"   ///<int256ç±»å‹çš„key
+#define BDBC_ENGINE_KEY_TYPE_CHAR        "char"     ///<charç±»å‹çš„key
 
 #define  BDBC_HEX_64_ZERO                "000000000000000000000000000000000000000000000000000000000000000000"
-///ÒıÇæ¼ÓÔØº¯Êı
+///å¼•æ“åŠ è½½å‡½æ•°
 extern "C" {
 	UnistorStoreBase* unistor_create_engine();
 }
 
-///keyµÄgroupº¯Êı¡£
+///keyçš„groupå‡½æ•°ã€‚
 typedef int (*BDBC_KEY_CMP_LESS_FN)(DB *, const DBT *a, const DBT *b);
 
-///¼ÆÊıÆ÷µÄkey¶¨Òå
+///è®¡æ•°å™¨çš„keyå®šä¹‰
 struct UnistorBdbcKey{
 public:
     enum{
-        BDBC_KEY_TYPE_UNKNOWN = 0, ///<Î´ÖªkeyÀàĞÍ
-        BDBC_KEY_TYPE_INT32 = 1,  ///<32Î»Êı×ÖµÄkeyÀàĞÍ
-        BDBC_KEY_TYPE_INT64 = 2,  ///<64Î»Êı×ÖµÄkeyÀàĞÍ
-        BDBC_KEY_TYPE_INT128 = 3, ///<128Î»Êı×ÖµÄkeyÀàĞÍ
-        BDBC_KEY_TYPE_INT256 = 5, ///<256Î»Êı×ÖµÄkeyÀàĞÍ
-        BDBC_KEY_TYPE_CHAR   = 6  ///<×Ö·û´®µÄkeyÀàĞÍ
+        BDBC_KEY_TYPE_UNKNOWN = 0, ///<æœªçŸ¥keyç±»å‹
+        BDBC_KEY_TYPE_INT32 = 1,  ///<32ä½æ•°å­—çš„keyç±»å‹
+        BDBC_KEY_TYPE_INT64 = 2,  ///<64ä½æ•°å­—çš„keyç±»å‹
+        BDBC_KEY_TYPE_INT128 = 3, ///<128ä½æ•°å­—çš„keyç±»å‹
+        BDBC_KEY_TYPE_INT256 = 5, ///<256ä½æ•°å­—çš„keyç±»å‹
+        BDBC_KEY_TYPE_CHAR   = 6  ///<å­—ç¬¦ä¸²çš„keyç±»å‹
     };
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorBdbcKey():m_szKey(NULL), m_unKeyLen(0){
     }
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorBdbcKey(char const* szKey, CWX_UINT16 unKeyLen)
         :m_szKey(szKey), m_unKeyLen(unKeyLen)
     {
     }
 public:    
-    ///Çå¿ÕÊı¾İ
+    ///æ¸…ç©ºæ•°æ®
     void reset(){
         m_szKey = NULL;
         m_unKeyLen = 0;
     }
-    ///ÊÇ·ñkeyĞèÒª±àÂë;·µ»ØÖµ£ºtrue£ºĞèÒª±àÂë£»false£º²»ĞèÒª±àÂë
+    ///æ˜¯å¦keyéœ€è¦ç¼–ç ;è¿”å›å€¼ï¼štrueï¼šéœ€è¦ç¼–ç ï¼›falseï¼šä¸éœ€è¦ç¼–ç 
     inline static bool isNeedEncode(){ return BDBC_KEY_TYPE_CHAR != m_ucKeyType;}
-    ///ÊÇ·ñkeyĞèÒª½âÂë;·µ»ØÖµ£ºtrue£ºĞèÒª±àÂë£»false£º²»ĞèÒª±àÂë
+    ///æ˜¯å¦keyéœ€è¦è§£ç ;è¿”å›å€¼ï¼štrueï¼šéœ€è¦ç¼–ç ï¼›falseï¼šä¸éœ€è¦ç¼–ç 
     inline static bool isNeedDecode(){ return BDBC_KEY_TYPE_CHAR != m_ucKeyType;}
-    ///´ÓasciiĞÎ³ÉÒ»¸ökey¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü
+    ///ä»asciiå½¢æˆä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
     inline static bool encode(char const* szAsciiKey, CWX_UINT16 unKeyLen,  char* szBuf, CWX_UINT16& unBufLen, char* szErr2K){
         CWX_UINT32 uiValue=0;
         CWX_UINT64 ullValue=0;
@@ -189,7 +189,7 @@ public:
         if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "Key type[%u] needn't encode.");
         return false;
     }
-    ///´Óstore keyĞÎ³ÉkeyµÄascii¡£·µ»ØÖµ£ºtrue£º³É¹¦£»false£ºÊ§°Ü
+    ///ä»store keyå½¢æˆkeyçš„asciiã€‚è¿”å›å€¼ï¼štrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
     inline static bool decode(char const* szStoreKey, CWX_UINT16 ,  char* szBuf, CWX_UINT16& unBufLen, char* szErr2K){
         CWX_UINT32 uiValue=0;
         CWX_UINT64 ullValue=0;
@@ -228,44 +228,44 @@ public:
     }
 
 public:
-    char const*            m_szKey; ///<keyµÄÄÚ´æÖ¸Õë£¬ÓÉÍâ±ß¸³Öµ
-    CWX_UINT32             m_uiGroup; ///<keyµÄgroup
-    CWX_UINT16             m_unKeyLen; ///<keyµÄ³¤¶È
-    static  CWX_UINT8      m_ucKeyType; ///<keyµÄÀàĞÍ
-    static  CWX_UINT8      m_ucBase;   ///<¶ÔÓÚINT32¡¢INT64·µ»ØÖµµÄ½øÖÆ¡£
-    static  bool           m_bUpperHex; ///<¶ÔÓÚ·µ»ØµÄ16½øÖÆÊÇ·ñ´óĞ´
-    static  UNISTOR_KEY_CMP_EQUAL_FN   m_storeKeyEqualFn; ///<´æ´¢ÀàĞÍkeyµÄÏàµÈ±È½Ïº¯Êı
-    static  UNISTOR_KEY_CMP_LESS_FN    m_storeKeyLessFn; ///<´æ´¢ÀàĞÍkeyµÄless±È½Ïº¯Êı
-    static  UNISTOR_KEY_HASH_FN        m_storeKeyHashFn; ///<´æ´¢ÀàĞÍkeyµÄhashº¯Êı
-    static  UNISTOR_KEY_GROUP_FN       m_storeKeyGroupFn; ///<´æ´¢ÀàĞÍkeyµÄgroupº¯Êı
-    static  UNISTOR_KEY_CMP_EQUAL_FN   m_asciiKeyEqualFn; ///<asciiÀàĞÍkeyµÄÏàµÈ±È½Ïº¯Êı
-    static  UNISTOR_KEY_CMP_LESS_FN    m_asciiKeyLessFn;  ///<asciiÀàĞÍkeyµÄlessº¯Êı
-    static  UNISTOR_KEY_GROUP_FN       m_asciiKeyGroupFn; ///<asciiÀàĞÍkeyµÄgroupº¯Êı
-    static  BDBC_KEY_CMP_LESS_FN       m_bdbKeyLessFn; ///<bdbµÄ±È½Ïº¯Êı
+    char const*            m_szKey; ///<keyçš„å†…å­˜æŒ‡é’ˆï¼Œç”±å¤–è¾¹èµ‹å€¼
+    CWX_UINT32             m_uiGroup; ///<keyçš„group
+    CWX_UINT16             m_unKeyLen; ///<keyçš„é•¿åº¦
+    static  CWX_UINT8      m_ucKeyType; ///<keyçš„ç±»å‹
+    static  CWX_UINT8      m_ucBase;   ///<å¯¹äºINT32ã€INT64è¿”å›å€¼çš„è¿›åˆ¶ã€‚
+    static  bool           m_bUpperHex; ///<å¯¹äºè¿”å›çš„16è¿›åˆ¶æ˜¯å¦å¤§å†™
+    static  UNISTOR_KEY_CMP_EQUAL_FN   m_storeKeyEqualFn; ///<å­˜å‚¨ç±»å‹keyçš„ç›¸ç­‰æ¯”è¾ƒå‡½æ•°
+    static  UNISTOR_KEY_CMP_LESS_FN    m_storeKeyLessFn; ///<å­˜å‚¨ç±»å‹keyçš„lessæ¯”è¾ƒå‡½æ•°
+    static  UNISTOR_KEY_HASH_FN        m_storeKeyHashFn; ///<å­˜å‚¨ç±»å‹keyçš„hashå‡½æ•°
+    static  UNISTOR_KEY_GROUP_FN       m_storeKeyGroupFn; ///<å­˜å‚¨ç±»å‹keyçš„groupå‡½æ•°
+    static  UNISTOR_KEY_CMP_EQUAL_FN   m_asciiKeyEqualFn; ///<asciiç±»å‹keyçš„ç›¸ç­‰æ¯”è¾ƒå‡½æ•°
+    static  UNISTOR_KEY_CMP_LESS_FN    m_asciiKeyLessFn;  ///<asciiç±»å‹keyçš„lesså‡½æ•°
+    static  UNISTOR_KEY_GROUP_FN       m_asciiKeyGroupFn; ///<asciiç±»å‹keyçš„groupå‡½æ•°
+    static  BDBC_KEY_CMP_LESS_FN       m_bdbKeyLessFn; ///<bdbçš„æ¯”è¾ƒå‡½æ•°
 };
 
 
-///Ò»¸ö¼ÆÊıÆ÷¶ÔÏó¶¨Òå
+///ä¸€ä¸ªè®¡æ•°å™¨å¯¹è±¡å®šä¹‰
 struct UnistorBdbcCounter{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorBdbcCounter(){
         m_uiValue = 0;
         m_ucId = 0;
     }
 public:
-    CWX_UINT32  m_uiValue; ///<¼ÆÊıÖµ
-    CWX_UINT8   m_ucId; ///<¼ÆÊıÆ÷µÄID
+    CWX_UINT32  m_uiValue; ///<è®¡æ•°å€¼
+    CWX_UINT8   m_ucId; ///<è®¡æ•°å™¨çš„ID
 };
 
-///¼ÆÊıÆ÷µÄdata¶ÔÏó£¬ÔÚ´æÈëbdbÊ±»á½øĞĞ±àÂë£¬»ñÈ¡Ê±»á½âÂë
+///è®¡æ•°å™¨çš„dataå¯¹è±¡ï¼Œåœ¨å­˜å…¥bdbæ—¶ä¼šè¿›è¡Œç¼–ç ï¼Œè·å–æ—¶ä¼šè§£ç 
 struct UnistorBdbcData{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorBdbcData(){
         memset(this, 0x00, sizeof(UnistorBdbcData));
     }
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorBdbcData(CWX_UINT32 uiVersion){
         memset(this, 0x00, sizeof(UnistorBdbcData));
         m_uiVersion = uiVersion;
@@ -274,38 +274,38 @@ public:
     void reset(){
         memset(this, 0x00, sizeof(UnistorBdbcData));
     }
-    ///½«Êı¾İ¿Õ¼ä½âÎöÎª¼ÆÊıÆ÷
-    bool decode(unsigned char const* szData, ///<¼ÆÊıÆ÷µÄencodeÊı¾İ
-        CWX_UINT32 uiDataLen, ///<Êı¾İµÄ³¤¶È
-        char* szErr2k=NULL ///<Èô²»Îª¿Õ£¬ÔòÔÚ³ö´íÊ±·µ»Ø³ö´íĞÅÏ¢
+    ///å°†æ•°æ®ç©ºé—´è§£æä¸ºè®¡æ•°å™¨
+    bool decode(unsigned char const* szData, ///<è®¡æ•°å™¨çš„encodeæ•°æ®
+        CWX_UINT32 uiDataLen, ///<æ•°æ®çš„é•¿åº¦
+        char* szErr2k=NULL ///<è‹¥ä¸ä¸ºç©ºï¼Œåˆ™åœ¨å‡ºé”™æ—¶è¿”å›å‡ºé”™ä¿¡æ¯
         );
 
-    ///½«¼ÆÊıÆ÷±àÂëÎªÊı¾İ¿Õ¼ä£¬·µ»ØpackµÄÓĞĞ§¼ÆÊıÆ÷µÄÊıÁ¿¡£ÈôÊ§°ÜÎª-1¡£
-    int encode(unsigned char* szData, ///<encodeµÄÊä³öbuf
-        CWX_UINT32& uiDataLen, ///<ÊäÈëbufµÄ³¤¶È£¬·µ»ØencodeÄÚÈİµÄ³¤¶È
-        char* szErr2k=NULL ///<´íÎóĞÅÏ¢
+    ///å°†è®¡æ•°å™¨ç¼–ç ä¸ºæ•°æ®ç©ºé—´ï¼Œè¿”å›packçš„æœ‰æ•ˆè®¡æ•°å™¨çš„æ•°é‡ã€‚è‹¥å¤±è´¥ä¸º-1ã€‚
+    int encode(unsigned char* szData, ///<encodeçš„è¾“å‡ºbuf
+        CWX_UINT32& uiDataLen, ///<è¾“å…¥bufçš„é•¿åº¦ï¼Œè¿”å›encodeå†…å®¹çš„é•¿åº¦
+        char* szErr2k=NULL ///<é”™è¯¯ä¿¡æ¯
         ) const;
 
-    ///ÊÇ·ñ´æÔÚ¼ÆÊıÆ÷¡£0£º²»´æÔÚ£¬·ñÔò·µ»ØË÷ÒıÖµ
+    ///æ˜¯å¦å­˜åœ¨è®¡æ•°å™¨ã€‚0ï¼šä¸å­˜åœ¨ï¼Œå¦åˆ™è¿”å›ç´¢å¼•å€¼
     inline int isExist(CWX_UINT8 ucId) const{
         if (!ucId) return 0; 
         return m_counterMap[ucId];
     }
-    ///ÊÇ·ñÎª¿Õ
+    ///æ˜¯å¦ä¸ºç©º
     inline bool isEmpty() const{
         return 0==m_ucCounterNum;
     }
 public:
-    UnistorBdbcCounter          m_counter[256]; ///<¼ÆÊıÆ÷
-    CWX_UINT8                   m_ucCounterNum; ///<¼ÆÊıÆ÷µÄÊıÁ¿
-    CWX_UINT32                  m_uiVersion; ///<°æ±¾
-    CWX_UINT8                   m_counterMap[256]; ///<¼ÇÂ¼½âÎö³öµÄ¼ÆÊıÆ÷µÄÎ»ÖÃĞÅÏ¢£¬ÆäÖµÎªm_counterµÄ¡¾ÏÂ±ê+1¡¿¡£ÈôÎª0±íÊ¾²»´æÔÚ
+    UnistorBdbcCounter          m_counter[256]; ///<è®¡æ•°å™¨
+    CWX_UINT8                   m_ucCounterNum; ///<è®¡æ•°å™¨çš„æ•°é‡
+    CWX_UINT32                  m_uiVersion; ///<ç‰ˆæœ¬
+    CWX_UINT8                   m_counterMap[256]; ///<è®°å½•è§£æå‡ºçš„è®¡æ•°å™¨çš„ä½ç½®ä¿¡æ¯ï¼Œå…¶å€¼ä¸ºm_counterçš„ã€ä¸‹æ ‡+1ã€‘ã€‚è‹¥ä¸º0è¡¨ç¤ºä¸å­˜åœ¨
 };
 
-///¼ÆÊıÆ÷µÄÅäÖÃ¶ÔÏó
+///è®¡æ•°å™¨çš„é…ç½®å¯¹è±¡
 class UnistorConfigBdbc{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
 	UnistorConfigBdbc(){
         m_ucKeyType = UnistorBdbcKey::BDBC_KEY_TYPE_UNKNOWN;
         m_bInt32Hex = false;
@@ -318,25 +318,25 @@ public:
         m_ucGroupEndBit = 0;
 	}
 public:
-	string				m_strEnvPath; ///<envµÄÂ·¾¶
-	string              m_strDbPath; ///<bdbÊı¾İÎÄ¼şÂ·¾¶
-	bool				m_bZip;      ///<ÊÇ·ñÑ¹ËõË÷Òı
-	CWX_UINT32          m_uiCacheMByte; ///<bdbË÷ÒıµÄcache mbyte¡£
-	CWX_UINT32			m_uiPageKSize; ///<Ò³µÄ´óĞ¡
-    CWX_UINT8           m_ucKeyType; ///<KeyµÄÀàĞÍ
-    string              m_strKeyType; ///<KeyÀàĞÍµÄÃû×Ö
-    bool                m_bInt32Hex; ///<·µ»ØµÄint32µÄkeyÊÇ·ñ16½øÖÆ
-    bool                m_bInt64Hex; ///<·µ»ØµÄint64µÄkeyÊÇ·ñ16½øÖÆ
-    bool                m_bHexUpper; ///<·µ»ØµÄ16½øÖÆÊÇ·ñ´óĞ´
-    CWX_UINT8           m_ucGroupStartBit; ///<»ùÓÚÊ±¼ä·Ö×éµÄ¿ªÊ¼Î»
-    CWX_UINT8           m_ucGroupEndBit;  ///<»ùÓÚÊ±¼ä·Ö×éµÄ½áÊøÎª
-    string              m_strCounterDefFile; ///<counterµÄ¶¨ÒåÎÄ¼ş
+	string				m_strEnvPath; ///<envçš„è·¯å¾„
+	string              m_strDbPath; ///<bdbæ•°æ®æ–‡ä»¶è·¯å¾„
+	bool				m_bZip;      ///<æ˜¯å¦å‹ç¼©ç´¢å¼•
+	CWX_UINT32          m_uiCacheMByte; ///<bdbç´¢å¼•çš„cache mbyteã€‚
+	CWX_UINT32			m_uiPageKSize; ///<é¡µçš„å¤§å°
+    CWX_UINT8           m_ucKeyType; ///<Keyçš„ç±»å‹
+    string              m_strKeyType; ///<Keyç±»å‹çš„åå­—
+    bool                m_bInt32Hex; ///<è¿”å›çš„int32çš„keyæ˜¯å¦16è¿›åˆ¶
+    bool                m_bInt64Hex; ///<è¿”å›çš„int64çš„keyæ˜¯å¦16è¿›åˆ¶
+    bool                m_bHexUpper; ///<è¿”å›çš„16è¿›åˆ¶æ˜¯å¦å¤§å†™
+    CWX_UINT8           m_ucGroupStartBit; ///<åŸºäºæ—¶é—´åˆ†ç»„çš„å¼€å§‹ä½
+    CWX_UINT8           m_ucGroupEndBit;  ///<åŸºäºæ—¶é—´åˆ†ç»„çš„ç»“æŸä¸º
+    string              m_strCounterDefFile; ///<counterçš„å®šä¹‰æ–‡ä»¶
 };
 
-///¼ÆÊıÆ÷ÒıÇæµÄcursor¶¨Òå¶ÔÏó
+///è®¡æ•°å™¨å¼•æ“çš„cursorå®šä¹‰å¯¹è±¡
 class UnistorStoreBdcCursor{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
 	UnistorStoreBdcCursor(){
 		m_cursor = NULL;
         m_uiDbIndex = 0;
@@ -347,30 +347,30 @@ public:
         m_bStoreValue = false;
         m_bStoreMore = true;
 	}
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
 	~UnistorStoreBdcCursor(){
 	}
 public:
-	bool				  m_bFirst; ///<ÊÇ·ñÊÇµÚÒ»¸ö»ñÈ¡
-    CWX_UINT32            m_uiDbIndex; ///<cursor¶ÔÓ¦µÄdbµÄË÷Òı
-	DBC*				  m_cursor;  ///<bdbµÄcursor handle
-    UnistorBdbcData       m_bdbcData;  ///<¼ÆÊıµÄÊı¾İ
-    char                  m_szStoreExportBeginKey[UNISTOR_MAX_KEY_SIZE]; ///<exportµÄ¿ªÊ¼key
-    CWX_UINT16            m_unStoreExportBeginKeyLen; ///<keyµÄ³¤¶È
-    char			      m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<´æ´¢µÄkey
-    CWX_UINT16            m_unStoreKeyLen; ///<keyµÄ³¤¶È
-    char                  m_szStoreData[UNISTOR_MAX_KV_SIZE]; ///<´æ´¢µÄdata
-    CWX_UINT32            m_uiStoreDataLen; ///<dataµÄ³¤¶È
-    bool                  m_bStoreValue; ///<ÊÇ·ñ´æ´¢storeµÄÖµ¡£
-    bool                  m_bStoreMore; ///<storeÖĞÊÇ·ñ»¹ÓĞÖµ
+	bool				  m_bFirst; ///<æ˜¯å¦æ˜¯ç¬¬ä¸€ä¸ªè·å–
+    CWX_UINT32            m_uiDbIndex; ///<cursorå¯¹åº”çš„dbçš„ç´¢å¼•
+	DBC*				  m_cursor;  ///<bdbçš„cursor handle
+    UnistorBdbcData       m_bdbcData;  ///<è®¡æ•°çš„æ•°æ®
+    char                  m_szStoreExportBeginKey[UNISTOR_MAX_KEY_SIZE]; ///<exportçš„å¼€å§‹key
+    CWX_UINT16            m_unStoreExportBeginKeyLen; ///<keyçš„é•¿åº¦
+    char			      m_szStoreKey[UNISTOR_MAX_KEY_SIZE]; ///<å­˜å‚¨çš„key
+    CWX_UINT16            m_unStoreKeyLen; ///<keyçš„é•¿åº¦
+    char                  m_szStoreData[UNISTOR_MAX_KV_SIZE]; ///<å­˜å‚¨çš„data
+    CWX_UINT32            m_uiStoreDataLen; ///<dataçš„é•¿åº¦
+    bool                  m_bStoreValue; ///<æ˜¯å¦å­˜å‚¨storeçš„å€¼ã€‚
+    bool                  m_bStoreMore; ///<storeä¸­æ˜¯å¦è¿˜æœ‰å€¼
 };
 
 
-///¼ÆÊıÆ÷ĞòºÅ¼°¼ÆÊıÃû×ÖµÄÓ³Éä±í
+///è®¡æ•°å™¨åºå·åŠè®¡æ•°åå­—çš„æ˜ å°„è¡¨
 class UnistorStoreBdbcCounterMap: public UnistorTssEngineObj
 {
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorStoreBdbcCounterMap(){
         CWX_UINT16 i=0;
         m_ullSeq = 0;
@@ -378,7 +378,7 @@ public:
             m_idNameMap[i] = NULL;
         }
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorStoreBdbcCounterMap(){
         CWX_UINT16 i=0;
         m_nameIdMap.clear();
@@ -387,64 +387,64 @@ public:
         }
     }
 public:
-    ///½âÎöÅäÖÃĞÅÏ¢£¬²Ù×÷µÄÊ±ºòĞèÒª¼ÓËø¡£·µ»ØÖµ£ºtrue£¬³É¹¦£»false£ºÊ§°Ü¡£
-    ///ÎÄ¼ş¸ñÊ½Îª£º
-    ///version=°æ±¾ºÅ
-    ///ĞòºÅ1=¼ÆÊıÆ÷Ãû×Ö
-    ///ĞòºÅ2=¼ÆÊıÆ÷Ãû×Ö
-    ///ĞòºÅ3=¼ÆÊıÆ÷Ãû×Ö
-    ///...... ĞòºÅÎª0~255£¬¸÷ĞĞÒÔ\n·Ö¸î
+    ///è§£æé…ç½®ä¿¡æ¯ï¼Œæ“ä½œçš„æ—¶å€™éœ€è¦åŠ é”ã€‚è¿”å›å€¼ï¼štrueï¼ŒæˆåŠŸï¼›falseï¼šå¤±è´¥ã€‚
+    ///æ–‡ä»¶æ ¼å¼ä¸ºï¼š
+    ///version=ç‰ˆæœ¬å·
+    ///åºå·1=è®¡æ•°å™¨åå­—
+    ///åºå·2=è®¡æ•°å™¨åå­—
+    ///åºå·3=è®¡æ•°å™¨åå­—
+    ///...... åºå·ä¸º0~255ï¼Œå„è¡Œä»¥\nåˆ†å‰²
     bool parse(char const* szDef, CWX_UINT32 uiLen, CWX_UINT32 ttTimestamp, char* szErr2K);
-    ///clone³öÒ»¸öĞÂ¶¨Òå¹²¸÷¸öÏà¹ØÏß³ÌÊ¹ÓÃ£¬´ËĞèÒª¼ÓËø¡£
+    ///cloneå‡ºä¸€ä¸ªæ–°å®šä¹‰å…±å„ä¸ªç›¸å…³çº¿ç¨‹ä½¿ç”¨ï¼Œæ­¤éœ€è¦åŠ é”ã€‚
     void clone(UnistorStoreBdbcCounterMap& def);
 
-    /////ÒÔÏÂµÄ²Ù×÷¶¼ÓĞ¸÷×ÔµÄÏß³Ìµ÷ÓÃ£¬ÎŞĞè¼ÓËø
-    ///ÅĞ±ğ¼ÆÊıÆ÷¶¨ÒåÊÇ·ñ¸Ä±ä¡£·µ»ØÖµ£ºtrue£¬¸Ä±ä£»false£ºÃ»ÓĞ¸Ä±ä
+    /////ä»¥ä¸‹çš„æ“ä½œéƒ½æœ‰å„è‡ªçš„çº¿ç¨‹è°ƒç”¨ï¼Œæ— éœ€åŠ é”
+    ///åˆ¤åˆ«è®¡æ•°å™¨å®šä¹‰æ˜¯å¦æ”¹å˜ã€‚è¿”å›å€¼ï¼štrueï¼Œæ”¹å˜ï¼›falseï¼šæ²¡æœ‰æ”¹å˜
     inline bool isDiff(CWX_UINT64 ullSeq) const{
         return m_ullSeq != ullSeq;
     }
-    ///»ñÈ¡ÅäÖÃÎÄ¼şµÄÊ±¼ä´Á
+    ///è·å–é…ç½®æ–‡ä»¶çš„æ—¶é—´æˆ³
     inline CWX_UINT32 getTimestamp() const { return m_ttTimestamp;}
-    ///<»ñÈ¡ĞòÁĞºÅ
+    ///<è·å–åºåˆ—å·
     inline CWX_UINT64 getSeq() const{ return m_ullSeq;}
-    ///<»ñÈ¡¶¨ÒåÎÄ¼ş
+    ///<è·å–å®šä¹‰æ–‡ä»¶
     inline string const& getDef() const{ return m_strDef;}
-    ///<»ñÈ¡°æ±¾
+    ///<è·å–ç‰ˆæœ¬
     inline string const& getVersion() const{ return m_strVersion;}
-    ///<¸ù¾İ¼ÆÊıÆ÷id£¬»ñÈ¡¼ÆÊıÆ÷µÄÃû×Ö£¬NULL±íÊ¾²»´æÔÚ
+    ///<æ ¹æ®è®¡æ•°å™¨idï¼Œè·å–è®¡æ•°å™¨çš„åå­—ï¼ŒNULLè¡¨ç¤ºä¸å­˜åœ¨
     inline char const* getName(CWX_UINT8 ucId) const{
         return m_idNameMap[ucId];
     }
-    ///<¸ù¾İ¼ÆÊıÆ÷µÄÃû×Ö»ñÈ¡¼ÆÊıÆ÷µÄid£¬false±íÊ¾²»´æÔÚ
+    ///<æ ¹æ®è®¡æ•°å™¨çš„åå­—è·å–è®¡æ•°å™¨çš„idï¼Œfalseè¡¨ç¤ºä¸å­˜åœ¨
     inline bool getId(char const* szName, CWX_UINT8& ucId) const{
         map<char const*, CWX_UINT8, CwxCharLess>::const_iterator iter=m_nameIdMap.find(szName);
         if (iter == m_nameIdMap.end()) return false;
         ucId = iter->second;
         return true;
     }
-    ///»ñÈ¡¼ÆÊıÆ÷µÄÊıÁ¿
+    ///è·å–è®¡æ•°å™¨çš„æ•°é‡
     inline CWX_UINT8 getCount() const{ return m_nameIdMap.size();}
 public:
-    ///ÎªÍâ½çÌá¹©µÄ±äÁ¿
-    UnistorBdbcData               m_bdbcOldData; ///<¾ÉµÄÎ¢²©¼ÆÊı¶ÔÏó
-    UnistorBdbcData               m_bdbcInputData; ///<ĞÂµÄÎ¢²©¼ÆÊı¶ÔÏó
-    UnistorBdbcKey                m_bdbcKey;     ///<Î¢²©¼ÆÊıµÄkey
-    friend class UnistorStoreBdbc; ///<ÓÑÀà
+    ///ä¸ºå¤–ç•Œæä¾›çš„å˜é‡
+    UnistorBdbcData               m_bdbcOldData; ///<æ—§çš„å¾®åšè®¡æ•°å¯¹è±¡
+    UnistorBdbcData               m_bdbcInputData; ///<æ–°çš„å¾®åšè®¡æ•°å¯¹è±¡
+    UnistorBdbcKey                m_bdbcKey;     ///<å¾®åšè®¡æ•°çš„key
+    friend class UnistorStoreBdbc; ///<å‹ç±»
 private:
-    volatile CWX_UINT32      m_ttTimestamp; ///<ÅäÖÃÎÄ¼şµÄÊ±¼ä´Á
-    volatile CWX_UINT64      m_ullSeq;     ///<ÄÚ²¿±ä¸üĞòºÅ
-    string                   m_strDef;     ///<Ó³ÉäµÄ¶¨ÒåÄÚÈİ
-    string                   m_strVersion; ///<°æ±¾ºÅ
-    char*                    m_idNameMap[256]; ///<¼ÆÊıÆ÷ĞòºÅÓë¼ÆÊıÆ÷Ãû×ÖµÄÓ³Éä±í
-    map<char const*, CWX_UINT8, CwxCharLess>   m_nameIdMap; ///<¼ÆÊıÆ÷Ãû×ÖÓë¼ÆÊıÆ÷µÄÓ³Éämap
+    volatile CWX_UINT32      m_ttTimestamp; ///<é…ç½®æ–‡ä»¶çš„æ—¶é—´æˆ³
+    volatile CWX_UINT64      m_ullSeq;     ///<å†…éƒ¨å˜æ›´åºå·
+    string                   m_strDef;     ///<æ˜ å°„çš„å®šä¹‰å†…å®¹
+    string                   m_strVersion; ///<ç‰ˆæœ¬å·
+    char*                    m_idNameMap[256]; ///<è®¡æ•°å™¨åºå·ä¸è®¡æ•°å™¨åå­—çš„æ˜ å°„è¡¨
+    map<char const*, CWX_UINT8, CwxCharLess>   m_nameIdMap; ///<è®¡æ•°å™¨åå­—ä¸è®¡æ•°å™¨çš„æ˜ å°„map
     CwxMutexLock             m_lock;
 };
 
 
-///»ùÓÚbdbµÄ¼ÆÊı´æ´¢ÒıÇæ
+///åŸºäºbdbçš„è®¡æ•°å­˜å‚¨å¼•æ“
 class UnistorStoreBdbc : public UnistorStoreBase{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorStoreBdbc():m_emptyData(0){
 		m_bdbEnv = NULL;
 		m_bdbs = NULL;
@@ -453,392 +453,392 @@ public:
         m_uiGroupMask = 0;
         m_uiGroupNum = 0;
         m_pCounterDef = NULL;
-        ///check expireµÄº¯Êı
+        ///check expireçš„å‡½æ•°
         UnistorStoreBase::m_fnKeyStoreGroup = NULL;
         UnistorStoreBase::m_fnKeyAsciiGroup = NULL;
         UnistorStoreBase::m_fnKeyAsciiLess = NULL;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorStoreBdbc(){
     }
 public:
-	//¼ÓÔØÅäÖÃÎÄ¼ş.-1:failure, 0:success
-    virtual int init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc, ///<´æ´¢ÒıÇæÓëÉÏ²ãµÄÏûÏ¢Í¨µÀº¯Êı
-        UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<»ñÈ¡ÏµÍ³ĞÅÏ¢µÄfunction
-        void* pApp, ///<UnistorApp¶ÔÏó
-        UnistorConfig const* config ///<ÅäÖÃÎÄ¼ş
+	//åŠ è½½é…ç½®æ–‡ä»¶.-1:failure, 0:success
+    virtual int init(UNISTOR_MSG_CHANNEL_FN msgPipeFunc, ///<å­˜å‚¨å¼•æ“ä¸ä¸Šå±‚çš„æ¶ˆæ¯é€šé“å‡½æ•°
+        UNISTOR_GET_SYS_INFO_FN getSysInfoFunc, ///<è·å–ç³»ç»Ÿä¿¡æ¯çš„function
+        void* pApp, ///<UnistorAppå¯¹è±¡
+        UnistorConfig const* config ///<é…ç½®æ–‡ä»¶
         );
 
-    ///¼ì²âÊÇ·ñ´æÔÚkey£»1£º´æÔÚ£»0£º²»´æÔÚ£»-1£ºÊ§°Ü
-    virtual int isExist(UnistorTss* tss, ///tss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<¼ì²éµÄkey
-        CwxKeyValueItemEx const* field, ///<¼ì²éµÄfield£¬ÈôÎª¿Õ±íÊ¾¼ì²ékey
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextra data
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄ°æ±¾ºÅ
-        CWX_UINT32& uiFieldNum, ///<·µ»ØkeyµÄfieldµÄÊıÁ¿
-        bool& bReadCached ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
+    ///æ£€æµ‹æ˜¯å¦å­˜åœ¨keyï¼›1ï¼šå­˜åœ¨ï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
+    virtual int isExist(UnistorTss* tss, ///tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<æ£€æŸ¥çš„key
+        CwxKeyValueItemEx const* field, ///<æ£€æŸ¥çš„fieldï¼Œè‹¥ä¸ºç©ºè¡¨ç¤ºæ£€æŸ¥key
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extra data
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32& uiFieldNum, ///<è¿”å›keyçš„fieldçš„æ•°é‡
+        bool& bReadCached ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
         );
     
-    ///Ìí¼Ókey£¬1£º³É¹¦£»0£º´æÔÚ£»-1£ºÊ§°Ü£»
-    virtual int addKey(UnistorTss* tss, ///<tss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<Ìí¼ÓµÄkey
-        CwxKeyValueItemEx const* field, ///<Ìí¼ÓµÄfield£¬ÈôÖ¸¶¨£¬Ôò¸ù¾İsignÖµ¾ö¶¨ÊÇ·ñÌí¼Ófield
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<Ìí¼Ókey»òfieldµÄÊı¾İ
-        CWX_UINT32    uiSign, ///<Ìí¼ÓµÄ±êÖ¾
-        CWX_UINT32& uiVersion, ///<Èô´óÓÚ0£¬ÔòÉèÖÃĞŞ¸ÄºóµÄkeyÎª´Ë°æ±¾£¬·ñÔò·µ»ØĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum, ///·µ»Ø<key fieldµÄÊıÁ¿
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool bCache=true, ///<ÊÇ·ñ½«key·Åµ½¶Ácache
-        CWX_UINT32 uiExpire=0 ///<Èô²»Îª0£¬ÔòÖ¸¶¨keyµÄexpireÊ±¼ä¡£´ËĞèÒª´æ´¢ÒıÇæÖ§³Ö
+    ///æ·»åŠ keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šå­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
+    virtual int addKey(UnistorTss* tss, ///<tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<æ·»åŠ çš„key
+        CwxKeyValueItemEx const* field, ///<æ·»åŠ çš„fieldï¼Œè‹¥æŒ‡å®šï¼Œåˆ™æ ¹æ®signå€¼å†³å®šæ˜¯å¦æ·»åŠ field
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<æ·»åŠ keyæˆ–fieldçš„æ•°æ®
+        CWX_UINT32    uiSign, ///<æ·»åŠ çš„æ ‡å¿—
+        CWX_UINT32& uiVersion, ///<è‹¥å¤§äº0ï¼Œåˆ™è®¾ç½®ä¿®æ”¹åçš„keyä¸ºæ­¤ç‰ˆæœ¬ï¼Œå¦åˆ™è¿”å›æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum, ///è¿”å›<key fieldçš„æ•°é‡
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool bCache=true, ///<æ˜¯å¦å°†keyæ”¾åˆ°è¯»cache
+        CWX_UINT32 uiExpire=0 ///<è‹¥ä¸ä¸º0ï¼Œåˆ™æŒ‡å®škeyçš„expireæ—¶é—´ã€‚æ­¤éœ€è¦å­˜å‚¨å¼•æ“æ”¯æŒ
         );
 
 
-    ///set key£¬1£º³É¹¦£»-1£º´íÎó£»0£º²»´æÔÚ£¬´ËÊÇÉèÖÃÒ»¸ökeyµÄfieldÊ±¡£
+    ///set keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ï¼›0ï¼šä¸å­˜åœ¨ï¼Œæ­¤æ˜¯è®¾ç½®ä¸€ä¸ªkeyçš„fieldæ—¶ã€‚
     virtual int setKey(UnistorTss* tss,///tss
-        CwxKeyValueItemEx const& key, ///<setµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÊÇset field£¬ÔòÖ¸¶¨ÒªsetµÄfield
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextra Êı¾İ
-        CwxKeyValueItemEx const& data, ///<setµÄÊı¾İ
-        CWX_UINT32 uiSign, ///<ÉèÖÃµÄ±ê¼Ç
-        CWX_UINT32& uiVersion, ///<ÉèÖÃµÄversion¡£Èô´óÓÚ0£¬ÔòÉèÖÃÎªÖ¸¶¨µÄ°æ±¾£¬·ñÔò·µ»ØÖ¸¶¨µÄ°æ±¾
-        CWX_UINT32& uiFieldNum, ///<key×Ö¶ÎµÄÊıÁ¿
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool bCache=true, ///<ÊÇ·ñ¶ÔÊı¾İ½øĞĞcache
-        CWX_UINT32 uiExpire=0 ///<ÈôÖ¸¶¨£¬ÔòĞŞ¸ÄkeyµÄexpireÊ±¼ä¡£´ËĞèÒª´æ´¢ÒıÇæÖ§³Ö
+        CwxKeyValueItemEx const& key, ///<setçš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥æ˜¯set fieldï¼Œåˆ™æŒ‡å®šè¦setçš„field
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extra æ•°æ®
+        CwxKeyValueItemEx const& data, ///<setçš„æ•°æ®
+        CWX_UINT32 uiSign, ///<è®¾ç½®çš„æ ‡è®°
+        CWX_UINT32& uiVersion, ///<è®¾ç½®çš„versionã€‚è‹¥å¤§äº0ï¼Œåˆ™è®¾ç½®ä¸ºæŒ‡å®šçš„ç‰ˆæœ¬ï¼Œå¦åˆ™è¿”å›æŒ‡å®šçš„ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum, ///<keyå­—æ®µçš„æ•°é‡
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool bCache=true, ///<æ˜¯å¦å¯¹æ•°æ®è¿›è¡Œcache
+        CWX_UINT32 uiExpire=0 ///<è‹¥æŒ‡å®šï¼Œåˆ™ä¿®æ”¹keyçš„expireæ—¶é—´ã€‚æ­¤éœ€è¦å­˜å‚¨å¼•æ“æ”¯æŒ
         );    
 
-    ///update key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2£º°æ±¾´íÎó
-    virtual int updateKey(UnistorTss* tss, ///<tss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<updateµÄkey
-        CwxKeyValueItemEx const* field,///<Èôupdate field£¬ÔòÖ¸¶¨field
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextra Êı¾İ
-        CwxKeyValueItemEx const& data, ///<updateµÄÊı¾İ
-        CWX_UINT32 uiSign, ///<updateµÄ±ê¼Ç
-        CWX_UINT32& uiVersion, ///<ÈôÖ¸¶¨£¬ÔòkeyµÄ°æ±¾±ØĞëÓë´ËÖµÒ»ÖÂ£¬·ñÔò¸üĞÂÊ§°Ü
-        CWX_UINT32& uiFieldNum, ///<·µ»Økey fieldµÄÊıÁ¿
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        CWX_UINT32 uiExpire=0 ///<ÈôÖ¸¶¨£¬ÔòĞŞ¸ÄkeyµÄexpireÊ±¼ä
+    ///update keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2ï¼šç‰ˆæœ¬é”™è¯¯
+    virtual int updateKey(UnistorTss* tss, ///<tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<updateçš„key
+        CwxKeyValueItemEx const* field,///<è‹¥update fieldï¼Œåˆ™æŒ‡å®šfield
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extra æ•°æ®
+        CwxKeyValueItemEx const& data, ///<updateçš„æ•°æ®
+        CWX_UINT32 uiSign, ///<updateçš„æ ‡è®°
+        CWX_UINT32& uiVersion, ///<è‹¥æŒ‡å®šï¼Œåˆ™keyçš„ç‰ˆæœ¬å¿…é¡»ä¸æ­¤å€¼ä¸€è‡´ï¼Œå¦åˆ™æ›´æ–°å¤±è´¥
+        CWX_UINT32& uiFieldNum, ///<è¿”å›key fieldçš„æ•°é‡
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        CWX_UINT32 uiExpire=0 ///<è‹¥æŒ‡å®šï¼Œåˆ™ä¿®æ”¹keyçš„expireæ—¶é—´
         );
 
     
-    ///inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2:°æ±¾´íÎó£»-3£º³¬³ö±ß½ç
-    virtual int incKey(UnistorTss* tss, ///<Ïß³Ìtss¶ÔÏó
-        CwxKeyValueItemEx const& key,  ///<incµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÒªincÒ»¸öfield¼ÆÊıÆ÷£¬ÔòÖ¸¶¨¶ÔÓ¦µÄfield
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CWX_INT64 num, ///<Ôö¼Ó»ò¼õÉÙµÄÊıÁ¿
-        CWX_INT64  llMax, ///<ÈôÊÇÔö¼Ó¶øÇÒ´ËÖµ²»Îª0£¬ÔòincºóµÄÖµ²»ÄÜ³¬¹ı´ËÖµ
-        CWX_INT64  llMin, ///<ÈôÊÇ¼õÉÙ¶øÆğ´ËÖµ²»Îª0£¬ÔòdecºóµÄÖµ²»ÄÜ³¬¹ı´ËÖµ
-        CWX_UINT32  uiSign, ///<incµÄ±ê¼Ç
-        CWX_INT64& llValue, ///<inc»òdecºóµÄĞÂÖµ
-        CWX_UINT32& uiVersion, ///<ÈôÖ¸¶¨£¬ÔòkeyµÄ°æ±¾ºÅ±ØĞëµÈÓÚ´ËÖµ£¬·ñÔòÊ§°Ü¡£·µ»ØĞÂ°æ±¾ºÅ¡£
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        CWX_UINT32  uiExpire=0 ///<Èô´´½¨key£¬¶øÇÒÖ¸¶¨ÁËuiExpireÔòÉèÖÃkeyµÄ³¬Ê±Ê±¼ä
+    ///inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2:ç‰ˆæœ¬é”™è¯¯ï¼›-3ï¼šè¶…å‡ºè¾¹ç•Œ
+    virtual int incKey(UnistorTss* tss, ///<çº¿ç¨‹tsså¯¹è±¡
+        CwxKeyValueItemEx const& key,  ///<incçš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥è¦incä¸€ä¸ªfieldè®¡æ•°å™¨ï¼Œåˆ™æŒ‡å®šå¯¹åº”çš„field
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CWX_INT64 num, ///<å¢åŠ æˆ–å‡å°‘çš„æ•°é‡
+        CWX_INT64  llMax, ///<è‹¥æ˜¯å¢åŠ è€Œä¸”æ­¤å€¼ä¸ä¸º0ï¼Œåˆ™incåçš„å€¼ä¸èƒ½è¶…è¿‡æ­¤å€¼
+        CWX_INT64  llMin, ///<è‹¥æ˜¯å‡å°‘è€Œèµ·æ­¤å€¼ä¸ä¸º0ï¼Œåˆ™decåçš„å€¼ä¸èƒ½è¶…è¿‡æ­¤å€¼
+        CWX_UINT32  uiSign, ///<incçš„æ ‡è®°
+        CWX_INT64& llValue, ///<incæˆ–decåçš„æ–°å€¼
+        CWX_UINT32& uiVersion, ///<è‹¥æŒ‡å®šï¼Œåˆ™keyçš„ç‰ˆæœ¬å·å¿…é¡»ç­‰äºæ­¤å€¼ï¼Œå¦åˆ™å¤±è´¥ã€‚è¿”å›æ–°ç‰ˆæœ¬å·ã€‚
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        CWX_UINT32  uiExpire=0 ///<è‹¥åˆ›å»ºkeyï¼Œè€Œä¸”æŒ‡å®šäº†uiExpireåˆ™è®¾ç½®keyçš„è¶…æ—¶æ—¶é—´
         );
 
 
-    ///delete key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»-2:°æ±¾´íÎó£»
-    virtual int delKey(UnistorTss* tss, ///<Ïß³Ìtss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<ÒªÉ¾³ıµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÒªÉ¾³ıfield£¬ÔòÖ¸¶¨fieldµÄÃû×Ö
-        CwxKeyValueItemEx const* extra,///<´æ´¢ÒıÇæµÄextra Êı¾İ
-        CWX_UINT32& uiVersion, ///<ÈôÖ¸¶¨°æ±¾ºÅ£¬ÔòĞŞ¸ÄÇ°µÄ°æ±¾ºÅ±ØĞëÓë´ËÖµÏàµÈ£¬·ñÔòÊ§°Ü¡£·µ»ØĞÂ°æ±¾ºÅ
-        CWX_UINT32& uiFieldNum,  ///<keyµÄ×Ö¶ÎÊıÁ¿
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
+    ///delete keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›-2:ç‰ˆæœ¬é”™è¯¯ï¼›
+    virtual int delKey(UnistorTss* tss, ///<çº¿ç¨‹tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<è¦åˆ é™¤çš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥è¦åˆ é™¤fieldï¼Œåˆ™æŒ‡å®šfieldçš„åå­—
+        CwxKeyValueItemEx const* extra,///<å­˜å‚¨å¼•æ“çš„extra æ•°æ®
+        CWX_UINT32& uiVersion, ///<è‹¥æŒ‡å®šç‰ˆæœ¬å·ï¼Œåˆ™ä¿®æ”¹å‰çš„ç‰ˆæœ¬å·å¿…é¡»ä¸æ­¤å€¼ç›¸ç­‰ï¼Œå¦åˆ™å¤±è´¥ã€‚è¿”å›æ–°ç‰ˆæœ¬å·
+        CWX_UINT32& uiFieldNum,  ///<keyçš„å­—æ®µæ•°é‡
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
         );
 
 
-    ///sync Ìí¼Ókey£¬1£º³É¹¦£»0£º´æÔÚ£»-1£ºÊ§°Ü£»
-    virtual int syncAddKey(UnistorTss* tss, ///<Ïß³ÌµÄtss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<keyµÄÃû×Ö
-        CwxKeyValueItemEx const* field, ///<×Ö¶ÎµÄÃû×Ö
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<addµÄÊı¾İ
-        CWX_UINT32 uiSign, ///<addµÄsign
-        CWX_UINT32 uiVersion, ///<±ä¸üºóµÄ°æ±¾ºÅ
-        bool bCache, ///<ÊÇ·ñcacheÊı¾İ
-        CWX_UINT32 uiExpire, ///<keyµÄexpireÊ±¼ä
-        CWX_UINT64 ullSid, ///<±ä¸üÈÕÖ¾µÄsidÖµ
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñÊÇ´Óbinlog»Ö¸´µÄÊı¾İ
+    ///sync æ·»åŠ keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šå­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
+    virtual int syncAddKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<keyçš„åå­—
+        CwxKeyValueItemEx const* field, ///<å­—æ®µçš„åå­—
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<addçš„æ•°æ®
+        CWX_UINT32 uiSign, ///<addçš„sign
+        CWX_UINT32 uiVersion, ///<å˜æ›´åçš„ç‰ˆæœ¬å·
+        bool bCache, ///<æ˜¯å¦cacheæ•°æ®
+        CWX_UINT32 uiExpire, ///<keyçš„expireæ—¶é—´
+        CWX_UINT64 ullSid, ///<å˜æ›´æ—¥å¿—çš„sidå€¼
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦æ˜¯ä»binlogæ¢å¤çš„æ•°æ®
         );
 
-    ///sync set key£¬1£º³É¹¦£»-1£º´íÎó£»0£º²»´æÔÚ£¬´ËÊÇÉèÖÃÒ»¸ökeyµÄfieldÊ±¡£
-    virtual int syncSetKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
-        CwxKeyValueItemEx const& key, ///<setµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÊÇset field£¬ÔòÖ¸¶¨field
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<setµÄÊı¾İ
-        CWX_UINT32 uiSign,  ///<setµÄsign
-        CWX_UINT32 uiVersion, ///<setµÄkey °æ±¾ºÅ
-        bool bCache, ///<ÊÇ·ñcacheÊı¾İ
-        CWX_UINT32 uiExpire, ///<expireÊ±¼ä
-        CWX_UINT64 ullSid, ///<set binlogµÄsidÖµ
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñÊÇ´Óbinlog»Ö¸´µÄÊı¾İ
+    ///sync set keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ï¼›0ï¼šä¸å­˜åœ¨ï¼Œæ­¤æ˜¯è®¾ç½®ä¸€ä¸ªkeyçš„fieldæ—¶ã€‚
+    virtual int syncSetKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tssæ•°æ®
+        CwxKeyValueItemEx const& key, ///<setçš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥æ˜¯set fieldï¼Œåˆ™æŒ‡å®šfield
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<setçš„æ•°æ®
+        CWX_UINT32 uiSign,  ///<setçš„sign
+        CWX_UINT32 uiVersion, ///<setçš„key ç‰ˆæœ¬å·
+        bool bCache, ///<æ˜¯å¦cacheæ•°æ®
+        CWX_UINT32 uiExpire, ///<expireæ—¶é—´
+        CWX_UINT64 ullSid, ///<set binlogçš„sidå€¼
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦æ˜¯ä»binlogæ¢å¤çš„æ•°æ®
         );
 
-    ///sync update key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü
-    virtual int syncUpdateKey(UnistorTss* tss, ///<Ïß³ÌµÄtss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<updateµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÊÇupdate field£¬ÔòÖ¸¶¨field
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<updateµÄĞÂÊı¾İ
-        CWX_UINT32 uiSign, ///<updateµÄ±ê¼Ç
-        CWX_UINT32 uiVersion, ///<updateºóµÄkeyµÄ°æ±¾ºÅ
-        CWX_UINT32 uiExpire, ///<updateµÄexpireÊ±¼ä
-        CWX_UINT64 ullSid, ///<update±ä¸übinlogµÄsid
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñ´ÓbinlogÖĞ»Ö¸´µÄÊı¾İ
+    ///sync update keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
+    virtual int syncUpdateKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<updateçš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥æ˜¯update fieldï¼Œåˆ™æŒ‡å®šfield
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<updateçš„æ–°æ•°æ®
+        CWX_UINT32 uiSign, ///<updateçš„æ ‡è®°
+        CWX_UINT32 uiVersion, ///<updateåçš„keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32 uiExpire, ///<updateçš„expireæ—¶é—´
+        CWX_UINT64 ullSid, ///<updateå˜æ›´binlogçš„sid
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦ä»binlogä¸­æ¢å¤çš„æ•°æ®
         );
 
-    ///sync inc key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü£»
-    virtual int syncIncKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
-        CwxKeyValueItemEx const& key,  ///<incµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÊÇ¶Ôfield½øĞĞinc£¬ÔòÖ¸¶¨fieldµÄÃû×Ö
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CWX_INT64 num,  ///<incµÄÊıÖµ£¬¿ÉÒÔÎª¸ºÖµ
-        CWX_INT64 result,  ///<incµÄÊıÖµ£¬¿ÉÒÔÎª¸ºÖµ
-        CWX_INT64  llMax, ///<ÈôÊÇincÕıÖµ£¬¶øÇÒÖ¸¶¨llMax£¬ÔòincºóµÄÖµ²»ÄÜ³¬¹ı´ËÖµ
-        CWX_INT64  llMin, ///<¼ÆÊıÆ÷µÄ×îĞ¡Öµ
-        CWX_UINT32 uiSign, ///<incµÄ±ê¼Ç
-        CWX_INT64& llValue, ///<incºóµÄÊıÖµ
-        CWX_UINT32 uiVersion, ///<incºóµÄkeyµÄ°æ±¾ºÅ
-        CWX_UINT32 uiExpire, ///<updateµÄexpireÊ±¼ä
-        CWX_UINT64 ullSid, ///<inc²Ù×÷binlogµÄsidÖµ
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñ´Óbinlog»Ö¸´µÄÊı¾İ
+    ///sync inc keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥ï¼›
+    virtual int syncIncKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tssæ•°æ®
+        CwxKeyValueItemEx const& key,  ///<incçš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥æ˜¯å¯¹fieldè¿›è¡Œincï¼Œåˆ™æŒ‡å®šfieldçš„åå­—
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CWX_INT64 num,  ///<incçš„æ•°å€¼ï¼Œå¯ä»¥ä¸ºè´Ÿå€¼
+        CWX_INT64 result,  ///<incçš„æ•°å€¼ï¼Œå¯ä»¥ä¸ºè´Ÿå€¼
+        CWX_INT64  llMax, ///<è‹¥æ˜¯incæ­£å€¼ï¼Œè€Œä¸”æŒ‡å®šllMaxï¼Œåˆ™incåçš„å€¼ä¸èƒ½è¶…è¿‡æ­¤å€¼
+        CWX_INT64  llMin, ///<è®¡æ•°å™¨çš„æœ€å°å€¼
+        CWX_UINT32 uiSign, ///<incçš„æ ‡è®°
+        CWX_INT64& llValue, ///<incåçš„æ•°å€¼
+        CWX_UINT32 uiVersion, ///<incåçš„keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32 uiExpire, ///<updateçš„expireæ—¶é—´
+        CWX_UINT64 ullSid, ///<incæ“ä½œbinlogçš„sidå€¼
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦ä»binlogæ¢å¤çš„æ•°æ®
         );
 
-    ///sync delete key£¬1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü
-    virtual int syncDelKey(UnistorTss* tss, ///<Ïß³ÌµÄtss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<ÒªÉ¾³ıµÄkey
-        CwxKeyValueItemEx const* field, ///<ÈôÊÇÉ¾³ıfield£¬ÔòÖ¸¶¨field
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CWX_UINT32 uiVersion, ///<key½øĞĞdeleteºóµÄ°æ±¾ºÅ
-        CWX_UINT64 ullSid, ///<delete²Ù×÷¶ÔÓ¦µÄbinlogµÄsid
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñ´Óbinlog»Ö¸´µÄÊı¾İ
+    ///sync delete keyï¼Œ1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥
+    virtual int syncDelKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<è¦åˆ é™¤çš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥æ˜¯åˆ é™¤fieldï¼Œåˆ™æŒ‡å®šfield
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CWX_UINT32 uiVersion, ///<keyè¿›è¡Œdeleteåçš„ç‰ˆæœ¬å·
+        CWX_UINT64 ullSid, ///<deleteæ“ä½œå¯¹åº”çš„binlogçš„sid
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦ä»binlogæ¢å¤çš„æ•°æ®
         );
 
-    ///import key£¬1£º³É¹¦£»-1£ºÊ§°Ü£»
-    virtual int importKey(UnistorTss* tss, ///<tss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<Ìí¼ÓµÄkey
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<Ìí¼Ókey»òfieldµÄÊı¾İ
-        CWX_UINT32& uiVersion, ///<Èô´óÓÚ0£¬ÔòÉèÖÃĞŞ¸ÄºóµÄkeyÎª´Ë°æ±¾
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool bCache=true, ///<ÊÇ·ñ½«key·Åµ½¶Ácache
-        CWX_UINT32 uiExpire=0 ///<Èô´´½¨key£¬¶øÇÒÖ¸¶¨ÁËuiExpireÔòÉèÖÃkeyµÄ³¬Ê±Ê±¼ä
+    ///import keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ï¼›
+    virtual int importKey(UnistorTss* tss, ///<tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<æ·»åŠ çš„key
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<æ·»åŠ keyæˆ–fieldçš„æ•°æ®
+        CWX_UINT32& uiVersion, ///<è‹¥å¤§äº0ï¼Œåˆ™è®¾ç½®ä¿®æ”¹åçš„keyä¸ºæ­¤ç‰ˆæœ¬
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool bCache=true, ///<æ˜¯å¦å°†keyæ”¾åˆ°è¯»cache
+        CWX_UINT32 uiExpire=0 ///<è‹¥åˆ›å»ºkeyï¼Œè€Œä¸”æŒ‡å®šäº†uiExpireåˆ™è®¾ç½®keyçš„è¶…æ—¶æ—¶é—´
         );
 
-    ///sync import key£¬1£º³É¹¦£»-1£º´íÎó¡£
-    virtual int syncImportKey(UnistorTss* tss, ///<Ïß³ÌµÄtssÊı¾İ
-        CwxKeyValueItemEx const& key, ///<setµÄkey
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        CwxKeyValueItemEx const& data, ///<setµÄÊı¾İ
-        CWX_UINT32 uiVersion, ///<setµÄkey °æ±¾ºÅ
-        bool bCache,    ///<ÊÇ·ñ½«key·Åµ½¶Ácache
-        CWX_UINT32 uiExpire, ///<Èô´´½¨key£¬¶øÇÒÖ¸¶¨ÁËuiExpireÔòÉèÖÃkeyµÄ³¬Ê±Ê±¼ä
-        CWX_UINT64 ullSid, ///<²Ù×÷¶ÔÓ¦µÄbinlogµÄsid
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        bool& bWriteCached, ///<Êı¾İÊÇ·ñÔÚwrite cacheÖĞ
-        bool  bRestore=false ///<ÊÇ·ñ´Óbinlog»Ö¸´µÄÊı¾İ
+    ///sync import keyï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šé”™è¯¯ã€‚
+    virtual int syncImportKey(UnistorTss* tss, ///<çº¿ç¨‹çš„tssæ•°æ®
+        CwxKeyValueItemEx const& key, ///<setçš„key
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        CwxKeyValueItemEx const& data, ///<setçš„æ•°æ®
+        CWX_UINT32 uiVersion, ///<setçš„key ç‰ˆæœ¬å·
+        bool bCache,    ///<æ˜¯å¦å°†keyæ”¾åˆ°è¯»cache
+        CWX_UINT32 uiExpire, ///<è‹¥åˆ›å»ºkeyï¼Œè€Œä¸”æŒ‡å®šäº†uiExpireåˆ™è®¾ç½®keyçš„è¶…æ—¶æ—¶é—´
+        CWX_UINT64 ullSid, ///<æ“ä½œå¯¹åº”çš„binlogçš„sid
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        bool& bWriteCached, ///<æ•°æ®æ˜¯å¦åœ¨write cacheä¸­
+        bool  bRestore=false ///<æ˜¯å¦ä»binlogæ¢å¤çš„æ•°æ®
         );
 
 
-    ///»ñÈ¡key, 1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
-    virtual int get(UnistorTss* tss, ///<Ïß³Ìtss¶ÔÏó
-        CwxKeyValueItemEx const& key, ///<Òª»ñÈ¡µÄkey
-        CwxKeyValueItemEx const* field, ///<Èô²»Îª¿Õ£¬Ôò»ñÈ¡Ö¸¶¨µÄfield£¬¶à¸öfieldÒÔ\n·Ö¸î
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        char const*& szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT32& uiLen,  ///<szDataÊı¾İµÄ×Ö½ÚÊı
-        bool& bKeyValue,  ///<·µ»ØµÄÊı¾İÊÇ·ñÎªkey/value½á¹¹
-        CWX_UINT32& uiVersion, ///<¿ÉÒÔµ±Ç°µÄ°æ±¾ºÅ
-        CWX_UINT32& uiFieldNum, ///<key×Ö¶ÎµÄÊıÁ¿
-        bool& bReadCached, ///<Êı¾İÊÇ·ñÔÚread cacheÖĞ
-        CWX_UINT8 ucKeyInfo=0 ///<ÊÇ·ñ»ñÈ¡keyµÄinformation
+    ///è·å–key, 1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
+    virtual int get(UnistorTss* tss, ///<çº¿ç¨‹tsså¯¹è±¡
+        CwxKeyValueItemEx const& key, ///<è¦è·å–çš„key
+        CwxKeyValueItemEx const* field, ///<è‹¥ä¸ä¸ºç©ºï¼Œåˆ™è·å–æŒ‡å®šçš„fieldï¼Œå¤šä¸ªfieldä»¥\nåˆ†å‰²
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        char const*& szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT32& uiLen,  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
+        bool& bKeyValue,  ///<è¿”å›çš„æ•°æ®æ˜¯å¦ä¸ºkey/valueç»“æ„
+        CWX_UINT32& uiVersion, ///<å¯ä»¥å½“å‰çš„ç‰ˆæœ¬å·
+        CWX_UINT32& uiFieldNum, ///<keyå­—æ®µçš„æ•°é‡
+        bool& bReadCached, ///<æ•°æ®æ˜¯å¦åœ¨read cacheä¸­
+        CWX_UINT8 ucKeyInfo=0 ///<æ˜¯å¦è·å–keyçš„information
         );
 
-    ///»ñÈ¡¶à¸ökey, 1£º³É¹¦£»-1£ºÊ§°Ü;
-    virtual int gets(UnistorTss* tss, ///<Ïß³ÌµÄtss¶ÔÏó
-        list<pair<char const*, CWX_UINT16> > const& keys,  ///<Òª»ñÈ¡µÄkeyµÄÁĞ±í¡£pairµÄfirstÎªkeyµÄÃû×Ö£¬secondÎªkeyµÄ³¤¶È
-        CwxKeyValueItemEx const* field, ///<ÈôÖ¸¶¨£¬ÔòÏŞ¶¨»ñÈ¡µÄfield·¶Î§
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        char const*& szData, ///<»ñÈ¡µÄÊı¾İ£¬ÄÚ´æÓÉ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT32& uiLen, ///<·µ»ØÊı¾İµÄ³¤¶È
-        CWX_UINT32& uiReadCacheNum, ///<ÔÚread cacheÖĞµÄÊıÁ¿
-        CWX_UINT32& uiExistNum, ///<´æÔÚµÄkeyµÄÊıÁ¿
-        CWX_UINT8 ucKeyInfo=0 ///<ÊÇ·ñ»ñÈ¡keyµÄinformation¡£0£º»ñÈ¡keyµÄdata¡£1£º»ñÈ¡keyĞÅÏ¢£»2£º»ñÈ¡ÏµÍ³key
+    ///è·å–å¤šä¸ªkey, 1ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥;
+    virtual int gets(UnistorTss* tss, ///<çº¿ç¨‹çš„tsså¯¹è±¡
+        list<pair<char const*, CWX_UINT16> > const& keys,  ///<è¦è·å–çš„keyçš„åˆ—è¡¨ã€‚pairçš„firstä¸ºkeyçš„åå­—ï¼Œsecondä¸ºkeyçš„é•¿åº¦
+        CwxKeyValueItemEx const* field, ///<è‹¥æŒ‡å®šï¼Œåˆ™é™å®šè·å–çš„fieldèŒƒå›´
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        char const*& szData, ///<è·å–çš„æ•°æ®ï¼Œå†…å­˜ç”±å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT32& uiLen, ///<è¿”å›æ•°æ®çš„é•¿åº¦
+        CWX_UINT32& uiReadCacheNum, ///<åœ¨read cacheä¸­çš„æ•°é‡
+        CWX_UINT32& uiExistNum, ///<å­˜åœ¨çš„keyçš„æ•°é‡
+        CWX_UINT8 ucKeyInfo=0 ///<æ˜¯å¦è·å–keyçš„informationã€‚0ï¼šè·å–keyçš„dataã€‚1ï¼šè·å–keyä¿¡æ¯ï¼›2ï¼šè·å–ç³»ç»Ÿkey
         );
 
-	///½¨Á¢ÓÎ±ê¡£-1£ºÄÚ²¿´íÎóÊ§°Ü£»0£º²»Ö§³Ö£»1£º³É¹¦
-    virtual int createCursor(UnistorStoreCursor& cursor, ///<ÓÎ±ê¶ÔÏó
-        char const* szBeginKey, ///<¿ªÊ¼µÄkey£¬ÈôÎªNULL±íÊ¾Ã»ÓĞÖ¸¶¨
-        char const* szEndKey, ///<½áÊøµÄkey£¬ÈôÎªNULL±íÊ¾Ã»ÓĞÖ¸¶¨
-        CwxKeyValueItemEx const* field, ///<Ö¸¶¨ÓÎ±êÒª·µ»ØµÄfield¡£
-        CwxKeyValueItemEx const* extra, ///<´æ´¢ÒıÇæµÄextraÊı¾İ
-        char* szErr2K ///<Èô³ö´í£¬·µ»Ø´íÎóĞÅÏ¢
+	///å»ºç«‹æ¸¸æ ‡ã€‚-1ï¼šå†…éƒ¨é”™è¯¯å¤±è´¥ï¼›0ï¼šä¸æ”¯æŒï¼›1ï¼šæˆåŠŸ
+    virtual int createCursor(UnistorStoreCursor& cursor, ///<æ¸¸æ ‡å¯¹è±¡
+        char const* szBeginKey, ///<å¼€å§‹çš„keyï¼Œè‹¥ä¸ºNULLè¡¨ç¤ºæ²¡æœ‰æŒ‡å®š
+        char const* szEndKey, ///<ç»“æŸçš„keyï¼Œè‹¥ä¸ºNULLè¡¨ç¤ºæ²¡æœ‰æŒ‡å®š
+        CwxKeyValueItemEx const* field, ///<æŒ‡å®šæ¸¸æ ‡è¦è¿”å›çš„fieldã€‚
+        CwxKeyValueItemEx const* extra, ///<å­˜å‚¨å¼•æ“çš„extraæ•°æ®
+        char* szErr2K ///<è‹¥å‡ºé”™ï¼Œè¿”å›é”™è¯¯ä¿¡æ¯
         );
 
-	///»ñÈ¡Êı¾İ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö
-    virtual int next(UnistorTss* tss, ///<Ïß³ÌµÄtss
-        UnistorStoreCursor& cursor,  ///<NextµÄÓÎ±ê
-        char const*& szKey,  ///<·µ»ØµÄkey£¬ÄÚ´æÓÉ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT16& unKeyLen,  ///<·µ»ØkeyµÄ×Ö½ÚÊı
-        char const *& szData,  ///<·µ»ØkeyµÄdata£¬ÄÚ´æÓÉ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT32& uiDataLen, ///<·µ»ØdataµÄ×Ö½ÚÊı
-        bool& bKeyValue,  ///<dataÊÇ·ñÎªkeyValue½á¹¹
-        CWX_UINT32& uiVersion,  ///<keyµÄ°æ±¾ºÅ
-        bool bKeyInfo=false ///<ÊÇ·ñ·µ»ØkeyµÄinformation¶ø²»ÊÇÆädata
+	///è·å–æ•°æ®ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ª
+    virtual int next(UnistorTss* tss, ///<çº¿ç¨‹çš„tss
+        UnistorStoreCursor& cursor,  ///<Nextçš„æ¸¸æ ‡
+        char const*& szKey,  ///<è¿”å›çš„keyï¼Œå†…å­˜ç”±å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT16& unKeyLen,  ///<è¿”å›keyçš„å­—èŠ‚æ•°
+        char const *& szData,  ///<è¿”å›keyçš„dataï¼Œå†…å­˜ç”±å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT32& uiDataLen, ///<è¿”å›dataçš„å­—èŠ‚æ•°
+        bool& bKeyValue,  ///<dataæ˜¯å¦ä¸ºkeyValueç»“æ„
+        CWX_UINT32& uiVersion,  ///<keyçš„ç‰ˆæœ¬å·
+        bool bKeyInfo=false ///<æ˜¯å¦è¿”å›keyçš„informationè€Œä¸æ˜¯å…¶data
         );
     	
-    ///¹Ø±ÕÓÎ±ê
+    ///å…³é—­æ¸¸æ ‡
 	virtual void closeCursor(UnistorStoreCursor& cursor);
     
-    ///¿ªÊ¼µ¼³öÊı¾İ¡£-1£ºÄÚ²¿´íÎóÊ§°Ü£»0£º³É¹¦
-    virtual int exportBegin(UnistorStoreCursor& cursor, ///<exportµÄÓÎ±ê
-        char const* szStartKey, ///<exportµÄ¿ªÊ¼key£¬²»°üº¬´Ëkey
-        char const* szExtra, ///<extraĞÅÏ¢
-        UnistorSubscribe const& scribe,  ///<µ¼³öÊı¾İµÄ¶©ÔÄ¹æÔò
-        CWX_UINT64& ullSid, ///<µ±Ç°µÄsidÖµ
-        char* szErr2K  ///<Èô³ö´íÔò·µ»Ø´íÎóĞÅÏ¢
+    ///å¼€å§‹å¯¼å‡ºæ•°æ®ã€‚-1ï¼šå†…éƒ¨é”™è¯¯å¤±è´¥ï¼›0ï¼šæˆåŠŸ
+    virtual int exportBegin(UnistorStoreCursor& cursor, ///<exportçš„æ¸¸æ ‡
+        char const* szStartKey, ///<exportçš„å¼€å§‹keyï¼Œä¸åŒ…å«æ­¤key
+        char const* szExtra, ///<extraä¿¡æ¯
+        UnistorSubscribe const& scribe,  ///<å¯¼å‡ºæ•°æ®çš„è®¢é˜…è§„åˆ™
+        CWX_UINT64& ullSid, ///<å½“å‰çš„sidå€¼
+        char* szErr2K  ///<è‹¥å‡ºé”™åˆ™è¿”å›é”™è¯¯ä¿¡æ¯
         );
     
-    ///»ñÈ¡Êı¾İ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
-    virtual int exportNext(UnistorTss* tss,  ///<Ïß³ÌµÄtss¶ÔÏó
-        UnistorStoreCursor& cursor,  ///<exportµÄÓÎ±ê
-        char const*& szKey,    ///<·µ»ØkeyµÄÖµ
-        CWX_UINT16& unKeyLen,   ///<keyµÄ×Ö½ÚÊı
-        char const*& szData,    ///<·µ»ØdataµÄÖµ
-        CWX_UINT32& uiDataLen,   ///<dataµÄ×Ö½ÚÊı
-        bool& bKeyValue,   ///<dataÊÇ·ñÎªKeyValue½á¹¹
-        CWX_UINT32& uiVersion, ///<keyµÄ°æ±¾ºÅ
-        CWX_UINT32& uiExpire, ///<keyµÄexpireÊ±¼ä
-        CWX_UINT16& unSkipNum,  ///<µ±Ç°×î¶à¿ÉÒÔskipµÄbinlogÊıÁ¿
-        char const*& szExtra,  ///<extraÊı¾İ
-        CWX_UINT32&  uiExtraLen ///<extraµÄ³¤¶È
+    ///è·å–æ•°æ®ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
+    virtual int exportNext(UnistorTss* tss,  ///<çº¿ç¨‹çš„tsså¯¹è±¡
+        UnistorStoreCursor& cursor,  ///<exportçš„æ¸¸æ ‡
+        char const*& szKey,    ///<è¿”å›keyçš„å€¼
+        CWX_UINT16& unKeyLen,   ///<keyçš„å­—èŠ‚æ•°
+        char const*& szData,    ///<è¿”å›dataçš„å€¼
+        CWX_UINT32& uiDataLen,   ///<dataçš„å­—èŠ‚æ•°
+        bool& bKeyValue,   ///<dataæ˜¯å¦ä¸ºKeyValueç»“æ„
+        CWX_UINT32& uiVersion, ///<keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32& uiExpire, ///<keyçš„expireæ—¶é—´
+        CWX_UINT16& unSkipNum,  ///<å½“å‰æœ€å¤šå¯ä»¥skipçš„binlogæ•°é‡
+        char const*& szExtra,  ///<extraæ•°æ®
+        CWX_UINT32&  uiExtraLen ///<extraçš„é•¿åº¦
         );
 
-    ///½áÊøµ¼³öÊı¾İ
+    ///ç»“æŸå¯¼å‡ºæ•°æ®
     virtual void exportEnd(UnistorStoreCursor& cursor);
 
-    ///¼ì²é¶©ÔÄ¸ñÊ½ÊÇ·ñºÏ·¨
-    virtual bool isValidSubscribe(UnistorSubscribe const& subscribe,///<¶©ÔÄ¶ÔÏó
-        char* szErr2K ///<²»ºÏ·¨Ê±µÄ´íÎóÏûÏ¢
+    ///æ£€æŸ¥è®¢é˜…æ ¼å¼æ˜¯å¦åˆæ³•
+    virtual bool isValidSubscribe(UnistorSubscribe const& subscribe,///<è®¢é˜…å¯¹è±¡
+        char* szErr2K ///<ä¸åˆæ³•æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
 
-	///commit¡£0£º³É¹¦£»-1£ºÊ§°Ü
+	///commitã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 	virtual int commit(char* szErr2K);
 	
-    ///¹Ø±ÕbdbÒıÇæ
+    ///å…³é—­bdbå¼•æ“
 	virtual int close();
 
-    ///event´¦Àíº¯Êı£¬ÊµÏÖ´æ´¢ÒıÇæÓëÉÏ²ãµÄ½»»¥£»0£º³É¹¦£»-1£ºÊ§°Ü
+    ///eventå¤„ç†å‡½æ•°ï¼Œå®ç°å­˜å‚¨å¼•æ“ä¸ä¸Šå±‚çš„äº¤äº’ï¼›0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     virtual int storeEvent(UnistorTss* tss, CwxMsgBlock*& msg);
 	
-    ///bdb½øĞĞcheckpoint
+    ///bdbè¿›è¡Œcheckpoint
 	virtual void checkpoint(UnistorTss* tss);
 	
-    ///»ñÈ¡engineµÄÃû×Ö
+    ///è·å–engineçš„åå­—
 	virtual char const* getName() const{
 		return "bdbc";
 	}
 	
-    ///»ñÈ¡engineµÄ°æ±¾
+    ///è·å–engineçš„ç‰ˆæœ¬
 	virtual char const* getVersion() const{
 		return "1.0.1";
 	}
 
 private:
-    ///dirty flushÏß³ÌÍ¨Öª¿ªÊ¼flush dirtyÊı¾İ¡£·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
-    static int cacheWriteBegin(void* context, ///<»·¾³£¬´ËÎªbdbÒıÇæ¶ÔÏó
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóĞÅÏ¢
+    ///dirty flushçº¿ç¨‹é€šçŸ¥å¼€å§‹flush dirtyæ•°æ®ã€‚è¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    static int cacheWriteBegin(void* context, ///<ç¯å¢ƒï¼Œæ­¤ä¸ºbdbå¼•æ“å¯¹è±¡
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯ä¿¡æ¯
         );
 
-    ///dirty flushÏß³ÌĞ´dirtyÊı¾İ£¬·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
-    static int cacheWrite(void* context, ///<»·¾³£¬´ËÎªbdbÒıÇæ¶ÔÏó
-        char const* szKey, ///<Ğ´ÈëµÄkey
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        char const* szData, ///<Ğ´ÈëµÄdata
-        CWX_UINT32 uiDataLen, ///<dataµÄ³¤¶È
-        bool bDel, ///<ÊÇ·ñkey±»É¾³ı
-        CWX_UINT32 ttOldExpire, ///<keyÔÚ´æ´¢ÖĞµÄexpireÊ±¼äÖµ
-        char* szStoreKeyBuf, ///<keyµÄbuf
-        CWX_UINT16 unKeyBufLen, ///<key bufµÄ´óĞ¡
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóÏûÏ¢
+    ///dirty flushçº¿ç¨‹å†™dirtyæ•°æ®ï¼Œè¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    static int cacheWrite(void* context, ///<ç¯å¢ƒï¼Œæ­¤ä¸ºbdbå¼•æ“å¯¹è±¡
+        char const* szKey, ///<å†™å…¥çš„key
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        char const* szData, ///<å†™å…¥çš„data
+        CWX_UINT32 uiDataLen, ///<dataçš„é•¿åº¦
+        bool bDel, ///<æ˜¯å¦keyè¢«åˆ é™¤
+        CWX_UINT32 ttOldExpire, ///<keyåœ¨å­˜å‚¨ä¸­çš„expireæ—¶é—´å€¼
+        char* szStoreKeyBuf, ///<keyçš„buf
+        CWX_UINT16 unKeyBufLen, ///<key bufçš„å¤§å°
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
     
-    ///dirty flushÏß³ÌÍê³ÉdirtyÊı¾İµÄĞ´Èë¡£·µ»ØÖµ·µ»ØÖµ£º0£¬³É¹¦£»-1£ºÊ§°Ü
-    static int cacheWriteEnd(void* context, ///<»·¾³£¬´ËÎªbdbÒıÇæ¶ÔÏó
-        CWX_UINT64 ullSid, ///<Ğ´ÈëÊı¾İµÄsidÖµ
-        void* userData, ///<ÓÃ»§µÄÆäËûÊı¾İ
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóÏûÏ¢
+    ///dirty flushçº¿ç¨‹å®Œæˆdirtyæ•°æ®çš„å†™å…¥ã€‚è¿”å›å€¼è¿”å›å€¼ï¼š0ï¼ŒæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    static int cacheWriteEnd(void* context, ///<ç¯å¢ƒï¼Œæ­¤ä¸ºbdbå¼•æ“å¯¹è±¡
+        CWX_UINT64 ullSid, ///<å†™å…¥æ•°æ®çš„sidå€¼
+        void* userData, ///<ç”¨æˆ·çš„å…¶ä»–æ•°æ®
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
     
     
 private:
-    ///½âÎöcouter=value;couter=valueµÄdata¡£·µ»ØÖµ£ºtrue£¬³É¹¦£»false£¬Ê§°Ü
-    bool _parseDataCounter(UnistorBdbcData& bdbcData,///<·µ»ØµÄ¼ÆÊı»úĞÅÏ¢
-        char const* szData, ///<¼ÆÊıµÄ×Ö·û´®
-        CWX_UINT32 uiDataLen, ///<Êı¾İ³¤¶È
-        UnistorStoreBdbcCounterMap* pCounterMap, ///<Ïß³ÌµÄcounter map¶ÔÏó
-        bool bSync, ///<ÊÇ·ñÊÇÍ¬²½µÄÊı¾İ
-        char* szErr2K=NULL ///<Èô³ö´í£¬Ôò·µ»Ø´íÎóÔ­Òò
+    ///è§£æcouter=value;couter=valueçš„dataã€‚è¿”å›å€¼ï¼štrueï¼ŒæˆåŠŸï¼›falseï¼Œå¤±è´¥
+    bool _parseDataCounter(UnistorBdbcData& bdbcData,///<è¿”å›çš„è®¡æ•°æœºä¿¡æ¯
+        char const* szData, ///<è®¡æ•°çš„å­—ç¬¦ä¸²
+        CWX_UINT32 uiDataLen, ///<æ•°æ®é•¿åº¦
+        UnistorStoreBdbcCounterMap* pCounterMap, ///<çº¿ç¨‹çš„counter mapå¯¹è±¡
+        bool bSync, ///<æ˜¯å¦æ˜¯åŒæ­¥çš„æ•°æ®
+        char* szErr2K=NULL ///<è‹¥å‡ºé”™ï¼Œåˆ™è¿”å›é”™è¯¯åŸå› 
         );
-    ///ĞÎ³É couter_id=value;couter_id=valueµÄdata¡£·µ»ØÖµ£ºtrue£¬³É¹¦£»false£¬Ê§°Ü
-    bool _outputSyncCounter(UnistorBdbcData const& bdbcData,///<·µ»ØµÄ¼ÆÊı»úĞÅÏ¢
-        char* szData, ///<¼ÆÊıµÄ×Ö·û´®
-        CWX_UINT32& uiDataLen, ///<Êı¾İ³¤¶È
-        char* szErr2K=NULL ///<Èô³ö´í£¬Ôò·µ»Ø´íÎóÔ­Òò
-        );
-
-    ///merge¼ÆÊıÆ÷£¬true£º³É¹¦£»false£ºÊ§°Ü
-    bool _mergeAddCouter(UnistorBdbcData& oldBdbcData, ///<µ±Ç°µÄÖµ
-        UnistorBdbcData const& newBdbcData, ///<ĞÂÖµ
-        UnistorStoreBdbcCounterMap* pCounterMap, ///<Ïß³ÌµÄcounter map¶ÔÏó
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóÏûÏ¢
+    ///å½¢æˆ couter_id=value;couter_id=valueçš„dataã€‚è¿”å›å€¼ï¼štrueï¼ŒæˆåŠŸï¼›falseï¼Œå¤±è´¥
+    bool _outputSyncCounter(UnistorBdbcData const& bdbcData,///<è¿”å›çš„è®¡æ•°æœºä¿¡æ¯
+        char* szData, ///<è®¡æ•°çš„å­—ç¬¦ä¸²
+        CWX_UINT32& uiDataLen, ///<æ•°æ®é•¿åº¦
+        char* szErr2K=NULL ///<è‹¥å‡ºé”™ï¼Œåˆ™è¿”å›é”™è¯¯åŸå› 
         );
 
-    ///merge¼ÆÊıÆ÷£¬true£º³É¹¦£»false£ºÊ§°Ü
-    bool _mergeSetCouter(UnistorBdbcData& oldBdbcData, ///<µ±Ç°µÄÖµ
-        UnistorBdbcData const& newBdbcData, ///<ĞÂÖµ
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóÏûÏ¢
+    ///mergeè®¡æ•°å™¨ï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+    bool _mergeAddCouter(UnistorBdbcData& oldBdbcData, ///<å½“å‰çš„å€¼
+        UnistorBdbcData const& newBdbcData, ///<æ–°å€¼
+        UnistorStoreBdbcCounterMap* pCounterMap, ///<çº¿ç¨‹çš„counter mapå¯¹è±¡
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
 
-    ///ĞÎ³ÉincµÄ¼ÆÊıÆ÷£¬1£º³É¹¦£»-1£ºÊ§°Ü£»0£º³¬¹ı·¶Î§¡£
-    int _mergeIncCouter(UnistorBdbcData& bdbcData, ///<µ±Ç°µÄÖµ
-        CWX_INT32 iValue, ///<incµÄÖµ£¬¿ÉÒÔÎª¸ºÊı
-        CWX_INT64 iMax, ///<×î´óÖµ
-        CWX_INT64 iMin, ///<×îĞ¡Öµ
-        CWX_UINT8 ucId, ///<¼ÆÊıÆ÷µÄid
-        CWX_INT64& llValue, ///<ÀÛ¼ÆÖµ
-        char* szErr2K ///<Ê§°ÜÊ±µÄ´íÎóÏûÏ¢
+    ///mergeè®¡æ•°å™¨ï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+    bool _mergeSetCouter(UnistorBdbcData& oldBdbcData, ///<å½“å‰çš„å€¼
+        UnistorBdbcData const& newBdbcData, ///<æ–°å€¼
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
 
-    ///Êä³ö¼ÆÊıµÄÄÚÈİ£¬·µ»ØĞÂµÄÎ»ÖÃ
-    char* _outputUiCounter(UnistorBdbcData& bdbcData, ///<¼ÆÊıÆ÷¶ÔÏó
-        char const* szField, ///<ÒªÊä³öµÄ¼ÆÊıÆ÷£¬NULL±íÊ¾È«²¿Êä³ö
-        char* szBuf, ///<Êä³öµÄbuf
-        CWX_UINT32& uiLen, ///<´«ÈëbufµÄ´óĞ¡£¬·µ»ØÊ£ÓàbufµÄ´óĞ¡
-        UnistorStoreBdbcCounterMap* pCounterMap, ///<Ïß³ÌµÄcounter map¶ÔÏó
-        char* szErr2K ///<³ö´íÊ±µÄ´íÎóĞÅÏ¢
+    ///å½¢æˆincçš„è®¡æ•°å™¨ï¼Œ1ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ï¼›0ï¼šè¶…è¿‡èŒƒå›´ã€‚
+    int _mergeIncCouter(UnistorBdbcData& bdbcData, ///<å½“å‰çš„å€¼
+        CWX_INT32 iValue, ///<incçš„å€¼ï¼Œå¯ä»¥ä¸ºè´Ÿæ•°
+        CWX_INT64 iMax, ///<æœ€å¤§å€¼
+        CWX_INT64 iMin, ///<æœ€å°å€¼
+        CWX_UINT8 ucId, ///<è®¡æ•°å™¨çš„id
+        CWX_INT64& llValue, ///<ç´¯è®¡å€¼
+        char* szErr2K ///<å¤±è´¥æ—¶çš„é”™è¯¯æ¶ˆæ¯
         );
 
-    ///»ñÈ¡keyµÄÊı¾İ¿âË÷Òı
+    ///è¾“å‡ºè®¡æ•°çš„å†…å®¹ï¼Œè¿”å›æ–°çš„ä½ç½®
+    char* _outputUiCounter(UnistorBdbcData& bdbcData, ///<è®¡æ•°å™¨å¯¹è±¡
+        char const* szField, ///<è¦è¾“å‡ºçš„è®¡æ•°å™¨ï¼ŒNULLè¡¨ç¤ºå…¨éƒ¨è¾“å‡º
+        char* szBuf, ///<è¾“å‡ºçš„buf
+        CWX_UINT32& uiLen, ///<ä¼ å…¥bufçš„å¤§å°ï¼Œè¿”å›å‰©ä½™bufçš„å¤§å°
+        UnistorStoreBdbcCounterMap* pCounterMap, ///<çº¿ç¨‹çš„counter mapå¯¹è±¡
+        char* szErr2K ///<å‡ºé”™æ—¶çš„é”™è¯¯ä¿¡æ¯
+        );
+
+    ///è·å–keyçš„æ•°æ®åº“ç´¢å¼•
     inline CWX_UINT32 _getBdbIndex(UnistorBdbcKey const& key) const{
         CWX_UINT32 uiIndex = UnistorBdbcKey::m_storeKeyGroupFn(key.m_szKey, key.m_unKeyLen);
         uiIndex &= m_uiGroupMask;
@@ -846,135 +846,135 @@ private:
         return uiIndex;
     }
 
-    ///commit¡£0£º³É¹¦£»-1£ºÊ§°Ü
+    ///commitã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 	int _commit(char* szErr2K);
 
-    ///¼ì²éÏµÍ³ĞÅÏ¢¡£0£º³É¹¦£»-1£ºÊ§°Ü
+    ///æ£€æŸ¥ç³»ç»Ÿä¿¡æ¯ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _checkSysInfo();
 
-    ///»ñÈ¡¼ÆÊıÆ÷µÄÅäÖÃĞÅÏ¢¡£0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è·å–è®¡æ•°å™¨çš„é…ç½®ä¿¡æ¯ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _checkCounterDef(char* szErr2K);
 	
-    //¸üĞÂÏµÍ³ĞÅÏ¢¡£·µ»ØÖµ£º0:³É¹¦£»-1£ºÊ§°Ü
+    //æ›´æ–°ç³»ç»Ÿä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 	int _updateSysInfo(DB_TXN* tid, CWX_UINT64 ullSid, char* szErr2K);
 	
-    //¼ÓÔØÏµÍ³ĞÅÏ¢¡£·µ»ØÖµ£º0:³É¹¦£»-1£º³É¹¦
+    //åŠ è½½ç³»ç»Ÿä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šæˆåŠŸ
 	int _loadSysInfo(DB_TXN* tid, char* szErr2K);
 	
-    //½âÎöbdbµÄÅäÖÃĞÅÏ¢¡£·µ»ØÖµ0:³É¹¦£»-1£ºÊ§°Ü
+    //è§£æbdbçš„é…ç½®ä¿¡æ¯ã€‚è¿”å›å€¼0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
 	int _parseConf();
 
-    //°²×°ÒıÇæµÄ²Ù×÷·½·¨¡£·µ»ØÖµ0£º³É¹¦£»-1£ºÊ§°Ü
+    //å®‰è£…å¼•æ“çš„æ“ä½œæ–¹æ³•ã€‚è¿”å›å€¼0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _installFunc();
 
-    //»ñÈ¡ÏµÍ³key¡£1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
-    int _getSysKey(UnistorTss* tss, ///<Ïß³Ìtss¶ÔÏó
-        char const* key, ///<Òª»ñÈ¡µÄkey
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        char* szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT32& uiLen  ///<szDataÊı¾İµÄ×Ö½ÚÊı
+    //è·å–ç³»ç»Ÿkeyã€‚1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
+    int _getSysKey(UnistorTss* tss, ///<çº¿ç¨‹tsså¯¹è±¡
+        char const* key, ///<è¦è·å–çš„key
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        char* szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT32& uiLen  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
         );
 
-    //set key¡£0:³É¹¦£»-1£ºÊ§°Ü
-    int _setKey(UnistorBdbcKey const* key,///<¼ÆÊıµÄkey
-        char const* szData, ///<keyµÄdata
-        CWX_UINT32 uiLen, ///<dataµÄ³¤¶È
-        bool& bWriteCache, ///<ÊÇ·ñkeyÔÚwrite cacheÖĞ´æÔÚ
-        bool bCache=true, ///<ÊÇ·ñ¸üĞÂcache£¬Èô²»¸üĞÂÔò»áÉ¾³ıcache
-        char* szErr2K=NULL ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+    //set keyã€‚0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int _setKey(UnistorBdbcKey const* key,///<è®¡æ•°çš„key
+        char const* szData, ///<keyçš„data
+        CWX_UINT32 uiLen, ///<dataçš„é•¿åº¦
+        bool& bWriteCache, ///<æ˜¯å¦keyåœ¨write cacheä¸­å­˜åœ¨
+        bool bCache=true, ///<æ˜¯å¦æ›´æ–°cacheï¼Œè‹¥ä¸æ›´æ–°åˆ™ä¼šåˆ é™¤cache
+        char* szErr2K=NULL ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
     
-    //»ñÈ¡keyµÄdata¡£·µ»ØÖµ£º1£º»ñÈ¡£»-1£ºÊ§°Ü
-    int _getKey(UnistorBdbcKey const* key,///<¼ÆÊıµÄkey
-        char* szData, ///<keyµÄdata
-        CWX_UINT32& uiLen,///<´«ÈëdataµÄbuf size£¬·µ»ØdataµÄ³¤¶È
-        char* szStoreKeyBuf, ///<keyµÄbuf
-        CWX_UINT16 unKeyBufLen, ///<keyµÄbuf´óĞ¡
-        bool& isCached, ///<Êı¾İÊÇ·ñÔÚcacheÖĞ¡£
-        bool bCache, ///<ÊÇ·ñÊ¹ÓÃcache
-        bool bAddEmpty, ///<ÊÇ·ñÌí¼Óemtpy
-        char* szErr2K ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+    //è·å–keyçš„dataã€‚è¿”å›å€¼ï¼š1ï¼šè·å–ï¼›-1ï¼šå¤±è´¥
+    int _getKey(UnistorBdbcKey const* key,///<è®¡æ•°çš„key
+        char* szData, ///<keyçš„data
+        CWX_UINT32& uiLen,///<ä¼ å…¥dataçš„buf sizeï¼Œè¿”å›dataçš„é•¿åº¦
+        char* szStoreKeyBuf, ///<keyçš„buf
+        CWX_UINT16 unKeyBufLen, ///<keyçš„bufå¤§å°
+        bool& isCached, ///<æ•°æ®æ˜¯å¦åœ¨cacheä¸­ã€‚
+        bool bCache, ///<æ˜¯å¦ä½¿ç”¨cache
+        bool bAddEmpty, ///<æ˜¯å¦æ·»åŠ emtpy
+        char* szErr2K ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
     
-    //É¾³ıkey£¬Í¬Ê±´ÓcacheÖĞÉ¾³ı¡£·µ»ØÖµ£º0:³É¹¦£»-1£ºÊ§°Ü
-    int _delKey(UnistorBdbcKey const* key, ///<¼ÆÊıµÄkey
-        bool& bWriteCache, ///<ÊÇ·ñkeyÔÚwrite cacheÖĞ´æÔÚ
-        char* szErr2K=NULL ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+    //åˆ é™¤keyï¼ŒåŒæ—¶ä»cacheä¸­åˆ é™¤ã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int _delKey(UnistorBdbcKey const* key, ///<è®¡æ•°çš„key
+        bool& bWriteCache, ///<æ˜¯å¦keyåœ¨write cacheä¸­å­˜åœ¨
+        char* szErr2K=NULL ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
 
-	//ÉèÖÃbdbµÄkeyµÄdata¡£·µ»ØÖµ£º0:³É¹¦£»-1£ºÊ§°Ü
-	int _setBdbKey(DB* db, ///<bdbµÄdb handle
-        DB_TXN* tid, ///<bdbµÄtransaction
+	//è®¾ç½®bdbçš„keyçš„dataã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
+	int _setBdbKey(DB* db, ///<bdbçš„db handle
+        DB_TXN* tid, ///<bdbçš„transaction
         char const* szKey, ///<key
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        CWX_UINT16 unKeyBufLen, ///<keyµÄbuf¿Õ¼ä´óĞ¡
-        char const* szData, ///<keyµÄdata
-        CWX_UINT32 uiDataLen, ///<dataµÄ´óĞ¡
-        CWX_UINT32 flags, ///<bdbµÄset flags
-        char* szErr2K=NULL ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        CWX_UINT16 unKeyBufLen, ///<keyçš„bufç©ºé—´å¤§å°
+        char const* szData, ///<keyçš„data
+        CWX_UINT32 uiDataLen, ///<dataçš„å¤§å°
+        CWX_UINT32 flags, ///<bdbçš„set flags
+        char* szErr2K=NULL ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
 
-    //´ÓbdbÖĞ»ñÈ¡key¡£·µ»ØÖµ£º0:²»´æÔÚ£»1£º»ñÈ¡£»-1£ºÊ§°Ü
-	int _getBdbKey(DB* db, ///<bdbµÄdb handle
-        DB_TXN* tid, ///<bdbµÄtransaction
-        char const* szKey, ///<getµÄkey
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        char* szData,  ///<keyµÄdata£¬¿Õ¼äÍâ±ß±£Ö¤
-        CWX_UINT32& uiLen, ///<´«ÈëszDataµÄ¿Õ¼ä´óĞ¡£¬´«³ödataµÄ´óĞ¡
-        char* szStoreKeyBuf, ///<´æ´¢keyµÄ¿Õ¼ä
-        CWX_UINT16 unKeyBufLen, ///<¿Õ¼ä´óĞ¡
-        CWX_UINT32 flags, ///<bdbµÄget flags
-        char* szErr2K=NULL  ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+    //ä»bdbä¸­è·å–keyã€‚è¿”å›å€¼ï¼š0:ä¸å­˜åœ¨ï¼›1ï¼šè·å–ï¼›-1ï¼šå¤±è´¥
+	int _getBdbKey(DB* db, ///<bdbçš„db handle
+        DB_TXN* tid, ///<bdbçš„transaction
+        char const* szKey, ///<getçš„key
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        char* szData,  ///<keyçš„dataï¼Œç©ºé—´å¤–è¾¹ä¿è¯
+        CWX_UINT32& uiLen, ///<ä¼ å…¥szDataçš„ç©ºé—´å¤§å°ï¼Œä¼ å‡ºdataçš„å¤§å°
+        char* szStoreKeyBuf, ///<å­˜å‚¨keyçš„ç©ºé—´
+        CWX_UINT16 unKeyBufLen, ///<ç©ºé—´å¤§å°
+        CWX_UINT32 flags, ///<bdbçš„get flags
+        char* szErr2K=NULL  ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
 
-    //´ÓbdbÖĞÉ¾³ıÊı¾İ¡£·µ»ØÖµ£º0:³É¹¦£»-1£ºÊ§°Ü
-	int _delBdbKey(DB* db,  ///<bdbµÄdb handle
-        DB_TXN* tid, ///<bdbµÄtransaction
-        char const* szKey, ///<É¾³ıµÄkey
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        CWX_UINT16 unKeyBufLen, ///<szKeyµÄ¿Õ¼ä´óĞ¡
-        CWX_UINT32 flags,  ///<bdbÉ¾³ı±ê¼Ç
-        char* szErr2K=NULL  ///<³ö´íÊ±·µ»Ø´íÎóÃèÊö
+    //ä»bdbä¸­åˆ é™¤æ•°æ®ã€‚è¿”å›å€¼ï¼š0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
+	int _delBdbKey(DB* db,  ///<bdbçš„db handle
+        DB_TXN* tid, ///<bdbçš„transaction
+        char const* szKey, ///<åˆ é™¤çš„key
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        CWX_UINT16 unKeyBufLen, ///<szKeyçš„ç©ºé—´å¤§å°
+        CWX_UINT32 flags,  ///<bdbåˆ é™¤æ ‡è®°
+        char* szErr2K=NULL  ///<å‡ºé”™æ—¶è¿”å›é”™è¯¯æè¿°
         );
 
-    //µ¼³ömodÄ£Ê½µÄ¶©ÔÄ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
-    int _exportNext(UnistorTss* tss,///<Ïß³Ìtss
-        UnistorStoreCursor& cursor, ///<cursor¶ÔÏó
-        char const*& szKey, ///<ÏÂÒ»¸öµÄkey
-        CWX_UINT16& unKeyLen, ///<keyµÄ³¤¶È
-        char const*& szData, ///<ÏÂÒ»¸ökeyµÄdata
-        CWX_UINT32& uiDataLen, ///<dataµÄ³¤¶È
-        bool& bKeyValue, ///<ÊÇ·ñdataÎªkey/value
-        CWX_UINT32& uiVersion, ///<keyµÄ°æ±¾ºÅ
-        CWX_UINT32& uiExpire, ///<keyµÄ³¬Ê±Ê±¼ä
-        CWX_UINT16& unSkipNum, ///<µ±Ç°Ê£ÓàµÄskipÁ¿
-        char const*& szExtra,   ///<extraµÄÊı¾İ£¬ÎªdbµÄË÷Òı
-        CWX_UINT32& uiExtraLen  ///<extraÊı¾İµÄ³¤¶È
+    //å¯¼å‡ºmodæ¨¡å¼çš„è®¢é˜…ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
+    int _exportNext(UnistorTss* tss,///<çº¿ç¨‹tss
+        UnistorStoreCursor& cursor, ///<cursorå¯¹è±¡
+        char const*& szKey, ///<ä¸‹ä¸€ä¸ªçš„key
+        CWX_UINT16& unKeyLen, ///<keyçš„é•¿åº¦
+        char const*& szData, ///<ä¸‹ä¸€ä¸ªkeyçš„data
+        CWX_UINT32& uiDataLen, ///<dataçš„é•¿åº¦
+        bool& bKeyValue, ///<æ˜¯å¦dataä¸ºkey/value
+        CWX_UINT32& uiVersion, ///<keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32& uiExpire, ///<keyçš„è¶…æ—¶æ—¶é—´
+        CWX_UINT16& unSkipNum, ///<å½“å‰å‰©ä½™çš„skipé‡
+        char const*& szExtra,   ///<extraçš„æ•°æ®ï¼Œä¸ºdbçš„ç´¢å¼•
+        CWX_UINT32& uiExtraLen  ///<extraæ•°æ®çš„é•¿åº¦
         );
 
-    //export keyÄ£Ê½µÄ¶©ÔÄ¡£-1£ºÊ§°Ü£»0£º½áÊø£»1£º»ñÈ¡Ò»¸ö£»2£ºskipÊıÁ¿Îª0
-    int _exportKeyNext(UnistorTss* tss,///<Ïß³Ìtss
-        UnistorStoreCursor& cursor, ///<cursor¶ÔÏó
-        char const*& szKey, ///<ÏÂÒ»¸öµÄkey
-        CWX_UINT16& unKeyLen, ///<keyµÄ³¤¶È
-        char const*& szData, ///<ÏÂÒ»¸ökeyµÄdata
-        CWX_UINT32& uiDataLen, ///<dataµÄ³¤¶È
-        bool& bKeyValue, ///<ÊÇ·ñdataÎªkey/value
-        CWX_UINT32& uiVersion, ///<keyµÄ°æ±¾ºÅ
-        CWX_UINT32& uiExpire, ///<keyµÄ³¬Ê±Ê±¼ä
-        CWX_UINT16& unSkipNum, ///<µ±Ç°Ê£ÓàµÄskipÁ¿
-        char const*& szExtra,   ///<extraµÄÊı¾İ£¬ÎªdbµÄË÷Òı
-        CWX_UINT32& uiExtraLen  ///<extraÊı¾İµÄ³¤¶È
+    //export keyæ¨¡å¼çš„è®¢é˜…ã€‚-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè·å–ä¸€ä¸ªï¼›2ï¼šskipæ•°é‡ä¸º0
+    int _exportKeyNext(UnistorTss* tss,///<çº¿ç¨‹tss
+        UnistorStoreCursor& cursor, ///<cursorå¯¹è±¡
+        char const*& szKey, ///<ä¸‹ä¸€ä¸ªçš„key
+        CWX_UINT16& unKeyLen, ///<keyçš„é•¿åº¦
+        char const*& szData, ///<ä¸‹ä¸€ä¸ªkeyçš„data
+        CWX_UINT32& uiDataLen, ///<dataçš„é•¿åº¦
+        bool& bKeyValue, ///<æ˜¯å¦dataä¸ºkey/value
+        CWX_UINT32& uiVersion, ///<keyçš„ç‰ˆæœ¬å·
+        CWX_UINT32& uiExpire, ///<keyçš„è¶…æ—¶æ—¶é—´
+        CWX_UINT16& unSkipNum, ///<å½“å‰å‰©ä½™çš„skipé‡
+        char const*& szExtra,   ///<extraçš„æ•°æ®ï¼Œä¸ºdbçš„ç´¢å¼•
+        CWX_UINT32& uiExtraLen  ///<extraæ•°æ®çš„é•¿åº¦
         );
 
-    //»ñÈ¡µ¼³öµÄÏÂÒ»¸ökeyµÄ·¶Î§¡£true£º³É¹¦£»false£ºÍê³É
-    bool _exportKeyInit(string const& strKeyBegin, ///<µ±Ç°exportµãµÄkey
-        string& strBegin, ///<ÏÂÒ»¸ökey·¶Î§µÄ¿ªÊ¼Î»ÖÃ
-        string& strEnd, ///<ÏÂÒ»¸ökey·¶Î§µÄ½áÊøÎ»ÖÃ
-        UnistorSubscribeKey const& keys ///<key¶©ÔÄ¹æÔò
+    //è·å–å¯¼å‡ºçš„ä¸‹ä¸€ä¸ªkeyçš„èŒƒå›´ã€‚trueï¼šæˆåŠŸï¼›falseï¼šå®Œæˆ
+    bool _exportKeyInit(string const& strKeyBegin, ///<å½“å‰exportç‚¹çš„key
+        string& strBegin, ///<ä¸‹ä¸€ä¸ªkeyèŒƒå›´çš„å¼€å§‹ä½ç½®
+        string& strEnd, ///<ä¸‹ä¸€ä¸ªkeyèŒƒå›´çš„ç»“æŸä½ç½®
+        UnistorSubscribeKey const& keys ///<keyè®¢é˜…è§„åˆ™
         );
 
-    //´´½¨cursor¡£·µ»ØÖµ£º0£¬Íê³É£»1£¬³É¹¦£»-1£¬Ê§°Ü¡£
+    //åˆ›å»ºcursorã€‚è¿”å›å€¼ï¼š0ï¼Œå®Œæˆï¼›1ï¼ŒæˆåŠŸï¼›-1ï¼Œå¤±è´¥ã€‚
     inline int _createCursor(CWX_UINT32 uiIndex, DBC*& cursor, char* szErr2K)
     {
         if (uiIndex >= m_uiGroupNum) return 0;
@@ -993,17 +993,17 @@ private:
     }
 
 private:
-    UnistorBdbcData const         m_emptyData;       ///<¿Õ¼ÆÊıÆ÷
-    char                          m_szEmptyData[1024]; ///<¿ÕÊı¾İ
-    CWX_UINT32                    m_uiEmptyDataLen; ///<¿ÕÊı¾İµÄ³¤¶È
-	UnistorConfigBdbc			  m_bdbcConf; ///<bdbµÄÅäÖÃÎÄ¼ş
-	DB_ENV*					      m_bdbEnv;  ///<bdbµÄenv
-	DB**                          m_bdbs;    ///<bdbµÄhandleµÄÊı×é
-    DB*                           m_sysDb;   ///<bdbµÄÏµÍ³¿â
-    DB_TXN*	                      m_bdbTxn;  ///<bdbµÄÊÂÎñhandle
-    CWX_UINT32                    m_uiGroupMask; ///<·Ö×éµÄÑÚÂë
-    CWX_UINT32                    m_uiGroupNum; ///<·Ö×éµÄÊıÁ¿
-    UnistorStoreBdbcCounterMap*   m_pCounterDef; ///<¼ÆÊıÆ÷µÄ¶¨Òå
+    UnistorBdbcData const         m_emptyData;       ///<ç©ºè®¡æ•°å™¨
+    char                          m_szEmptyData[1024]; ///<ç©ºæ•°æ®
+    CWX_UINT32                    m_uiEmptyDataLen; ///<ç©ºæ•°æ®çš„é•¿åº¦
+	UnistorConfigBdbc			  m_bdbcConf; ///<bdbçš„é…ç½®æ–‡ä»¶
+	DB_ENV*					      m_bdbEnv;  ///<bdbçš„env
+	DB**                          m_bdbs;    ///<bdbçš„handleçš„æ•°ç»„
+    DB*                           m_sysDb;   ///<bdbçš„ç³»ç»Ÿåº“
+    DB_TXN*	                      m_bdbTxn;  ///<bdbçš„äº‹åŠ¡handle
+    CWX_UINT32                    m_uiGroupMask; ///<åˆ†ç»„çš„æ©ç 
+    CWX_UINT32                    m_uiGroupNum; ///<åˆ†ç»„çš„æ•°é‡
+    UnistorStoreBdbcCounterMap*   m_pCounterDef; ///<è®¡æ•°å™¨çš„å®šä¹‰
 };
 
 #endif

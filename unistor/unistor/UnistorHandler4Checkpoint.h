@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_CHECKPOINT_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_CHECKPOINT_H__
 #define __UNISTOR_HANDLER_4_CHECKPOINT_H__
 
 #include "CwxCommander.h"
@@ -8,41 +8,41 @@
 #include "CwxMsgBlock.h"
 #include "UnistorTss.h"
 
-///ÉùÃ÷app¶ÔÏó
+///å£°æ˜appå¯¹è±¡
 class UnistorApp;
 
-///checkpointµÄ´¦Àíhandle
+///checkpointçš„å¤„ç†handle
 class UnistorHandler4Checkpoint : public CwxCmdOp{
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorHandler4Checkpoint(UnistorApp* pApp):m_pApp(pApp){
 		m_bCheckOuting = false;
 		m_uiLastCheckTime = time(NULL);
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorHandler4Checkpoint(){
     }
 public:
     /**
-    @brief ³¬Ê±¼ì²éÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ³¬Ê±¼ì²éµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief è¶…æ—¶æ£€æŸ¥äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg è¶…æ—¶æ£€æŸ¥çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onTimeoutCheck(CwxMsgBlock*& msg, CwxTss* pThrEnv);
     /**
-    @brief ÓÃ»§×Ô¶¨ÒåÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ÓÃ»§×Ô¶¨ÒåÊÂ¼şµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief ç”¨æˆ·è‡ªå®šä¹‰äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg ç”¨æˆ·è‡ªå®šä¹‰äº‹ä»¶çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv);
-    ///¼ì²âÊÇ·ñĞèÒªcheckpoint
+    ///æ£€æµ‹æ˜¯å¦éœ€è¦checkpoint
 	bool isNeedCheckOut(time_t now) const;
 private:
-	bool				      m_bCheckOuting; ///<ÊÇ·ñÕıÔÚcheckpoint
-	CWX_UINT32				  m_uiLastCheckTime; ///<ÉÏ´ÎcheckpointµÄÊ±¼ä
-    UnistorApp*               m_pApp;  ///<app¶ÔÏó
+	bool				      m_bCheckOuting; ///<æ˜¯å¦æ­£åœ¨checkpoint
+	CWX_UINT32				  m_uiLastCheckTime; ///<ä¸Šæ¬¡checkpointçš„æ—¶é—´
+    UnistorApp*               m_pApp;  ///<appå¯¹è±¡
 };
 
 #endif 

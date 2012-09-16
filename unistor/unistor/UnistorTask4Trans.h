@@ -1,21 +1,21 @@
-#ifndef __UNISTOR_TASK_4_TRANS_H__
+ï»¿#ifndef __UNISTOR_TASK_4_TRANS_H__
 #define __UNISTOR_TASK_4_TRANS_H__
 
 #include "UnistorMacro.h"
 #include "CwxTaskBoard.h"
 #include "UnistorTss.h"
-///Ç°ÖÃÉùÃ÷
+///å‰ç½®å£°æ˜
 class UnistorApp;
 
 
-//UI¿ØÖÆÌ¨µÄÈÎÎñÖ´ĞĞ½á¹û»ñÈ¡µÄtask¶ÔÏó
+//UIæ§åˆ¶å°çš„ä»»åŠ¡æ‰§è¡Œç»“æœè·å–çš„taskå¯¹è±¡
 class UnistorTask4Trans : public CwxTaskBoardTask
 {
 public:
     enum{
         TASK_STATE_WAITING = CwxTaskBoardTask::TASK_STATE_USER
     };
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorTask4Trans(UnistorApp* pApp, CwxTaskBoard* pTaskBoard):CwxTaskBoardTask(pTaskBoard)
     {
         m_tranMsg = NULL;
@@ -25,7 +25,7 @@ public:
         m_msg = NULL;
         m_uiErrCode = UNISTOR_ERR_SUCCESS;
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~UnistorTask4Trans()
     {
         if (m_tranMsg) CwxMsgBlockAlloc::free(m_tranMsg);
@@ -33,44 +33,44 @@ public:
     }
 public:
     /**
-    @brief Í¨ÖªTaskÒÑ¾­³¬Ê±
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
+    @brief é€šçŸ¥Taskå·²ç»è¶…æ—¶
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
     @return void
     */
     virtual void noticeTimeout(CwxTss* pThrEnv);
     /**
-    @brief Í¨ÖªTaskµÄÊÕµ½Ò»¸öÊı¾İ°ü¡£
-    @param [in] msg ÊÕµ½µÄÏûÏ¢
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
-    @param [out] bConnAppendMsg ÊÕµ½ÏûÏ¢µÄÁ¬½ÓÉÏ£¬ÊÇ·ñ»¹ÓĞ´ı½ÓÊÕµÄÆäËûÏûÏ¢¡£true£ºÊÇ£»false£ºÃ»ÓĞ
+    @brief é€šçŸ¥Taskçš„æ”¶åˆ°ä¸€ä¸ªæ•°æ®åŒ…ã€‚
+    @param [in] msg æ”¶åˆ°çš„æ¶ˆæ¯
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
+    @param [out] bConnAppendMsg æ”¶åˆ°æ¶ˆæ¯çš„è¿æ¥ä¸Šï¼Œæ˜¯å¦è¿˜æœ‰å¾…æ¥æ”¶çš„å…¶ä»–æ¶ˆæ¯ã€‚trueï¼šæ˜¯ï¼›falseï¼šæ²¡æœ‰
     @return void
     */
     virtual void noticeRecvMsg(CwxMsgBlock*& msg,
         CwxTss* pThrEnv,
         bool& bConnAppendMsg);
     /**
-    @brief Í¨ÖªTaskÍùÍâ·¢ËÍµÄÒ»¸öÊı¾İ°ü·¢ËÍÊ§°Ü¡£
-    @param [in] msg ÊÕµ½µÄÏûÏ¢
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
+    @brief é€šçŸ¥Taskå¾€å¤–å‘é€çš„ä¸€ä¸ªæ•°æ®åŒ…å‘é€å¤±è´¥ã€‚
+    @param [in] msg æ”¶åˆ°çš„æ¶ˆæ¯
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
     @return void
     */
     virtual void noticeFailSendMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv);
     /**
-    @brief Í¨ÖªTaskÍ¨¹ıÄ³ÌõÁ¬½Ó£¬·¢ËÍÁËÒ»¸öÊı¾İ°ü¡£
-    @param [in] msg ·¢ËÍµÄÊı¾İ°üµÄĞÅÏ¢
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
-    @param [out] bConnAppendMsg ·¢ËÍÏûÏ¢µÄÁ¬½ÓÉÏ£¬ÊÇ·ñÓĞµÈ´ı»Ø¸´µÄÏûÏ¢¡£true£ºÊÇ£»false£ºÃ»ÓĞ
+    @brief é€šçŸ¥Taské€šè¿‡æŸæ¡è¿æ¥ï¼Œå‘é€äº†ä¸€ä¸ªæ•°æ®åŒ…ã€‚
+    @param [in] msg å‘é€çš„æ•°æ®åŒ…çš„ä¿¡æ¯
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
+    @param [out] bConnAppendMsg å‘é€æ¶ˆæ¯çš„è¿æ¥ä¸Šï¼Œæ˜¯å¦æœ‰ç­‰å¾…å›å¤çš„æ¶ˆæ¯ã€‚trueï¼šæ˜¯ï¼›falseï¼šæ²¡æœ‰
     @return void
     */
     virtual void noticeEndSendMsg(CwxMsgBlock*& msg,
         CwxTss* pThrEnv,
         bool& bConnAppendMsg);
     /**
-    @brief Í¨ÖªTaskµÈ´ı»Ø¸´ÏûÏ¢µÄÒ»ÌõÁ¬½Ó¹Ø±Õ¡£
-    @param [in] uiSvrId ¹Ø±ÕÁ¬½ÓµÄSVR-ID
-    @param [in] uiHostId ¹Ø±ÕÁ¬½ÓµÄHOST-ID
-    @param [in] uiConnId ¹Ø±ÕÁ¬½ÓµÄCONN-ID
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
+    @brief é€šçŸ¥Taskç­‰å¾…å›å¤æ¶ˆæ¯çš„ä¸€æ¡è¿æ¥å…³é—­ã€‚
+    @param [in] uiSvrId å…³é—­è¿æ¥çš„SVR-ID
+    @param [in] uiHostId å…³é—­è¿æ¥çš„HOST-ID
+    @param [in] uiConnId å…³é—­è¿æ¥çš„CONN-ID
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
     @return void
     */
     virtual void noticeConnClosed(CWX_UINT32 uiSvrId,
@@ -78,43 +78,43 @@ public:
         CWX_UINT32 uiConnId,
         CwxTss* pThrEnv);
     /**
-    @brief ¼¤»îTask¡£ÔÚTaskÆô¶¯Ç°£¬TaskÓĞTaskµÄ´´½¨Ïß³ÌËùÓµÓĞ¡£
-    ÔÚÆô¶¯Ç°£¬Task¿ÉÒÔ½ÓÊÜ×Ô¼ºµÄÒì²½ÏûÏ¢£¬µ«²»ÄÜ´¦Àí¡£
-    ´ËÊ±ÓĞTaskboardµÄnoticeActiveTask()½Ó¿Úµ÷ÓÃµÄ¡£
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
-    @return 0£º³É¹¦£»-1£ºÊ§°Ü
+    @brief æ¿€æ´»Taskã€‚åœ¨Taskå¯åŠ¨å‰ï¼ŒTaskæœ‰Taskçš„åˆ›å»ºçº¿ç¨‹æ‰€æ‹¥æœ‰ã€‚
+    åœ¨å¯åŠ¨å‰ï¼ŒTaskå¯ä»¥æ¥å—è‡ªå·±çš„å¼‚æ­¥æ¶ˆæ¯ï¼Œä½†ä¸èƒ½å¤„ç†ã€‚
+    æ­¤æ—¶æœ‰Taskboardçš„noticeActiveTask()æ¥å£è°ƒç”¨çš„ã€‚
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
+    @return 0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     */
     virtual int noticeActive(CwxTss* pThrEnv);
     /**
-    @brief Ö´ĞĞTask¡£ÔÚµ÷ÓÃ´ËAPIÇ°£¬TaskÔÚTaskboardÖĞ²»´æÔÚ£¬Ò²¾ÍÊÇËµ¶Ô±ğµÄÏß³Ì²»¿É¼û¡£
-    TaskÒªÃ´ÊÇ¸Õ´´½¨×´Ì¬£¬ÒªÃ´ÊÇÍê³ÉÁËÇ°Ò»¸ö½×¶ÎµÄ´¦Àí£¬´¦ÓÚÍê³É×´Ì¬¡£
-    Í¨¹ı´Ë½Ó¿Ú£¬ÓÉTask×Ô¼º¿ØÖÆ×Ô¼ºµÄstepµÄÌø×ª¶øÍâ½çÎŞĞè¹ØÏµTaskµÄÀàĞÍ¼°´¦Àí¹ı³Ì¡£
-    @param [in] pTaskBoard ¹ÜÀíTaskµÄTaskboard
-    @param [in] pThrEnv µ÷ÓÃÏß³ÌµÄThread-env
+    @brief æ‰§è¡ŒTaskã€‚åœ¨è°ƒç”¨æ­¤APIå‰ï¼ŒTaskåœ¨Taskboardä¸­ä¸å­˜åœ¨ï¼Œä¹Ÿå°±æ˜¯è¯´å¯¹åˆ«çš„çº¿ç¨‹ä¸å¯è§ã€‚
+    Taskè¦ä¹ˆæ˜¯åˆšåˆ›å»ºçŠ¶æ€ï¼Œè¦ä¹ˆæ˜¯å®Œæˆäº†å‰ä¸€ä¸ªé˜¶æ®µçš„å¤„ç†ï¼Œå¤„äºå®ŒæˆçŠ¶æ€ã€‚
+    é€šè¿‡æ­¤æ¥å£ï¼Œç”±Taskè‡ªå·±æ§åˆ¶è‡ªå·±çš„stepçš„è·³è½¬è€Œå¤–ç•Œæ— éœ€å…³ç³»Taskçš„ç±»å‹åŠå¤„ç†è¿‡ç¨‹ã€‚
+    @param [in] pTaskBoard ç®¡ç†Taskçš„Taskboard
+    @param [in] pThrEnv è°ƒç”¨çº¿ç¨‹çš„Thread-env
     @return void
     */
     virtual void execute(CwxTss* pThrEnv);
 public:
-    ///<»Ø¸´×ª·¢ÏûÏ¢
-    static void reply(UnistorApp* pApp, ///<app¶ÔÏó
-        UnistorTss* tss, ///<Ïß³Ìtss
-        CWX_UINT32 uiRecvConnId, ///<ÊÕµ½µÄÁ¬½Óid
-        CWX_UINT32 uiRecvThreadIndex, ///<ÊÕµ½µÄÏß³ÌË÷Òı
-        CwxMsgHead const& recvHead,  ///<ÊÕµ½µÄÏûÏ¢Í·
-        CwxMsgBlock* replyMsg, ///<×ª·¢ÏûÏ¢µÄ»Ø¸´£¬ÈôÎªnull£¬±íÊ¾´íÎó£¬uiErrCode¼°szErrMsgÓĞĞ§
-        CWX_UINT32 uiErrCode=UNISTOR_ERR_SUCCESS, ///<×ª·¢Ê§°ÜµÄ´íÎó´úÂë
-        char const* szErrMsg = NULL ///<×ª·¢Ê§°ÜµÄ´íÎóÏûÏ¢
+    ///<å›å¤è½¬å‘æ¶ˆæ¯
+    static void reply(UnistorApp* pApp, ///<appå¯¹è±¡
+        UnistorTss* tss, ///<çº¿ç¨‹tss
+        CWX_UINT32 uiRecvConnId, ///<æ”¶åˆ°çš„è¿æ¥id
+        CWX_UINT32 uiRecvThreadIndex, ///<æ”¶åˆ°çš„çº¿ç¨‹ç´¢å¼•
+        CwxMsgHead const& recvHead,  ///<æ”¶åˆ°çš„æ¶ˆæ¯å¤´
+        CwxMsgBlock* replyMsg, ///<è½¬å‘æ¶ˆæ¯çš„å›å¤ï¼Œè‹¥ä¸ºnullï¼Œè¡¨ç¤ºé”™è¯¯ï¼ŒuiErrCodeåŠszErrMsgæœ‰æ•ˆ
+        CWX_UINT32 uiErrCode=UNISTOR_ERR_SUCCESS, ///<è½¬å‘å¤±è´¥çš„é”™è¯¯ä»£ç 
+        char const* szErrMsg = NULL ///<è½¬å‘å¤±è´¥çš„é”™è¯¯æ¶ˆæ¯
         );
 public:
-    CwxMsgBlock*        m_tranMsg; ///×ª·¢µÄÏûÏ¢msg
+    CwxMsgBlock*        m_tranMsg; ///è½¬å‘çš„æ¶ˆæ¯msg
 private:
-    CWX_UINT16          m_uiRecvThreadIndex; ///<½ÓÊÕÏûÏ¢µÄÏß³Ì³Ø
-    CWX_UINT32          m_uiRecvConnId; ///<½ÓÊÕÏûÏ¢µÄÁ¬½Óid
-    CwxMsgHead          m_recvMsgHead; ///<½ÓÊÕµ½ÏûÏ¢µÄÏûÏ¢Í·
-    UnistorApp*   m_pApp; ///<app¶ÔÏó
-    CwxMsgBlock*        m_msg; ///<ÊÕµ½µÄÏûÏ¢message
-    string              m_strErrMsg; ///<´íÎóÏûÏ¢
-    CWX_UINT32          m_uiErrCode; ///<´íÎó´úÂë
+    CWX_UINT16          m_uiRecvThreadIndex; ///<æ¥æ”¶æ¶ˆæ¯çš„çº¿ç¨‹æ± 
+    CWX_UINT32          m_uiRecvConnId; ///<æ¥æ”¶æ¶ˆæ¯çš„è¿æ¥id
+    CwxMsgHead          m_recvMsgHead; ///<æ¥æ”¶åˆ°æ¶ˆæ¯çš„æ¶ˆæ¯å¤´
+    UnistorApp*   m_pApp; ///<appå¯¹è±¡
+    CwxMsgBlock*        m_msg; ///<æ”¶åˆ°çš„æ¶ˆæ¯message
+    string              m_strErrMsg; ///<é”™è¯¯æ¶ˆæ¯
+    CWX_UINT32          m_uiErrCode; ///<é”™è¯¯ä»£ç 
 };
 
 

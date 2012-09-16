@@ -1,8 +1,8 @@
-#include "UnistorSubscribe.h"
+ï»¿#include "UnistorSubscribe.h"
 #include "UnistorStoreBase.h"
 
 
-///ÊÇ·ñ¶©ÔÄ
+///æ˜¯å¦è®¢é˜…
 bool UnistorSubscribeKey::isSubscribe(char const* key) const{
     map<string,string>::const_iterator iter = m_keys.begin();
     while(iter != m_keys.end()){
@@ -17,17 +17,17 @@ bool UnistorSubscribeKey::isSubscribe(char const* key) const{
 }
 
 
-///½âÎö¶©ÔÄµÄÓï·¨
+///è§£æè®¢é˜…çš„è¯­æ³•
 /*
-±í´ïÊ½Îª
-type:group_express»òÕßÎª*»òÕßÎªall
-ÆäÖĞ£º
-type:mod¡¢range¡¢keyËÄÖÖÀàĞÍ¡£
-all£º¶©ÔÄÈ«²¿ÏûÏ¢
-mod£º»ùÓÚgroupÇóÓà£¬group_expressÄÚÈİÎª[mod£ºindex1,index2....]£¬±íÊ¾¶ÔgroupÒÔmodÇóÓà£¬ÓàÊıÎªindex1¡¢index2µÈ¡£modÎª0±íÊ¾²»ÇóÓà
-range£º»ùÓÚgroupµÄ·¶Î§£¬group_expressÄÚÈİÎª[mod:begin-end,begin-end,...]±íÊ¾¶Ôgroup%modµÄÖµºóµÄgroup·¶Î§£¬¶à¸ö·¶Î§¿ÉÒÔÒÔ¡¾,¡¿·Ö¸î£¬Èôbegin==end£¬ÔòÖ»Ğ´begin¾Í¿ÉÒÔÁË¡£modÎª0±íÊ¾²»ÇóÓà¡£
-key£º»ùÓÚkey·¶Î§µÄ»ñÈ¡£¬ÄÚÈİÎª[key1-key2,key3-key4,...]£¬±íÊ¾key[key1,key2)¡¢[key3,key4)°ë¿ª°ë±ÕÇø¼ä¡£ÈôkeyÖĞ³öÏÖ¡¾,¡¿»ò¡¾-¡¿£¬ÔòÓÃ,,»ò--±íÊ¾¡£ÈôÇ°Ò»¸öÎª¿Õ£¬Ôò±íÊ¾×îĞ¡£¬ÈôºóÒ»¸öÎª¿Õ£¬Ôò±íÊ¾×î´ó
-ÈôÎª¿Õ£¬±íÊ¾all
+è¡¨è¾¾å¼ä¸º
+type:group_expressæˆ–è€…ä¸º*æˆ–è€…ä¸ºall
+å…¶ä¸­ï¼š
+type:modã€rangeã€keyå››ç§ç±»å‹ã€‚
+allï¼šè®¢é˜…å…¨éƒ¨æ¶ˆæ¯
+modï¼šåŸºäºgroupæ±‚ä½™ï¼Œgroup_expresså†…å®¹ä¸º[modï¼šindex1,index2....]ï¼Œè¡¨ç¤ºå¯¹groupä»¥modæ±‚ä½™ï¼Œä½™æ•°ä¸ºindex1ã€index2ç­‰ã€‚modä¸º0è¡¨ç¤ºä¸æ±‚ä½™
+rangeï¼šåŸºäºgroupçš„èŒƒå›´ï¼Œgroup_expresså†…å®¹ä¸º[mod:begin-end,begin-end,...]è¡¨ç¤ºå¯¹group%modçš„å€¼åçš„groupèŒƒå›´ï¼Œå¤šä¸ªèŒƒå›´å¯ä»¥ä»¥ã€,ã€‘åˆ†å‰²ï¼Œè‹¥begin==endï¼Œåˆ™åªå†™beginå°±å¯ä»¥äº†ã€‚modä¸º0è¡¨ç¤ºä¸æ±‚ä½™ã€‚
+keyï¼šåŸºäºkeyèŒƒå›´çš„è·å–ï¼Œå†…å®¹ä¸º[key1-key2,key3-key4,...]ï¼Œè¡¨ç¤ºkey[key1,key2)ã€[key3,key4)åŠå¼€åŠé—­åŒºé—´ã€‚è‹¥keyä¸­å‡ºç°ã€,ã€‘æˆ–ã€-ã€‘ï¼Œåˆ™ç”¨,,æˆ–--è¡¨ç¤ºã€‚è‹¥å‰ä¸€ä¸ªä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæœ€å°ï¼Œè‹¥åä¸€ä¸ªä¸ºç©ºï¼Œåˆ™è¡¨ç¤ºæœ€å¤§
+è‹¥ä¸ºç©ºï¼Œè¡¨ç¤ºall
 */
 bool UnistorSubscribe::parseSubsribe(string const& strSubscribe){
     char const* pSub=NULL;
@@ -43,7 +43,7 @@ bool UnistorSubscribe::parseSubsribe(string const& strSubscribe){
     m_bAll = false;
     if (strncmp("mod:", strSub.c_str(), 4)==0){
         m_uiMode = UnistorSubscribe::SUBSCRIBE_MODE_MOD;
-        ///»ñÈ¡mod
+        ///è·å–mod
         pSub = strchr(strSub.c_str() + strlen("mod:"), ':');
         if (!pSub){
             m_strErrMsg = "Subscribe rule is error: less [mod:] for mod-subscribe";
@@ -72,7 +72,7 @@ bool UnistorSubscribe::parseSubsribe(string const& strSubscribe){
 
     }else if (strncmp("range:", strSub.c_str(), 6)==0){
         m_uiMode = UnistorSubscribe::SUBSCRIBE_MODE_RANGE;
-        ///»ñÈ¡range
+        ///è·å–range
         pSub = strchr(strSub.c_str() + strlen("range:"), ':');
         if (!pSub){
             m_strErrMsg = "Subscribe rule is error: less [range:] for range-subscribe";
@@ -110,7 +110,7 @@ bool UnistorSubscribe::parseSubsribe(string const& strSubscribe){
     }else if (strncmp("key:", strSub.c_str(), 4) == 0){
         list<string> keys;
         m_uiMode = UnistorSubscribe::SUBSCRIBE_MODE_KEY;
-        ///»ñÈ¡range
+        ///è·å–range
         pSub =strSub.c_str() + strlen("range:");
         int num=parseSubscribeKey(pSub, keys, ',');
         if (0 == num){
@@ -141,7 +141,7 @@ bool UnistorSubscribe::parseSubsribe(string const& strSubscribe){
     return false;
 }
 
-///½âÎökey¡£·µ»ØkeyµÄ½ÚµãÊıÁ¿£¬Ò²¾ÍÊÇkeyµÄÁ´±í½ÚµãÊı£¬·µ»Ø½ÚµãµÄÊıÁ¿
+///è§£ækeyã€‚è¿”å›keyçš„èŠ‚ç‚¹æ•°é‡ï¼Œä¹Ÿå°±æ˜¯keyçš„é“¾è¡¨èŠ‚ç‚¹æ•°ï¼Œè¿”å›èŠ‚ç‚¹çš„æ•°é‡
 int UnistorSubscribe::parseSubscribeKey(char const* szKey, list<string>& keys, char split)
 {
     string strKey="";
@@ -166,13 +166,13 @@ int UnistorSubscribe::parseSubscribeKey(char const* szKey, list<string>& keys, c
             i++;
             continue;
         }
-        //ÓĞÒ»¸ödot£¬ĞÂµÄkey
+        //æœ‰ä¸€ä¸ªdotï¼Œæ–°çš„key
         keys.push_back(strKey);
         strKey="";
         uiDotNum = 0;
         i++;
     }
-    ///Ìí¼Ó×îºóÒ»¸ö
+    ///æ·»åŠ æœ€åä¸€ä¸ª
     keys.push_back(strKey);
     return keys.size();
 }

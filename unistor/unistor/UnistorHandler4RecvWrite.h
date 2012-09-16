@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_RECV_WRITE_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_RECV_WRITE_H__
 #define __UNISTOR_HANDLER_4_RECV_WRITE_H__
 
 #include "CwxCommander.h"
@@ -9,95 +9,95 @@
 #include "UnistorTss.h"
 #include "UnistorPoco.h"
 
-///Ç°ÖÃÉùÃ÷¶ÔÏó
+///å‰ç½®å£°æ˜å¯¹è±¡
 class UnistorApp;
 
-///KVÏûÏ¢´¦Àíhandle
+///KVæ¶ˆæ¯å¤„ç†handle
 class UnistorHandler4RecvWrite : public CwxCmdOp{
 public:
-	///¹¹Ôìº¯Êı
+	///æ„é€ å‡½æ•°
 	UnistorHandler4RecvWrite(UnistorApp* pApp):m_pApp(pApp){
         m_bCanWrite = false;
 	}
-	///Îö¹¹º¯Êı
+	///ææ„å‡½æ•°
     virtual ~UnistorHandler4RecvWrite(){}
 public:
     /**
-    @brief ÊÕµ½Í¨ĞÅÊı¾İ°üÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ÊÕµ½Í¨ĞÅÊı¾İ°üµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief æ”¶åˆ°é€šä¿¡æ•°æ®åŒ…äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg æ”¶åˆ°é€šä¿¡æ•°æ®åŒ…çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv);
 
     /**
-    @brief ³¬Ê±¼ì²éÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ³¬Ê±¼ì²éµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief è¶…æ—¶æ£€æŸ¥äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg è¶…æ—¶æ£€æŸ¥çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onTimeoutCheck(CwxMsgBlock*& msg, CwxTss* pThrEnv);
 
     /**
-    @brief ÓÃ»§×Ô¶¨ÒåÊÂ¼şµÄ´¦Àíº¯Êı¡£
-    @param [in] msg ÓÃ»§×Ô¶¨ÒåÊÂ¼şµÄÊÂ¼ş¶ÔÏó¡£
-    @param [in] pThrEnv Ïß³ÌµÄTSS¶ÔÏó¡£
-    @return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+    @brief ç”¨æˆ·è‡ªå®šä¹‰äº‹ä»¶çš„å¤„ç†å‡½æ•°ã€‚
+    @param [in] msg ç”¨æˆ·è‡ªå®šä¹‰äº‹ä»¶çš„äº‹ä»¶å¯¹è±¡ã€‚
+    @param [in] pThrEnv çº¿ç¨‹çš„TSSå¯¹è±¡ã€‚
+    @return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
     */
     virtual int onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv);
 public:
-    ///ÊÇ·ñmaster¿ÉĞ´£¬Ò²¾ÍÊÇ·ñÊÇmaster
+    ///æ˜¯å¦masterå¯å†™ï¼Œä¹Ÿå°±æ˜¯å¦æ˜¯master
     inline bool isCanWrite() const{
         return m_bCanWrite;
     }
 
 private:
-	///Ìí¼ÓÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-	int addKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum ///<·µ»ØkeyµÄfieldÊıÁ¿
+	///æ·»åŠ ä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+	int addKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-	///setÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-    int setKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum ///<·µ»ØkeyµÄfieldÊıÁ¿
+	///setä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+    int setKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-	///updateÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-    int updateKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum ///<·µ»ØkeyµÄfieldÊıÁ¿
+	///updateä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+    int updateKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-	///incÒ»¸ökeyµÄ¼ÆÊıÆ÷¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-    int incKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_INT64& llValue, ///<·µ»Ø¼ÆÊıÆ÷µÄĞÂÖµ
-        CWX_UINT32& uiVersion ///<·µ»ØkeyµÄfieldÊıÁ¿
+	///incä¸€ä¸ªkeyçš„è®¡æ•°å™¨ã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+    int incKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_INT64& llValue, ///<è¿”å›è®¡æ•°å™¨çš„æ–°å€¼
+        CWX_UINT32& uiVersion ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-	///deleteÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-    int delKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum ///<·µ»ØkeyµÄfieldÊıÁ¿
+	///deleteä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+    int delKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-    ///importÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
-    int importKey(UnistorTss* pTss, ///<Ïß³Ìtss
-        UnistorWriteMsgArg* pWriteArg, ///<addµÄ²ÎÊı
-        CWX_UINT32& uiVersion, ///<·µ»ØkeyµÄĞÂ°æ±¾
-        CWX_UINT32& uiFieldNum ///<·µ»ØkeyµÄfieldÊıÁ¿
+    ///importä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
+    int importKey(UnistorTss* pTss, ///<çº¿ç¨‹tss
+        UnistorWriteMsgArg* pWriteArg, ///<addçš„å‚æ•°
+        CWX_UINT32& uiVersion, ///<è¿”å›keyçš„æ–°ç‰ˆæœ¬
+        CWX_UINT32& uiFieldNum ///<è¿”å›keyçš„fieldæ•°é‡
         );
 
-    ///master±ä»¯´¦Àíº¯Êı
+    ///masterå˜åŒ–å¤„ç†å‡½æ•°
     void configChange(UnistorTss* pTss);
 private:
-	UnistorApp*               m_pApp;  ///<app¶ÔÏó
-    volatile bool             m_bCanWrite; ///<ÊÇ·ñmaster idc¶øÇÒÊÇmaster
+	UnistorApp*               m_pApp;  ///<appå¯¹è±¡
+    volatile bool             m_bCanWrite; ///<æ˜¯å¦master idcè€Œä¸”æ˜¯master
 };
 #endif 

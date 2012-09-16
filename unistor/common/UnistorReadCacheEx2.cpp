@@ -1,16 +1,16 @@
-#include "UnistorReadCacheEx2.h"
+Ôªø#include "UnistorReadCacheEx2.h"
 
-UNISTOR_KEY_CMP_EQUAL_FN UnistorReadCacheItemEx2::m_fnEqual = NULL; ///<keyœ‡µ»µƒ±»Ωœ∫Ø ˝
-UNISTOR_KEY_CMP_LESS_FN UnistorReadCacheItemEx2::m_fnLess = NULL; ///<key–°”⁄µƒ±»Ωœ∫Ø ˝
-UNISTOR_KEY_HASH_FN UnistorReadCacheItemEx2::m_fnHash = NULL; ///<keyµƒhash÷µµƒº∆À„∫Ø ˝
+UNISTOR_KEY_CMP_EQUAL_FN UnistorReadCacheItemEx2::m_fnEqual = NULL; ///<keyÁõ∏Á≠âÁöÑÊØîËæÉÂáΩÊï∞
+UNISTOR_KEY_CMP_LESS_FN UnistorReadCacheItemEx2::m_fnLess = NULL; ///<keyÂ∞è‰∫éÁöÑÊØîËæÉÂáΩÊï∞
+UNISTOR_KEY_HASH_FN UnistorReadCacheItemEx2::m_fnHash = NULL; ///<keyÁöÑhashÂÄºÁöÑËÆ°ÁÆóÂáΩÊï∞
 
-UnistorReadCacheEx2::UnistorReadCacheEx2(unsigned long int size, ///<ø’º‰¥Û–°
-                   CWX_UINT32 count, ///<keyµƒ ˝¡ø
-                   UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyœ‡µ»±»Ωœ∫Ø ˝
-                   UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessµƒ±»Ωœ∫Ø ˝
-                   UNISTOR_KEY_HASH_FN    fnHash, ///<keyµƒhash∫Ø ˝
-                   CwxRwLock* rwLock, ///<∂¡–¥À¯
-                   float  fBucketRate ///<Õ∞µƒ±»¬ 
+UnistorReadCacheEx2::UnistorReadCacheEx2(unsigned long int size, ///<Á©∫Èó¥Â§ßÂ∞è
+                   CWX_UINT32 count, ///<keyÁöÑÊï∞Èáè
+                   UNISTOR_KEY_CMP_EQUAL_FN  fnEqual, ///<keyÁõ∏Á≠âÊØîËæÉÂáΩÊï∞
+                   UNISTOR_KEY_CMP_LESS_FN   fnLess, ///<key lessÁöÑÊØîËæÉÂáΩÊï∞
+                   UNISTOR_KEY_HASH_FN    fnHash, ///<keyÁöÑhashÂáΩÊï∞
+                   CwxRwLock* rwLock, ///<ËØªÂÜôÈîÅ
+                   float  fBucketRate ///<Ê°∂ÁöÑÊØîÁéá
                    ):m_bucket_num((CWX_UINT32)((count *fBucketRate + 1)>count?(count *fBucketRate + 1):count)),m_max_cache_num(count)
 {
     m_max_size = size;
@@ -40,19 +40,19 @@ UnistorReadCacheEx2::UnistorReadCacheEx2(unsigned long int size, ///<ø’º‰¥Û–°
     UnistorReadCacheItemEx2::m_fnLess = m_fnLess = fnLess;
     UnistorReadCacheItemEx2::m_fnHash = m_fnHash = fnHash;        
 }
-///≥ı ºªØcache°£∑µªÿ÷µ£∫0£∫≥…π¶£¨-1£∫ ß∞‹
+///ÂàùÂßãÂåñcache„ÄÇËøîÂõûÂÄºÔºö0ÔºöÊàêÂäüÔºå-1ÔºöÂ§±Ë¥•
 int UnistorReadCacheEx2::init(char* szErr2K){
     clear();
     {
         CwxWriteLockGuard<CwxRwLock>  lock(m_rwLock);
-        ///¥¥Ω®hash bucket
+        ///ÂàõÂª∫hash bucket
         m_hashArr = new UnistorReadCacheItemEx2*[m_bucket_num];
         if (!m_hashArr){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc hash arr, bucket number:%u", m_bucket_num);
             return -1;
         }
         memset(m_hashArr, 0x00, sizeof(UnistorReadCacheItemEx2*)*m_bucket_num);
-        ///∑÷≈‰ø’º‰
+        ///ÂàÜÈÖçÁ©∫Èó¥
         m_cacheBufArr = new char*[m_cacheBufArrSize];
         if (!m_cacheBufArr){
             if (szErr2K) CwxCommon::snprintf(szErr2K, 2047, "No memory to alloc cache slot array, number:%u", m_cacheBufArrSize);
@@ -69,10 +69,10 @@ int UnistorReadCacheEx2::init(char* szErr2K){
                 return -1;
             }
         }
-        ///¥¥Ω®¡¥±Ì ˝◊È
+        ///ÂàõÂª∫ÈìæË°®Êï∞ÁªÑ
         CWX_UINT32 uiMaxPinChainNum = UnistorReadCacheItemEx2::calMaxIndexNum(UNISTOR_READ_CACHE_MAX_ITEM_SIZE);
         m_chainArr = new UnistorReadCacheItemPinEx2[uiMaxPinChainNum];
-        ///¥¥Ω®¡¥±ÌµƒÀ¯
+        ///ÂàõÂª∫ÈìæË°®ÁöÑÈîÅ
         for (i=0; i<UNISTOR_READ_CACHE_CHAIN_LOCK_NUM; i++){
             m_chainMutexArr[i] = new CwxMutexLock();            
         }
@@ -86,7 +86,7 @@ void UnistorReadCacheEx2::insert(char const* szKey,
             CWX_UINT32 uiDataLen,
             bool bNotExist)
 {
-    ///keyµƒ≥§∂»≤ªƒ‹Œ™0
+    ///keyÁöÑÈïøÂ∫¶‰∏çËÉΩ‰∏∫0
     if (!unKeyLen) return;
 
     char key_buf[UnistorReadCacheItemEx2::calKeySize(unKeyLen , 0)];
@@ -96,16 +96,16 @@ void UnistorReadCacheEx2::insert(char const* szKey,
     UnistorReadCacheExIter iter;
 
     CWX_UINT32 uiKeySize = UnistorReadCacheItemEx2::calKeySize(unKeyLen , uiDataLen);
-    ///»Ùkeyµƒø’º‰¥Û–°¥Û”⁄slot£¨‘Ú≤ªcache
+    ///Ëã•keyÁöÑÁ©∫Èó¥Â§ßÂ∞èÂ§ß‰∫éslotÔºåÂàô‰∏çcache
     if (uiKeySize > UNISTOR_READ_CACHE_MAX_ITEM_SIZE) return;
     iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
     {
         CwxWriteLockGuard<CwxRwLock> lock(this->m_rwLock);
-        ///»Áπ˚key¥Ê‘⁄
+        ///Â¶ÇÊûúkeyÂ≠òÂú®
         if(_findKey(key, iter)){
             if (bNotExist) return;
-            if (uiKeySize == iter.m_pFind->size()){/// Ù”⁄Õ¨“ª∏ˆslot
-                ///–ﬁ∏ƒø’º‰
+            if (uiKeySize == iter.m_pFind->size()){///Â±û‰∫éÂêå‰∏Ä‰∏™slot
+                ///‰øÆÊîπÁ©∫Èó¥
                 m_usedDataSize -= iter.m_pFind->getDataLen();
                 m_usedDataSize += uiDataLen;
                 iter.m_pFind->m_uiDataLen = uiDataLen;
@@ -116,38 +116,38 @@ void UnistorReadCacheEx2::insert(char const* szKey,
                 _touch(iter.m_pFind, uiIndex);
                 return;
             }
-            /// Ù”⁄≤ªÕ¨µƒslot£¨ ◊œ»“Á≥ˆ
+            ///Â±û‰∫é‰∏çÂêåÁöÑslotÔºåÈ¶ñÂÖàÊ∫¢Âá∫
             _remove(iter);
         }
 
         CWX_UINT32 uiIndex = UnistorReadCacheItemEx2::calKeyIndex(unKeyLen , uiDataLen);
-        ///”≈œ» π”√ø’œ–µƒkey
+        ///‰ºòÂÖà‰ΩøÁî®Á©∫Èó≤ÁöÑkey
         if (m_chainArr[uiIndex].m_freeHead){
             key = m_chainArr[uiIndex].m_freeHead;
             m_chainArr[uiIndex].m_freeHead = m_chainArr[uiIndex].m_freeHead->m_next;
-            ///–ﬁ∏ƒø’º‰
+            ///‰øÆÊîπÁ©∫Èó¥
             m_chainArr[uiIndex].m_uiFreeNum--;
             m_freeSize -= uiKeySize;
             m_freeCapacity -= (uiKeySize - sizeof(UnistorReadCacheItemEx2));
             m_freeItemCount --;
-        }else if ((m_cacheBufArrIndex + 1 < m_cacheBufArrSize) ||  ///¥”–¬ƒ⁄¥Ê∑÷≈‰key
+        }else if ((m_cacheBufArrIndex + 1 < m_cacheBufArrSize) ||  ///‰ªéÊñ∞ÂÜÖÂ≠òÂàÜÈÖçkey
             (m_cacheBufArrPos + uiKeySize < UNISTOR_READ_CACHE_SLOT_SIZE))
         {
-            if (m_cacheBufArrPos + uiKeySize > UNISTOR_READ_CACHE_SLOT_SIZE){///< π”√–¬slot
+            if (m_cacheBufArrPos + uiKeySize > UNISTOR_READ_CACHE_SLOT_SIZE){///<‰ΩøÁî®Êñ∞slot
                 m_cacheBufArrIndex ++;
                 m_cacheBufArrPos = 0;
             }
-            ///∑÷≈‰–¬ø’º‰
+            ///ÂàÜÈÖçÊñ∞Á©∫Èó¥
             key = (UnistorReadCacheItemEx2*)(m_cacheBufArr[m_cacheBufArrIndex] + m_cacheBufArrPos);
             m_cacheBufArrPos += uiKeySize;
-        }else if (m_chainArr[uiIndex].m_usedTail){/// Õ∑≈“—”–ø’º‰
+        }else if (m_chainArr[uiIndex].m_usedTail){///ÈáäÊîæÂ∑≤ÊúâÁ©∫Èó¥
             key = m_chainArr[uiIndex].m_usedTail;
             iter.m_uiHash = UnistorReadCacheItemEx2::m_fnHash(key->getKey(), key->getKeyLen())%m_bucket_num;
             _findKey(key, iter);
             if (iter.m_pFind != key){
                 CWX_ASSERT(0);
             }
-            ///¥”hash÷–…æ≥˝key
+            ///‰ªéhash‰∏≠Âà†Èô§key
             _removeKey(iter);
             m_chainArr[uiIndex].m_usedTail = m_chainArr[uiIndex].m_usedTail->m_prev;
             if (!m_chainArr[uiIndex].m_usedTail){
@@ -161,10 +161,10 @@ void UnistorReadCacheEx2::insert(char const* szKey,
             m_usedDataSize -= key->m_uiDataLen + key->m_unKeyLen;
             m_cachedKeyCount--;
             m_cachedItemCount--;
-        }else{ ///√ª”–ø’º‰ø…”√£¨≤ªcache
+        }else{ ///Ê≤°ÊúâÁ©∫Èó¥ÂèØÁî®Ôºå‰∏çcache
             return ;
         }
-        ///copy ˝æ›
+        ///copyÊï∞ÊçÆ
         key->m_unKeyLen = unKeyLen;
         key->m_uiDataLen = uiDataLen;
         if (unKeyLen)  memcpy((char*)key->getKey(), szKey, unKeyLen);
@@ -238,7 +238,7 @@ UnistorReadCacheItemEx2* UnistorReadCacheEx2::fetch(char const* szKey,
 }
 
 void UnistorReadCacheEx2::touch(char const* szKey, ///<key
-                  CWX_UINT16 unKeyLen ///<keyµƒ≥§∂»
+                  CWX_UINT16 unKeyLen ///<keyÁöÑÈïøÂ∫¶
                   )
 {
     char key_buf[UnistorReadCacheItemEx2::calKeySize(unKeyLen , 0)];
@@ -258,7 +258,7 @@ void UnistorReadCacheEx2::touch(char const* szKey, ///<key
 }
 
 bool UnistorReadCacheEx2::exist(char const* szKey, ///<key
-                  CWX_UINT16 unKeyLen ///<keyµƒ≥§∂»
+                  CWX_UINT16 unKeyLen ///<keyÁöÑÈïøÂ∫¶
                   )
 {
     char key_buf[UnistorReadCacheItemEx2::calKeySize(unKeyLen, 0)];
@@ -273,7 +273,7 @@ bool UnistorReadCacheEx2::exist(char const* szKey, ///<key
     }
 }
 
-///«Âø’CACHE    
+///Ê∏ÖÁ©∫CACHE    
 void UnistorReadCacheEx2::clear( void ){
     CwxWriteLockGuard<CwxRwLock>  lock(m_rwLock);
     if (m_hashArr){
@@ -308,12 +308,12 @@ void UnistorReadCacheEx2::clear( void ){
     m_freeItemCount=0;
 }
 
-///≤ª¥¯À¯µƒremove≤Ÿ◊˜
+///‰∏çÂ∏¶ÈîÅÁöÑremoveÊìç‰Ωú
 void UnistorReadCacheEx2::_remove(UnistorReadCacheExIter const& iter){
-    ///¥”hash÷–…æ≥˝key
+    ///‰ªéhash‰∏≠Âà†Èô§key
     _removeKey(iter);
     iter.m_pFind->m_hashNext = NULL;
-    ///¥”LRU¡¥±Ì÷–…æ≥˝key
+    ///‰ªéLRUÈìæË°®‰∏≠Âà†Èô§key
     UnistorReadCacheItemEx2* data = iter.m_pFind;
     CWX_UINT32 uiIndex = data->index();
     if (data == m_chainArr[uiIndex].m_usedHead){
@@ -330,13 +330,13 @@ void UnistorReadCacheEx2::_remove(UnistorReadCacheExIter const& iter){
         data->m_prev->m_next = data->m_next;
         data->m_next->m_prev = data->m_prev;
     }
-    ///º∆À„ø’º‰
+    ///ËÆ°ÁÆóÁ©∫Èó¥
     unsigned long int size = data->size();
     unsigned long int dataSize = data->m_uiDataLen + data->m_unKeyLen;
     unsigned long int capacity = data->capacity();
-    ///ÃÌº”µƒfreeµƒø’º‰
+    ///Ê∑ªÂä†ÁöÑfreeÁöÑÁ©∫Èó¥
     _addFreeList(uiIndex, data);
-    ///…Ë÷√ø’º‰
+    ///ËÆæÁΩÆÁ©∫Èó¥
     m_usedSize -= size;
     m_usedCapacity -= capacity;
     m_usedDataSize -= dataSize;
@@ -347,7 +347,7 @@ void UnistorReadCacheEx2::_remove(UnistorReadCacheExIter const& iter){
     m_freeItemCount ++;
 }
 
-///≤ª¥¯À¯µƒtouch≤Ÿ◊˜
+///‰∏çÂ∏¶ÈîÅÁöÑtouchÊìç‰Ωú
 void UnistorReadCacheEx2::_touch(UnistorReadCacheItemEx2* data, CWX_UINT32 uiIndex){
     if (data->m_prev == NULL) //the head
         return;
@@ -365,9 +365,9 @@ void UnistorReadCacheEx2::_touch(UnistorReadCacheItemEx2* data, CWX_UINT32 uiInd
 }
 
 
-///Ω´itemÃÌº”µΩfree list£¨≤ª–ﬁ∏ƒ»›¡øø’º‰
+///Â∞ÜitemÊ∑ªÂä†Âà∞free listÔºå‰∏ç‰øÆÊîπÂÆπÈáèÁ©∫Èó¥
 void UnistorReadCacheEx2::_addFreeList(CWX_UINT32 uiIndex, UnistorReadCacheItemEx2* item){
-    ///Ω´∆‰∑≈µΩfree list÷–
+    ///Â∞ÜÂÖ∂ÊîæÂà∞free list‰∏≠
     item->m_next = m_chainArr[uiIndex].m_freeHead;
     item->m_prev = NULL;
     item->m_hashNext = NULL;
@@ -378,7 +378,7 @@ void UnistorReadCacheEx2::_addFreeList(CWX_UINT32 uiIndex, UnistorReadCacheItemE
 }
 
 void UnistorReadCacheEx2::_addKey(CWX_UINT32 uiIndex, CWX_UINT32 uiSize, UnistorReadCacheItemEx2* item){
-    ///ÃÌº”µΩslot
+    ///Ê∑ªÂä†Âà∞slot
     item->m_hashNext = NULL;
     item->m_prev = NULL;
     item->m_next = m_chainArr[uiIndex].m_usedHead;
@@ -394,14 +394,14 @@ void UnistorReadCacheEx2::_addKey(CWX_UINT32 uiIndex, CWX_UINT32 uiSize, Unistor
     m_usedDataSize += item->m_uiDataLen + item->m_unKeyLen;
     m_cachedKeyCount ++;
     m_cachedItemCount ++;
-    ///ÃÌº”µΩhash
+    ///Ê∑ªÂä†Âà∞hash
     uiIndex = UnistorReadCacheItemEx2::m_fnHash(item->getKey(), item->getKeyLen())%m_bucket_num;
     item->m_hashNext = m_hashArr[uiIndex];
     m_hashArr[uiIndex] = item;
 }
 
 
-///ªÒ»°key
+///Ëé∑Âèñkey
 bool UnistorReadCacheEx2::_findKey(UnistorReadCacheItemEx2 const* item, UnistorReadCacheExIter& iter){
     iter.m_pFind = m_hashArr[iter.m_uiHash];
     iter.m_pPrev = NULL;

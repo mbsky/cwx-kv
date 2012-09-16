@@ -1,4 +1,4 @@
-#ifndef __ZK_LOCKER_H__
+ï»¿#ifndef __ZK_LOCKER_H__
 #define __ZK_LOCKER_H__
 #include "ZkAdaptor.h"
 #include <pthread.h>
@@ -41,7 +41,7 @@ public:
     ZkLocker();
     ~ZkLocker();
 public:
-    ///³õÊ¼»¯
+    ///åˆå§‹åŒ–
     int init(ZkAdaptor* zk,
         string const& path,
         string const& prex,
@@ -50,61 +50,61 @@ public:
         ACL_vector* acl=&ZOO_OPEN_ACL_UNSAFE,
         watcher_fn lock_func=NULL,
         void* lock_func_context=NULL);
-    ///¼ÓËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+    ///åŠ é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
     int lock(unsigned int uiWatchType=ZK_WATCH_TYPE_PREV);
-    ///ÊÍ·ÅËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+    ///é‡Šæ”¾é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
     int unlock();
 public:
-    ///ÊÇ·ñwatch master
+    ///æ˜¯å¦watch master
     inline unsigned int watchType() const{
         return m_uiWatchType;
     }
-    ///ÊÇ·ñ¼ÓËøÊÇ°É
+    ///æ˜¯å¦åŠ é”æ˜¯å§
     inline bool isLockFail(){
         ZkMutex locker(&m_mutex);
         return m_bLockFail;
     }
-    ///»ñÈ¡ËùÓĞµÄlocker
+    ///è·å–æ‰€æœ‰çš„locker
     inline void getLocker(list<string>& lockers){
         ZkMutex locker(&m_mutex);
         _getLocker(lockers);
     }
-    ///ÊÇ·ñ¼ÓËø
+    ///æ˜¯å¦åŠ é”
     bool isLocked(){
         ZkMutex locker(&m_mutex);
         return _isLocked();
     }
-    ///»ñÈ¡×Ô¼ºµÄËønode
+    ///è·å–è‡ªå·±çš„é”node
     void getSelfNode(string& strNode){
         ZkMutex locker(&m_mutex);
         _getSelfNode(strNode);
     }
-    ///»ñÈ¡×Ô¼ºµÄËønodeµÄpath name
+    ///è·å–è‡ªå·±çš„é”nodeçš„path name
     void getSelfPathNode(string& strPathNode){
         ZkMutex locker(&m_mutex);
         _getSelfPathNode(strPathNode);
     }
-    ///»ñÈ¡ownerµÄËønode
+    ///è·å–ownerçš„é”node
     void getOwnerNode(string& strNode){
         ZkMutex locker(&m_mutex);
         _getOwnerNode(strNode);
     }
-    ///»ñÈ¡ownerµÄËønodeµÄpath name
+    ///è·å–ownerçš„é”nodeçš„path name
     void getOwnerPathNode(string& strPathNode){
         ZkMutex locker(&m_mutex);
         _getOwnerPathNode(strPathNode);
     }
-    ///»ñÈ¡prevµÄËønode
+    ///è·å–prevçš„é”node
     void getPrevNode(string& strNode){
         ZkMutex locker(&m_mutex);
         _getPrevNode(strNode);
     }
-    ///»ñÈ¡PrevµÄËønodeµÄpath name
+    ///è·å–Prevçš„é”nodeçš„path name
     void getPrevPathNode(string& strPathNode){
         ZkMutex locker(&m_mutex);
         _getPrevPathNode(strPathNode);
     }
-    ///»ñÈ¡ËùÓĞµÄlocker
+    ///è·å–æ‰€æœ‰çš„locker
     inline void _getLocker(list<string>& locers){
         locers.clear();
         map<uint64_t, string>::iterator iter = m_strSeqMap.begin();
@@ -114,34 +114,34 @@ public:
         }
         return;
     }
-    ///ÊÇ·ñ¼ÓËø
+    ///æ˜¯å¦åŠ é”
     bool _isLocked(){
         if (m_strOwnerNode.length()){
             return m_strOwnerNode == m_strSelfNode;
         }
         return false;
     }
-    ///»ñÈ¡×Ô¼ºµÄËønode
+    ///è·å–è‡ªå·±çš„é”node
     void _getSelfNode(string& strNode){
         strNode = m_strSelfNode;
     }
-    ///»ñÈ¡×Ô¼ºµÄËønodeµÄpath name
+    ///è·å–è‡ªå·±çš„é”nodeçš„path name
     void _getSelfPathNode(string& strPathNode){
         strPathNode = m_strSelfPathNode;
     }
-    ///»ñÈ¡ownerµÄËønode
+    ///è·å–ownerçš„é”node
     void _getOwnerNode(string& strNode){
         strNode = m_strOwnerNode;
     }
-    ///»ñÈ¡ownerµÄËønodeµÄpath name
+    ///è·å–ownerçš„é”nodeçš„path name
     void _getOwnerPathNode(string& strPathNode){
         strPathNode = m_strOwnerPathNode;
     }
-    ///»ñÈ¡prevµÄËønode
+    ///è·å–prevçš„é”node
     void _getPrevNode(string& strNode){
         strNode = m_strPrevNode;
     }
-    ///»ñÈ¡PrevµÄËønodeµÄpath name
+    ///è·å–Prevçš„é”nodeçš„path name
     void _getPrevPathNode(string& strPathNode){
         strPathNode = m_strPrevPathNode;
     }
@@ -150,21 +150,21 @@ public:
     static void lock_watcher_fn(zhandle_t* , int , int ,
         const char* , void *watcherCtx);
     static bool splitSeqNode(string const& strSeqNode, uint64_t& seq, string& strNode);
-    ///¶Ô»ñÈ¡¼ÓËøÕß¸÷²¿·ÖĞÅÏ¢
+    ///å¯¹è·å–åŠ é”è€…å„éƒ¨åˆ†ä¿¡æ¯
     static bool splitSeqNode(string const& strSeqNode, uint64_t& seq, string& strPrev, string& strSession);
-    ///¶Ô»ñÈ¡¼ÓËøÕß¸÷²¿·ÖĞÅÏ¢
+    ///å¯¹è·å–åŠ é”è€…å„éƒ¨åˆ†ä¿¡æ¯
     static bool splitNode(string const& strNode, string& strPrev, string& strSession);
-    ///»ñÈ¡nodeµÄ
+    ///è·å–nodeçš„
     static void getNode(string const& strPrev, uint64_t clientid, string& strNode);
-    ///»ñÈ¡Â·¾¶×îºóÒ»¸ö½ÚµãµÄÃû×Ö
+    ///è·å–è·¯å¾„æœ€åä¸€ä¸ªèŠ‚ç‚¹çš„åå­—
     static char const* getLastName(char* str);
-    ///»ñÈ¡½ÚµãµÄÂ·¾¶
+    ///è·å–èŠ‚ç‚¹çš„è·¯å¾„
     static string const& getNodePath(string const& strPath, string const& strNode, string& strNodePath);
 
 private:
-    ///¼ÓËø£»0£º¸ù½Úµã²»´æÔÚ£»1£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+    ///åŠ é”ï¼›0ï¼šæ ¹èŠ‚ç‚¹ä¸å­˜åœ¨ï¼›1ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
     int _retryLock();
-    ///ÊÍ·ÅËø£»0£º²Ù×÷³É¹¦£»-1£º²Ù×÷Ê§°Ü
+    ///é‡Šæ”¾é”ï¼›0ï¼šæ“ä½œæˆåŠŸï¼›-1ï¼šæ“ä½œå¤±è´¥
     int _unlock();
 
     inline void _clearLockInfo(){
@@ -179,25 +179,25 @@ private:
     }
 
 private:
-    ZkAdaptor*          m_zkHandler; ///<zkµÄhandler
-    string              m_strPath;  ///<ËøµÄÂ·¾¶
-    string              m_strPrex; ///<ËøµÄÇ°×º£¬nodeÎª[prex]-[session-id]-[seq]µÄ¸ñÊ½
-    struct ACL_vector*  m_acl;    ///<ËøµÄÈ¨ÏŞ
-    void *              m_context;  ///<»·¾³ĞÅÏ¢
-    ZK_LOCK_COMPLETION  m_completion;  ///<Ëø±ä»¯µÄÍ¨Öªº¯Êı
-    pthread_mutex_t     m_mutex;     ///<Ëø¶ÔÏó
-    string              m_strSelfNode;   ///<×Ô¼ºµÄ½ÚµãÃû×Ö
-    string              m_strSelfPathNode; ///<½ÚµãµÄÈ«Â·¾¶path
-    string              m_strOwnerNode;   ///<ËøÓµÓĞÕßµÄ½ÚµãÃû×Ö
-    string              m_strOwnerPathNode; ///<ËøÓµÓĞÕßµÄÈ«Â·¾¶path
-    string              m_strPrevNode;    ///<×Ô¼ºÇ°Ò»¸ö½ÚµãµÄÃû×Ö
-    string              m_strPrevPathNode; ///<×Ô¼ºÇ°Ò»¸ö½ÚµãµÄÈ«Â·¾¶path
-    char                m_szBuf[MAX_SEQ_NODE_SIZE];    ///<seq½ÚµãµÄÖµ
-    map<uint64_t, string> m_strSeqMap;  ///<¸÷¸ösessionµÄseqµÄmap
-    unsigned int          m_uiWatchType; ///<ÊÇ·ñwatch master¡£È±Ê¡watheÆäÇ°Ò»¸ö·ÀÖ¹¾ªÈº
-    watcher_fn          m_lock_func; ///<Ëø±ä»¯µÄ»Øµ÷function
-    void*               m_lock_func_context; ///<Ëø±ä»¯µÄ»Øµ÷µÄcontext
-    bool                m_bLockFail; ///<ÊÇ·ñ¼ÓËøÊ§°Ü
+    ZkAdaptor*          m_zkHandler; ///<zkçš„handler
+    string              m_strPath;  ///<é”çš„è·¯å¾„
+    string              m_strPrex; ///<é”çš„å‰ç¼€ï¼Œnodeä¸º[prex]-[session-id]-[seq]çš„æ ¼å¼
+    struct ACL_vector*  m_acl;    ///<é”çš„æƒé™
+    void *              m_context;  ///<ç¯å¢ƒä¿¡æ¯
+    ZK_LOCK_COMPLETION  m_completion;  ///<é”å˜åŒ–çš„é€šçŸ¥å‡½æ•°
+    pthread_mutex_t     m_mutex;     ///<é”å¯¹è±¡
+    string              m_strSelfNode;   ///<è‡ªå·±çš„èŠ‚ç‚¹åå­—
+    string              m_strSelfPathNode; ///<èŠ‚ç‚¹çš„å…¨è·¯å¾„path
+    string              m_strOwnerNode;   ///<é”æ‹¥æœ‰è€…çš„èŠ‚ç‚¹åå­—
+    string              m_strOwnerPathNode; ///<é”æ‹¥æœ‰è€…çš„å…¨è·¯å¾„path
+    string              m_strPrevNode;    ///<è‡ªå·±å‰ä¸€ä¸ªèŠ‚ç‚¹çš„åå­—
+    string              m_strPrevPathNode; ///<è‡ªå·±å‰ä¸€ä¸ªèŠ‚ç‚¹çš„å…¨è·¯å¾„path
+    char                m_szBuf[MAX_SEQ_NODE_SIZE];    ///<seqèŠ‚ç‚¹çš„å€¼
+    map<uint64_t, string> m_strSeqMap;  ///<å„ä¸ªsessionçš„seqçš„map
+    unsigned int          m_uiWatchType; ///<æ˜¯å¦watch masterã€‚ç¼ºçœwatheå…¶å‰ä¸€ä¸ªé˜²æ­¢æƒŠç¾¤
+    watcher_fn          m_lock_func; ///<é”å˜åŒ–çš„å›è°ƒfunction
+    void*               m_lock_func_context; ///<é”å˜åŒ–çš„å›è°ƒçš„context
+    bool                m_bLockFail; ///<æ˜¯å¦åŠ é”å¤±è´¥
 };
 
 

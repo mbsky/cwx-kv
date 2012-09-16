@@ -1,4 +1,4 @@
-#ifndef __CWX_BIN_LOG_MGR_H__
+ï»¿#ifndef __CWX_BIN_LOG_MGR_H__
 #define __CWX_BIN_LOG_MGR_H__
 
 
@@ -16,128 +16,128 @@
 
 /**
 @class CwxBinLogHeader
-@brief binlogµÄheader¶ÔÏó¶¨Òå
+@brief binlogçš„headerå¯¹è±¡å®šä¹‰
 */
 class CwxBinLogHeader
 {
 public:
     enum{
-        BIN_LOG_HEADER_SIZE = 32 ///<serializeµÄ¿Õ¼ä×Ö½ÚÊı
+        BIN_LOG_HEADER_SIZE = 32 ///<serializeçš„ç©ºé—´å­—èŠ‚æ•°
     };
 public:
-    ///È±Ê¡¹¹Ôìº¯Êı
+    ///ç¼ºçœæ„é€ å‡½æ•°
     inline CwxBinLogHeader();
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     inline CwxBinLogHeader(CWX_UINT64 ullSid, CWX_UINT32 uiLogNo, CWX_UINT32 uiDatetime, CWX_UINT32 uiOffset,
                    CWX_UINT32 uiLogLen, CWX_UINT32 uiPrevOffset,
                    CWX_UINT32 uiGroup);
-    ///¿½±´¹¹Ôì
+    ///æ‹·è´æ„é€ 
     inline CwxBinLogHeader(CwxBinLogHeader const& header);
-    ///¸³Öµ²Ù×÷
+    ///èµ‹å€¼æ“ä½œ
     inline CwxBinLogHeader& operator=(CwxBinLogHeader const& header);
-    ///±È½Ï²Ù×÷,true£ºĞ¡ÓÚ£»false£º²»Ğ¡ÓÚ
+    ///æ¯”è¾ƒæ“ä½œ,trueï¼šå°äºï¼›falseï¼šä¸å°äº
     inline bool operator<(CwxBinLogHeader const& header) const;
 public:
-    ///ÉèÖÃsid
+    ///è®¾ç½®sid
     inline void setSid(CWX_UINT64 ullSid);
-    ///»ñÈ¡sid
+    ///è·å–sid
     inline CWX_UINT64 getSid() const;
-	///ÉèÖÃ¼ÇÂ¼ºÅ
+	///è®¾ç½®è®°å½•å·
 	inline void setLogNo(CWX_UINT32 uiLogNo);
-	///»ñÈ¡¼ÇÂ¼ºÅ
+	///è·å–è®°å½•å·
 	inline CWX_UINT32 getLogNo() const;
-    ///ÉèÖÃlogµÄÊ±¼ä´Á
+    ///è®¾ç½®logçš„æ—¶é—´æˆ³
     inline void setDatetime(CWX_UINT32 uiDatetime);
-    ///»ñÈ¡logµÄÊ±¼ä´Á
+    ///è·å–logçš„æ—¶é—´æˆ³
     inline CWX_UINT32 getDatetime() const;
-    ///ÉèÖÃlogµÄÎÄ¼şÆ«ÒÆ
+    ///è®¾ç½®logçš„æ–‡ä»¶åç§»
     inline void setOffset(CWX_UINT32 uiOffset);
-    ///»ñÈ¡logµÄÎÄ¼şÆ«ÒÆ
+    ///è·å–logçš„æ–‡ä»¶åç§»
     inline CWX_UINT32 getOffset() const;
-    ///ÉèÖÃlogµÄ³¤¶È£¬²»°üÀ¨log headerµÄ³¤¶È
+    ///è®¾ç½®logçš„é•¿åº¦ï¼Œä¸åŒ…æ‹¬log headerçš„é•¿åº¦
     inline void setLogLen(CWX_UINT32 uiLogLen);
-    ///»ñÈ¡logµÄ³¤¶È£¬²»°üÀ¨log headerµÄ³¤¶È
+    ///è·å–logçš„é•¿åº¦ï¼Œä¸åŒ…æ‹¬log headerçš„é•¿åº¦
     inline CWX_UINT32 getLogLen() const;
-    ///ÉèÖÃÇ°Ò»¸ölogµÄoffset
+    ///è®¾ç½®å‰ä¸€ä¸ªlogçš„offset
     inline void setPrevOffset(CWX_UINT32 uiPrevOffset);
-    ///»ñÈ¡Ç°Ò»¸ölogµÄoffset
+    ///è·å–å‰ä¸€ä¸ªlogçš„offset
     inline CWX_UINT32 getPrevOffset() const;
-    ///ÉèÖÃbinlogµÄ·Ö×é
+    ///è®¾ç½®binlogçš„åˆ†ç»„
     inline void setGroup(CWX_UINT32 uiGroup);
-    ///»ñÈ¡binlogµÄ·Ö×é
+    ///è·å–binlogçš„åˆ†ç»„
     inline CWX_UINT32 getGroup() const;
 public:
-    ///½«log header¶ÔÏóĞòÁĞ»¯£¬·µ»ØĞòÁĞ»¯Õ¼ÓÃµÄ¿Õ¼ä×Ö½ÚÊı
+    ///å°†log headerå¯¹è±¡åºåˆ—åŒ–ï¼Œè¿”å›åºåˆ—åŒ–å ç”¨çš„ç©ºé—´å­—èŠ‚æ•°
     inline CWX_UINT32 serialize(char* szBuf) const;
-    ///½«log headerµÄbuf·´ĞòÁĞ»¯£¬·µ»ØĞòÁĞ»¯Õ¼ÓÃµÄ¿Õ¼ä×Ö½ÚÊı
+    ///å°†log headerçš„bufååºåˆ—åŒ–ï¼Œè¿”å›åºåˆ—åŒ–å ç”¨çš„ç©ºé—´å­—èŠ‚æ•°
     inline CWX_UINT32 unserialize(char const* szBuf);
-    ///Çå¿Õ¶ÔÏó
+    ///æ¸…ç©ºå¯¹è±¡
     inline void reset();
 private:
-    CWX_UINT64    m_ullSid; ///<Í¬²½ĞòÁĞºÅ
-	CWX_UINT32    m_uiLogNo; ///<¼ÇÂ¼ºÅ
-    CWX_UINT32    m_uiDatetime; ///<¼ÇÂ¼µÄÊ±¼ä´Á
-    CWX_UINT32    m_uiOffset; ///<¼ÇÂ¼µÄÎÄ¼şÆ«ÒÆ
-    CWX_UINT32    m_uiLogLen; ///<¼ÇÂ¼µÄ³¤¶È£¬²»°üÀ¨log headerµÄ³¤¶È
-    CWX_UINT32    m_uiPrevOffset; ///<Ç°Ò»¸ö¼ÇÂ¼µÄÎÄ¼şÆ«ÒÆ
-    CWX_UINT32    m_uiGroup; ///<binlogµÄgroup
+    CWX_UINT64    m_ullSid; ///<åŒæ­¥åºåˆ—å·
+	CWX_UINT32    m_uiLogNo; ///<è®°å½•å·
+    CWX_UINT32    m_uiDatetime; ///<è®°å½•çš„æ—¶é—´æˆ³
+    CWX_UINT32    m_uiOffset; ///<è®°å½•çš„æ–‡ä»¶åç§»
+    CWX_UINT32    m_uiLogLen; ///<è®°å½•çš„é•¿åº¦ï¼Œä¸åŒ…æ‹¬log headerçš„é•¿åº¦
+    CWX_UINT32    m_uiPrevOffset; ///<å‰ä¸€ä¸ªè®°å½•çš„æ–‡ä»¶åç§»
+    CWX_UINT32    m_uiGroup; ///<binlogçš„group
 };
 
 
 /**
 @class CwxBinLogIndex
-@brief binlogµÄindex¶ÔÏó¶¨Òå
+@brief binlogçš„indexå¯¹è±¡å®šä¹‰
 */
 class CwxBinLogIndex
 {
 public:
     enum{
-        BIN_LOG_INDEX_SIZE = 20 ///<serializeµÄ¿Õ¼ä×Ö½ÚÊı
+        BIN_LOG_INDEX_SIZE = 20 ///<serializeçš„ç©ºé—´å­—èŠ‚æ•°
     };
 public:
-    ///È±Ê¡¹¹Ôì
+    ///ç¼ºçœæ„é€ 
     inline CwxBinLogIndex();
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     inline CwxBinLogIndex(CWX_UINT64 ullSid, CWX_UINT32 uiDatetime, CWX_UINT32 uiOffset, CWX_UINT32 uiLogLen);
-    ///¿½±´¹¹Ôì
+    ///æ‹·è´æ„é€ 
     inline CwxBinLogIndex(CwxBinLogIndex const& index);
-    ///¿½±´¹¹Ôì
+    ///æ‹·è´æ„é€ 
     inline CwxBinLogIndex(CwxBinLogHeader const& header);
-    ///¸³Öµ²Ù×÷
+    ///èµ‹å€¼æ“ä½œ
     inline CwxBinLogIndex& operator=(CwxBinLogIndex const& index);
-    ///¸³Öµ²Ù×÷
+    ///èµ‹å€¼æ“ä½œ
     inline CwxBinLogIndex& operator=(CwxBinLogHeader const& header);
-    ///±È½Ï²Ù×÷¡£true£ºĞ¡ÓÚ£»false£º²»Ğ¡ÓÚ
+    ///æ¯”è¾ƒæ“ä½œã€‚trueï¼šå°äºï¼›falseï¼šä¸å°äº
     inline bool operator<(CwxBinLogIndex const& index) const;
 public:
-    ///ÉèÖÃsid
+    ///è®¾ç½®sid
     inline void setSid(CWX_UINT64 ullSid);
-    ///»ñÈ¡sid
+    ///è·å–sid
     inline CWX_UINT64 getSid() const;
-    ///ÉèÖÃlogµÄÊ±¼ä´Á
+    ///è®¾ç½®logçš„æ—¶é—´æˆ³
     inline void setDatetime(CWX_UINT32 uiDatetime);
-    ///»ñÈ¡logµÄÊ±¼ä´Á
+    ///è·å–logçš„æ—¶é—´æˆ³
     inline CWX_UINT32 getDatetime() const;
-    ///ÉèÖÃlogµÄÎÄ¼şÆ«ÒÆ
+    ///è®¾ç½®logçš„æ–‡ä»¶åç§»
     inline void setOffset(CWX_UINT32 uiOffset);
-    ///»ñÈ¡logµÄÎÄ¼şÆ«ÒÆ
+    ///è·å–logçš„æ–‡ä»¶åç§»
     inline CWX_UINT32 getOffset() const;
-    ///ÉèÖÃlogµÄ³¤¶È£¬²»°üÀ¨log headerµÄ³¤¶È
+    ///è®¾ç½®logçš„é•¿åº¦ï¼Œä¸åŒ…æ‹¬log headerçš„é•¿åº¦
     inline void setLogLen(CWX_UINT32 uiLogLen);
-    ///»ñÈ¡logµÄ³¤¶È£¬²»°üÀ¨log headerµÄ³¤¶È
+    ///è·å–logçš„é•¿åº¦ï¼Œä¸åŒ…æ‹¬log headerçš„é•¿åº¦
     inline CWX_UINT32 getLogLen() const;
 public:
-    ///½«log header¶ÔÏóĞòÁĞ»¯£¬·µ»ØĞòÁĞ»¯Õ¼ÓÃµÄ¿Õ¼ä×Ö½ÚÊı
+    ///å°†log headerå¯¹è±¡åºåˆ—åŒ–ï¼Œè¿”å›åºåˆ—åŒ–å ç”¨çš„ç©ºé—´å­—èŠ‚æ•°
     inline CWX_UINT32 serialize(char* szBuf) const;
-    ///½«log headerµÄbuf·´ĞòÁĞ»¯£¬·µ»ØĞòÁĞ»¯Õ¼ÓÃµÄ¿Õ¼ä×Ö½ÚÊı
+    ///å°†log headerçš„bufååºåˆ—åŒ–ï¼Œè¿”å›åºåˆ—åŒ–å ç”¨çš„ç©ºé—´å­—èŠ‚æ•°
     inline CWX_UINT32 unserialize(char const* szBuf);
-    ///Çå¿Õ¶ÔÏó
+    ///æ¸…ç©ºå¯¹è±¡
     inline void reset();
 private:
-    CWX_UINT64    m_ullSid; ///<Í¬²½ĞòÁĞºÅ
-    CWX_UINT32    m_uiDatetime; ///<binlogµÄtimestamp
-    CWX_UINT32    m_uiOffset; ///<¼ÇÂ¼µÄÎÄ¼şÆ«ÒÆ
-	CWX_UINT32    m_uiLogLen; ///<¼ÇÂ¼µÄ³¤¶È
+    CWX_UINT64    m_ullSid; ///<åŒæ­¥åºåˆ—å·
+    CWX_UINT32    m_uiDatetime; ///<binlogçš„timestamp
+    CWX_UINT32    m_uiOffset; ///<è®°å½•çš„æ–‡ä»¶åç§»
+	CWX_UINT32    m_uiLogLen; ///<è®°å½•çš„é•¿åº¦
 };
 
 class CwxBinLogFile;
@@ -146,151 +146,151 @@ class CwxBinLogMgr;
 
 /**
 @class CwxBinLogCursor
-@brief BinLog ÎÄ¼şµÄ¶ÁÈ¡ÓÎ±ê
+@brief BinLog æ–‡ä»¶çš„è¯»å–æ¸¸æ ‡
 */
 class CwxBinLogCursor
 {
 public:
 	enum
 	{
-		BINLOG_READ_BLOCK_BIT = 16, ///<64KµÄ¶ÁÈ¡buf¡£
-		BINLOG_READ_BLOCK_SIZE = 1<<BINLOG_READ_BLOCK_BIT ///<64KµÄ¶ÁÈ¡buf¡£
+		BINLOG_READ_BLOCK_BIT = 16, ///<64Kçš„è¯»å–bufã€‚
+		BINLOG_READ_BLOCK_SIZE = 1<<BINLOG_READ_BLOCK_BIT ///<64Kçš„è¯»å–bufã€‚
 	};
 	enum{
-		CURSOR_STATE_UNSEEK = 0, ///<cursor´¦ÓÚÎ´¶¨Î»µÄ×´Ì¬
-		CURSOR_STATE_READY = 1, ///<cursor´¦ÓÚ¶¨Î»µÄ×´Ì¬
-		CURSOR_STATE_ERROR = 2 ///<cursor´¦ÓÚ³ö´íµÄ×´Ì¬
+		CURSOR_STATE_UNSEEK = 0, ///<cursorå¤„äºæœªå®šä½çš„çŠ¶æ€
+		CURSOR_STATE_READY = 1, ///<cursorå¤„äºå®šä½çš„çŠ¶æ€
+		CURSOR_STATE_ERROR = 2 ///<cursorå¤„äºå‡ºé”™çš„çŠ¶æ€
 	};
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     CwxBinLogCursor();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~CwxBinLogCursor();
 public:
     /**
-    @brief ´ò¿ªbin-logÎÄ¼ş£¬´ËÊ±cursorÃ»ÓĞ¶¨Î»µ½ÈÎºÎ¼ÇÂ¼£¬´ËÊ±Èôµ÷ÓÃnext»òprev£¬Ôò»á¶¨Î»µ½µÚÒ»¸ö¼ÇÂ¼ÉÏ¡£
-           µ÷ÓÃseek»á¶¨Î»µ½Ö¸¶¨µÄoffsetÉÏ¡£
-    @param [in] szFileName bin-logµÄÎÄ¼şÃû¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦
+    @brief æ‰“å¼€bin-logæ–‡ä»¶ï¼Œæ­¤æ—¶cursoræ²¡æœ‰å®šä½åˆ°ä»»ä½•è®°å½•ï¼Œæ­¤æ—¶è‹¥è°ƒç”¨nextæˆ–prevï¼Œåˆ™ä¼šå®šä½åˆ°ç¬¬ä¸€ä¸ªè®°å½•ä¸Šã€‚
+           è°ƒç”¨seekä¼šå®šä½åˆ°æŒ‡å®šçš„offsetä¸Šã€‚
+    @param [in] szFileName bin-logçš„æ–‡ä»¶åã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸ
     */
     int open(char const* szFileName, CWX_UINT32 uiFileNo, CWX_UINT32 uiFileDay);
     /**
-    @brief ÒÆµ½ÏÂÒ»¸ölog
-    @return -2£ºlogµÄheader²»ÍêÕû£»-1£º¶ÁÈ¡Ê§°Ü£»0£ºµ±Ç°logÎª×îºóÒ»¸ölog£»1£ºÒÆµ½ÏÂÒ»¸ölog
+    @brief ç§»åˆ°ä¸‹ä¸€ä¸ªlog
+    @return -2ï¼šlogçš„headerä¸å®Œæ•´ï¼›-1ï¼šè¯»å–å¤±è´¥ï¼›0ï¼šå½“å‰logä¸ºæœ€åä¸€ä¸ªlogï¼›1ï¼šç§»åˆ°ä¸‹ä¸€ä¸ªlog
     */
     inline int next();
     /**
-    @brief ÒÆµ½Ç°Ò»¸ölog
-    @return -2£ºlogµÄheader²»ÍêÕû£»-1£º¶ÁÈ¡Ê§°Ü£»0£ºµ±Ç°logÎªµÚÒ»¸ölog£»1£ºÒÆµ½Ç°Ò»¸ölog
+    @brief ç§»åˆ°å‰ä¸€ä¸ªlog
+    @return -2ï¼šlogçš„headerä¸å®Œæ•´ï¼›-1ï¼šè¯»å–å¤±è´¥ï¼›0ï¼šå½“å‰logä¸ºç¬¬ä¸€ä¸ªlogï¼›1ï¼šç§»åˆ°å‰ä¸€ä¸ªlog
     */
     inline int prev();
     /**
-    @brief ÎÄ¼şÆ«ÒÆµ½Ö¸¶¨µÄoffset£¬offsetµÄÎ»ÖÃ±ØĞëÎªÒ»¸ölogµÄ¿ªÊ¼Î»ÖÃ
-    @param [in] uiOffset binlogÔÚÎÄ¼şÖĞµÄoffset¡£
-    @return -2£ºlogµÄheader²»ÍêÕû£»-1£º¶ÁÈ¡Ê§°Ü£»0£º³¬³ö·¶Î§£»1£ºÒÆµ½Ö¸¶¨µÄoffset
+    @brief æ–‡ä»¶åç§»åˆ°æŒ‡å®šçš„offsetï¼Œoffsetçš„ä½ç½®å¿…é¡»ä¸ºä¸€ä¸ªlogçš„å¼€å§‹ä½ç½®
+    @param [in] uiOffset binlogåœ¨æ–‡ä»¶ä¸­çš„offsetã€‚
+    @return -2ï¼šlogçš„headerä¸å®Œæ•´ï¼›-1ï¼šè¯»å–å¤±è´¥ï¼›0ï¼šè¶…å‡ºèŒƒå›´ï¼›1ï¼šç§»åˆ°æŒ‡å®šçš„offset
     */
     inline int seek(CWX_UINT32 uiOffset);
     /**
-    @brief »ñÈ¡µ±Ç°logµÄdata
-    @param [in] szBuf binlogµÄbuf¡£
-    @param [in,out] uiBufLen ´«ÈëszBufµÄ´óĞ¡£¬·µ»Ø¶ÁÈ¡Êı¾İµÄ³¤¶È¡£
-    @return  -2£ºÊı¾İ²»Íê³É£»-1£ºÊ§°Ü£»>=0£º»ñÈ¡Êı¾İµÄ³¤¶È
+    @brief è·å–å½“å‰logçš„data
+    @param [in] szBuf binlogçš„bufã€‚
+    @param [in,out] uiBufLen ä¼ å…¥szBufçš„å¤§å°ï¼Œè¿”å›è¯»å–æ•°æ®çš„é•¿åº¦ã€‚
+    @return  -2ï¼šæ•°æ®ä¸å®Œæˆï¼›-1ï¼šå¤±è´¥ï¼›>=0ï¼šè·å–æ•°æ®çš„é•¿åº¦
     */
     int data(char * szBuf, CWX_UINT32& uiBufLen);
-    ///¹Ø±Õcursor
+    ///å…³é—­cursor
     void close();
-    ///»ñÈ¡µ±ÆÚlogµÄ¼ÇÂ¼Í·
+    ///è·å–å½“æœŸlogçš„è®°å½•å¤´
     inline CwxBinLogHeader const& getHeader() const;
-    ///»ñÈ¡ÎÄ¼şµÄÃû×Ö
+    ///è·å–æ–‡ä»¶çš„åå­—
     inline string const& getFileName() const;
-    ///»ñÈ¡ÎÄ¼şµÄÈÕÆÚ
+    ///è·å–æ–‡ä»¶çš„æ—¥æœŸ
     inline CWX_UINT32 getFileDay() const;
-    ///»ñÈ¡ÎÄ¼şµÄĞòºÅ
+    ///è·å–æ–‡ä»¶çš„åºå·
     inline CWX_UINT32 getFileNo() const;
-    ///»ñÈ¡µ±Ç°µÄ´íÎóĞÅÏ¢
+    ///è·å–å½“å‰çš„é”™è¯¯ä¿¡æ¯
     inline char* getErrMsg();
-    ///»ñÈ¡cursorµÄSEEK STATE
+    ///è·å–cursorçš„SEEK STATE
     inline CWX_UINT8 getSeekState() const;
-	///ÉèÖÃcursorµÄSEEK STATE
+	///è®¾ç½®cursorçš„SEEK STATE
 	inline void setSeekState(CWX_UINT8 ucSeekState);
-	///»ñÈ¡cursorµÄSEEK SID
+	///è·å–cursorçš„SEEK SID
 	inline CWX_UINT64 getSeekSid() const;
-	///ÉèÖÃcursorµÄSEEK SID
+	///è®¾ç½®cursorçš„SEEK SID
 	inline void setSeekSid(CWX_UINT64 ullSid);
-	///ÊÇ·ñready
+	///æ˜¯å¦ready
 	inline bool isReady() const;
-	///ÊÇ·ñunseek
+	///æ˜¯å¦unseek
 	inline bool isUnseek() const;
-	///ÊÇ·ñ´íÎó
+	///æ˜¯å¦é”™è¯¯
 	inline bool isError() const;
 private:
     /**
-    @brief ´ÓÖ¸¶¨Î»ÖÃ£¬¶ÁÈ¡logµÄheader¡£
-    @param [in] uiOffset binlogÔÚÎÄ¼şÖĞµÄoffset¡£
-    @return -2£º²»´æÔÚÍê³ÉµÄ¼ÇÂ¼Í·£»-1£ºÊ§°Ü£»0£º½áÊø£»1£º¶ÁÈ¡Ò»¸ö
+    @brief ä»æŒ‡å®šä½ç½®ï¼Œè¯»å–logçš„headerã€‚
+    @param [in] uiOffset binlogåœ¨æ–‡ä»¶ä¸­çš„offsetã€‚
+    @return -2ï¼šä¸å­˜åœ¨å®Œæˆçš„è®°å½•å¤´ï¼›-1ï¼šå¤±è´¥ï¼›0ï¼šç»“æŸï¼›1ï¼šè¯»å–ä¸€ä¸ª
     */
     int header(CWX_UINT32 uiOffset);
-    //»ñÈ¡cursorµÄÎÄ¼ş io handle
+    //è·å–cursorçš„æ–‡ä»¶ io handle
     inline int getHandle() const;
-	//¶ÁÈ¡Êı¾İ
+	//è¯»å–æ•°æ®
 	ssize_t pread(int fildes, void *buf, size_t nbyte, CWX_UINT32 offset);
-	//¶ÁÈ¡Ò»Ò³
+	//è¯»å–ä¸€é¡µ
 	bool preadPage(int fildes, CWX_UINT32 uiBlockNo, CWX_UINT32 uiOffset);
 private:
     friend class CwxBinLogMgr;
-    string             m_strFileName; ///<ÎÄ¼şµÄÃû×Ö
-    int                m_fd;///<ÎÄ¼şµÄhandle
-    CwxBinLogHeader     m_curLogHeader; ///<µ±Ç°logµÄheader
-    char               m_szHeadBuf[CwxBinLogHeader::BIN_LOG_HEADER_SIZE]; ///<log headerµÄbuf¿Õ¼ä
-    char               m_szErr2K[2048];///<´íÎóĞÅÏ¢buf
-	char			   m_szReadBlock[BINLOG_READ_BLOCK_SIZE];  ///<ÎÄ¼ş¶ÁÈ¡µÄbuf
-	CWX_UINT32         m_uiBlockNo;   ///<µ±Ç°cacheµÄblock no
-	CWX_UINT32		   m_uiBlockDataOffset; ///<¿éÖĞÊı¾İ½áÊøÆ«ÒÆ
-	CWX_UINT32		   m_uiFileDay; ///<ÎÄ¼şµÄÈÕÆÚ
-	CWX_UINT32         m_uiFileNo; ///<ÎÄ¼şºÅ
-    //ÓÉCwxBinLogMgrÊ¹ÓÃµÄ×´Ì¬Öµ
-    CWX_UINT64          m_ullSeekSid; ///<seekµÄsid
-    CWX_UINT8           m_ucSeekState; ///<seekµÄ×´Ì¬
+    string             m_strFileName; ///<æ–‡ä»¶çš„åå­—
+    int                m_fd;///<æ–‡ä»¶çš„handle
+    CwxBinLogHeader     m_curLogHeader; ///<å½“å‰logçš„header
+    char               m_szHeadBuf[CwxBinLogHeader::BIN_LOG_HEADER_SIZE]; ///<log headerçš„bufç©ºé—´
+    char               m_szErr2K[2048];///<é”™è¯¯ä¿¡æ¯buf
+	char			   m_szReadBlock[BINLOG_READ_BLOCK_SIZE];  ///<æ–‡ä»¶è¯»å–çš„buf
+	CWX_UINT32         m_uiBlockNo;   ///<å½“å‰cacheçš„block no
+	CWX_UINT32		   m_uiBlockDataOffset; ///<å—ä¸­æ•°æ®ç»“æŸåç§»
+	CWX_UINT32		   m_uiFileDay; ///<æ–‡ä»¶çš„æ—¥æœŸ
+	CWX_UINT32         m_uiFileNo; ///<æ–‡ä»¶å·
+    //ç”±CwxBinLogMgrä½¿ç”¨çš„çŠ¶æ€å€¼
+    CWX_UINT64          m_ullSeekSid; ///<seekçš„sid
+    CWX_UINT8           m_ucSeekState; ///<seekçš„çŠ¶æ€
 };
 
 
 
 /**
 @class CwxBinLogIndexWriteCache
-@brief BinLogÎÄ¼şµÄĞ´cache¶ÔÏó£¬ÊµÏÖ¶ÔbinlogË÷ÒıµÄĞ´cache¡£
+@brief BinLogæ–‡ä»¶çš„å†™cacheå¯¹è±¡ï¼Œå®ç°å¯¹binlogç´¢å¼•çš„å†™cacheã€‚
 */
 class CwxBinLogIndexWriteCache
 {
 public:
     enum
     {
-        BINLOG_WRITE_INDEX_CACHE_RECORD_NUM = 16384 ///<Ğ´Ë÷ÒıµÄ320K£¬ 20 * 16K=320K
+        BINLOG_WRITE_INDEX_CACHE_RECORD_NUM = 16384 ///<å†™ç´¢å¼•çš„320Kï¼Œ 20 * 16K=320K
     };
 public:
     /**
-    @brief ¹¹Ôìº¯Êı
-    @param [in] indexFd Ë÷ÒıÎÄ¼şµÄfd handle¡£
-    @param [in] ullIndexOffset Ë÷ÒıÎÄ¼şµ±Ç°µÄ´óĞ¡¡£
-    @param [in] ullSid  Êı¾İÎÄ¼şµ±Ç°µÄ×î´ósid¡£
+    @brief æ„é€ å‡½æ•°
+    @param [in] indexFd ç´¢å¼•æ–‡ä»¶çš„fd handleã€‚
+    @param [in] ullIndexOffset ç´¢å¼•æ–‡ä»¶å½“å‰çš„å¤§å°ã€‚
+    @param [in] ullSid  æ•°æ®æ–‡ä»¶å½“å‰çš„æœ€å¤§sidã€‚
     */
     CwxBinLogIndexWriteCache(int indexFd,
         CWX_UINT32 uiIndexOffset,
         CWX_UINT64 ullSid);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~CwxBinLogIndexWriteCache();
 
 public:
     /**
-    @brief ½«cacheµÄË÷ÒıË¢ĞÂµ½Ë÷ÒıÎÄ¼ş¡£
-    @param [out] szErr2K ³ö´íÊ±µÄ´íÎóĞÅÏ¢¡£
-    @return 0:³É¹¦£»-1£ºÊ§°Ü¡£´ËÊ±Ë÷ÒıÎÄ¼şĞ´´íÎó¡£
+    @brief å°†cacheçš„ç´¢å¼•åˆ·æ–°åˆ°ç´¢å¼•æ–‡ä»¶ã€‚
+    @param [out] szErr2K å‡ºé”™æ—¶çš„é”™è¯¯ä¿¡æ¯ã€‚
+    @return 0:æˆåŠŸï¼›-1ï¼šå¤±è´¥ã€‚æ­¤æ—¶ç´¢å¼•æ–‡ä»¶å†™é”™è¯¯ã€‚
     */
     int flushIndex(char* szErr2K=NULL);
     /**
-    @brief ½«Êı¾İÎÄ¼şĞ´µ½cacheÖĞ¡£
-    @param [int] header ÏûÏ¢µÄheader¡£
-    @param [out] szErr2K ³ö´íÊ±µÄ´íÎóĞÅÏ¢¡£
-    @return 0:³É¹¦£»-1£ºĞ´Ë÷ÒıÊ§°Ü¡£
+    @brief å°†æ•°æ®æ–‡ä»¶å†™åˆ°cacheä¸­ã€‚
+    @param [int] header æ¶ˆæ¯çš„headerã€‚
+    @param [out] szErr2K å‡ºé”™æ—¶çš„é”™è¯¯ä¿¡æ¯ã€‚
+    @return 0:æˆåŠŸï¼›-1ï¼šå†™ç´¢å¼•å¤±è´¥ã€‚
     */
     int append(CwxBinLogHeader const& header, char* szErr2K=NULL);
 
@@ -298,68 +298,68 @@ public:
     friend class CwxBinLogMgr;
 
 private:
-    int					m_indexFd;///<cache¶ÔÓ¦ÓÚË÷ÒıÎÄ¼şµÄfd
-    //binlog Ğ´cacheµÄĞÅÏ¢
-    CWX_UINT64			m_ullPrevIndexSid; ///<Ç°Ò»¸ösid£¬´ËÊÇ¶ÔÓ¦µÄË÷ÒıÎÄ¼ş×î´óµÄsid£¬ÈôÎª0£¬±íÊ¾È«²¿ÔÚÄÚ´æ¡£
-    CWX_UINT64			m_ullMinIndexSid; ///<Ë÷ÒıcacheµÄ×îĞ¡sid£¬ÈôÎª0±íÊ¾Ã»ÓĞcache
-    CWX_UINT32          m_uiIndexFileOffset; ///<Ë÷ÒıµÄÎÄ¼şĞ´ÈëÆ«ÒÆ
-    unsigned char*		m_indexBuf;  ///<Ë÷ÒıcacheµÄbuf¡£
-    CWX_UINT32			m_uiIndexLen;  ///<Ë÷ÒıbufµÄ³¤¶È
-    map<CWX_UINT64/*sid*/, unsigned char*>  m_indexSidMap; ///<indexÊı¾İµÄsidË÷Òı
-    CWX_UINT64			m_ullMaxSid;   ///<µ±Ç°×î´óµÄsid
+    int					m_indexFd;///<cacheå¯¹åº”äºç´¢å¼•æ–‡ä»¶çš„fd
+    //binlog å†™cacheçš„ä¿¡æ¯
+    CWX_UINT64			m_ullPrevIndexSid; ///<å‰ä¸€ä¸ªsidï¼Œæ­¤æ˜¯å¯¹åº”çš„ç´¢å¼•æ–‡ä»¶æœ€å¤§çš„sidï¼Œè‹¥ä¸º0ï¼Œè¡¨ç¤ºå…¨éƒ¨åœ¨å†…å­˜ã€‚
+    CWX_UINT64			m_ullMinIndexSid; ///<ç´¢å¼•cacheçš„æœ€å°sidï¼Œè‹¥ä¸º0è¡¨ç¤ºæ²¡æœ‰cache
+    CWX_UINT32          m_uiIndexFileOffset; ///<ç´¢å¼•çš„æ–‡ä»¶å†™å…¥åç§»
+    unsigned char*		m_indexBuf;  ///<ç´¢å¼•cacheçš„bufã€‚
+    CWX_UINT32			m_uiIndexLen;  ///<ç´¢å¼•bufçš„é•¿åº¦
+    map<CWX_UINT64/*sid*/, unsigned char*>  m_indexSidMap; ///<indexæ•°æ®çš„sidç´¢å¼•
+    CWX_UINT64			m_ullMaxSid;   ///<å½“å‰æœ€å¤§çš„sid
 };
 
 /**
 @class CwxBinLogFile
-@brief BinLogÎÄ¼ş¹ØÏµ¶ÔÏó£¬´Ë¶ÔÏó¸ºÔğÒ»¸öbinlogµÄÊı¾İ¡¢Ë÷ÒıÎÄ¼şµÄ¹ÜÀí£¬¸ºÔğbinlogÎÄ¼şµÄ¶Á²Ù×÷¡£
+@brief BinLogæ–‡ä»¶å…³ç³»å¯¹è±¡ï¼Œæ­¤å¯¹è±¡è´Ÿè´£ä¸€ä¸ªbinlogçš„æ•°æ®ã€ç´¢å¼•æ–‡ä»¶çš„ç®¡ç†ï¼Œè´Ÿè´£binlogæ–‡ä»¶çš„è¯»æ“ä½œã€‚
 */
 class CwxBinLogFile
 {
 public:
     enum{
-        SEEK_START = 0, ///<½«¹â±êÒÆµ½ÎÄ¼şµÄ¿ªÍ·
-        SEEK_TAIL = 1, ///<½«¹â±êÒÆµ½ÎÄ¼şµÄ×îºóÎ»ÖÃ
-        SEEK_SID = 2 ///<½«¹â±êÒÆµ½ÎÄ¼şµÄÖ¸¶¨µÄSID
+        SEEK_START = 0, ///<å°†å…‰æ ‡ç§»åˆ°æ–‡ä»¶çš„å¼€å¤´
+        SEEK_TAIL = 1, ///<å°†å…‰æ ‡ç§»åˆ°æ–‡ä»¶çš„æœ€åä½ç½®
+        SEEK_SID = 2 ///<å°†å…‰æ ‡ç§»åˆ°æ–‡ä»¶çš„æŒ‡å®šçš„SID
     };
     enum{
-        MIN_BINLOG_FILE_SIZE = 32 * 1024 * 1024, ///<ÂúµÄbinlogÎÄ¼ş×îĞ¡Îª256M
-        FREE_BINLOG_FILE_SIZE = 4 * 1024 * 1024 ///<binlogÔ¤ÁôµÄ¿Õ¼äÎª4M
+        MIN_BINLOG_FILE_SIZE = 32 * 1024 * 1024, ///<æ»¡çš„binlogæ–‡ä»¶æœ€å°ä¸º256M
+        FREE_BINLOG_FILE_SIZE = 4 * 1024 * 1024 ///<binlogé¢„ç•™çš„ç©ºé—´ä¸º4M
     };
 
 public:
     /**
-    @brief ¹¹Ôìº¯Êı
-    @param [in] ttDay binlogÎÄ¼şµÄÈÕÆÚ¡£
-    @param [in] uiFileNo binlogÎÄ¼şµÄĞòºÅ¡£
-    @param [in] uiMaxFileSize binlogÎÄ¼şµÄ×î´ó´óĞ¡¡£
-    @return 0£º³É¹¦£»-1£ºÊ§°Ü¡£
+    @brief æ„é€ å‡½æ•°
+    @param [in] ttDay binlogæ–‡ä»¶çš„æ—¥æœŸã€‚
+    @param [in] uiFileNo binlogæ–‡ä»¶çš„åºå·ã€‚
+    @param [in] uiMaxFileSize binlogæ–‡ä»¶çš„æœ€å¤§å¤§å°ã€‚
+    @return 0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ã€‚
     */
     CwxBinLogFile(CWX_UINT32 ttDay, CWX_UINT32 uiFileNo=0, CWX_UINT32 uiMaxFileSize=512*1024*1024);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~CwxBinLogFile();
-    ///Ğ¡ÓÚ±È½Ï
+    ///å°äºæ¯”è¾ƒ
     inline bool operator < (CwxBinLogFile const& obj) const;
 
 public:
     /**
-    @brief ´ò¿ª»ò´´½¨ĞÂÈÕÖ¾ÎÄ¼ş
-    @param [in] szPathFile ÈÕÖ¾ÎÄ¼şÃû¡£
-    @param [in] bReadOnly ÊÇ·ñÒÔÖ»¶Á·½Ê½´ò¿ª£¬´ËÊ±£¬ÎÄ¼ş±ØĞë´æÔÚ¡£
-    @param [in] bCreate ÊÇ·ñ´´½¨ĞÂÈÕÖ¾ÎÄ¼ş£¬´ËÊ±£¬ÈÕÖ¾ÎÄ¼ş±ØĞë²»´æÔÚ¡£
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return 0£º³É¹¦£»-1£ºÊ§°Ü¡£
+    @brief æ‰“å¼€æˆ–åˆ›å»ºæ–°æ—¥å¿—æ–‡ä»¶
+    @param [in] szPathFile æ—¥å¿—æ–‡ä»¶åã€‚
+    @param [in] bReadOnly æ˜¯å¦ä»¥åªè¯»æ–¹å¼æ‰“å¼€ï¼Œæ­¤æ—¶ï¼Œæ–‡ä»¶å¿…é¡»å­˜åœ¨ã€‚
+    @param [in] bCreate æ˜¯å¦åˆ›å»ºæ–°æ—¥å¿—æ–‡ä»¶ï¼Œæ­¤æ—¶ï¼Œæ—¥å¿—æ–‡ä»¶å¿…é¡»ä¸å­˜åœ¨ã€‚
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return 0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥ã€‚
     */
     int open(char const* szPathFile, bool bReadOnly = true, bool bCreate=false, char* szErr2K=NULL);
     /**
-    @brief ÍùÈÕÖ¾ÎÄ¼şÌí¼ÓÒ»¸öĞÂÈÕÖ¾
-    @param [in] ullSid ÈÕÖ¾µÄsidºÅ¡£
-    @param [in] ttTimestamp ÈÕÖ¾µÄÈÕÆÚ
-    @param [in] uiGroup binlogµÄ·Ö×é
-    @param [in] uiAttr ÈÕÖ¾µÄÊôĞÔ
-    @param [in] szData ÈÕÖ¾ÄÚÈİ
-    @param [in] uiDataLen ÈÕÖ¾³¤¶È¡£
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£ºÈÕÖ¾ÎÄ¼şÂúÁË£»1£º³É¹¦¡£
+    @brief å¾€æ—¥å¿—æ–‡ä»¶æ·»åŠ ä¸€ä¸ªæ–°æ—¥å¿—
+    @param [in] ullSid æ—¥å¿—çš„sidå·ã€‚
+    @param [in] ttTimestamp æ—¥å¿—çš„æ—¥æœŸ
+    @param [in] uiGroup binlogçš„åˆ†ç»„
+    @param [in] uiAttr æ—¥å¿—çš„å±æ€§
+    @param [in] szData æ—¥å¿—å†…å®¹
+    @param [in] uiDataLen æ—¥å¿—é•¿åº¦ã€‚
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæ—¥å¿—æ–‡ä»¶æ»¡äº†ï¼›1ï¼šæˆåŠŸã€‚
     */
     int append(CWX_UINT64 ullSid,
         CWX_UINT32 ttTimestamp,
@@ -368,161 +368,161 @@ public:
         CWX_UINT32 uiDataLen,
         char* szErr2K=NULL);
     /**
-    @brief È·±£½«cacheµÄÊı¾İĞ´Èëµ½Ó²ÅÌ
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief ç¡®ä¿å°†cacheçš„æ•°æ®å†™å…¥åˆ°ç¡¬ç›˜
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int flush_cache(char* szErr2K=NULL);
     /**
-    @brief È·±£Ğ´ÈëµÄÈÕÖ¾±£´æµ½Ó²ÅÌ
-	@param [in] bFlushAll true:Ë÷ÒıÊı¾İÒ²ĞèÒªfsyncµ½Ó²ÅÌ£»false£ºÖ»Êı¾İfsyncµ½Ó²ÅÌ¡£
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief ç¡®ä¿å†™å…¥çš„æ—¥å¿—ä¿å­˜åˆ°ç¡¬ç›˜
+	@param [in] bFlushAll true:ç´¢å¼•æ•°æ®ä¹Ÿéœ€è¦fsyncåˆ°ç¡¬ç›˜ï¼›falseï¼šåªæ•°æ®fsyncåˆ°ç¡¬ç›˜ã€‚
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int fsync(bool bFlushAll=false, char* szErr2K=NULL);
 
 	/**
-	@brief »ñÈ¡´óÓÚullSidµÄ×îĞ¡binlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] item Âú×ãÌõ¼şµÄbinlog index¡£
-	@param [out] szErr2K ³ö´íÊ±µÄ´íÎóÏûÏ¢¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–å¤§äºullSidçš„æœ€å°binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] item æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@param [out] szErr2K å‡ºé”™æ—¶çš„é”™è¯¯æ¶ˆæ¯ã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int upper(CWX_UINT64 ullSid, CwxBinLogIndex& item, char* szErr2K=NULL);
 
 	/**
-	@brief »ñÈ¡²»´óÓÚullSidµÄ×î´óbinlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] item Âú×ãÌõ¼şµÄbinlog index¡£
-	@param [out] szErr2K ³ö´íÊ±µÄ´íÎóÏûÏ¢¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–ä¸å¤§äºullSidçš„æœ€å¤§binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] item æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@param [out] szErr2K å‡ºé”™æ—¶çš„é”™è¯¯æ¶ˆæ¯ã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int lower(CWX_UINT64 ullSid, CwxBinLogIndex&item, char* szErr2K=NULL);
 
 	/**
-	@brief ¶¨Î»CursorµÄÎ»ÖÃ
-	@param [in] cursor ÈÕÖ¾¶Áhandle¡£
-	@param [in] ucMode ¶¨Î»µÄÄ£Ê½£¬SEEK_START£º¶¨Î»µ½ÎÄ¼şµÄ¿ªÍ·£»SEEK_TAIL£º¶¨Î»µ½ÎÄ¼şµÄ×îºó£»SEEK_SID£º¶¨Î»µ½µÚÒ»¸ö´óÓÚcursor.getSid()µÄÈÕÖ¾´¦¡£
-	@return -2£º²»´æÔÚÍê³ÉµÄ¼ÇÂ¼Í·£»-1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º¶¨Î»µ½Ö¸¶¨µÄÎ»ÖÃ
+	@brief å®šä½Cursorçš„ä½ç½®
+	@param [in] cursor æ—¥å¿—è¯»handleã€‚
+	@param [in] ucMode å®šä½çš„æ¨¡å¼ï¼ŒSEEK_STARTï¼šå®šä½åˆ°æ–‡ä»¶çš„å¼€å¤´ï¼›SEEK_TAILï¼šå®šä½åˆ°æ–‡ä»¶çš„æœ€åï¼›SEEK_SIDï¼šå®šä½åˆ°ç¬¬ä¸€ä¸ªå¤§äºcursor.getSid()çš„æ—¥å¿—å¤„ã€‚
+	@return -2ï¼šä¸å­˜åœ¨å®Œæˆçš„è®°å½•å¤´ï¼›-1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå®šä½åˆ°æŒ‡å®šçš„ä½ç½®
 	*/
 	int seek(CwxBinLogCursor& cursor, CWX_UINT8 ucMode=SEEK_SID);
-	///½«Êı¾İtrimµ½Ö¸¶¨µÄsid£¬0£º³É¹¦£»-1£ºÊ§°Ü
+	///å°†æ•°æ®trimåˆ°æŒ‡å®šçš„sidï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 	int trim(CWX_UINT64 ullSid, char* szErr2K=NULL);
 
     /**
-    @brief É¾³ıÖ¸¶¨µÄbinlogÎÄ¼ş¼°ÆäË÷ÒıÎÄ¼ş
-    @param [in] szPathFileName binlogÎÄ¼şÃû¡£
-    @return void¡£
+    @brief åˆ é™¤æŒ‡å®šçš„binlogæ–‡ä»¶åŠå…¶ç´¢å¼•æ–‡ä»¶
+    @param [in] szPathFileName binlogæ–‡ä»¶åã€‚
+    @return voidã€‚
     */
     static void remove(char const* szPathFileName);
-    //¹Ø±Õ
+    //å…³é—­
     void close();
     /**
-    @brief »ñÈ¡×îĞÂµÄµÚN¸ö¼ÇÂ¼µÄsidÖµ
-    @param [in] uiNo ¼ÇÂ¼ºÅ
-    @param [out] ullSid sidµÄÖµ
-    @return true£º³É¹¦£»false£ºÊ§°Ü¡£
+    @brief è·å–æœ€æ–°çš„ç¬¬Nä¸ªè®°å½•çš„sidå€¼
+    @param [in] uiNo è®°å½•å·
+    @param [out] ullSid sidçš„å€¼
+    @return trueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥ã€‚
     */
     bool getLastSidByNo(CWX_UINT32 uiNo, CWX_UINT64& ullSid, char* szErr2K);
 public:
-    ///»ñÈ¡×îĞ¡µÄsid
+    ///è·å–æœ€å°çš„sid
     inline CWX_UINT64 getMinSid() const;
-    ///»ñÈ¡×î´óµÄsid
+    ///è·å–æœ€å¤§çš„sid
     inline CWX_UINT64 getMaxSid() const;
-    ///»ñÈ¡binlogµÄ×îĞ¡Ê±¼ä´Á
+    ///è·å–binlogçš„æœ€å°æ—¶é—´æˆ³
     inline CWX_UINT32 getMinTimestamp() const;
-    ///»ñÈ¡binlogµÄ×î´óÊ±¼ä´Á
+    ///è·å–binlogçš„æœ€å¤§æ—¶é—´æˆ³
     inline CWX_UINT32 getMaxTimestamp() const;
-    ///»ñÈ¡binlogÎÄ¼şµÄÈÕÆÚ
+    ///è·å–binlogæ–‡ä»¶çš„æ—¥æœŸ
     inline CWX_UINT32 getFileDay() const;
-    ///»ñÈ¡binlogµÄÎÄ¼şĞòºÅ
+    ///è·å–binlogçš„æ–‡ä»¶åºå·
     inline CWX_UINT32 getFileNo() const;
-    ///»ñÈ¡binlogÎÄ¼şµÄlog¼ÇÂ¼Êı
+    ///è·å–binlogæ–‡ä»¶çš„logè®°å½•æ•°
     inline CWX_UINT32 getLogNum() const;
-    ///»ñÈ¡binlogÎÄ¼şµÄ´óĞ¡
+    ///è·å–binlogæ–‡ä»¶çš„å¤§å°
     inline CWX_UINT32 getFileSize() const;
-    ///ÅĞ¶ÏÊÇ·ñÖ»¶Á
+    ///åˆ¤æ–­æ˜¯å¦åªè¯»
     inline bool readOnly() const;
-    ///ÉèÖÃÖ»¶Á
+    ///è®¾ç½®åªè¯»
     inline void setReadOnly();
-    ///ÅĞ¶ÏÈÕÖ¾ÎÄ¼şÊÇ·ñÎª¿Õ
+    ///åˆ¤æ–­æ—¥å¿—æ–‡ä»¶æ˜¯å¦ä¸ºç©º
     inline bool empty() const;
-    ///»ñÈ¡Êı¾İÎÄ¼şµÄÃû×Ö
+    ///è·å–æ•°æ®æ–‡ä»¶çš„åå­—
     inline string const& getDataFileName() const;
-    ///»ñÈ¡Ë÷ÒıÎÄ¼şµÄÃû×Ö
+    ///è·å–ç´¢å¼•æ–‡ä»¶çš„åå­—
     inline string const& getIndexFileName() const;
 private:
-    ///Çå¿Õ¶ÔÏó
+    ///æ¸…ç©ºå¯¹è±¡
     void reset();
     /**
-    @brief ¶ÁÈ¡Ö¸¶¨Î»ÖÃµÄË÷Òı¼ÇÂ¼
-    @param [in] fd Ë÷ÒıÎÄ¼şµÄfd¡£
-    @param [out] index ·µ»ØµÄË÷Òı¡£
-    @param [in] uiOffset Ë÷ÒıµÄÎ»ÖÃ¡£
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief è¯»å–æŒ‡å®šä½ç½®çš„ç´¢å¼•è®°å½•
+    @param [in] fd ç´¢å¼•æ–‡ä»¶çš„fdã€‚
+    @param [out] index è¿”å›çš„ç´¢å¼•ã€‚
+    @param [in] uiOffset ç´¢å¼•çš„ä½ç½®ã€‚
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     inline int readIndex(int fd, CwxBinLogIndex& index, CWX_UINT32 uiOffset, char* szErr2K=NULL) const;
     /**
-    @brief ÍùÖ¸¶¨µÄÎ»ÖÃĞ´ÈëË÷Òı
-    @param [in] fd Ë÷ÒıÎÄ¼şµÄfd¡£
-    @param [in] index Ğ´ÈëµÄË÷Òı¡£
-    @param [in] uiOffset Ë÷ÒıµÄÎ»ÖÃ¡£
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief å¾€æŒ‡å®šçš„ä½ç½®å†™å…¥ç´¢å¼•
+    @param [in] fd ç´¢å¼•æ–‡ä»¶çš„fdã€‚
+    @param [in] index å†™å…¥çš„ç´¢å¼•ã€‚
+    @param [in] uiOffset ç´¢å¼•çš„ä½ç½®ã€‚
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     inline int writeIndex(int fd, CwxBinLogIndex const& index, CWX_UINT32 uiOffset, char* szErr2K=NULL) const;
     /**
-    @brief ´´½¨Ö¸¶¨µÄbinlogÎÄ¼ş
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief åˆ›å»ºæŒ‡å®šçš„binlogæ–‡ä»¶
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int mkBinlog(char* szErr2K=NULL);
     /**
-    @brief ¼ì²ébinlogÎÄ¼ş¼°ÆäË÷ÒıÎÄ¼şÊÇ·ñÒ»ÖÂ£¬Èô²»Ò»ÖÂÔò½øĞĞ´¦Àí
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief æ£€æŸ¥binlogæ–‡ä»¶åŠå…¶ç´¢å¼•æ–‡ä»¶æ˜¯å¦ä¸€è‡´ï¼Œè‹¥ä¸ä¸€è‡´åˆ™è¿›è¡Œå¤„ç†
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int prepareFile(char* szErr2K=NULL);
     /**
-    @brief ¼ì²éÊÇ·ñĞèÒª´´½¨Ë÷Òı
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º²»ĞèÒª£»1£ºĞèÒª¡£
+    @brief æ£€æŸ¥æ˜¯å¦éœ€è¦åˆ›å»ºç´¢å¼•
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸éœ€è¦ï¼›1ï¼šéœ€è¦ã€‚
     */
     int isRebuildIndex(char* szErr2K=NULL);
     /**
-    @brief ´´½¨Ë÷Òı
-    @param [in] szErr2K ´íÎóĞÅÏ¢buf£¬ÈôÎªNULLÔò²»·µ»Ø´íÎóÏûÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief åˆ›å»ºç´¢å¼•
+    @param [in] szErr2K é”™è¯¯ä¿¡æ¯bufï¼Œè‹¥ä¸ºNULLåˆ™ä¸è¿”å›é”™è¯¯æ¶ˆæ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int createIndex(char* szErr2K=NULL);
     friend class CwxBinLogMgr;
 private:
-    bool					m_bValid;       ///<ÊÇ·ñÓĞĞ§
-    string					m_strPathFileName; ///<binlogÎÄ¼şµÄÃû×Ö
-    string					m_strIndexFileName; ///<indexÎÄ¼şµÄÃû×Ö
-    CWX_UINT32				m_uiMaxFileSize; ///<ĞÂ½¨Á¢µÄbinlogÎÄ¼şµÄ×î´ó´óĞ¡¡£
-    CWX_UINT64				m_ullMinSid; ///<binlogÎÄ¼şµÄ×îĞ¡sid
-    volatile CWX_UINT64     m_ullMaxSid; ///<binlogÎÄ¼şµÄ×î´ósid
-    CWX_UINT32              m_ttMinTimestamp; ///<binlogÎÄ¼şµÄlog¿ªÊ¼Ê±¼ä
-    volatile CWX_UINT32     m_ttMaxTimestamp; ///<binlogÎÄ¼şµÄlog½áÊøÊ±¼ä
-    volatile CWX_UINT32		m_uiLogNum; ///<binlogÎÄ¼şµÄlogÊıÁ¿
-    bool					m_bReadOnly; ///<ÊÇ·ñÎªÖ»¶Á
-    int						m_fd; ///<logÎÄ¼şµÄio handle
-    int						m_indexFd; ///<Ë÷ÒıÎÄ¼şµÄio handle
-    volatile CWX_UINT32     m_uiFileSize; ///<binlogÊı¾İÎÄ¼ş´óĞ¡£¬-1±íÊ¾²»´æÔÚ
-    volatile CWX_UINT32     m_uiIndexFileSize; ///<Ë÷ÒıÎÄ¼şµÄ´óĞ¡£¬-1±íÊ¾²»´æÔÚ
-    volatile CWX_UINT32     m_uiPrevLogOffset; ///<Ç°Ò»¸öbinlogµÄÆ«ÒÆ
-    CWX_UINT32				m_ttDay; ///ÈÕÖ¾ÎÄ¼şµÄÈÕÆÚ
-    CWX_UINT32				m_uiFileNo; ///<ÈÕÖ¾±àºÅ¡£
-    CwxBinLogIndexWriteCache*  m_writeCache; ///<write Ä£Ê½ÏÂµÄĞ´cache¡£
+    bool					m_bValid;       ///<æ˜¯å¦æœ‰æ•ˆ
+    string					m_strPathFileName; ///<binlogæ–‡ä»¶çš„åå­—
+    string					m_strIndexFileName; ///<indexæ–‡ä»¶çš„åå­—
+    CWX_UINT32				m_uiMaxFileSize; ///<æ–°å»ºç«‹çš„binlogæ–‡ä»¶çš„æœ€å¤§å¤§å°ã€‚
+    CWX_UINT64				m_ullMinSid; ///<binlogæ–‡ä»¶çš„æœ€å°sid
+    volatile CWX_UINT64     m_ullMaxSid; ///<binlogæ–‡ä»¶çš„æœ€å¤§sid
+    CWX_UINT32              m_ttMinTimestamp; ///<binlogæ–‡ä»¶çš„logå¼€å§‹æ—¶é—´
+    volatile CWX_UINT32     m_ttMaxTimestamp; ///<binlogæ–‡ä»¶çš„logç»“æŸæ—¶é—´
+    volatile CWX_UINT32		m_uiLogNum; ///<binlogæ–‡ä»¶çš„logæ•°é‡
+    bool					m_bReadOnly; ///<æ˜¯å¦ä¸ºåªè¯»
+    int						m_fd; ///<logæ–‡ä»¶çš„io handle
+    int						m_indexFd; ///<ç´¢å¼•æ–‡ä»¶çš„io handle
+    volatile CWX_UINT32     m_uiFileSize; ///<binlogæ•°æ®æ–‡ä»¶å¤§å°ï¼Œ-1è¡¨ç¤ºä¸å­˜åœ¨
+    volatile CWX_UINT32     m_uiIndexFileSize; ///<ç´¢å¼•æ–‡ä»¶çš„å¤§å°ï¼Œ-1è¡¨ç¤ºä¸å­˜åœ¨
+    volatile CWX_UINT32     m_uiPrevLogOffset; ///<å‰ä¸€ä¸ªbinlogçš„åç§»
+    CWX_UINT32				m_ttDay; ///æ—¥å¿—æ–‡ä»¶çš„æ—¥æœŸ
+    CWX_UINT32				m_uiFileNo; ///<æ—¥å¿—ç¼–å·ã€‚
+    CwxBinLogIndexWriteCache*  m_writeCache; ///<write æ¨¡å¼ä¸‹çš„å†™cacheã€‚
 };
 
 
 /**
 @class CwxBinLogMgr
-@brief BinLogµÄ¹ÜÀí¶ÔÏó£¬¹ÜÀíbinlogµÄ¶Á¡¢Ğ´¡£binlogµÄÃüÃû¹æÔòÎªprex_xxxxxxxxxx.log¡£<br>
-       Æä¶ÔÓ¦µÄË÷ÒıÎÄ¼şµÄÃû×ÖÎªprex_xxxxxxxxxx.log.idx¡£
+@brief BinLogçš„ç®¡ç†å¯¹è±¡ï¼Œç®¡ç†binlogçš„è¯»ã€å†™ã€‚binlogçš„å‘½åè§„åˆ™ä¸ºprex_xxxxxxxxxx.logã€‚<br>
+       å…¶å¯¹åº”çš„ç´¢å¼•æ–‡ä»¶çš„åå­—ä¸ºprex_xxxxxxxxxx.log.idxã€‚
 */
 class CwxBinLogMgr
 {
@@ -549,24 +549,24 @@ private:
     };
 public:
     enum{
-        DEF_MANAGE_FILE_NUM=10, ///<È±Ê¡¹ÜÀíbinlogµÄÊıÁ¿
-        MIN_MANAGE_FILE_NUM = 1, ///<¹ÜÀíbinlogµÄ×îĞ¡ÊıÁ¿
-        MAX_MANAGE_FILE_NUM = 2048, ///<¹ÜÀíbinlogµÄ×î´óĞ¡Ê±Êı
-		START_FILE_NUM = 1, ///<¿ªÊ¼µÄÎÄ¼şĞòºÅ
-        MIN_SID_NO = 1, ///<×îĞ¡µÄsidĞòºÅ
+        DEF_MANAGE_FILE_NUM=10, ///<ç¼ºçœç®¡ç†binlogçš„æ•°é‡
+        MIN_MANAGE_FILE_NUM = 1, ///<ç®¡ç†binlogçš„æœ€å°æ•°é‡
+        MAX_MANAGE_FILE_NUM = 2048, ///<ç®¡ç†binlogçš„æœ€å¤§å°æ—¶æ•°
+		START_FILE_NUM = 1, ///<å¼€å§‹çš„æ–‡ä»¶åºå·
+        MIN_SID_NO = 1, ///<æœ€å°çš„sidåºå·
 		MAX_BINLOG_FILE_SIZE = 0X7FFFFFFF, ///<2G
-        SKIP_SID_NUM = 10000 ///<µ±next sidĞ¡ÓÚ×î´óÖµÊ±£¬ÌøÔ¾µÄÊıÁ¿
+        SKIP_SID_NUM = 10000 ///<å½“next sidå°äºæœ€å¤§å€¼æ—¶ï¼Œè·³è·ƒçš„æ•°é‡
     };
 public:
     /**
-    @brief ¹¹Ôìº¯Êı¡£
-    @param [in] szLogPath binlogÎÄ¼şËùÔÚµÄÄ¿Â¼¡£
-    @param [in] szFilePrex binlogÎÄ¼şµÄÇ°×º£¬ĞÎ³ÉµÄÎÄ¼şÃûÎªszFilePrex_xxxxxxxxxx£¬xxxxxxxxxxÎªÎÄ¼şĞòºÅ¡£
-    @param [in] uiMaxFileSize binlogÎÄ¼şµÄ×î´ó´óĞ¡¡£
-    @param [in] uiBinlogFlushNum binlogĞ´¶àÉÙÌõ£¬×Ô¶¯flush
-    @param [in] uiBinlogFlushSecond binlog¶àÉÙÊ±¼ä£¬×Ô¶¯flush
-    @param [in] bDelOutManageLogFile ÊÇ·ñÉ¾³ı²»ÔÙ¹ÜÀí·¶Î§ÄÚµÄÎÄ¼ş¡£
-    @return ÎŞ¡£
+    @brief æ„é€ å‡½æ•°ã€‚
+    @param [in] szLogPath binlogæ–‡ä»¶æ‰€åœ¨çš„ç›®å½•ã€‚
+    @param [in] szFilePrex binlogæ–‡ä»¶çš„å‰ç¼€ï¼Œå½¢æˆçš„æ–‡ä»¶åä¸ºszFilePrex_xxxxxxxxxxï¼Œxxxxxxxxxxä¸ºæ–‡ä»¶åºå·ã€‚
+    @param [in] uiMaxFileSize binlogæ–‡ä»¶çš„æœ€å¤§å¤§å°ã€‚
+    @param [in] uiBinlogFlushNum binlogå†™å¤šå°‘æ¡ï¼Œè‡ªåŠ¨flush
+    @param [in] uiBinlogFlushSecond binlogå¤šå°‘æ—¶é—´ï¼Œè‡ªåŠ¨flush
+    @param [in] bDelOutManageLogFile æ˜¯å¦åˆ é™¤ä¸å†ç®¡ç†èŒƒå›´å†…çš„æ–‡ä»¶ã€‚
+    @return æ— ã€‚
     */
     CwxBinLogMgr(char const* szLogPath,
         char const* szFilePrex,
@@ -575,27 +575,27 @@ public:
         CWX_UINT32 uiBinlogFlushSecond,
         bool       bDelOutManageLogFile = false
         );
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~CwxBinLogMgr();
 public:
     /**
-    @brief ³õÊ¼»¯binlog¹ÜÀíÆ÷¶ÔÏó¡£
-    @param [in] uiMaxFileNum ¹ÜÀíµÄbinlogµÄ×î¶àÊıÁ¿¡£
-	@param [in] bCache ÊÇ·ñ¶ÔĞ´ÈëµÄÊı¾İ½øĞĞcache¡£
-    @param [out] szErr2K Èô³õÊ¼»¯Ê§°Ü£¬·µ»ØÊ§°ÜµÄ´íÎóĞÅÏ¢£»ÈôÎªNULL£¬¼´±ãÊ§°ÜÒ²²»·µ»Ø´íÎóµÄÔ­Òò¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief åˆå§‹åŒ–binlogç®¡ç†å™¨å¯¹è±¡ã€‚
+    @param [in] uiMaxFileNum ç®¡ç†çš„binlogçš„æœ€å¤šæ•°é‡ã€‚
+	@param [in] bCache æ˜¯å¦å¯¹å†™å…¥çš„æ•°æ®è¿›è¡Œcacheã€‚
+    @param [out] szErr2K è‹¥åˆå§‹åŒ–å¤±è´¥ï¼Œè¿”å›å¤±è´¥çš„é”™è¯¯ä¿¡æ¯ï¼›è‹¥ä¸ºNULLï¼Œå³ä¾¿å¤±è´¥ä¹Ÿä¸è¿”å›é”™è¯¯çš„åŸå› ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int init(CWX_UINT32 uiMaxFileNum, bool bCache, char* szErr2K=NULL);
     /**
-    @brief Ìí¼ÓÒ»Ìõbinlog¡£
-    @param [in] ullSid binlogµÄsid£¬ÆäÖµ±ØĞë´óÓÚµ±Ç°ÒÑÓĞµÄ×î´óÖµ¡£
-    @param [in] ttTimestamp binlogµÄÊ±¼ä´Á£¬Í¨¹ı´ËÊ±¼ä´Á£¬¿ØÖÆbinlogÍ¬²½µÄÌìÊı¡£
-    @param [in] uiType ÈÕÖ¾µÄ·Ö×é
-    @param [in] uiType ÈÕÖ¾µÄÀàĞÍ
-    @param [in] szData binlogµÄÊı¾İ¡£
-    @param [in] uiDataLen binlogµÄÊı¾İµÄ³¤¶È¡£
-    @param [in] szErr2K ÈôÌí¼ÓÊ§°Ü£¬ÔòÎªÊ§°ÜµÄÔ­ÒòĞÅÏ¢¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief æ·»åŠ ä¸€æ¡binlogã€‚
+    @param [in] ullSid binlogçš„sidï¼Œå…¶å€¼å¿…é¡»å¤§äºå½“å‰å·²æœ‰çš„æœ€å¤§å€¼ã€‚
+    @param [in] ttTimestamp binlogçš„æ—¶é—´æˆ³ï¼Œé€šè¿‡æ­¤æ—¶é—´æˆ³ï¼Œæ§åˆ¶binlogåŒæ­¥çš„å¤©æ•°ã€‚
+    @param [in] uiType æ—¥å¿—çš„åˆ†ç»„
+    @param [in] uiType æ—¥å¿—çš„ç±»å‹
+    @param [in] szData binlogçš„æ•°æ®ã€‚
+    @param [in] uiDataLen binlogçš„æ•°æ®çš„é•¿åº¦ã€‚
+    @param [in] szErr2K è‹¥æ·»åŠ å¤±è´¥ï¼Œåˆ™ä¸ºå¤±è´¥çš„åŸå› ä¿¡æ¯ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int append(CWX_UINT64& ullSid,
         CWX_UINT32 ttTimestamp,
@@ -604,195 +604,195 @@ public:
         CWX_UINT32 uiDataLen,
         char* szErr2K=NULL);
     /**
-    @brief Ë¢ĞÂÒÑ¾­Ğ´ÈëµÄbinlog£¬È·±£±£´æµ½Ó²ÅÌ¡£
-	@param [in] bAll ÊÇ·ñË÷ÒıÒ²commit¡£
-    @param [in] szErr2K ÈôË¢ĞÂÊ§°Ü£¬Ôò·µ»ØÊ§°ÜµÄÔ­Òò¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief åˆ·æ–°å·²ç»å†™å…¥çš„binlogï¼Œç¡®ä¿ä¿å­˜åˆ°ç¡¬ç›˜ã€‚
+	@param [in] bAll æ˜¯å¦ç´¢å¼•ä¹Ÿcommitã€‚
+    @param [in] szErr2K è‹¥åˆ·æ–°å¤±è´¥ï¼Œåˆ™è¿”å›å¤±è´¥çš„åŸå› ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int commit(bool bAll= false, char* szErr2K=NULL);
-    ///Çå¿Õbinlog¹ÜÀíÆ÷
+    ///æ¸…ç©ºbinlogç®¡ç†å™¨
     void clear();
-    ///Çå¿ÕÊı¾İ
+    ///æ¸…ç©ºæ•°æ®
     void removeAllBinlog();
-	///½«Êı¾İtrimµ½Ö¸¶¨µÄsid£¬0£º³É¹¦£»-1£ºÊ§°Ü
+	///å°†æ•°æ®trimåˆ°æŒ‡å®šçš„sidï¼Œ0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 //	int trim(CWX_UINT64 ullSid, char* szErr2K=NULL);
 public:
 	/**
-	@brief »ñÈ¡´óÓÚullSidµÄ×îĞ¡binlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] index Âú×ãÌõ¼şµÄbinlog index¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–å¤§äºullSidçš„æœ€å°binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] index æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int upper(CWX_UINT64 ullSid, CwxBinLogIndex& index, char* szErr2K=NULL);
 	/**
-	@brief »ñÈ¡²»´óÓÚullSidµÄ×î´óbinlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] index Âú×ãÌõ¼şµÄbinlog index¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–ä¸å¤§äºullSidçš„æœ€å¤§binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] index æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int lower(CWX_UINT64 ullSid, CwxBinLogIndex& index, char* szErr2K=NULL);
 
 	/**
-    @brief ´´½¨binlog¶ÁÈ¡µÄÓÎ±ê
-    @return NULL£ºÊ§°Ü£»·ñÔò·µ»ØÓÎ±ê¶ÔÏóµÄÖ¸Õë¡£
+    @brief åˆ›å»ºbinlogè¯»å–çš„æ¸¸æ ‡
+    @return NULLï¼šå¤±è´¥ï¼›å¦åˆ™è¿”å›æ¸¸æ ‡å¯¹è±¡çš„æŒ‡é’ˆã€‚
     */
 	CwxBinLogCursor* createCurser(CWX_UINT64 ullSid=0, CWX_UINT8 ucState=CwxBinLogCursor::CURSOR_STATE_UNSEEK);
     
     /**
-    @brief ½«binlog¶ÁÈ¡µÄÓÎ±êÒÆµ½>ullSidµÄbinlog´¦¡£
-    @param [in] pCursor binlogµÄ¶ÁÈ¡ÓÎ±ê¡£
-    @param [in] ullSid ¶¨Î»ÓÎ±êµÄsid£¬ÓÎ±ê½«¶¨Î»µ½>ullSidµÄbinlog´¦¡£
-    @return -1£ºÊ§°Ü£»0£ºÎŞ·¨¶¨Î»µ½ullSidÏÂÒ»¸öbinlog£»1£º¶¨Î»µ½ullSidÏÂÒ»¸öµÄbinlogÉÏ¡£
+    @brief å°†binlogè¯»å–çš„æ¸¸æ ‡ç§»åˆ°>ullSidçš„binlogå¤„ã€‚
+    @param [in] pCursor binlogçš„è¯»å–æ¸¸æ ‡ã€‚
+    @param [in] ullSid å®šä½æ¸¸æ ‡çš„sidï¼Œæ¸¸æ ‡å°†å®šä½åˆ°>ullSidçš„binlogå¤„ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæ— æ³•å®šä½åˆ°ullSidä¸‹ä¸€ä¸ªbinlogï¼›1ï¼šå®šä½åˆ°ullSidä¸‹ä¸€ä¸ªçš„binlogä¸Šã€‚
     */
     int seek(CwxBinLogCursor* pCursor, CWX_UINT64 ullSid);
 
     /**
-    @brief ½«ÓÎ±êÒÆµ½ÏÂÒ»¸öbinlog¼ÇÂ¼´¦¡£ÈôÓĞ´íÎó£¬ÔòÍ¨¹ıpCursorµÄgetErrMsg()»ñÈ¡¡£
-    @param [in] pCursor ÓÎ±êµÄ¶ÔÏóÖ¸Õë¡£
-    @return -1£ºÊ§°Ü£»0£ºÒÆµ½×îºó£»1£º³É¹¦ÒÆµ½ÏÂÒ»¸öbinlog¡£
+    @brief å°†æ¸¸æ ‡ç§»åˆ°ä¸‹ä¸€ä¸ªbinlogè®°å½•å¤„ã€‚è‹¥æœ‰é”™è¯¯ï¼Œåˆ™é€šè¿‡pCursorçš„getErrMsg()è·å–ã€‚
+    @param [in] pCursor æ¸¸æ ‡çš„å¯¹è±¡æŒ‡é’ˆã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šç§»åˆ°æœ€åï¼›1ï¼šæˆåŠŸç§»åˆ°ä¸‹ä¸€ä¸ªbinlogã€‚
     */
     int next(CwxBinLogCursor* pCursor);
     /**
-    @brief ½«ÓÎ±êÒÆµ½Ç°Ò»¸öbinlog¼ÇÂ¼´¦¡£ÈôÓĞ´íÎó£¬ÔòÍ¨¹ıpCursorµÄgetErrMsg()»ñÈ¡¡£
-    @param [in] pCursor ÓÎ±êµÄ¶ÔÏóÖ¸Õë¡£
-    @return -1£ºÊ§°Ü£»0£ºÒÆµ½×î¿ªÊ¼£»1£º³É¹¦ÒÆµ½Ç°Ò»¸öbinlog¡£
+    @brief å°†æ¸¸æ ‡ç§»åˆ°å‰ä¸€ä¸ªbinlogè®°å½•å¤„ã€‚è‹¥æœ‰é”™è¯¯ï¼Œåˆ™é€šè¿‡pCursorçš„getErrMsg()è·å–ã€‚
+    @param [in] pCursor æ¸¸æ ‡çš„å¯¹è±¡æŒ‡é’ˆã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šç§»åˆ°æœ€å¼€å§‹ï¼›1ï¼šæˆåŠŸç§»åˆ°å‰ä¸€ä¸ªbinlogã€‚
     */
     int prev(CwxBinLogCursor* pCursor);
 
     /**
-    @brief ¶ÁÈ¡ÓÎ±êµÄµ±Ç°binlog¡£ÈôÓĞ´íÎó£¬ÔòÍ¨¹ıpCursorµÄgetErrMsg()»ñÈ¡¡£
-    @param [in] pCursor ÓÎ±êµÄ¶ÔÏóÖ¸Õë¡£
-    @param [out] szData binlogµÄdata¡£
-    @param [in,out] uiDataLen ´«ÈëszDataµÄbuf´óĞ¡£¬´«³öszDataµÄ´óĞ¡¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦»ñÈ¡ÏÂÒ»Ìõbinlog¡£
+    @brief è¯»å–æ¸¸æ ‡çš„å½“å‰binlogã€‚è‹¥æœ‰é”™è¯¯ï¼Œåˆ™é€šè¿‡pCursorçš„getErrMsg()è·å–ã€‚
+    @param [in] pCursor æ¸¸æ ‡çš„å¯¹è±¡æŒ‡é’ˆã€‚
+    @param [out] szData binlogçš„dataã€‚
+    @param [in,out] uiDataLen ä¼ å…¥szDataçš„bufå¤§å°ï¼Œä¼ å‡ºszDataçš„å¤§å°ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸè·å–ä¸‹ä¸€æ¡binlogã€‚
     */
     int fetch(CwxBinLogCursor* pCursor, char* szData, CWX_UINT32& uiDataLen);
     /**
-    @brief »ñÈ¡ÏÂÒ»Ìõ¼ÇÂ¼¡£ÈôÓĞ´íÎó£¬ÔòÍ¨¹ıpCursorµÄgetErrMsg()»ñÈ¡¡£
-    @param [in] pCursor ÓÎ±êµÄ¶ÔÏóÖ¸Õë¡£
-    @param [out] szData binlogµÄdata¡£
-    @param [in,out] uiDataLen ´«ÈëszDataµÄbuf´óĞ¡£¬´«³öszDataµÄ´óĞ¡¡£
-    @return -1£ºÊ§°Ü£»0£ºÒÆµ½×îºó£»1£º³É¹¦»ñÈ¡ÏÂÒ»Ìõbinlog¡£
+    @brief è·å–ä¸‹ä¸€æ¡è®°å½•ã€‚è‹¥æœ‰é”™è¯¯ï¼Œåˆ™é€šè¿‡pCursorçš„getErrMsg()è·å–ã€‚
+    @param [in] pCursor æ¸¸æ ‡çš„å¯¹è±¡æŒ‡é’ˆã€‚
+    @param [out] szData binlogçš„dataã€‚
+    @param [in,out] uiDataLen ä¼ å…¥szDataçš„bufå¤§å°ï¼Œä¼ å‡ºszDataçš„å¤§å°ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šç§»åˆ°æœ€åï¼›1ï¼šæˆåŠŸè·å–ä¸‹ä¸€æ¡binlogã€‚
     */
     int next(CwxBinLogCursor* pCursor, char* szData, CWX_UINT32& uiDataLen);
     /**
-    @brief »ñÈ¡Ç°Ò»¸öbinlog¼ÇÂ¼¡£ÈôÓĞ´íÎó£¬ÔòÍ¨¹ıpCursorµÄgetErrMsg()»ñÈ¡¡£
-    @param [in] pCursor ÓÎ±êµÄ¶ÔÏóÖ¸Õë¡£
-    @param [out] szData binlogµÄdata¡£
-    @param [in,out] uiDataLen ´«ÈëszDataµÄbuf´óĞ¡£¬´«³öszDataµÄ´óĞ¡¡£
-    @return -1£ºÊ§°Ü£»0£ºÒÆµ½×î¿ªÊ¼£»1£º³É¹¦»ñÈ¡Ç°Ò»¸öbinlog¡£
+    @brief è·å–å‰ä¸€ä¸ªbinlogè®°å½•ã€‚è‹¥æœ‰é”™è¯¯ï¼Œåˆ™é€šè¿‡pCursorçš„getErrMsg()è·å–ã€‚
+    @param [in] pCursor æ¸¸æ ‡çš„å¯¹è±¡æŒ‡é’ˆã€‚
+    @param [out] szData binlogçš„dataã€‚
+    @param [in,out] uiDataLen ä¼ å…¥szDataçš„bufå¤§å°ï¼Œä¼ å‡ºszDataçš„å¤§å°ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šç§»åˆ°æœ€å¼€å§‹ï¼›1ï¼šæˆåŠŸè·å–å‰ä¸€ä¸ªbinlogã€‚
     */
     int prev(CwxBinLogCursor* pCursor, char* szData, CWX_UINT32& uiDataLen);
     /**
-    @brief ÊÍ·Åcursor¡£
-    @param [in] pCursor ÒªÊÍ·ÅµÄÓÎ±ê¡£
-    @return -1£ºÊ§°Ü£»0£º³É¹¦¡£
+    @brief é‡Šæ”¾cursorã€‚
+    @param [in] pCursor è¦é‡Šæ”¾çš„æ¸¸æ ‡ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæˆåŠŸã€‚
     */
     int destoryCurser(CwxBinLogCursor*& pCursor);
     /**
-    @brief »ñÈ¡»¹Ã»ÓĞ¶ÁÈ¡µÄÈÕÖ¾ÊıÁ¿¡£
-    @param [in] pCursor ÓÎ±ê¡£
-    @return -1£ºÓÎ±êÎŞĞ§£»·ñÔòÎª¼ÇÂ¼µÄÊıÁ¿¡£
+    @brief è·å–è¿˜æ²¡æœ‰è¯»å–çš„æ—¥å¿—æ•°é‡ã€‚
+    @param [in] pCursor æ¸¸æ ‡ã€‚
+    @return -1ï¼šæ¸¸æ ‡æ— æ•ˆï¼›å¦åˆ™ä¸ºè®°å½•çš„æ•°é‡ã€‚
     */
     CWX_INT64 leftLogNum(CwxBinLogCursor const* pCursor);
     /**
-    @brief »ñÈ¡°üº¬Ö¸¶¨Ê±¼äÈÕÖ¾µÄlogÎÄ¼şµÄÆğÊ¼sid
-    @param [in] ttTimestamp  ÈÕÖ¾Ê±¼ä
-    @return ·µ»Øsid¡£
+    @brief è·å–åŒ…å«æŒ‡å®šæ—¶é—´æ—¥å¿—çš„logæ–‡ä»¶çš„èµ·å§‹sid
+    @param [in] ttTimestamp  æ—¥å¿—æ—¶é—´
+    @return è¿”å›sidã€‚
     */
     CWX_UINT64 getFileStartSid(CWX_UINT32 ttTimestamp);
     /**
-    @brief »ñÈ¡×îĞÂµÄµÚN¸ö¼ÇÂ¼µÄsidÖµ
-    @param [in] uiNo ¼ÇÂ¼ºÅ
-    @param [out] ullSid sidµÄÖµ
-    @return true£º³É¹¦£»false£ºÊ§°Ü¡£
+    @brief è·å–æœ€æ–°çš„ç¬¬Nä¸ªè®°å½•çš„sidå€¼
+    @param [in] uiNo è®°å½•å·
+    @param [out] ullSid sidçš„å€¼
+    @return trueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥ã€‚
     */
     bool getLastSidByNo(CWX_UINT32 uiNo, CWX_UINT64& ullSid, char* szErr2K);
 
 
 public:
-    ///ÉèÖÃ³õÊ¼»¯SID
+    ///è®¾ç½®åˆå§‹åŒ–SID
     inline void setNextSid(CWX_UINT64 ullSid) {
         if (ullSid < getMaxSid())
             ullSid = getMaxSid() + SKIP_SID_NUM;
         m_ullNextSid = ullSid;
     }
-    ///»ñÈ¡µ±Ç°µÄsid
+    ///è·å–å½“å‰çš„sid
     inline CWX_UINT64 getCurNextSid() const{
         return m_ullNextSid;
     }
-    ///»ñÈ¡¹ÜÀíÆ÷ÊÇ·ñÓĞĞ§
+    ///è·å–ç®¡ç†å™¨æ˜¯å¦æœ‰æ•ˆ
     inline bool isInvalid() const;
-    ///cursor¶ÔÓ¦µÄÎÄ¼ş£¬ÊÇ·ñÔÚ¹ÜÀíµÄ·¶Î§Ö®Íâ
+    ///cursorå¯¹åº”çš„æ–‡ä»¶ï¼Œæ˜¯å¦åœ¨ç®¡ç†çš„èŒƒå›´ä¹‹å¤–
     inline bool isOutRange(CwxBinLogCursor* pCursor);
-    ///ÊÇ·ñÊÇunseek
+    ///æ˜¯å¦æ˜¯unseek
     inline bool isUnseek(CwxBinLogCursor* pCursor);
-    ///»ñÈ¡¹ÜÀíÆ÷ÎŞĞ§µÄÔ­Òò
+    ///è·å–ç®¡ç†å™¨æ— æ•ˆçš„åŸå› 
     char const* getInvalidMsg() const;
-    ///»ñÈ¡×îĞ¡µÄsid
+    ///è·å–æœ€å°çš„sid
     inline CWX_UINT64 getMinSid() ;
-    ///»ñÈ¡×î´óµÄsid
+    ///è·å–æœ€å¤§çš„sid
     inline CWX_UINT64 getMaxSid() ;
-    ///»ñÈ¡binlogµÄ×îĞ¡Ê±¼ä´Á
+    ///è·å–binlogçš„æœ€å°æ—¶é—´æˆ³
     inline CWX_UINT32 getMinTimestamp() ;
-    ///»ñÈ¡binlogµÄ×î´óÊ±¼ä´Á
+    ///è·å–binlogçš„æœ€å¤§æ—¶é—´æˆ³
     inline CWX_UINT32 getMaxTimestamp();
-    ///»ñÈ¡¹ÜÀíµÄbinlogµÄ×îĞ¡ÎÄ¼şĞòºÅ
+    ///è·å–ç®¡ç†çš„binlogçš„æœ€å°æ–‡ä»¶åºå·
     inline string& getMinFile(string& strFile) ;
-    ///»ñÈ¡¹ÜÀíµÄbinlogµÄ×î´óÎÄ¼şĞòºÅ
+    ///è·å–ç®¡ç†çš„binlogçš„æœ€å¤§æ–‡ä»¶åºå·
     inline string& getMaxFile(string& strFile);
-    ///¼ì²éÊÇ·ñÎª¿Õ
+    ///æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     inline bool empty() ;
-    ///»ñÈ¡ÎÄ¼şºÅ¶ÔÓ¦µÄbinlogÎÄ¼şÃû
+    ///è·å–æ–‡ä»¶å·å¯¹åº”çš„binlogæ–‡ä»¶å
     inline string& getFileNameByFileNo(CWX_UINT32 uiFileNo, CWX_UINT32 ttDay, string& strFileName);
-    ///»ñÈ¡ÎÄ¼şºÅ¶ÔÓ¦µÄbinlogÎÄ¼şµÄË÷ÒıÎÄ¼şÃû
+    ///è·å–æ–‡ä»¶å·å¯¹åº”çš„binlogæ–‡ä»¶çš„ç´¢å¼•æ–‡ä»¶å
     inline string& getIndexFileNameByFileNo(CWX_UINT32 uiFileNo, CWX_UINT32 ttDay, string& strFileName);
-    ///¸ù¾İbinlogÎÄ¼şÃû£¬»ñÈ¡ÎÄ¼şºÅ
+    ///æ ¹æ®binlogæ–‡ä»¶åï¼Œè·å–æ–‡ä»¶å·
     inline CWX_UINT32 getBinLogFileNo(string const& strFileName, CWX_UINT32& ttDay);
-    ///ÅĞ¶ÏÒ»¸öÎÄ¼şÃûÊÇ·ñÊÇÒ»¸öbinlogÎÄ¼ş
+    ///åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶åæ˜¯å¦æ˜¯ä¸€ä¸ªbinlogæ–‡ä»¶
     inline bool isBinLogFile(string const& strFileName);
-    ///ÅĞ¶ÏÒ»¸öÎÄ¼şÃûÊÇ·ñÊÇÒ»¸öbinlogµÄË÷ÒıÎÄ¼ş
+    ///åˆ¤æ–­ä¸€ä¸ªæ–‡ä»¶åæ˜¯å¦æ˜¯ä¸€ä¸ªbinlogçš„ç´¢å¼•æ–‡ä»¶
     inline bool isBinLogIndexFile(string const& strFileName);
-    ///»ñÈ¡binlogµÄÇ°×ºÃû
+    ///è·å–binlogçš„å‰ç¼€å
     inline  string const& getBinlogPrexName() const;
-    ///ÊÇ·ñÓĞĞ§µÄÇ°×ºÃû
+    ///æ˜¯å¦æœ‰æ•ˆçš„å‰ç¼€å
     static inline bool isValidPrexName(char const* szName);
 
 private:
-    ///Çå¿Õbinlog¹ÜÀíÆ÷
+    ///æ¸…ç©ºbinlogç®¡ç†å™¨
     void _clear();
 	/**
-	@brief »ñÈ¡´óÓÚullSidµÄ×îĞ¡binlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] index Âú×ãÌõ¼şµÄbinlog index¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–å¤§äºullSidçš„æœ€å°binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] index æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int _upper(CWX_UINT64 ullSid, CwxBinLogIndex& index, char* szErr2K=NULL);
 	/**
-	@brief »ñÈ¡²»´óÓÚullSidµÄ×î´óbinlog header
-	@param [in] ullSid Òª²éÕÒµÄsid¡£
-	@param [out] index Âú×ãÌõ¼şµÄbinlog index¡£
-	@return -1£ºÊ§°Ü£»0£º²»´æÔÚ£»1£º·¢ÏÖ
+	@brief è·å–ä¸å¤§äºullSidçš„æœ€å¤§binlog header
+	@param [in] ullSid è¦æŸ¥æ‰¾çš„sidã€‚
+	@param [out] index æ»¡è¶³æ¡ä»¶çš„binlog indexã€‚
+	@return -1ï¼šå¤±è´¥ï¼›0ï¼šä¸å­˜åœ¨ï¼›1ï¼šå‘ç°
 	*/
 	int _lower(CWX_UINT64 ullSid, CwxBinLogIndex& index, char* szErr2K=NULL);
     /**
-    @brief ½«binlog¶ÁÈ¡µÄÓÎ±êÒÆµ½>ullSidµÄbinlog´¦¡£
-    @param [in] pCursor binlogµÄ¶ÁÈ¡ÓÎ±ê¡£
-    @param [in] ullSid ¶¨Î»ÓÎ±êµÄsid£¬ÓÎ±ê½«¶¨Î»µ½>ullSidµÄbinlog´¦¡£
-    @return -1£ºÊ§°Ü£»0£ºÎŞ·¨¶¨Î»µ½ullSidÏÂÒ»¸öbinlog£»1£º¶¨Î»µ½ullSidÏÂÒ»¸öµÄbinlogÉÏ¡£
+    @brief å°†binlogè¯»å–çš„æ¸¸æ ‡ç§»åˆ°>ullSidçš„binlogå¤„ã€‚
+    @param [in] pCursor binlogçš„è¯»å–æ¸¸æ ‡ã€‚
+    @param [in] ullSid å®šä½æ¸¸æ ‡çš„sidï¼Œæ¸¸æ ‡å°†å®šä½åˆ°>ullSidçš„binlogå¤„ã€‚
+    @return -1ï¼šå¤±è´¥ï¼›0ï¼šæ— æ³•å®šä½åˆ°ullSidä¸‹ä¸€ä¸ªbinlogï¼›1ï¼šå®šä½åˆ°ullSidä¸‹ä¸€ä¸ªçš„binlogä¸Šã€‚
     */
     int _seek(CwxBinLogCursor* pCursor, CWX_UINT64 ullSid);
-    ///¼ì²éÒ»¸öbinlogÎÄ¼şÊÇ·ñÓ¦¸Ã±»¹ÜÀí
+    ///æ£€æŸ¥ä¸€ä¸ªbinlogæ–‡ä»¶æ˜¯å¦åº”è¯¥è¢«ç®¡ç†
     inline bool _isManageBinLogFile(CwxBinLogFile* pBinLogFile) ;
-    ///cursor¶ÔÓ¦µÄÎÄ¼ş£¬ÊÇ·ñÔÚ¹ÜÀíµÄ·¶Î§Ö®Íâ
+    ///cursorå¯¹åº”çš„æ–‡ä»¶ï¼Œæ˜¯å¦åœ¨ç®¡ç†çš„èŒƒå›´ä¹‹å¤–
     inline bool _isOutRange(CwxBinLogCursor*& pCursor);
-    ///»ñÈ¡×îĞ¡µÄbinlogÎÄ¼ş
+    ///è·å–æœ€å°çš„binlogæ–‡ä»¶
     inline CwxBinLogFile* _getMinBinLogFile() ;
-    ///»ñÈ¡×î´óµÄbinlogÎÄ¼ş
+    ///è·å–æœ€å¤§çš„binlogæ–‡ä»¶
     inline CwxBinLogFile* _getMaxBinLogFile() ;
-    ///Êä³ö¹ÜÀíµÄbinlogÎÄ¼şĞÅÏ¢
+    ///è¾“å‡ºç®¡ç†çš„binlogæ–‡ä»¶ä¿¡æ¯
     void  _outputManageBinLog() ;
-    ///appendÊı¾İ
+    ///appendæ•°æ®
     int _append(CWX_UINT64 ullSid,
         CWX_UINT32 ttTimestamp,
         CWX_UINT32 uiGroup,
@@ -801,30 +801,30 @@ private:
         char* szErr2K=NULL);
 
 private:
-    string					  m_strLogPath; ///<binlogÎÄ¼şµÄ¸ùÄ¿Â¼
-    string                    m_strPrexLogPath; ///<Ö¸¶¨Ç°×ºµÄbinlogÎÄ¼şµÄÄ¿Â¼
-    string					  m_strFilePrex; ///<binlogÎÄ¼şµÄÇ°×ºÃû
-    bool                      m_bDelOutManageLogFile; ///<ÊÇ·ñÉ¾³ı²»ÔÚ¹ÜÀíÄÚµÄÎÄ¼ş
-    CWX_UINT32                m_uiMaxFileSize; ///<binlogÎÄ¼şµÄ×î´ó´óĞ¡
-    CWX_UINT32                m_uiMaxFileNum; ///<¹ÜÀíµÄbinlogµÄ×î´óÊıÁ¿
-	bool					  m_bCache;  ///<ÊÇ·ñ¶ÔĞ´ÈëµÄÊı¾İ½øĞĞcache
-    char                      m_szErr2K[2048]; ///<binlog ¹ÜÀíÆ÷ÎŞĞ§µÄÔ­Òò
-    int                       m_fdLock; ///<ÏµÍ³ËøÎÄ¼ş¾ä±ú
-    CwxRwLock                 m_rwLock; ///<binlogµÄ¶ÁĞ´Ëø
-    ///Ò»ÏÂ±äÁ¿¶¼ÔÚ¶ÁĞ´Ëø±£»¤Ö®ÖĞ
-    bool                      m_bValid; ///<binlog ¹ÜÀíÆ÷ÊÇ·ñÓĞĞ§¡£
-    map<CWX_UINT32/*file no*/, CwxBinLogFile*>   m_binlogMap; ///<°üº¬µ±Ç°binlogÎÄ¼şµÄbinlogÎÄ¼şµÄmap
-	set<CwxBinLogCursor*>     m_cursorSet; ///<½¨Á¢µÄËùÓĞcursorµÄ¼¯ºÏ
-    CwxBinLogFile*            m_pCurBinlog;///<µ±Ç°Ğ´µÄbinlogÎÄ¼ş
-    CWX_UINT64                m_ullMinSid; ///<binlogÎÄ¼şµÄ×îĞ¡sid
-    CWX_UINT64                m_ullMaxSid; ///<binlogÎÄ¼şµÄ×î´ósid
-    CWX_UINT32                m_ttMinTimestamp; ///<binlogÎÄ¼şµÄlog¿ªÊ¼Ê±¼ä
-    CWX_UINT32                m_ttMaxTimestamp; ///<binlogÎÄ¼şµÄlog½áÊøÊ±¼ä
-    CWX_UINT64                m_ullNextSid; ///<Ò»ÏÂÒ»¸ösidµÄÖµ
-    CWX_UINT32                m_uiFlushBinLogNum; ///<¶àÉÙbinlog×Ô¶¯flush
-    CWX_UINT32                m_uiFlushBinLogTime; ///<¶àÉÙÊ±¼ä×Ô¶¯flush
-    CWX_UINT32				  m_uiUnFlushBinlog; ///<Î´flushµÄbinlogÊıÁ¿¡£
-    CWX_UINT32				  m_ttLastFlushBinlogTime; ///<ÉÏÒ»´ÎflushbinlogµÄÊ±¼ä
+    string					  m_strLogPath; ///<binlogæ–‡ä»¶çš„æ ¹ç›®å½•
+    string                    m_strPrexLogPath; ///<æŒ‡å®šå‰ç¼€çš„binlogæ–‡ä»¶çš„ç›®å½•
+    string					  m_strFilePrex; ///<binlogæ–‡ä»¶çš„å‰ç¼€å
+    bool                      m_bDelOutManageLogFile; ///<æ˜¯å¦åˆ é™¤ä¸åœ¨ç®¡ç†å†…çš„æ–‡ä»¶
+    CWX_UINT32                m_uiMaxFileSize; ///<binlogæ–‡ä»¶çš„æœ€å¤§å¤§å°
+    CWX_UINT32                m_uiMaxFileNum; ///<ç®¡ç†çš„binlogçš„æœ€å¤§æ•°é‡
+	bool					  m_bCache;  ///<æ˜¯å¦å¯¹å†™å…¥çš„æ•°æ®è¿›è¡Œcache
+    char                      m_szErr2K[2048]; ///<binlog ç®¡ç†å™¨æ— æ•ˆçš„åŸå› 
+    int                       m_fdLock; ///<ç³»ç»Ÿé”æ–‡ä»¶å¥æŸ„
+    CwxRwLock                 m_rwLock; ///<binlogçš„è¯»å†™é”
+    ///ä¸€ä¸‹å˜é‡éƒ½åœ¨è¯»å†™é”ä¿æŠ¤ä¹‹ä¸­
+    bool                      m_bValid; ///<binlog ç®¡ç†å™¨æ˜¯å¦æœ‰æ•ˆã€‚
+    map<CWX_UINT32/*file no*/, CwxBinLogFile*>   m_binlogMap; ///<åŒ…å«å½“å‰binlogæ–‡ä»¶çš„binlogæ–‡ä»¶çš„map
+	set<CwxBinLogCursor*>     m_cursorSet; ///<å»ºç«‹çš„æ‰€æœ‰cursorçš„é›†åˆ
+    CwxBinLogFile*            m_pCurBinlog;///<å½“å‰å†™çš„binlogæ–‡ä»¶
+    CWX_UINT64                m_ullMinSid; ///<binlogæ–‡ä»¶çš„æœ€å°sid
+    CWX_UINT64                m_ullMaxSid; ///<binlogæ–‡ä»¶çš„æœ€å¤§sid
+    CWX_UINT32                m_ttMinTimestamp; ///<binlogæ–‡ä»¶çš„logå¼€å§‹æ—¶é—´
+    CWX_UINT32                m_ttMaxTimestamp; ///<binlogæ–‡ä»¶çš„logç»“æŸæ—¶é—´
+    CWX_UINT64                m_ullNextSid; ///<ä¸€ä¸‹ä¸€ä¸ªsidçš„å€¼
+    CWX_UINT32                m_uiFlushBinLogNum; ///<å¤šå°‘binlogè‡ªåŠ¨flush
+    CWX_UINT32                m_uiFlushBinLogTime; ///<å¤šå°‘æ—¶é—´è‡ªåŠ¨flush
+    CWX_UINT32				  m_uiUnFlushBinlog; ///<æœªflushçš„binlogæ•°é‡ã€‚
+    CWX_UINT32				  m_ttLastFlushBinlogTime; ///<ä¸Šä¸€æ¬¡flushbinlogçš„æ—¶é—´
 
 };
 

@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_BENCH_CONFIG_H__
+ï»¿#ifndef __UNISTOR_BENCH_CONFIG_H__
 #define __UNISTOR_BENCH_CONFIG_H__
 
 #include "CwxHostInfo.h"
@@ -7,15 +7,15 @@
 
 CWINUX_USING_NAMESPACE
 
-///kvÑ¹Á¦²âÊÔµÄÅäÖÃÎÄ¼ş¼ÓÔØ¶ÔÏó
+///kvå‹åŠ›æµ‹è¯•çš„é…ç½®æ–‡ä»¶åŠ è½½å¯¹è±¡
 class UnistorBenchConfig
 {
 public:
     UnistorBenchConfig(){
         m_unConnNum = 0;
         m_uiDataSize = 0;
-		m_bKeyOrder = true; ///<keyÊÇ·ñÓĞĞò
-		m_uiDataBase=10000000; ///<²éÑ¯µÄ·¶Î§£¬×îĞÂµÄÊı¾İÁ¿¡£
+		m_bKeyOrder = true; ///<keyæ˜¯å¦æœ‰åº
+		m_uiDataBase=10000000; ///<æŸ¥è¯¢çš„èŒƒå›´ï¼Œæœ€æ–°çš„æ•°æ®é‡ã€‚
         m_bLasting = true;
 		m_uiKeyGroup = 1;
 		m_uiKeyIndex = 0;
@@ -28,33 +28,33 @@ public:
     
     ~UnistorBenchConfig(){}
 public:
-    //¼ÓÔØÅäÖÃÎÄ¼ş.-1:failure, 0:success
+    //åŠ è½½é…ç½®æ–‡ä»¶.-1:failure, 0:success
     int loadConfig(string const & strConfFile);
-    //Êä³öÅäÖÃÎÄ¼ş
+    //è¾“å‡ºé…ç½®æ–‡ä»¶
     void outputConfig();
-    //»ñÈ¡¼ÓÔØÅäÖÃÎÄ¼şµÄÊ§°Ü´íÎóĞÅÏ¢
+    //è·å–åŠ è½½é…ç½®æ–‡ä»¶çš„å¤±è´¥é”™è¯¯ä¿¡æ¯
     char const* getError() { return m_szError; };
     
 public:
-	string              m_strWorkDir;///<¹¤×÷Ä¿Â¼
-	CwxHostInfo         m_listen;///<tcpÁ¬½ÓµÄ¶Ô·½listenµØÖ·
-	string              m_strUnixPathFile;///<Èô²ÉÓÃunix domainÁ¬½Ó£¬ÔòÎªÁ¬½ÓµÄpath-file
-	CWX_UINT16          m_unConnNum;///<Á¬½ÓµÄÊıÁ¿
-	bool                m_bLasting;///<ÊÇ·ñÎª³Ö¾ÃÁ¬½Ó£¬ÀàËÆHTTPµÄkeep-alive
-	string				m_strOpr; ///<²Ù×÷
-	CWX_UINT32           m_uiDataSize;///<Êı¾İµÄ´óĞ¡
-    CWX_UINT32          m_uiDataMod;  ///<Êı¾İµÄ·¶Î§
-    bool                m_bGetMaster; ///<ÊÇ·ñ´Ómaster»ñÈ¡Êı¾İ
-	bool				 m_bKeyOrder; ///<keyÊÇ·ñÓĞĞò
-	bool				m_bGetOrder; ///<ÊÇ·ñgetµÄÊ±ºòÊÇorder
-    bool                m_bCache; ///<ÊÇ·ñcache
-	CWX_UINT32			m_uiDataBase; ///<ÒÑÓĞÊı¾İµÄ·¶Î§¡£
-	CWX_UINT32			m_uiKeyGroup; ///<µ±Ç°µÄkeyµÄ·Ö×é
-	CWX_UINT32			m_uiKeyIndex; ///<key·Ö×éºÅ
-    CWX_UINT32          m_uiExpire; ///<³¬Ê±Ê±¼ä
-    string              m_strUser; ///<ÓÃ»§Ãû
-    string              m_strPasswd; ///<ÓÃ»§¿ÚÁî
-    char                m_szError[2048];///<´íÎóÏûÏ¢buf
+	string              m_strWorkDir;///<å·¥ä½œç›®å½•
+	CwxHostInfo         m_listen;///<tcpè¿æ¥çš„å¯¹æ–¹listenåœ°å€
+	string              m_strUnixPathFile;///<è‹¥é‡‡ç”¨unix domainè¿æ¥ï¼Œåˆ™ä¸ºè¿æ¥çš„path-file
+	CWX_UINT16          m_unConnNum;///<è¿æ¥çš„æ•°é‡
+	bool                m_bLasting;///<æ˜¯å¦ä¸ºæŒä¹…è¿æ¥ï¼Œç±»ä¼¼HTTPçš„keep-alive
+	string				m_strOpr; ///<æ“ä½œ
+	CWX_UINT32           m_uiDataSize;///<æ•°æ®çš„å¤§å°
+    CWX_UINT32          m_uiDataMod;  ///<æ•°æ®çš„èŒƒå›´
+    bool                m_bGetMaster; ///<æ˜¯å¦ä»masterè·å–æ•°æ®
+	bool				 m_bKeyOrder; ///<keyæ˜¯å¦æœ‰åº
+	bool				m_bGetOrder; ///<æ˜¯å¦getçš„æ—¶å€™æ˜¯order
+    bool                m_bCache; ///<æ˜¯å¦cache
+	CWX_UINT32			m_uiDataBase; ///<å·²æœ‰æ•°æ®çš„èŒƒå›´ã€‚
+	CWX_UINT32			m_uiKeyGroup; ///<å½“å‰çš„keyçš„åˆ†ç»„
+	CWX_UINT32			m_uiKeyIndex; ///<keyåˆ†ç»„å·
+    CWX_UINT32          m_uiExpire; ///<è¶…æ—¶æ—¶é—´
+    string              m_strUser; ///<ç”¨æˆ·å
+    string              m_strPasswd; ///<ç”¨æˆ·å£ä»¤
+    char                m_szError[2048];///<é”™è¯¯æ¶ˆæ¯buf
 };
 
 #endif

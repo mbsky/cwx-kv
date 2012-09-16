@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_APP_H__
+ï»¿#ifndef __UNISTOR_APP_H__
 #define __UNISTOR_APP_H__
 
 #include "UnistorMacro.h"
@@ -18,63 +18,63 @@
 #include "UnistorHandler4Zk.h"
 #include "UnistorHandler4Trans.h"
 
-///Ó¦ÓÃĞÅÏ¢¶¨Òå
+///åº”ç”¨ä¿¡æ¯å®šä¹‰
 #define UNISTOR_VERSION "1.0.8"
 #define UNISTOR_MODIFY_DATE "20120604080000"
 
-///unistor·şÎñµÄapp¶ÔÏó
+///unistoræœåŠ¡çš„appå¯¹è±¡
 class UnistorApp : public CwxAppFramework{
 public:
     enum{
-		MAX_MONITOR_REPLY_SIZE = 1024 * 1024, ///<¼à¿ØµÄbufµÄ´óĞ¡
-        LOG_FILE_SIZE = 30, ///<Ã¿¸ö¿ÉÑ­»·Ê¹ÓÃÈÕÖ¾ÎÄ¼şµÄMByte
-        LOG_FILE_NUM = 7, ///<¿ÉÑ­»·Ê¹ÓÃÈÕÖ¾ÎÄ¼şµÄÊıÁ¿
-        SVR_TYPE_RECV = CwxAppFramework::SVR_TYPE_USER_START, ///<Êı¾İ½ÓÊÜsvr-idÀàĞÍ
-		SVR_TYPE_RECV_WRITE = CwxAppFramework::SVR_TYPE_USER_START + 1, ///<Êı¾İĞ´µÄsvr-id
-		SVR_TYPE_MONITOR = CwxAppFramework::SVR_TYPE_USER_START + 2, ///<ÍøÂç¼àÌı
-		SVR_TYPE_INNER_SYNC = CwxAppFramework::SVR_TYPE_USER_START + 3, ///<ÄÚ²¿Òì²½·Ö·¢¼àÌı
-        SVR_TYPE_OUTER_SYNC = CwxAppFramework::SVR_TYPE_USER_START + 4, ///<Íâ²¿Òì²½·Ö·¢¼àÌı
-		SVR_TYPE_MASTER = CwxAppFramework::SVR_TYPE_USER_START + 5, ///<MasterÊı¾İ·Ö·¢
-		SVR_TYPE_CHECKPOINT = CwxAppFramework::SVR_TYPE_USER_START + 6, ///<checkpointÏß³Ì
-        SVR_TYPE_ZK = CwxAppFramework::SVR_TYPE_USER_START + 7, ///<zookeeperµÄÏûÏ¢ÀàĞÍ
-        SVR_TYPE_TRANSFER=CwxAppFramework::SVR_TYPE_USER_START + 8, ///<slaveµÄĞ´¼°²éÑ¯×ª·¢
+		MAX_MONITOR_REPLY_SIZE = 1024 * 1024, ///<ç›‘æ§çš„bufçš„å¤§å°
+        LOG_FILE_SIZE = 30, ///<æ¯ä¸ªå¯å¾ªç¯ä½¿ç”¨æ—¥å¿—æ–‡ä»¶çš„MByte
+        LOG_FILE_NUM = 7, ///<å¯å¾ªç¯ä½¿ç”¨æ—¥å¿—æ–‡ä»¶çš„æ•°é‡
+        SVR_TYPE_RECV = CwxAppFramework::SVR_TYPE_USER_START, ///<æ•°æ®æ¥å—svr-idç±»å‹
+		SVR_TYPE_RECV_WRITE = CwxAppFramework::SVR_TYPE_USER_START + 1, ///<æ•°æ®å†™çš„svr-id
+		SVR_TYPE_MONITOR = CwxAppFramework::SVR_TYPE_USER_START + 2, ///<ç½‘ç»œç›‘å¬
+		SVR_TYPE_INNER_SYNC = CwxAppFramework::SVR_TYPE_USER_START + 3, ///<å†…éƒ¨å¼‚æ­¥åˆ†å‘ç›‘å¬
+        SVR_TYPE_OUTER_SYNC = CwxAppFramework::SVR_TYPE_USER_START + 4, ///<å¤–éƒ¨å¼‚æ­¥åˆ†å‘ç›‘å¬
+		SVR_TYPE_MASTER = CwxAppFramework::SVR_TYPE_USER_START + 5, ///<Masteræ•°æ®åˆ†å‘
+		SVR_TYPE_CHECKPOINT = CwxAppFramework::SVR_TYPE_USER_START + 6, ///<checkpointçº¿ç¨‹
+        SVR_TYPE_ZK = CwxAppFramework::SVR_TYPE_USER_START + 7, ///<zookeeperçš„æ¶ˆæ¯ç±»å‹
+        SVR_TYPE_TRANSFER=CwxAppFramework::SVR_TYPE_USER_START + 8, ///<slaveçš„å†™åŠæŸ¥è¯¢è½¬å‘
 
-		THREAD_GROUP_INNER_SYNC = CwxAppFramework::THREAD_GROUP_USER_START + 1, ///<ÄÚ²¿Êı¾İÍ¬²½Ïß³Ì³ØµÄid
-        THREAD_GROUP_OUTER_SYNC = CwxAppFramework::THREAD_GROUP_USER_START + 2, ///<Íâ²¿Êı¾İÍ¬²½Ïß³Ì³ØµÄid
-		THREAD_GROUP_WRITE = CwxAppFramework::THREAD_GROUP_USER_START + 3, ///Êı¾İ¸üĞÂµÄÏß³Ì³ØµÄid
-		THREAD_GROUP_CHECKPOINT = CwxAppFramework::THREAD_GROUP_USER_START + 4, ///<checkpointµÄÏß³Ìgroup 
-        THREAD_GROUP_ZK = CwxAppFramework::THREAD_GROUP_USER_START + 5, ///<zookeeperµÄÏß³Ì³Ø
-        THREAD_GROUP_TRANSFER = CwxAppFramework::THREAD_GROUP_USER_START + 6, ///<ÏûÏ¢×ª·¢µÄÏß³Ì³Ø
-		THREAD_GROUP_RECV_BASE = CwxAppFramework::THREAD_GROUP_USER_START + 7 ///<Êı¾İ½ÓÊÕÏß³Ì×éµÄÆğÊ¼svr id
+		THREAD_GROUP_INNER_SYNC = CwxAppFramework::THREAD_GROUP_USER_START + 1, ///<å†…éƒ¨æ•°æ®åŒæ­¥çº¿ç¨‹æ± çš„id
+        THREAD_GROUP_OUTER_SYNC = CwxAppFramework::THREAD_GROUP_USER_START + 2, ///<å¤–éƒ¨æ•°æ®åŒæ­¥çº¿ç¨‹æ± çš„id
+		THREAD_GROUP_WRITE = CwxAppFramework::THREAD_GROUP_USER_START + 3, ///æ•°æ®æ›´æ–°çš„çº¿ç¨‹æ± çš„id
+		THREAD_GROUP_CHECKPOINT = CwxAppFramework::THREAD_GROUP_USER_START + 4, ///<checkpointçš„çº¿ç¨‹group 
+        THREAD_GROUP_ZK = CwxAppFramework::THREAD_GROUP_USER_START + 5, ///<zookeeperçš„çº¿ç¨‹æ± 
+        THREAD_GROUP_TRANSFER = CwxAppFramework::THREAD_GROUP_USER_START + 6, ///<æ¶ˆæ¯è½¬å‘çš„çº¿ç¨‹æ± 
+		THREAD_GROUP_RECV_BASE = CwxAppFramework::THREAD_GROUP_USER_START + 7 ///<æ•°æ®æ¥æ”¶çº¿ç¨‹ç»„çš„èµ·å§‹svr id
     };
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
 	UnistorApp();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
 	virtual ~UnistorApp();
-    ///ÖØÔØ³õÊ¼»¯º¯Êı¡£·µ»ØÖµ£º0£º³É¹¦£»-1:Ê§°Ü¡£
-    virtual int init(int argc, ///<mainµÄargc
-        char** argv ///<mainµÄargv
+    ///é‡è½½åˆå§‹åŒ–å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1:å¤±è´¥ã€‚
+    virtual int init(int argc, ///<mainçš„argc
+        char** argv ///<mainçš„argv
         );
 public:
     /**
-    @brief Ê±ÖÓÍ¨Öª£¬Ö»ÒªÉèÖÃÁËÊ±ÖÓ¼ä¸ô£¬Ôò»á¶¨Ê±µ÷ÓÃ´ËAPI¡£
-    @param [in] current µ±Ç°µÄÊ±¼ä¡£
+    @brief æ—¶é’Ÿé€šçŸ¥ï¼Œåªè¦è®¾ç½®äº†æ—¶é’Ÿé—´éš”ï¼Œåˆ™ä¼šå®šæ—¶è°ƒç”¨æ­¤APIã€‚
+    @param [in] current å½“å‰çš„æ—¶é—´ã€‚
     @return void
     */
     virtual void onTime(CwxTimeValue const& current);
     /**
-    @brief ĞÅºÅÍ¨Öª£¬ÈôÊÕµ½ÁËÒ»¸öÃ»ÓĞÆÁ±ÎµÄĞÅºÅ£¬Ôò»á¶¨Ê±µ÷ÓÃ´ËAPI¡£
-    @param [in] signum ÊÕµ½µÄĞÅºÅ¡£
+    @brief ä¿¡å·é€šçŸ¥ï¼Œè‹¥æ”¶åˆ°äº†ä¸€ä¸ªæ²¡æœ‰å±è”½çš„ä¿¡å·ï¼Œåˆ™ä¼šå®šæ—¶è°ƒç”¨æ­¤APIã€‚
+    @param [in] signum æ”¶åˆ°çš„ä¿¡å·ã€‚
     @return void
     */
     virtual void onSignal(int signum);
     /**
-    @brief Í¨Öª½¨Á¢½¨Á¢Ò»¸öCWX_APP_EVENT_MODEÁ¬½Ó¡£½¨Á¢µÄÁ¬½ÓÊÇ·Ç×èÈûÄ£Ê½¡£<br>
-    @param [in] uiSvrId Á¬½ÓµÄsvr id¡£
-    @param [in] uiHostId Á¬½ÓµÄhost id¡£
-    @param [in] handle Á¬½ÓµÄhandle¡£
-    @param [out] bSuspendListen ¶ÔÓÚ±»¶¯Á¬½Ó£¬ÈôÎªtrue,ÔòÍ£Ö¹¼ÌĞø¼àÌı£¬·ñÔò¼ÌĞø¼àÌı
-    @return <0£º¹Ø±ÕÁ¬½Ó£» >=0Á¬½ÓÓĞĞ§¡£
+    @brief é€šçŸ¥å»ºç«‹å»ºç«‹ä¸€ä¸ªCWX_APP_EVENT_MODEè¿æ¥ã€‚å»ºç«‹çš„è¿æ¥æ˜¯éé˜»å¡æ¨¡å¼ã€‚<br>
+    @param [in] uiSvrId è¿æ¥çš„svr idã€‚
+    @param [in] uiHostId è¿æ¥çš„host idã€‚
+    @param [in] handle è¿æ¥çš„handleã€‚
+    @param [out] bSuspendListen å¯¹äºè¢«åŠ¨è¿æ¥ï¼Œè‹¥ä¸ºtrue,åˆ™åœæ­¢ç»§ç»­ç›‘å¬ï¼Œå¦åˆ™ç»§ç»­ç›‘å¬
+    @return <0ï¼šå…³é—­è¿æ¥ï¼› >=0è¿æ¥æœ‰æ•ˆã€‚
     */
     virtual int onConnCreated(CWX_UINT32 uiSvrId,
         CWX_UINT32 uiHostId,
@@ -83,131 +83,131 @@ public:
         );
 
     /**
-    @brief Í¨Öª½¨Á¢CWX_APP_MSG_MODEÒ»¸öÁ¬½Ó¡£½¨Á¢µÄÁ¬½ÓÈ«²¿ÊÇ·Ç×èÈûÄ£Ê½¡£<br>
-    @param [in] conn Á¬½Ó¶ÒÏÖ£¬Ö»ÄÜÔÚ´ËAPIÖĞÊ±ºò£¬ÉÏ²ã²»ÄÜ»º´æ¡£
-    @param [out] bSuspendConn ÈôÎªtrue,ÔòÔİÍ£ÏûÏ¢½ÓÊÕ£»false£¬½ÓÊÕÁ¬½ÓÉÏµÄÏûÏ¢
-    @param [out] bSuspendListen ¶ÔÓÚ±»¶¯Á¬½Ó£¬ÈôÎªtrue,ÔòÍ£Ö¹¼ÌĞø¼àÌı£¬·ñÔò¼ÌĞø¼àÌı
-    @return <0£º¹Ø±ÕÁ¬½Ó£» >=0Á¬½ÓÓĞĞ§¡£
+    @brief é€šçŸ¥å»ºç«‹CWX_APP_MSG_MODEä¸€ä¸ªè¿æ¥ã€‚å»ºç«‹çš„è¿æ¥å…¨éƒ¨æ˜¯éé˜»å¡æ¨¡å¼ã€‚<br>
+    @param [in] conn è¿æ¥å…‘ç°ï¼Œåªèƒ½åœ¨æ­¤APIä¸­æ—¶å€™ï¼Œä¸Šå±‚ä¸èƒ½ç¼“å­˜ã€‚
+    @param [out] bSuspendConn è‹¥ä¸ºtrue,åˆ™æš‚åœæ¶ˆæ¯æ¥æ”¶ï¼›falseï¼Œæ¥æ”¶è¿æ¥ä¸Šçš„æ¶ˆæ¯
+    @param [out] bSuspendListen å¯¹äºè¢«åŠ¨è¿æ¥ï¼Œè‹¥ä¸ºtrue,åˆ™åœæ­¢ç»§ç»­ç›‘å¬ï¼Œå¦åˆ™ç»§ç»­ç›‘å¬
+    @return <0ï¼šå…³é—­è¿æ¥ï¼› >=0è¿æ¥æœ‰æ•ˆã€‚
     */
 	virtual int onConnCreated(CwxAppHandler4Msg& conn,
 		bool& bSuspendConn,
 		bool& bSuspendListen);
     /**
-    @brief Í¨ÖªCWX_APP_MSG_MODEÄ£Ê½µÄÁ¬½Ó¹Ø±Õ¡£
-    @param [in] conn ¹Ø±ÕµÄÁ¬½Ó¡£
-    @return ¶ÔÓÚÖ÷¶¯Á¬½Ó£¬-1£º±íÊ¾²»Á¬½Ó£¬0£ºÄ¬ÈÏ·½Ê½£¬ >0£ºÏÂ´ÎÖØÁ¬µÄÊ±¼ä¼ä¸ô£¬µ¥Î»Îªms£»±»¶¯Á¬½ÓºöÂÔ¡£
+    @brief é€šçŸ¥CWX_APP_MSG_MODEæ¨¡å¼çš„è¿æ¥å…³é—­ã€‚
+    @param [in] conn å…³é—­çš„è¿æ¥ã€‚
+    @return å¯¹äºä¸»åŠ¨è¿æ¥ï¼Œ-1ï¼šè¡¨ç¤ºä¸è¿æ¥ï¼Œ0ï¼šé»˜è®¤æ–¹å¼ï¼Œ >0ï¼šä¸‹æ¬¡é‡è¿çš„æ—¶é—´é—´éš”ï¼Œå•ä½ä¸ºmsï¼›è¢«åŠ¨è¿æ¥å¿½ç•¥ã€‚
     */
     virtual int onConnClosed(CwxAppHandler4Msg& conn);
     /**
-    @brief Í¨Öª´ÓCWX_APP_MSG_MODEÄ£Ê½µÄ¡¢·ÇrawÀàĞÍÁ¬½ÓÊÕµ½Ò»¸öÏûÏ¢
-    @param [in] msg ÊÕµ½µÄÏûÏ¢£¬¿Õ±íÊ¾Ã»ÓĞÏûÏ¢Ìå¡£
-    @param [in] conn ÊÕµ½ÏûÏ¢µÄÁ¬½Ó¡£
-    @param [in] header ÊÕµ½ÏûÏ¢µÄÏûÏ¢Í·¡£
-    @param [out] bSuspendConn ÈôÎªtrue,ÔòÔİÍ£ÏûÏ¢½ÓÊÕ£»false£¬½ÓÊÕÁ¬½ÓÉÏµÄÏûÏ¢¡£
-    @return -1£ºÏûÏ¢ÎŞĞ§£¬¹Ø±ÕÁ¬½Ó¡£ 0£º²»Á¬Ğø½ÓÊÜÏûÏ¢£» >0£ºÁ¬Ğø´Ó´ËÁ¬½ÓÉÏ½ÓÊÜÏûÏ¢¡£
+    @brief é€šçŸ¥ä»CWX_APP_MSG_MODEæ¨¡å¼çš„ã€érawç±»å‹è¿æ¥æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯
+    @param [in] msg æ”¶åˆ°çš„æ¶ˆæ¯ï¼Œç©ºè¡¨ç¤ºæ²¡æœ‰æ¶ˆæ¯ä½“ã€‚
+    @param [in] conn æ”¶åˆ°æ¶ˆæ¯çš„è¿æ¥ã€‚
+    @param [in] header æ”¶åˆ°æ¶ˆæ¯çš„æ¶ˆæ¯å¤´ã€‚
+    @param [out] bSuspendConn è‹¥ä¸ºtrue,åˆ™æš‚åœæ¶ˆæ¯æ¥æ”¶ï¼›falseï¼Œæ¥æ”¶è¿æ¥ä¸Šçš„æ¶ˆæ¯ã€‚
+    @return -1ï¼šæ¶ˆæ¯æ— æ•ˆï¼Œå…³é—­è¿æ¥ã€‚ 0ï¼šä¸è¿ç»­æ¥å—æ¶ˆæ¯ï¼› >0ï¼šè¿ç»­ä»æ­¤è¿æ¥ä¸Šæ¥å—æ¶ˆæ¯ã€‚
     */
     virtual int onRecvMsg(CwxMsgBlock* msg,
 		CwxAppHandler4Msg& conn,
 		CwxMsgHead const& header,
 		bool& bSuspendConn);
     /**
-    @brief Í¨ÖªCWX_APP_MSG_MODEÄ£Ê½µÄ¡¢rawÀàĞÍÁ¬½ÓÓĞÊı¾İµ½´ï£¬Êı¾İĞèÒªÓÃ»§×Ô¼º¶ÁÈ¡
-    @param [in] conn ÓĞÏûÏ¢µÄÁ¬½Ó¡£
-    @param [out] bSuspendConn ÈôÎªtrue,ÔòÔİÍ£ÏûÏ¢½ÓÊÕ£»false£¬½ÓÊÕÁ¬½ÓÉÏµÄÏûÏ¢¡£
-    @return -1£ºÏûÏ¢ÎŞĞ§£¬¹Ø±ÕÁ¬½Ó¡£ 0£º³É¹¦¡£
+    @brief é€šçŸ¥CWX_APP_MSG_MODEæ¨¡å¼çš„ã€rawç±»å‹è¿æ¥æœ‰æ•°æ®åˆ°è¾¾ï¼Œæ•°æ®éœ€è¦ç”¨æˆ·è‡ªå·±è¯»å–
+    @param [in] conn æœ‰æ¶ˆæ¯çš„è¿æ¥ã€‚
+    @param [out] bSuspendConn è‹¥ä¸ºtrue,åˆ™æš‚åœæ¶ˆæ¯æ¥æ”¶ï¼›falseï¼Œæ¥æ”¶è¿æ¥ä¸Šçš„æ¶ˆæ¯ã€‚
+    @return -1ï¼šæ¶ˆæ¯æ— æ•ˆï¼Œå…³é—­è¿æ¥ã€‚ 0ï¼šæˆåŠŸã€‚
     */
     virtual int onRecvMsg(CwxAppHandler4Msg& conn,
 		bool& bSuspendConn);
 public:
-    ///»ñÈ¡ÅäÖÃĞÅÏ¢¶ÔÏó
+    ///è·å–é…ç½®ä¿¡æ¯å¯¹è±¡
     inline UnistorConfig const& getConfig() const{
         return m_config;
     }
 
-    ///»ñÈ¡Store driver¶ÔÏóÖ¸Õë
+    ///è·å–Store driverå¯¹è±¡æŒ‡é’ˆ
     inline UnistorStore* getStore(){
         return m_store;
     }
 
-    ///»ñÈ¡master handler
+    ///è·å–master handler
     inline UnistorHandler4Master* getMasterHandler(){
         return m_masterHandler;
     }
 
-    ///»ñÈ¡write handler
+    ///è·å–write handler
     inline UnistorHandler4RecvWrite* getRecvWriteHandler(){
         return m_recvWriteHandler;
     }
 
-    ///»ñÈ¡ÄÚ²¿Í¬²½µÄÏß³Ì³Ø
+    ///è·å–å†…éƒ¨åŒæ­¥çš„çº¿ç¨‹æ± 
     inline CwxThreadPool* getInnerSyncThreadPool(){
         return m_innerSyncThreadPool;
     }
 
-    ///»ñÈ¡ÄÚ²¿Í¬²½µÄchannel
+    ///è·å–å†…éƒ¨åŒæ­¥çš„channel
     inline CwxAppChannel* getInnerSyncChannel(){
         return m_innerSyncChannel;
     }
 
-    ///»ñÈ¡Íâ²¿Í¬²½µÄÏß³Ì³Ø
+    ///è·å–å¤–éƒ¨åŒæ­¥çš„çº¿ç¨‹æ± 
     inline CwxThreadPool* getOuterSyncThreadPool(){
         return m_outerSyncThreadPool;
     }
 
-    ///»ñÈ¡Íâ²¿Í¬²½µÄchannel
+    ///è·å–å¤–éƒ¨åŒæ­¥çš„channel
     inline CwxAppChannel* getOuterSyncChannel(){
         return m_outerSyncChannel;
     }
     
-    ///»ñÈ¡writeµÄÏß³Ì³Ø
+    ///è·å–writeçš„çº¿ç¨‹æ± 
     inline 	CwxThreadPool* getWriteTheadPool(){
         return m_writeThreadPool;
     }
 
-    ///»ñÈ¡recv Í¨ĞÅchannelÊı×é
+    ///è·å–recv é€šä¿¡channelæ•°ç»„
 	inline  CwxAppChannel** getRecvChannels(){
         return m_recvChannel;
     }
 
-    ///»ñÈ¡recvÏß³Ì³ØµÄÊı×é
+    ///è·å–recvçº¿ç¨‹æ± çš„æ•°ç»„
 	inline  CwxThreadPool** getRecvThreadPools(){
         return m_recvThreadPool;
     }
 
-    ///»ñÈ¡×ª·¢Í¨ĞÅchannel
+    ///è·å–è½¬å‘é€šä¿¡channel
     inline CwxAppChannel* getTransChannel(){
         return m_transChannel;
     }
 
-    ///»ñÈ¡×ª·¢Ïß³Ì³Ø
+    ///è·å–è½¬å‘çº¿ç¨‹æ± 
     inline CwxThreadPool* getTransThreadPool() {
         return m_transThreadPool;
     }
 
-    ///»ñÈ¡zookeeperµÄÏß³Ì³Ø
+    ///è·å–zookeeperçš„çº¿ç¨‹æ± 
     inline CwxThreadPool*  getZkThreadPool(){
         return m_zkThreadPool;
     }
 
-    ///»ñÈ¡zookeeperµÄÏûÏ¢´¦Àíhandler
+    ///è·å–zookeeperçš„æ¶ˆæ¯å¤„ç†handler
     inline UnistorHandler4Zk* getZkHandler() const{
         return m_zkHandler;
     }
 
-    ///»ñÈ¡recvµÄÁ¬½ÓÊôĞÔ
+    ///è·å–recvçš„è¿æ¥å±æ€§
     inline UnistorConnAttr* getRecvSockAttr(){
         return &m_recvCliSockAttr;
     }
 
-    ///»ñÈ¡·Ö·¢½ÓÊÕµÄÁ¬½ÓÊôĞÔ
+    ///è·å–åˆ†å‘æ¥æ”¶çš„è¿æ¥å±æ€§
     inline UnistorConnAttr* getSyncCliSockAttr(){
         return &m_syncCliSockAttr;
     }
 
-    ///ÉèÖÃkv±ä¸ürecvÁ¬½ÓµÄÊôĞÔ
+    ///è®¾ç½®kvå˜æ›´recvè¿æ¥çš„å±æ€§
     static int setConnSockAttr(CWX_HANDLE handle, void* arg);
 
-    ///¼ÆËã»úµÄÊ±ÖÓÊÇ·ñ»Øµ÷
+    ///è®¡ç®—æœºçš„æ—¶é’Ÿæ˜¯å¦å›è°ƒ
     static bool isClockBack(CWX_UINT32& uiLastTime, CWX_UINT32 uiNow){
         if (uiLastTime > uiNow + 1){
             uiLastTime = uiNow;
@@ -218,122 +218,122 @@ public:
     }
 
 protected:
-    ///ÖØÔØÔËĞĞ»·¾³ÉèÖÃAPI
+    ///é‡è½½è¿è¡Œç¯å¢ƒè®¾ç½®API
     virtual int initRunEnv();
-    ///ÊÍ·Å×ÊÔ´
+    ///é‡Šæ”¾èµ„æº
     virtual void destroy();
 private:
-	///statsÃüÁî£¬-1£ºÒòÎª´íÎó¹Ø±ÕÁ¬½Ó£»0£º²»¹Ø±ÕÁ¬½Ó
-	int monitorStats(char const* buf, ///<ÊÕµ½µÄÊı¾İ
-        CWX_UINT32 uiDataLen, ///<Êı¾İ³¤¶È
-        CwxAppHandler4Msg& conn ///<ÊÕµ½Êı¾İµÄÁ¬½Ó
+	///statså‘½ä»¤ï¼Œ-1ï¼šå› ä¸ºé”™è¯¯å…³é—­è¿æ¥ï¼›0ï¼šä¸å…³é—­è¿æ¥
+	int monitorStats(char const* buf, ///<æ”¶åˆ°çš„æ•°æ®
+        CWX_UINT32 uiDataLen, ///<æ•°æ®é•¿åº¦
+        CwxAppHandler4Msg& conn ///<æ”¶åˆ°æ•°æ®çš„è¿æ¥
         );
 
-	///ĞÎ³É¼à¿ØÄÚÈİ£¬·µ»Ø¼à¿ØÄÚÈİµÄ³¤¶È
+	///å½¢æˆç›‘æ§å†…å®¹ï¼Œè¿”å›ç›‘æ§å†…å®¹çš„é•¿åº¦
 	CWX_UINT32 packMonitorInfo();
     
-    ///·Ö·¢channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
-    static int dealRecvThreadQueue(UnistorTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<recvÏß³Ì³ØµÄqueue
-        CWX_UINT32 uiQueueIndex, ///<recvÏß³ÌµÄĞòºÅ
-        UnistorApp* app, ///<app¶ÔÏó
-        CwxAppChannel* channel ///<Ïß³Ì¶ÔÓ¦µÄÍ¨ĞÅchannel
+    ///åˆ†å‘channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
+    static int dealRecvThreadQueue(UnistorTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<recvçº¿ç¨‹æ± çš„queue
+        CWX_UINT32 uiQueueIndex, ///<recvçº¿ç¨‹çš„åºå·
+        UnistorApp* app, ///<appå¯¹è±¡
+        CwxAppChannel* channel ///<çº¿ç¨‹å¯¹åº”çš„é€šä¿¡channel
         );
 
-    ///receive channelµÄÏß³Ìº¯Êı£¬argÎªpair<app,int>¶ÔÏó
-    static void* recvThreadMain(CwxTss* tss, ///<Ïß³ÌµÄµÄtss
-        CwxMsgQueue* queue, ///<receiveÏß³ÌµÄ¶ÓÁĞ
-        void* arg ///<´ËÎªpair£¬µÚÒ»¸ö²ÎÊıÎªapp£¬µÚ¶ş¸ö²ÎÊıÎªreceiveÏß³ÌµÄĞòºÅ
+    ///receive channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºpair<app,int>å¯¹è±¡
+    static void* recvThreadMain(CwxTss* tss, ///<çº¿ç¨‹çš„çš„tss
+        CwxMsgQueue* queue, ///<receiveçº¿ç¨‹çš„é˜Ÿåˆ—
+        void* arg ///<æ­¤ä¸ºpairï¼Œç¬¬ä¸€ä¸ªå‚æ•°ä¸ºappï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸ºreceiveçº¿ç¨‹çš„åºå·
         );
     
-    ///ÄÚ²¿Í¬²½channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
-    static int dealInnerSyncThreadQueue(UnistorTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<inner binlogÏß³Ì³ØµÄqueue
-        UnistorApp* app, ///<app¶ÔÏó
-        CwxAppChannel* channel ///<Ïß³ÌµÄÍ¨ĞÅchannel
+    ///å†…éƒ¨åŒæ­¥channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
+    static int dealInnerSyncThreadQueue(UnistorTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<inner binlogçº¿ç¨‹æ± çš„queue
+        UnistorApp* app, ///<appå¯¹è±¡
+        CwxAppChannel* channel ///<çº¿ç¨‹çš„é€šä¿¡channel
         );
 
-    ///²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
-	static void* innerSyncThreadMain(CwxTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<Ïß³Ì³ØµÄqueue
-        void* arg ///<app²ÎÊı
+    ///éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
+	static void* innerSyncThreadMain(CwxTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<çº¿ç¨‹æ± çš„queue
+        void* arg ///<appå‚æ•°
         );
     
-    ///Íâ²¿Í¬²½channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
-    static int dealOuterSyncThreadQueue(UnistorTss* tss,  ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<outer binlogÏß³Ì³ØµÄqueue
-        UnistorApp* app, ///<app¶ÔÏó
-        CwxAppChannel* channel ///<Ïß³ÌµÄÍ¨ĞÅchannel
+    ///å¤–éƒ¨åŒæ­¥channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
+    static int dealOuterSyncThreadQueue(UnistorTss* tss,  ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<outer binlogçº¿ç¨‹æ± çš„queue
+        UnistorApp* app, ///<appå¯¹è±¡
+        CwxAppChannel* channel ///<çº¿ç¨‹çš„é€šä¿¡channel
         );
 
-    ///Íâ²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
-    static void* outerSyncThreadMain(CwxTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<Ïß³Ì³ØµÄqueue
-        void* arg ///<app²ÎÊı
+    ///å¤–éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
+    static void* outerSyncThreadMain(CwxTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<çº¿ç¨‹æ± çš„queue
+        void* arg ///<appå‚æ•°
         );
 
-    ///Íâ²¿Í¬²½channelµÄ¶ÓÁĞÏûÏ¢º¯Êı¡£·µ»ØÖµ£º0£ºÕı³££»-1£º¶ÓÁĞÍ£Ö¹
-    static int dealTransThreadQueue(UnistorTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue,///<Ïß³Ì³ØµÄqueue
-        UnistorApp* app, ///<app²ÎÊı
-        CwxAppChannel* channel ///<Ïß³ÌµÄÍ¨ĞÅchannel
+    ///å¤–éƒ¨åŒæ­¥channelçš„é˜Ÿåˆ—æ¶ˆæ¯å‡½æ•°ã€‚è¿”å›å€¼ï¼š0ï¼šæ­£å¸¸ï¼›-1ï¼šé˜Ÿåˆ—åœæ­¢
+    static int dealTransThreadQueue(UnistorTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue,///<çº¿ç¨‹æ± çš„queue
+        UnistorApp* app, ///<appå‚æ•°
+        CwxAppChannel* channel ///<çº¿ç¨‹çš„é€šä¿¡channel
         );
 
-    ///Íâ²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
-    static void* transThreadMain(CwxTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<Ïß³Ì³ØµÄqueue
-        void* arg ///<app²ÎÊı
+    ///å¤–éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
+    static void* transThreadMain(CwxTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<çº¿ç¨‹æ± çš„queue
+        void* arg ///<appå‚æ•°
         );
 
-    ///Íâ²¿·Ö·¢channelµÄÏß³Ìº¯Êı£¬argÎªapp¶ÔÏó
-    static void* zkThreadMain(CwxTss* tss, ///<Ïß³Ìtss
-        CwxMsgQueue* queue, ///<Ïß³Ì³ØµÄqueue
-        void* arg ///<app²ÎÊı
+    ///å¤–éƒ¨åˆ†å‘channelçš„çº¿ç¨‹å‡½æ•°ï¼Œargä¸ºappå¯¹è±¡
+    static void* zkThreadMain(CwxTss* tss, ///<çº¿ç¨‹tss
+        CwxMsgQueue* queue, ///<çº¿ç¨‹æ± çš„queue
+        void* arg ///<appå‚æ•°
         );
 
-    ///´æ´¢Çı¶¯µÄÏûÏ¢Í¨µÀ¡£0£º³É¹¦£»-1£ºÊ§°Ü
-    static int storeMsgPipe(void* app, ///<app²ÎÊı
-        CwxMsgBlock* msg, ///<À´×Ô´æ´¢ÒıÇæµÄÏûÏ¢
-        bool bWriteThread, ///<ÊÇ·ñËÍ¸øwriteÏß³Ì£¬·ñÔò¸øcheckpointÏß³Ì
-        char* szErr2K ///<³ö´íÊ±µÄ´íÎóÏûÏ¢
+    ///å­˜å‚¨é©±åŠ¨çš„æ¶ˆæ¯é€šé“ã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    static int storeMsgPipe(void* app, ///<appå‚æ•°
+        CwxMsgBlock* msg, ///<æ¥è‡ªå­˜å‚¨å¼•æ“çš„æ¶ˆæ¯
+        bool bWriteThread, ///<æ˜¯å¦é€ç»™writeçº¿ç¨‹ï¼Œå¦åˆ™ç»™checkpointçº¿ç¨‹
+        char* szErr2K ///<å‡ºé”™æ—¶çš„é”™è¯¯æ¶ˆæ¯
         ); 
 
-    //»ñÈ¡ÏµÍ³key¡£1£º³É¹¦£»0£º²»´æÔÚ£»-1£ºÊ§°Ü;
-    static int getSysKey(void* pApp, ///<app¶ÔÏó
-        char const* key, ///<Òª»ñÈ¡µÄkey
-        CWX_UINT16 unKeyLen, ///<keyµÄ³¤¶È
-        char* szData, ///<Èô´æÔÚ£¬Ôò·µ»ØÊı¾İ¡£ÄÚ´æÓĞ´æ´¢ÒıÇæ·ÖÅä
-        CWX_UINT32& uiLen  ///<szDataÊı¾İµÄ×Ö½ÚÊı
+    //è·å–ç³»ç»Ÿkeyã€‚1ï¼šæˆåŠŸï¼›0ï¼šä¸å­˜åœ¨ï¼›-1ï¼šå¤±è´¥;
+    static int getSysKey(void* pApp, ///<appå¯¹è±¡
+        char const* key, ///<è¦è·å–çš„key
+        CWX_UINT16 unKeyLen, ///<keyçš„é•¿åº¦
+        char* szData, ///<è‹¥å­˜åœ¨ï¼Œåˆ™è¿”å›æ•°æ®ã€‚å†…å­˜æœ‰å­˜å‚¨å¼•æ“åˆ†é…
+        CWX_UINT32& uiLen  ///<szDataæ•°æ®çš„å­—èŠ‚æ•°
         );
 
 
-    ///¿ªÆôÍøÂç¡£0£º³É¹¦£»-1£ºÊ§°Ü
+    ///å¼€å¯ç½‘ç»œã€‚0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
 	int startNetwork();
 private:
-    UnistorConfig                 m_config;            ///<ÅäÖÃÎÄ¼ş
-    UnistorStore*                 m_store;             ///<unistor´æ´¢driver¶ÔÏó
-    CwxAppChannel**               m_recvChannel;       ///<unistor²éÑ¯µÄchannelÊı×é
-    CwxThreadPool**               m_recvThreadPool;    ///<unistor²éÑ¯µÄÏß³Ì³Ø¶ÔÏó
-    pair<UnistorApp*, CWX_UINT32>* m_recvArgs;         ///<Ïß³ÌÆô¶¯²ÎÊıÊı×é
-    CwxThreadPool*                m_writeThreadPool;    ///<¶ÔÓÚslaveÓÃÓÚÍ¬²½masterÊı¾İ£¬¶ÔÓÚmasterÓÃÓÚ´®ĞĞĞ´Êı¾İ
-	UnistorHandler4Master*         m_masterHandler;    ///<´Ómaster½ÓÊÕÏûÏ¢µÄhandle
-	UnistorHandler4RecvWrite*      m_recvWriteHandler; ///<Êı¾İĞŞ¸ÄµÄhandle
-	CwxThreadPool*                m_innerSyncThreadPool; ///<ÄÚ²¿ÏûÏ¢·Ö·¢µÄÏß³Ì³Ø¶ÔÏó
-	CwxAppChannel*                m_innerSyncChannel;     ///<ÄÚ²¿ÏûÏ¢·Ö·¢µÄchannel
-    CwxThreadPool*                m_outerSyncThreadPool; ///<Íâ²¿²¿ÏûÏ¢·Ö·¢µÄÏß³Ì³Ø¶ÔÏó
-    CwxAppChannel*                m_outerSyncChannel;     ///<Íâ²¿ÏûÏ¢·Ö·¢µÄchannel
-	UnistorHandler4Checkpoint*     m_checkpointHandler; ///<checkpointµÄhandle
-	CwxThreadPool*                m_checkpointThreadPool;///<checkpointµÄÏß³Ì³Ø¶ÔÏó
-    CwxThreadPool*                m_transThreadPool;///<ÏûÏ¢×ª·¢µÄÏß³Ì³Ø¶ÔÏó
-    CwxAppChannel*                m_transChannel;     ///<ÏûÏ¢×ª·¢µÄchannel
-    CwxThreadPool*                m_zkThreadPool;///<zkµÄÏß³Ì³Ø¶ÔÏó
-    UnistorHandler4Zk*             m_zkHandler; ///<zkÊÂ¼ş´¦ÀíµÄhandler
-    UnistorConnAttr               m_recvSvrSockAttr; ///<Êı¾İ½ÓÊÕsvr¶ËµÄsocketÊôĞÔ
-    UnistorConnAttr               m_recvCliSockAttr; ///<Êı¾İ½ÓÊÕclient¶ËµÄsocketÊôĞÔ
-    UnistorConnAttr               m_syncSvrSockAttr; ///<Í¬²½svr¶ËµÄsocketÊôĞÔ
-    UnistorConnAttr               m_syncCliSockAttr; ///<Í¬²½cli¶ËµÄsocketÊôĞÔ
-	char                        m_szBuf[MAX_MONITOR_REPLY_SIZE];///<¼à¿ØÏûÏ¢µÄ»Ø¸´buf
-	string						m_strStartTime;       ///<unistorµÄÆô¶¯Ê±¼ä´Á
+    UnistorConfig                 m_config;            ///<é…ç½®æ–‡ä»¶
+    UnistorStore*                 m_store;             ///<unistorå­˜å‚¨driverå¯¹è±¡
+    CwxAppChannel**               m_recvChannel;       ///<unistoræŸ¥è¯¢çš„channelæ•°ç»„
+    CwxThreadPool**               m_recvThreadPool;    ///<unistoræŸ¥è¯¢çš„çº¿ç¨‹æ± å¯¹è±¡
+    pair<UnistorApp*, CWX_UINT32>* m_recvArgs;         ///<çº¿ç¨‹å¯åŠ¨å‚æ•°æ•°ç»„
+    CwxThreadPool*                m_writeThreadPool;    ///<å¯¹äºslaveç”¨äºåŒæ­¥masteræ•°æ®ï¼Œå¯¹äºmasterç”¨äºä¸²è¡Œå†™æ•°æ®
+	UnistorHandler4Master*         m_masterHandler;    ///<ä»masteræ¥æ”¶æ¶ˆæ¯çš„handle
+	UnistorHandler4RecvWrite*      m_recvWriteHandler; ///<æ•°æ®ä¿®æ”¹çš„handle
+	CwxThreadPool*                m_innerSyncThreadPool; ///<å†…éƒ¨æ¶ˆæ¯åˆ†å‘çš„çº¿ç¨‹æ± å¯¹è±¡
+	CwxAppChannel*                m_innerSyncChannel;     ///<å†…éƒ¨æ¶ˆæ¯åˆ†å‘çš„channel
+    CwxThreadPool*                m_outerSyncThreadPool; ///<å¤–éƒ¨éƒ¨æ¶ˆæ¯åˆ†å‘çš„çº¿ç¨‹æ± å¯¹è±¡
+    CwxAppChannel*                m_outerSyncChannel;     ///<å¤–éƒ¨æ¶ˆæ¯åˆ†å‘çš„channel
+	UnistorHandler4Checkpoint*     m_checkpointHandler; ///<checkpointçš„handle
+	CwxThreadPool*                m_checkpointThreadPool;///<checkpointçš„çº¿ç¨‹æ± å¯¹è±¡
+    CwxThreadPool*                m_transThreadPool;///<æ¶ˆæ¯è½¬å‘çš„çº¿ç¨‹æ± å¯¹è±¡
+    CwxAppChannel*                m_transChannel;     ///<æ¶ˆæ¯è½¬å‘çš„channel
+    CwxThreadPool*                m_zkThreadPool;///<zkçš„çº¿ç¨‹æ± å¯¹è±¡
+    UnistorHandler4Zk*             m_zkHandler; ///<zkäº‹ä»¶å¤„ç†çš„handler
+    UnistorConnAttr               m_recvSvrSockAttr; ///<æ•°æ®æ¥æ”¶svrç«¯çš„socketå±æ€§
+    UnistorConnAttr               m_recvCliSockAttr; ///<æ•°æ®æ¥æ”¶clientç«¯çš„socketå±æ€§
+    UnistorConnAttr               m_syncSvrSockAttr; ///<åŒæ­¥svrç«¯çš„socketå±æ€§
+    UnistorConnAttr               m_syncCliSockAttr; ///<åŒæ­¥cliç«¯çš„socketå±æ€§
+	char                        m_szBuf[MAX_MONITOR_REPLY_SIZE];///<ç›‘æ§æ¶ˆæ¯çš„å›å¤buf
+	string						m_strStartTime;       ///<unistorçš„å¯åŠ¨æ—¶é—´æˆ³
 };
 #endif
 

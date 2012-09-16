@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_HANDLER_4_ZK_H__
+ï»¿#ifndef __UNISTOR_HANDLER_4_ZK_H__
 #define __UNISTOR_HANDLER_4_ZK_H__
 
 #include "UnistorMacro.h"
@@ -10,185 +10,185 @@
 #include "UnistorDef.h"
 #include "CwxThreadPool.h"
 
-///Ç°ÖÃÉùÃ÷
+///å‰ç½®å£°æ˜
 class UnistorApp;
 
-///zkÊÂ¼ş´¦ÀíµÄhandle
+///zkäº‹ä»¶å¤„ç†çš„handle
 class UnistorHandler4Zk {
 public:
     enum{
-        INIT_RETRY_INTERNAL = 10, ///<³õÊ¼»¯ÖØÊÔ¼ä¸ô£¬Îª10s
-        REFETCH_INTERNAL = 60, ///<ÖØĞÂ»ñÈ¡Ê±¼ä¼ä¸ô
-        MAX_ZK_DATA_SIZE = 1024 * 1024 ///<×î´óµÄzk¿Õ¼ä´óĞ¡
+        INIT_RETRY_INTERNAL = 10, ///<åˆå§‹åŒ–é‡è¯•é—´éš”ï¼Œä¸º10s
+        REFETCH_INTERNAL = 60, ///<é‡æ–°è·å–æ—¶é—´é—´éš”
+        MAX_ZK_DATA_SIZE = 1024 * 1024 ///<æœ€å¤§çš„zkç©ºé—´å¤§å°
     };
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorHandler4Zk(UnistorApp* pApp);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorHandler4Zk();
 public:
-    ///³õÊ¼»¯£»0:³É¹¦£»-1£ºÊ§°Ü
+    ///åˆå§‹åŒ–ï¼›0:æˆåŠŸï¼›-1ï¼šå¤±è´¥
     int init();
-    ///³õÊ¼zookeeperÊÂ¼ş
+    ///åˆå§‹zookeeperäº‹ä»¶
     void doEvent(CwxTss* tss, CwxMsgBlock*& msg, CWX_UINT32 uiLeftEvent);
-    ///Í£Ö¹zookeeper¼à¿Ø
+    ///åœæ­¢zookeeperç›‘æ§
     void stop();
 public:
-    ///ÊÇ·ñÒÑ¾­³õÊ¼»¯
+    ///æ˜¯å¦å·²ç»åˆå§‹åŒ–
     bool isInit() const{
         return m_bInit;
     }
 
-    ///ÊÇ·ñÒÑ¾­Á¬½Ó
+    ///æ˜¯å¦å·²ç»è¿æ¥
     bool isConnected() const {
         return m_bConnected;
     }
     
-    ///ÊÇ·ñÒÑ¾­ÈÏÖ¤
+    ///æ˜¯å¦å·²ç»è®¤è¯
     bool isAuth() const {
         return m_bAuth;
     }
 
-    ///Õı³£¼ì²â
+    ///æ­£å¸¸æ£€æµ‹
     bool isValid() const {
         return m_bValid;
     }
 
-    ///ÊÇ·ñÊÇmaster
+    ///æ˜¯å¦æ˜¯master
     bool isMaster(){
         CwxMutexGuard<CwxMutexLock> lock(&m_mutex);
         return _isMaster();
     }
     
-    ///»ñÈ¡ÅäÖÃĞÅÏ¢
+    ///è·å–é…ç½®ä¿¡æ¯
     void getConf(UnistorZkConf& conf) {
         CwxMutexGuard<CwxMutexLock> lock(&m_mutex);
         conf = m_conf;
     };
     
-    ///»ñÈ¡ËøµÄĞÅÏ¢
+    ///è·å–é”çš„ä¿¡æ¯
     void getLockInfo(UnistorZkLock& zkLock) {
         CwxMutexGuard<CwxMutexLock> lock(&m_mutex);
         zkLock = m_lock;
-    }; ///<ËøµÄĞÅÏ¢
+    }; ///<é”çš„ä¿¡æ¯
 
-    ///»ñÈ¡´íÎóĞÅÏ¢
+    ///è·å–é”™è¯¯ä¿¡æ¯
     void getErrMsg(string& strErrMsg){
         CwxMutexGuard<CwxMutexLock> lock(&m_mutex);
         strErrMsg = m_szErr2K;
     }
 private:
-    ///Á¬½Ózk¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è¿æ¥zkã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _connect();
 
-    ///zkÈÏÖ¤¡£·µ»ØÖµ£º1£ºÈÏÖ¤³É¹¦£»0£ºµÈ´ıÈÏÖ¤½á¹û£»-1£ºÈÏÖ¤Ê§°Ü
+    ///zkè®¤è¯ã€‚è¿”å›å€¼ï¼š1ï¼šè®¤è¯æˆåŠŸï¼›0ï¼šç­‰å¾…è®¤è¯ç»“æœï¼›-1ï¼šè®¤è¯å¤±è´¥
     int _auth();
 
-    ///³õÊ¼»¯Á¬½ÓĞÅÏ¢
+    ///åˆå§‹åŒ–è¿æ¥ä¿¡æ¯
     void _reset();
 
-    ///¼ÓÔØÅäÖÃĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///åŠ è½½é…ç½®ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int  _loadZkConf(CwxTss* tss);
 
-    ///¼ÓËø¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///åŠ é”ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _lock();
 
-    ///»ñÈ¡ËøµÄĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è·å–é”çš„ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _loadLockInfo(CwxTss* tss);
 
-    ///ÊÇ·ñÊÇmaster¡£·µ»ØÖµ£ºtrue£ºÊÇ£»false£º²»ÊÇ¡£
+    ///æ˜¯å¦æ˜¯masterã€‚è¿”å›å€¼ï¼štrueï¼šæ˜¯ï¼›falseï¼šä¸æ˜¯ã€‚
     inline bool _isMaster() const{
         if (m_zkLocker) return m_zkLocker->isLocked();
         return false;
     }
 
-    ///³õÊ¼»¯zkÁ¬½ÓĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///åˆå§‹åŒ–zkè¿æ¥ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _init();
 
-    ///ÉèÖÃhostµÄĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è®¾ç½®hostçš„ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _setHostInfo();
 
-    ///ÉèÖÃmasterµÄĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è®¾ç½®masterçš„ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _setMasterInfo();
 
-    ///»ñÈ¡hostµÄÊı¾İÍ¬²½ĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int _getHostInfo(char const* szHost, ///<»ñÈ¡Ö÷»úµÄ±êÖ¾
-        CWX_UINT64& ullSid, ///<»ñÈ¡Ö÷»úµ±Ç°µÄsidÖµ
-        CWX_UINT32& uiTimeStamp ///<»ñÈ¡µÄ×îĞ¡sidµÄÊ±¼ä´Á¡£
+    ///è·å–hostçš„æ•°æ®åŒæ­¥ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int _getHostInfo(char const* szHost, ///<è·å–ä¸»æœºçš„æ ‡å¿—
+        CWX_UINT64& ullSid, ///<è·å–ä¸»æœºå½“å‰çš„sidå€¼
+        CWX_UINT32& uiTimeStamp ///<è·å–çš„æœ€å°sidçš„æ—¶é—´æˆ³ã€‚
         );
 
-    ///»ñÈ¡masterµÄĞÅÏ¢¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
-    int _getMasterInfo(string& strMaster, ///<masterµÄ±êÖ¾
-        CWX_UINT64& ullMasterSid, ///<Òª±äÎªmasterµÄ×îĞ¡sid
-        CWX_UINT64& ullSid, ///<masterµÄµ±Ç°sid
-        string& strTimeStamp ///<masterµ±Ç°sidµÄ¼ÇÂ¼µÄÊ±¼ä´Á
+    ///è·å–masterçš„ä¿¡æ¯ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
+    int _getMasterInfo(string& strMaster, ///<masterçš„æ ‡å¿—
+        CWX_UINT64& ullMasterSid, ///<è¦å˜ä¸ºmasterçš„æœ€å°sid
+        CWX_UINT64& ullSid, ///<masterçš„å½“å‰sid
+        string& strTimeStamp ///<masterå½“å‰sidçš„è®°å½•çš„æ—¶é—´æˆ³
         );
 
-    ///Í¨ÖªÅäÖÃ±ä»¯
+    ///é€šçŸ¥é…ç½®å˜åŒ–
     void _noticeConfChange();
 
-    ///Í¨ÖªËø±ä»¯
+    ///é€šçŸ¥é”å˜åŒ–
     void _noticeLockChange();
 
-    ///½âÎöÅäÖÃÎÄ¼ş¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///è§£æé…ç½®æ–‡ä»¶ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int  _parseConf(UnistorZkConf& conf);
 
-    ///timeout´¦Àí¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///timeoutå¤„ç†ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _dealTimeoutEvent(CwxTss* tss, ///<tss
-        CwxMsgBlock*& msg, ///<ÏûÏ¢
-        CWX_UINT32 uiLeftEvent ///<ÏûÏ¢¶ÓÁĞÖĞÖÍÁôµÄÏûÏ¢ÊıÁ¿
+        CwxMsgBlock*& msg, ///<æ¶ˆæ¯
+        CWX_UINT32 uiLeftEvent ///<æ¶ˆæ¯é˜Ÿåˆ—ä¸­æ»ç•™çš„æ¶ˆæ¯æ•°é‡
         )
         ;
-    ///timeout´¦Àí¡£·µ»ØÖµ£º0£º³É¹¦£»-1£ºÊ§°Ü
+    ///timeoutå¤„ç†ã€‚è¿”å›å€¼ï¼š0ï¼šæˆåŠŸï¼›-1ï¼šå¤±è´¥
     int _dealConnectedEvent(CwxTss* tss, ///<tss
-        CwxMsgBlock*& msg, ///<ÏûÏ¢
-        CWX_UINT32 uiLeftEvent ///<ÏûÏ¢¶ÓÁĞÖĞÖÍÁôµÄÏûÏ¢ÊıÁ¿
+        CwxMsgBlock*& msg, ///<æ¶ˆæ¯
+        CWX_UINT32 uiLeftEvent ///<æ¶ˆæ¯é˜Ÿåˆ—ä¸­æ»ç•™çš„æ¶ˆæ¯æ•°é‡
         );
 private:
-    ///ÄÚ²¿µÄnode±ä¸üwacher»Øµ÷function
+    ///å†…éƒ¨çš„nodeå˜æ›´wacherå›è°ƒfunction
     static void watcher(zhandle_t *zzh, ///<zk handle
-        int type, ///<±ä¸üÀàĞÍ
-        int state, ///<×´Ì¬
-        const char *path, ///<±ä¸üµÄ½Úµã
-        void* context  ///<»·¾³ĞÅÏ¢£¬¾ÍÊÇUnistorHandler4Zk¶ÔÏóµÄÖ¸Õë¡£
+        int type, ///<å˜æ›´ç±»å‹
+        int state, ///<çŠ¶æ€
+        const char *path, ///<å˜æ›´çš„èŠ‚ç‚¹
+        void* context  ///<ç¯å¢ƒä¿¡æ¯ï¼Œå°±æ˜¯UnistorHandler4Zkå¯¹è±¡çš„æŒ‡é’ˆã€‚
         );
 
-    ///zkµÄÈÏÖ¤µÄ»Øµ÷º¯Êı
-    static void zk_auth_callback(int rc, ///<ÈÏÖ¤µÄ·µ»Ø´úÂë
-        const void *data ///<UnistorHandler4Zk¶ÔÏóµÄÖ¸Õë¡£
+    ///zkçš„è®¤è¯çš„å›è°ƒå‡½æ•°
+    static void zk_auth_callback(int rc, ///<è®¤è¯çš„è¿”å›ä»£ç 
+        const void *data ///<UnistorHandler4Zkå¯¹è±¡çš„æŒ‡é’ˆã€‚
         );
     
-    ///zk½Úµã±ä¸üµÄwatch»Øµ÷º¯Êı
+    ///zkèŠ‚ç‚¹å˜æ›´çš„watchå›è°ƒå‡½æ•°
     static void nodeDataWatcher(zhandle_t *zzh, ///<zk handle
-        int type, ///<±ä¸üÀàĞÍ
-        int state, ///<×´Ì¬
-        const char *path, ///<±ä¸üµÄ½Úµã
-        void* context  ///<»·¾³ĞÅÏ¢£¬¾ÍÊÇUnistorHandler4Zk¶ÔÏóµÄÖ¸Õë¡£
+        int type, ///<å˜æ›´ç±»å‹
+        int state, ///<çŠ¶æ€
+        const char *path, ///<å˜æ›´çš„èŠ‚ç‚¹
+        void* context  ///<ç¯å¢ƒä¿¡æ¯ï¼Œå°±æ˜¯UnistorHandler4Zkå¯¹è±¡çš„æŒ‡é’ˆã€‚
         );
 
-    ///ËøµÄ»Øµ÷º¯Êı
-    static void lock_complete(bool bLock, ///<ÊÇ·ñlock
-        void* context ///<UnistorHandler4Zk¶ÔÏóµÄÖ¸Õë¡£
+    ///é”çš„å›è°ƒå‡½æ•°
+    static void lock_complete(bool bLock, ///<æ˜¯å¦lock
+        void* context ///<UnistorHandler4Zkå¯¹è±¡çš„æŒ‡é’ˆã€‚
         );
 private:
-    UnistorApp*               m_pApp;  ///<app¶ÔÏó
-    ZkAdaptor*                m_zk;    ///<zk¶ÔÏó
-    ZkLocker*                 m_zkLocker; ///<Locker¶ÔÏó
-    volatile bool             m_bInit;   ///<ÊÇ·ñÒÑ¾­³õÊ¼»¯
-    volatile bool             m_bConnected; ///<ÊÇ·ñÒÑ¾­½¨Á¢Á¬½Ó
-    volatile bool             m_bAuth; ///<ÊÇ·ñÒÑ¾­ÈÏÖ¤
-    volatile bool             m_bValid;   ///<ÊÇ·ñ´¦ÓÚÕı³£×´Ì¬
+    UnistorApp*               m_pApp;  ///<appå¯¹è±¡
+    ZkAdaptor*                m_zk;    ///<zkå¯¹è±¡
+    ZkLocker*                 m_zkLocker; ///<Lockerå¯¹è±¡
+    volatile bool             m_bInit;   ///<æ˜¯å¦å·²ç»åˆå§‹åŒ–
+    volatile bool             m_bConnected; ///<æ˜¯å¦å·²ç»å»ºç«‹è¿æ¥
+    volatile bool             m_bAuth; ///<æ˜¯å¦å·²ç»è®¤è¯
+    volatile bool             m_bValid;   ///<æ˜¯å¦å¤„äºæ­£å¸¸çŠ¶æ€
     clientid_t*               m_clientId; ///<client id
-    UnistorZkConf             m_conf; ///<ÅäÖÃÎÄ¼ş
-    UnistorZkLock             m_lock; ///<ËøµÄĞÅÏ¢
-    string                    m_strZkLockNode; ///<zkµÄlock½ÚµãÃû
-    string                    m_strZkConfNode; ///<zkµÄconf½ÚµãÃû×Ö
-    string                    m_strMasterNode; ///<zkµÄmaster½ÚµãÃû×Ö
-    string                    m_strHostNode;   ///<zkµÄhost½ÚµãÃû×Ö
+    UnistorZkConf             m_conf; ///<é…ç½®æ–‡ä»¶
+    UnistorZkLock             m_lock; ///<é”çš„ä¿¡æ¯
+    string                    m_strZkLockNode; ///<zkçš„lockèŠ‚ç‚¹å
+    string                    m_strZkConfNode; ///<zkçš„confèŠ‚ç‚¹åå­—
+    string                    m_strMasterNode; ///<zkçš„masterèŠ‚ç‚¹åå­—
+    string                    m_strHostNode;   ///<zkçš„hostèŠ‚ç‚¹åå­—
     char                      m_szZkDataBuf[MAX_ZK_DATA_SIZE];
-    char                      m_szErr2K[2048]; ///<´íÎóÏûÏ¢;
-    CwxMutexLock              m_mutex;  ///Êı¾İ±£»¤Ëø
-    CWX_UINT64                m_ullVersion; ///<ÅäÖÃ»òlockµÄ±ä¸ü°æ±¾ºÅ
+    char                      m_szErr2K[2048]; ///<é”™è¯¯æ¶ˆæ¯;
+    CwxMutexLock              m_mutex;  ///æ•°æ®ä¿æŠ¤é”
+    CWX_UINT64                m_ullVersion; ///<é…ç½®æˆ–lockçš„å˜æ›´ç‰ˆæœ¬å·
 };
 
 #endif 

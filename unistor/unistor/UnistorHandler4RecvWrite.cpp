@@ -1,9 +1,9 @@
-#include "UnistorHandler4RecvWrite.h"
+ï»¿#include "UnistorHandler4RecvWrite.h"
 #include "UnistorApp.h"
 #include "UnistorHandler4Master.h"
 
 
-///½ÓÊÕÊı¾İ¸üĞÂµÄÏûÏ¢,-1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+///æ¥æ”¶æ•°æ®æ›´æ–°çš„æ¶ˆæ¯,-1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
 int UnistorHandler4RecvWrite::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 {
 	UnistorTss* pTss = (UnistorTss*)pThrEnv;
@@ -78,11 +78,11 @@ int UnistorHandler4RecvWrite::onRecvMsg(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 	return 1;
 }
 
-///return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+///return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
 int UnistorHandler4RecvWrite::onTimeoutCheck(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 {
     UnistorTss* pTss = (UnistorTss*)pThrEnv;
-    if (!m_bCanWrite){///Èç¹û²»ÊÇmaster£¬ÔòĞèÒªÍ¬²½£¬µ÷ÓÃÍ¬²½·½·¨µÄtimecheck¡£
+    if (!m_bCanWrite){///å¦‚æœä¸æ˜¯masterï¼Œåˆ™éœ€è¦åŒæ­¥ï¼Œè°ƒç”¨åŒæ­¥æ–¹æ³•çš„timecheckã€‚
         m_pApp->getMasterHandler()->timecheck(pTss);
     }else{
         if (0 != m_pApp->getStore()->appendTimeStampBinlog(*pTss->m_pWriter, msg->event().getTimestamp(), pTss->m_szBuf2K)){
@@ -100,7 +100,7 @@ int UnistorHandler4RecvWrite::onTimeoutCheck(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 }
 
 
-/// return -1£º´¦ÀíÊ§°Ü£¬0£º²»´¦Àí´ËÊÂ¼ş£¬1£º´¦Àí´ËÊÂ¼ş¡£
+/// return -1ï¼šå¤„ç†å¤±è´¥ï¼Œ0ï¼šä¸å¤„ç†æ­¤äº‹ä»¶ï¼Œ1ï¼šå¤„ç†æ­¤äº‹ä»¶ã€‚
 int UnistorHandler4RecvWrite::onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv)
 {
     UnistorTss* pTss = (UnistorTss*)pThrEnv;
@@ -108,13 +108,13 @@ int UnistorHandler4RecvWrite::onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv)
         UnistorZkConf* pConf = NULL;
         memcpy(&pConf, msg->rd_ptr(), sizeof(pConf));
         if (pTss->m_pZkConf){
-            if (pTss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (pTss->m_pZkConf->m_ullVersion > pConf->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pConf;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete pTss->m_pZkConf;
                 pTss->m_pZkConf = pConf;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             pTss->m_pZkConf = pConf;
         }
         CWX_INFO(("UnistorHandler4RecvWrite: conf changed."));
@@ -122,13 +122,13 @@ int UnistorHandler4RecvWrite::onUserEvent(CwxMsgBlock*& msg, CwxTss* pThrEnv)
         UnistorZkLock* pLock = NULL;
         memcpy(&pLock, msg->rd_ptr(), sizeof(pLock));
         if (pTss->m_pZkLock){
-            if (pTss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<²ÉÓÃ¾É°æ±¾
+            if (pTss->m_pZkLock->m_ullVersion > pLock->m_ullVersion){///<é‡‡ç”¨æ—§ç‰ˆæœ¬
                 delete pLock;
-            }else{///²ÉÓÃĞÂ°æ±¾
+            }else{///é‡‡ç”¨æ–°ç‰ˆæœ¬
                 delete pTss->m_pZkLock;
                 pTss->m_pZkLock = pLock;
             }
-        }else{///<²ÉÓÃĞÂ°æ±¾
+        }else{///<é‡‡ç”¨æ–°ç‰ˆæœ¬
             pTss->m_pZkLock = pLock;
         }
         CWX_INFO(("UnistorHandler4RecvWrite: lock changed."));
@@ -167,7 +167,7 @@ void UnistorHandler4RecvWrite::configChange(UnistorTss* pTss){
 
 
 
-///Ìí¼ÓÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///æ·»åŠ ä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
                                      UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
@@ -208,7 +208,7 @@ int UnistorHandler4RecvWrite::addKey(UnistorTss* pTss,
 }
 
 
-///setÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///setä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
                                      UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
@@ -250,7 +250,7 @@ int UnistorHandler4RecvWrite::setKey(UnistorTss* pTss,
 	return UNISTOR_ERR_ERROR;
 }
 
-///updateÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///updateä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
                                         UnistorWriteMsgArg* pWriteArg,
                                        CWX_UINT32& uiVersion,
@@ -295,7 +295,7 @@ int UnistorHandler4RecvWrite::updateKey(UnistorTss* pTss,
 	return UNISTOR_ERR_ERROR;
 }
 
-///incÒ»¸ökeyµÄ¼ÆÊıÆ÷¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///incä¸€ä¸ªkeyçš„è®¡æ•°å™¨ã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
                                      UnistorWriteMsgArg* pWriteArg,
                                     CWX_INT64& llValue,
@@ -340,7 +340,7 @@ int UnistorHandler4RecvWrite::incKey(UnistorTss* pTss,
 	return UNISTOR_ERR_ERROR;
 }
 
-///deleteÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///deleteä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
                                      UnistorWriteMsgArg* pWriteArg,
                                     CWX_UINT32& uiVersion,
@@ -375,7 +375,7 @@ int UnistorHandler4RecvWrite::delKey(UnistorTss* pTss,
 	return UNISTOR_ERR_ERROR;
 }
 
-///importÒ»¸ökey¡£·µ»ØÖµ£ºUNISTOR_ERR_SUCCESS£º³É¹¦£»ÆäËû£º´íÎó´úÂë
+///importä¸€ä¸ªkeyã€‚è¿”å›å€¼ï¼šUNISTOR_ERR_SUCCESSï¼šæˆåŠŸï¼›å…¶ä»–ï¼šé”™è¯¯ä»£ç 
 int UnistorHandler4RecvWrite::importKey(UnistorTss* pTss,
                                         UnistorWriteMsgArg* pWriteArg,
                                         CWX_UINT32& uiVersion,

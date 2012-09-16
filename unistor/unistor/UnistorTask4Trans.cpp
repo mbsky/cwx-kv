@@ -1,4 +1,4 @@
-#include "UnistorTask4Trans.h"
+ï»¿#include "UnistorTask4Trans.h"
 #include "UnistorApp.h"
 #include "UnistorPoco.h"
 #include "UnistorHandler4Trans.h"
@@ -32,7 +32,7 @@ void UnistorTask4Trans::noticeConnClosed(CWX_UINT32 , CWX_UINT32 , CWX_UINT32 , 
 }
 
 int UnistorTask4Trans::noticeActive(CwxTss* ThrEnv){
-    ///´ËÒÀÈ»ÔÚtransÏß³Ì£¬Òò´Ë£¬¿ÉÒÔ°²È«µÄ²Ù×÷UnistorHandler4TransÖĞµÄstaticÊı¾İ
+    ///æ­¤ä¾ç„¶åœ¨transçº¿ç¨‹ï¼Œå› æ­¤ï¼Œå¯ä»¥å®‰å…¨çš„æ“ä½œUnistorHandler4Transä¸­çš„staticæ•°æ®
     UnistorTss* tss= (UnistorTss*)ThrEnv;
     setTaskState(TASK_STATE_WAITING);
 
@@ -51,22 +51,22 @@ void UnistorTask4Trans::execute(CwxTss* pThrEnv){
         m_msg = NULL;
         m_strErrMsg = "";
         m_uiErrCode = UNISTOR_ERR_SUCCESS;
-        ///±£´æĞèÒªµÄĞÅÏ¢
+        ///ä¿å­˜éœ€è¦çš„ä¿¡æ¯
         m_uiRecvThreadIndex = m_tranMsg->event().getHostId();
         m_uiRecvConnId = m_tranMsg->event().getConnId();
         m_recvMsgHead = m_tranMsg->event().getMsgHeader();
-        ///ÉèÖÃ³¬Ê±
+        ///è®¾ç½®è¶…æ—¶
         CWX_UINT64 timeStamp = UNISTOR_TRANS_TIMEOUT_SECOND;
         timeStamp *= 1000000;
         timeStamp += CwxDate::getTimestamp();
         this->setTimeoutValue(timeStamp);
-        ///Æô¶¯ÈÎÎñ
+        ///å¯åŠ¨ä»»åŠ¡
         getTaskBoard()->noticeActiveTask(this, pThrEnv);
     }
-    ///ÊÍ·ÅÊÕµ½µÄĞÅÏ¢
+    ///é‡Šæ”¾æ”¶åˆ°çš„ä¿¡æ¯
     if (m_tranMsg) CwxMsgBlockAlloc::free(m_tranMsg);
     m_tranMsg = NULL;
-    ///Èç¹ûÍê³É£¬Ôò»Ø¸´    
+    ///å¦‚æœå®Œæˆï¼Œåˆ™å›å¤    
     if (CwxTaskBoardTask::TASK_STATE_FINISH == getTaskState()){
         reply(m_pApp, tss, m_uiRecvConnId, m_uiRecvThreadIndex, m_recvMsgHead, m_msg, m_uiErrCode, m_strErrMsg.c_str());
         if (m_msg){
@@ -79,9 +79,9 @@ void UnistorTask4Trans::execute(CwxTss* pThrEnv){
 
 void UnistorTask4Trans::reply(UnistorApp* pApp,
                               UnistorTss* tss,
-                              CWX_UINT32 uiRecvConnId, ///<ÊÕµ½µÄÁ¬½Óid
-                              CWX_UINT32 uiRecvThreadIndex, ///<ÊÕµ½µÄÏß³ÌË÷Òı
-                              CwxMsgHead const& recvHead,  ///<ÊÕµ½µÄÏûÏ¢Í·
+                              CWX_UINT32 uiRecvConnId, ///<æ”¶åˆ°çš„è¿æ¥id
+                              CWX_UINT32 uiRecvThreadIndex, ///<æ”¶åˆ°çš„çº¿ç¨‹ç´¢å¼•
+                              CwxMsgHead const& recvHead,  ///<æ”¶åˆ°çš„æ¶ˆæ¯å¤´
                               CwxMsgBlock* replyMsg,
                               CWX_UINT32 uiErrCode,
                               char const* szErrMsg)

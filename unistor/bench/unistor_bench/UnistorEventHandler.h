@@ -1,4 +1,4 @@
-#ifndef __UNISTOR_EVENT_HANDLER_H__
+ï»¿#ifndef __UNISTOR_EVENT_HANDLER_H__
 #define __UNISTOR_EVENT_HANDLER_H__
 
 #include "CwxCommander.h"
@@ -7,37 +7,37 @@
 CWINUX_USING_NAMESPACE
 
 class UnistorBenchApp;
-///echoÇëÇóµÄ´¦Àíhandle£¬ÎªcommandµÄhandle
+///echoè¯·æ±‚çš„å¤„ç†handleï¼Œä¸ºcommandçš„handle
 class UnistorEventHandler : public CwxCmdOp 
 {
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     UnistorEventHandler(UnistorBenchApp* pApp);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~UnistorEventHandler(){
 		if (m_szBuf) delete [] m_szBuf;
     }
 public:
-	///Á¬½Ó½¨Á¢
+	///è¿æ¥å»ºç«‹
 	virtual int onConnCreated(CwxMsgBlock*& msg, CwxTss* pThrEnv);
-    ///ÊÕµ½echoÇëÇóµÄ´¦Àíº¯Êı
-    virtual int onRecvMsg(CwxMsgBlock*& msg,///<echoÊı¾İ°ü¼°Ïà¹ØµÄÇëÇóÁ¬½ÓĞÅÏ¢
-                            CwxTss* pThrEnv///<´¦ÀíÏß³ÌµÄthread-specific-store
+    ///æ”¶åˆ°echoè¯·æ±‚çš„å¤„ç†å‡½æ•°
+    virtual int onRecvMsg(CwxMsgBlock*& msg,///<echoæ•°æ®åŒ…åŠç›¸å…³çš„è¯·æ±‚è¿æ¥ä¿¡æ¯
+                            CwxTss* pThrEnv///<å¤„ç†çº¿ç¨‹çš„thread-specific-store
                             );
 private:
-	//·¢ËÍechoÇëÇó
+	//å‘é€echoè¯·æ±‚
 	void sendNextMsg(UnistorTss* tss,
         CWX_UINT32 uiSvrId,
         CWX_UINT32 uiHostId,
         CWX_UINT32 uiConnId);
-	//»ñÈ¡key
+	//è·å–key
 	void getKey(CWX_UINT32 uiKey, char* szKey, bool bMd5);
 private:
-    UnistorBenchApp*  m_pApp;  ///<app¶ÔÏó
-	char*           m_szBuf; ///<·¢ËÍµÄÊı¾İbuf¼°ÄÚÈİ
-	CWX_UINT32      m_uiSendNum;///<·¢ËÍÇëÇóµÄÊıÁ¿
-	CWX_UINT32      m_uiRecvNum;///<½ÓÊÕµ½»Ø¸´µÄÊıÁ¿
-	CWX_UINT32		m_uiSuccessNum; ///<³É¹¦µÄÊıÁ¿
+    UnistorBenchApp*  m_pApp;  ///<appå¯¹è±¡
+	char*           m_szBuf; ///<å‘é€çš„æ•°æ®bufåŠå†…å®¹
+	CWX_UINT32      m_uiSendNum;///<å‘é€è¯·æ±‚çš„æ•°é‡
+	CWX_UINT32      m_uiRecvNum;///<æ¥æ”¶åˆ°å›å¤çš„æ•°é‡
+	CWX_UINT32		m_uiSuccessNum; ///<æˆåŠŸçš„æ•°é‡
 };
 
 #endif 
