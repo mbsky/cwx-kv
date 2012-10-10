@@ -1,4 +1,4 @@
-﻿#include "CwxBinlogOp.h"
+#include "CwxBinlogOp.h"
 #include "CwxZlib.h"
 
 CwxBinlogOp::CwxBinlogOp(){

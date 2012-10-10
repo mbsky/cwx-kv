@@ -1,4 +1,4 @@
-﻿#include "UnistorCache.h"
+#include "UnistorCache.h"
 
 ///初始化write item的引擎比较函数为空
 UNISTOR_KEY_CMP_EQUAL_FN UnistorWriteCacheItem::m_fnEqual= NULL;     ///<key相等的比较函数

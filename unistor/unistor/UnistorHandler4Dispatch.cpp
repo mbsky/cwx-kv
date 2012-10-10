@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Dispatch.h"
+#include "UnistorHandler4Dispatch.h"
 #include "UnistorApp.h"
 
 ///添加一个新连接

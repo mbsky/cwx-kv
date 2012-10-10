@@ -1,4 +1,4 @@
-﻿#include "UnistorApp.h"
+#include "UnistorApp.h"
 #include "CwxDate.h"
 ///构造函数
 UnistorApp::UnistorApp(){

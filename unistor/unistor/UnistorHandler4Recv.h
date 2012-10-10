@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_HANDLER_4_RECV_H__
+#ifndef __UNISTOR_HANDLER_4_RECV_H__
 #define __UNISTOR_HANDLER_4_RECV_H__
 
 #include "CwxCommander.h"

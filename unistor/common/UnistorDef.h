@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_DEF_H__
+#ifndef __UNISTOR_DEF_H__
 #define __UNISTOR_DEF_H__
 #include "UnistorMacro.h"
 #include "CwxStl.h"

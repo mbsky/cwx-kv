@@ -1,4 +1,4 @@
-﻿#include "CounterBenchConfig.h"
+#include "CounterBenchConfig.h"
 #include "CwxLogger.h"
 #include "UnistorDef.h"
 

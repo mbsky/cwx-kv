@@ -1,4 +1,4 @@
-﻿#define __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
 #include "ZkAdaptor.h"
 #include <string.h>
 #include <sstream>

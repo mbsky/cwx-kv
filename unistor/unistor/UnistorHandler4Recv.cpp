@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Recv.h"
+#include "UnistorHandler4Recv.h"
 #include "UnistorApp.h"
 
 ///master变化的处理函数

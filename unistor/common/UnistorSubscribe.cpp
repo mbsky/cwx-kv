@@ -1,4 +1,4 @@
-﻿#include "UnistorSubscribe.h"
+#include "UnistorSubscribe.h"
 #include "UnistorStoreBase.h"
 
 

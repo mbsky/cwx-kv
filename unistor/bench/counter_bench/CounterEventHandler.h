@@ -1,4 +1,4 @@
-﻿#ifndef __COUNTER_EVENT_HANDLER_H__
+#ifndef __COUNTER_EVENT_HANDLER_H__
 #define __COUNTER_EVENT_HANDLER_H__
 
 #include "CwxCommander.h"

@@ -1,4 +1,4 @@
-﻿#ifndef __COUNTER_BENCH_CONFIG_H__
+#ifndef __COUNTER_BENCH_CONFIG_H__
 #define __COUNTER_BENCH_CONFIG_H__
 
 #include "CwxHostInfo.h"

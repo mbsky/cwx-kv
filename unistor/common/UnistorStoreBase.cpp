@@ -1,4 +1,4 @@
-﻿#include "UnistorStoreBase.h"
+#include "UnistorStoreBase.h"
 
 UNISTOR_KEY_GROUP_FN UnistorStoreBase::m_fnKeyStoreGroup=NULL; 
 UNISTOR_KEY_GROUP_FN UnistorStoreBase::m_fnKeyAsciiGroup=NULL;

@@ -1,4 +1,4 @@
-﻿#include "CwxAppProcessMgr.h"
+#include "CwxAppProcessMgr.h"
 #include "UnistorApp.h"
 
 int main(int argc, char** argv){

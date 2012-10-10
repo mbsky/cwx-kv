@@ -1,4 +1,4 @@
-﻿#include "UnistorStoreBdbc.h"
+#include "UnistorStoreBdbc.h"
 #include "CwxFile.h"
 
 #define UNISTOR_BDBC_BIT32_MASK  0xFFFFFFFF

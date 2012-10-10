@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_EVENT_HANDLER_H__
+#ifndef __UNISTOR_EVENT_HANDLER_H__
 #define __UNISTOR_EVENT_HANDLER_H__
 
 #include "CwxCommander.h"

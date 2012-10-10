@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Zk.h"
+#include "UnistorHandler4Zk.h"
 #include "UnistorApp.h"
 
 UnistorHandler4Zk::UnistorHandler4Zk(UnistorApp* pApp):m_pApp(pApp){

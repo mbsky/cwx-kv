@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Trans.h"
+#include "UnistorHandler4Trans.h"
 #include "UnistorApp.h"
 #include "UnistorTask4Trans.h"
 #include "CwxZlib.h"

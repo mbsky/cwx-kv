@@ -1,4 +1,4 @@
-﻿#ifndef __XML_PARSE_H__
+#ifndef __XML_PARSE_H__
 #define __XML_PARSE_H__
 
 

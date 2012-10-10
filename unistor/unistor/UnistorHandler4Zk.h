@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_HANDLER_4_ZK_H__
+#ifndef __UNISTOR_HANDLER_4_ZK_H__
 #define __UNISTOR_HANDLER_4_ZK_H__
 
 #include "UnistorMacro.h"

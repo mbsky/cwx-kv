@@ -1,4 +1,4 @@
-﻿#include "UnistorStoreMem.h"
+#include "UnistorStoreMem.h"
 
 #define  MEM_MIN_READ_CACHE_MSIZE   128
 #define  MEM_MAX_READ_CACHE_MSIZE   (64 * 1024)

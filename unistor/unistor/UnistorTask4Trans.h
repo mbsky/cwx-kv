@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_TASK_4_TRANS_H__
+#ifndef __UNISTOR_TASK_4_TRANS_H__
 #define __UNISTOR_TASK_4_TRANS_H__
 
 #include "UnistorMacro.h"

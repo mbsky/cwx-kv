@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4RecvWrite.h"
+#include "UnistorHandler4RecvWrite.h"
 #include "UnistorApp.h"
 #include "UnistorHandler4Master.h"
 

@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_READ_CACHE_EX2_H__
+#ifndef __UNISTOR_READ_CACHE_EX2_H__
 #define __UNISTOR_READ_CACHE_EX2_H__
 
 

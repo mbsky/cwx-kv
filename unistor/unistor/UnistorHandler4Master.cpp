@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Master.h"
+#include "UnistorHandler4Master.h"
 #include "UnistorApp.h"
 #include "CwxZlib.h"
 

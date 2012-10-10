@@ -1,4 +1,4 @@
-﻿#include "UnistorStoreEmpty.h"
+#include "UnistorStoreEmpty.h"
 
 #define  EMPTY_MIN_READ_CACHE_MSIZE   128
 #define  EMPTY_MAX_READ_CACHE_MSIZE   (64 * 1024)

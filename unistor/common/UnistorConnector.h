@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_CONNECTOR_H__
+#ifndef __UNISTOR_CONNECTOR_H__
 #define __UNISTOR_CONNECTOR_H__
 
 #include "CwxPre.h"

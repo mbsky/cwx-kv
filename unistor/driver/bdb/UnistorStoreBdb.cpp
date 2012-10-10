@@ -1,4 +1,4 @@
-﻿#include "UnistorStoreBdb.h"
+#include "UnistorStoreBdb.h"
 
 #define  BDB_MIN_READ_CACHE_MSIZE   128
 #define  BDB_MAX_READ_CACHE_MSIZE   (64 * 1024)

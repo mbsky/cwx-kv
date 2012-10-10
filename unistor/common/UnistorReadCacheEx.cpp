@@ -1,4 +1,4 @@
-﻿#include "UnistorReadCacheEx.h"
+#include "UnistorReadCacheEx.h"
 
 UNISTOR_KEY_CMP_EQUAL_FN UnistorReadCacheItemEx::m_fnEqual = NULL; ///<key相等的比较函数
 UNISTOR_KEY_CMP_LESS_FN UnistorReadCacheItemEx::m_fnLess = NULL; ///<key小于的比较函数
