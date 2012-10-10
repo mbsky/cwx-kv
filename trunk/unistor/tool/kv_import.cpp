@@ -1,4 +1,4 @@
-﻿#include "CwxSocket.h"
+#include "CwxSocket.h"
 #include "CwxINetAddr.h"
 #include "CwxSockStream.h"
 #include "CwxSockConnector.h"

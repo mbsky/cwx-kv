@@ -1,4 +1,4 @@
-﻿#include "UnistorTss.h"
+#include "UnistorTss.h"
 
 ///析构函数
 UnistorTss::~UnistorTss(){

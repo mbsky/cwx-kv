@@ -1,4 +1,4 @@
-﻿#include "UnistorStore.h"
+#include "UnistorStore.h"
 
 UnistorStore::UnistorStore(){
 	m_impl = NULL;

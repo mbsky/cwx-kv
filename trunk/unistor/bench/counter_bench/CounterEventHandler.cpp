@@ -1,4 +1,4 @@
-﻿#include "CounterEventHandler.h"
+#include "CounterEventHandler.h"
 #include "CounterBenchApp.h"
 #include "CwxMd5.h"
 

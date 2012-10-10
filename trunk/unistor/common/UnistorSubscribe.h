@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_SUBSCRIBE_H__
+#ifndef __UNISTOR_SUBSCRIBE_H__
 #define __UNISTOR_SUBSCRIBE_H__
 
 #include "UnistorMacro.h"

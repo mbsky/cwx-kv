@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_POCO_H__
+#ifndef __UNISTOR_POCO_H__
 #define __UNISTOR_POCO_H__
 
 #ifdef __cplusplus

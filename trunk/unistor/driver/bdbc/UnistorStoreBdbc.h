@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_STORE_BDBC_H__
+#ifndef __UNISTOR_STORE_BDBC_H__
 #define __UNISTOR_STORE_BDBC_H__
 
 

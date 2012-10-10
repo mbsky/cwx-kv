@@ -1,4 +1,4 @@
-﻿#include "UnistorPoco.h"
+#include "UnistorPoco.h"
 #include "CwxZlib.h"
 
 ///返回值，UNISTOR_ERR_SUCCESS：成功；其他都是失败

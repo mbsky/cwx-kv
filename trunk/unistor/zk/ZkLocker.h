@@ -1,4 +1,4 @@
-﻿#ifndef __ZK_LOCKER_H__
+#ifndef __ZK_LOCKER_H__
 #define __ZK_LOCKER_H__
 #include "ZkAdaptor.h"
 #include <pthread.h>

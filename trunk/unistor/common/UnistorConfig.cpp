@@ -1,4 +1,4 @@
-﻿#include "UnistorConfig.h"
+#include "UnistorConfig.h"
 #include "UnistorPoco.h"
 #include "CwxFile.h"
 #include "CwxLogger.h"

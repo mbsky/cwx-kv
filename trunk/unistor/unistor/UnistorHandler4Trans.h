@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_HANDLER_4_TRANS_H__
+#ifndef __UNISTOR_HANDLER_4_TRANS_H__
 #define __UNISTOR_HANDLER_4_TRANS_H__
 
 #include "CwxCommander.h"

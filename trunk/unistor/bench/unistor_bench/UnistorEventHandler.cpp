@@ -1,4 +1,4 @@
-﻿#include "UnistorEventHandler.h"
+#include "UnistorEventHandler.h"
 #include "UnistorBenchApp.h"
 #include "CwxMd5.h"
 

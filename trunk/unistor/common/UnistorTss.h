@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_TSS_H__
+#ifndef __UNISTOR_TSS_H__
 #define __UNISTOR_TSS_H__
 
 

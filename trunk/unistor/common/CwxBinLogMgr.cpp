@@ -1,4 +1,4 @@
-﻿#include "CwxBinLogMgr.h"
+#include "CwxBinLogMgr.h"
 
 /***********************************************************************
                     CwxBinLogCursor  class

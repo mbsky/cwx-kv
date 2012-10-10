@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_STORE_BASE_H__
+#ifndef __UNISTOR_STORE_BASE_H__
 #define __UNISTOR_STORE_BASE_H__
 
 #include "UnistorMacro.h"

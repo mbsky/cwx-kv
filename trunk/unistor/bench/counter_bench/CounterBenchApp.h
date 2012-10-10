@@ -1,4 +1,4 @@
-﻿#ifndef __COUNTER_BENCH_APP_H__
+#ifndef __COUNTER_BENCH_APP_H__
 #define __COUNTER_BENCH_APP_H__
 
 #include "CwxAppFramework.h"

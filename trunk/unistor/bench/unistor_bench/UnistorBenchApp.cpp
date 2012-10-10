@@ -1,4 +1,4 @@
-﻿#include "UnistorBenchApp.h"
+#include "UnistorBenchApp.h"
 #include "CwxSocket.h"
 
 ///构造函数

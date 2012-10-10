@@ -1,4 +1,4 @@
-﻿#include "UnistorConnector.h"
+#include "UnistorConnector.h"
 
 int UnistorConnector::complete (set<int>& fds, CwxTimeouter* timeout){
 

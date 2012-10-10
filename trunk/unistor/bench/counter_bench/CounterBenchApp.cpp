@@ -1,4 +1,4 @@
-﻿#include "CounterBenchApp.h"
+#include "CounterBenchApp.h"
 #include "CwxSocket.h"
 
 ///构造函数

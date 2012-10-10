@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_BENCH_CONFIG_H__
+#ifndef __UNISTOR_BENCH_CONFIG_H__
 #define __UNISTOR_BENCH_CONFIG_H__
 
 #include "CwxHostInfo.h"

@@ -1,4 +1,4 @@
-﻿#include "UnistorHandler4Checkpoint.h"
+#include "UnistorHandler4Checkpoint.h"
 #include "UnistorApp.h"
 
 

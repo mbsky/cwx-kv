@@ -1,4 +1,4 @@
-﻿#ifndef __CWX_BINLOG_OP_H__
+#ifndef __CWX_BINLOG_OP_H__
 #define __CWX_BINLOG_OP_H__
 
 /**

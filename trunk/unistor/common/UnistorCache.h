@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_CACHE_H__
+#ifndef __UNISTOR_CACHE_H__
 #define __UNISTOR_CACHE_H__
 
 

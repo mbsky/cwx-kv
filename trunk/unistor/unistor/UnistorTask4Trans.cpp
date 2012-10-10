@@ -1,4 +1,4 @@
-﻿#include "UnistorTask4Trans.h"
+#include "UnistorTask4Trans.h"
 #include "UnistorApp.h"
 #include "UnistorPoco.h"
 #include "UnistorHandler4Trans.h"

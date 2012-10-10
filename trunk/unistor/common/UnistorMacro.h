@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_MACRO_H__
+#ifndef __UNISTOR_MACRO_H__
 #define __UNISTOR_MACRO_H__
 
 

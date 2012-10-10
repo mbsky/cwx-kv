@@ -1,4 +1,4 @@
-﻿#include "XmlParse.h"
+#include "XmlParse.h"
 
 XmlParser::XmlParser(CWX_UINT32 uiBufSize) 
 {

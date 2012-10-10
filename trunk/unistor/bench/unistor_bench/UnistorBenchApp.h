@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_BENCH_APP_H__
+#ifndef __UNISTOR_BENCH_APP_H__
 #define __UNISTOR_BENCH_APP_H__
 
 #include "CwxAppFramework.h"

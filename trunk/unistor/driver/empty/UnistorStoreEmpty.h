@@ -1,4 +1,4 @@
-﻿#ifndef __UNISTOR_STORE_EMPTY_H__
+#ifndef __UNISTOR_STORE_EMPTY_H__
 #define __UNISTOR_STORE_EMPTY_H__
 
 
